@@ -1,0 +1,126 @@
+/* ═══════════════════════════════════════════════════════════════════
+   🤖 FIELDBOX CONSOLIDATED CSS - All Variants
+   ═══════════════════════════════════════════════════════════════════
+
+   FUSE-STYLE Compliant: All static layout/structure styles in CSS.
+   TTT Gap Model: NO external margins - container controls spacing
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   FIELDBOX DISPLAY VARIANT - Read-Only Data Display
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-fieldbox-display {
+  width: 100%;
+  padding: var(--space-md);
+  font-size: var(--font-size-md);
+  background-color: var(--bg-fieldbox-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  line-height: normal;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+
+  /* NO external margins - TTT Gap Model compliant */
+}
+
+/* Filled state - has value */
+.vr-fieldbox-display--filled {
+  color: var(--text-primary);
+  font-style: normal;
+}
+
+/* Empty state - no value */
+.vr-fieldbox-display--empty {
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+/* Disabled state */
+.vr-fieldbox-display--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Multiline variant */
+.vr-fieldbox-display--multiline {
+  min-height: 60px;
+  white-space: pre-wrap;
+  align-items: flex-start;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FIELDBOX ROW VARIANT - Horizontal Layout Container
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-fieldbox-row {
+  display: flex;
+  flex-direction: row;
+  gap: var(--fieldbox-row-gap, var(--space-md));
+  width: 100%;
+
+  /* NO external margins - TTT Gap Model compliant */
+}
+
+/* All children take equal width by default */
+.vr-fieldbox-row > * {
+  flex: 1;
+  min-width: 0; /* Allows flex items to shrink below content size */
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   UTILITY: Vertical spacing for multiple fieldbox rows
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-fieldbox-spacings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+
+  /* NO external margins - TTT Gap Model compliant */
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FIELDBOX WRAPPER VARIANT - Complete Field Container
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-fieldbox-wrapper {
+  /* NO external margins - TTT Gap Model compliant */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  position: relative;
+}
+
+/* Helper text container */
+.vr-fieldbox-wrapper__helper {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin-top: var(--space-xs);
+}
+
+/* Error state */
+.vr-fieldbox-wrapper--error .vr-field-input,
+.vr-fieldbox-wrapper--error .vr-field-display {
+  border-color: var(--error-600);
+}
+
+.vr-fieldbox-wrapper__error {
+  font-size: var(--font-size-xs);
+  color: var(--error-600);
+  margin-top: var(--space-xs);
+}
+
+/* Success state */
+.vr-fieldbox-wrapper--success .vr-field-input,
+.vr-fieldbox-wrapper--success .vr-field-display {
+  border-color: var(--success-600);
+}
+
+.vr-fieldbox-wrapper__success {
+  font-size: var(--font-size-xs);
+  color: var(--success-600);
+  margin-top: var(--space-xs);
+}

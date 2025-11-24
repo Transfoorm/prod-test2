@@ -1,0 +1,55 @@
+/* Layout Components - App Frame Structure & Navigation (IMPORTS - Must come before all CSS rules) */
+
+/*  SHELL COMPONENTS (WCCC ly-* Compliant) */
+@import '../src/shell/shell.css';
+
+/*  APP LAYOUT FILES (Root, Domain, Auth) */
+@import '../src/app/root-layout.css';
+@import '../src/app/(domains)/domains-layout.css';
+@import '../src/app/(auth)/auth.css';
+
+/* ═══════════════════════════════════════════════════════════════════
+   LAYOUT CONTROL VARIABLES - App Shell & Page Architecture
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  /* Content Alignment */
+  --page-margin-left: auto;              /* LEFT aligned: 0 | CENTER aligned: auto */
+  --page-margin-right: auto;             /* Always auto */
+
+  /* Page Arch System */
+  --curved-radius: 20px;                 /* Disable in layout.tsx with USE_CURVES = false */
+  --content-width: 1200px;               /* Max width for titles and content */
+
+  /* App Shell - Topbar */
+  --topbar-height: 50px;                 /* Top navigation bar height */
+  --topbar-logo-padding: 10px;           /* Right padding after logo */
+
+  /* App Shell - Sidebar */
+  --sidebar-width: 200px;                /* Left navigation panel width */
+
+  /* App Shell - AI Sidebar */
+  --ai-sidebar-closed: 45px;             /* AI sidebar width when closed (avatar only) */
+  --ai-sidebar-open: 256px;              /* AI sidebar width when open (default) */
+  --ai-sidebar-expanded: 512px;          /* AI sidebar width when expanded (full chat) */
+  --ai-sidebar-top-margin: 0px;          /* Vertical offset for AI sidebar */
+  --ai-sidebar-top-border-extend: 41px;  /* Top border extension width */
+  --ai-sidebar-top-border-angle: 11px;   /* Diagonal angle on border */
+  --ai-sidebar-avatar-size: 40px;        /* Avatar circle size */
+  --ai-sidebar-avatar-margin-left-closed: 4px; /* Avatar left margin when closed */
+
+  /* Page Header - Auto-generated titles */
+  --page-header-margin-top: 30px;        /* Gap above title/subtitle block */
+  --page-header-margin-left: var(--page-content-padding-left);
+  --page-subtitle-gap: 0px;              /* Gap between title and subtitle */
+  --page-header-margin-bottom: 25px;     /* Gap below title/subtitle block */
+  --page-title-size: 30px;               /* Page title font size */
+  --page-subtitle-size: 14px;            /* Page subtitle font size */
+
+  /* Page Content Padding */
+  --page-content-padding-left: 25px;     /* Left content padding */
+  --page-content-padding-right: 25px;    /* Right content padding */
+  --page-content-padding-bottom: 60px;   /* Bottom content padding */
+
+  /* Footer */
+  --footer-height: 20px;                 /* Bottom footer bar height */
+}

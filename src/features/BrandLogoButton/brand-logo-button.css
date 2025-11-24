@@ -1,0 +1,212 @@
+/** ──────────────────────────────────────────────────────────────────────┐
+│  🏢 BRAND LOGO BUTTON STYLES                                          │
+│  /src/features/BrandLogoButton/brand-logo-button.css                  │
+│                                                                        │
+│  Complete styles for brand logo button with upload modal              │
+└────────────────────────────────────────────────────────────────────────┘ */
+
+:root {
+  /* Logo Dimensions */
+  --brandlogo-loading-size: 32px;
+  --brandlogo-modal-width: 320px;
+  --brandlogo-cropper-height: 192px;
+
+  /* Close Button */
+  --brandlogo-close-offset: -8px;
+  --brandlogo-close-size: 20px;
+  --brandlogo-close-font-size: var(--font-size-xs);
+
+  /* Icon Sizes */
+  --brandlogo-icon-sm: 16px;
+
+  /* Typography */
+  --brandlogo-text-md: 14px;
+  --brandlogo-text-lg: 16px;
+
+  /* Spacing */
+  --brandlogo-padding-sm: 8px;
+  --brandlogo-padding-lg: 16px;
+  --brandlogo-margin-md: 8px;
+  --brandlogo-margin-lg: 16px;
+
+  /* Animations & Transitions */
+  --brandlogo-transition-fast: 0.15s;
+  --brandlogo-transition-medium: 0.2s;
+
+  /* Backdrop */
+  --brandlogo-backdrop-opacity: 0.1;
+  --brandlogo-backdrop-dimmed: rgb(0 0 0 / 10%);
+}
+
+/* ───────────────────────────────────────────────────────────────────
+   LOADING STATE
+   ─────────────────────────────────────────────────────────────────── */
+
+.ft-brandlogo-button-loading {
+  width: var(--brandlogo-loading-size);
+  height: var(--brandlogo-loading-size);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-container);
+}
+
+/* ───────────────────────────────────────────────────────────────────
+   LOGO IMAGE
+   ─────────────────────────────────────────────────────────────────── */
+
+.ft-brandlogo-button-image {
+  border-radius: var(--radius-md);
+  object-fit: cover;
+}
+
+/* ───────────────────────────────────────────────────────────────────
+   HIDDEN FILE INPUT
+   ─────────────────────────────────────────────────────────────────── */
+
+.ft-brandlogo-button-file-input {
+  display: none;
+}
+
+/* ───────────────────────────────────────────────────────────────────
+   MODAL
+   ─────────────────────────────────────────────────────────────────── */
+
+.ft-brandlogo-button-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 50;
+  background-color: var(--bg-primary);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--brandlogo-padding-lg);
+  width: var(--brandlogo-modal-width);
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes scale-out {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+}
+
+.ft-brandlogo-button-modal--closing {
+  animation: scale-out var(--brandlogo-transition-fast) ease-out;
+}
+
+/* Close Button */
+.ft-brandlogo-button-close-button {
+  position: absolute;
+  top: var(--brandlogo-close-offset);
+  right: var(--brandlogo-close-offset);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  width: var(--brandlogo-close-size);
+  height: var(--brandlogo-close-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  font-size: var(--brandlogo-close-font-size);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: background-color var(--brandlogo-transition-fast) ease;
+}
+
+.ft-brandlogo-button-close-button:hover {
+  background-color: var(--bg-secondary);
+}
+
+.ft-brandlogo-button-modal-header {
+  font-size: var(--brandlogo-text-lg);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--brandlogo-margin-lg);
+  display: flex;
+  align-items: flex-start;
+}
+
+.ft-brandlogo-button-modal-header-icon {
+  margin-left: var(--brandlogo-margin-md);
+  width: var(--brandlogo-icon-sm);
+  height: var(--brandlogo-icon-sm);
+  color: var(--text-tertiary);
+  cursor: pointer;
+}
+
+/* ───────────────────────────────────────────────────────────────────
+   IMAGE CROPPER
+   ─────────────────────────────────────────────────────────────────── */
+
+.ft-brandlogo-button-cropper-container {
+  position: relative;
+  width: 100%;
+  height: var(--brandlogo-cropper-height);
+  margin-bottom: var(--brandlogo-margin-lg);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.ft-brandlogo-button-upload-actions {
+  margin-top: var(--brandlogo-margin-lg);
+}
+
+.ft-brandlogo-button-upload-button {
+  width: 100%;
+  color: var(--text-inverse);
+  font-size: var(--brandlogo-text-md);
+  padding: var(--brandlogo-padding-sm) 0;
+  border-radius: var(--radius-lg);
+  transition: all var(--brandlogo-transition-medium) ease;
+  cursor: pointer;
+  background-color: var(--brand-primary);
+  opacity: 1;
+  border: none;
+}
+
+.ft-brandlogo-button-upload-button:hover {
+  background-color: var(--brand-hover);
+}
+
+.ft-brandlogo-button-upload-button--uploading {
+  cursor: default;
+  background-color: var(--bg-tertiary);
+  opacity: 0.7;
+}
+
+.ft-brandlogo-button-upload-button--uploading:hover {
+  background-color: var(--bg-tertiary);
+}
+
+/* ───────────────────────────────────────────────────────────────────
+   BACKDROP
+   ─────────────────────────────────────────────────────────────────── */
+
+.ft-brandlogo-button-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 49;
+}
+
+.ft-brandlogo-button-backdrop--dimmed {
+  background-color: var(--brandlogo-backdrop-dimmed);
+}

@@ -1,0 +1,53 @@
+# VRP Enforcement - Zero tolerance for violations
+echo "🔍 VRP Pre-Commit Checks..."
+
+# ═══════════════════════════════════════════════════════════════════
+# 🛡️ WCCC PROTECTION - Block page-specific CSS files
+# ═══════════════════════════════════════════════════════════════════
+if git diff --cached --name-only | grep -E 'src/app/.*/page\.css$'; then
+  echo ""
+  echo "⛔ WCCC VIOLATION: page.css files are not allowed!"
+  echo ""
+  echo "Page-specific CSS files violate the 5-hub architecture."
+  echo ""
+  echo "Allowed CSS hubs:"
+  echo "  • /styles/prebuilts.css (vr-* components)"
+  echo "  • /styles/features.css (ft-* components)"
+  echo "  • /styles/layout.css (ly-* shell + layouts)"
+  echo ""
+  echo "If you need custom styling:"
+  echo "  1. Check if a prebuilt variant exists"
+  echo "  2. Create new prebuilt variant in /src/prebuilts/"
+  echo "  3. Last resort: Create feature component in /src/features/"
+  echo ""
+  echo "See TTT-WCCC-PROTOCOL.md for architectural rationale."
+  echo ""
+  echo "Commit blocked."
+  exit 1
+fi
+
+# ═══════════════════════════════════════════════════════════════════
+# 🔒 SACRED CONFIG PROTECTION - Block unauthorized ESLint changes
+# ═══════════════════════════════════════════════════════════════════
+if git diff --cached --name-only | grep -q "^eslint.config.mjs$"; then
+  echo ""
+  echo "⛔ CRITICAL: eslint.config.mjs modification detected!"
+  echo ""
+  echo "This file contains the VIRGIN EXCEPTION LIST."
+  echo "Changes to ESLint rules or exceptions require explicit approval."
+  echo ""
+  echo "If you are:"
+  echo "  - Fixing a legitimate bug: FIX THE CODE, not the rule"
+  echo "  - Adding an exception: STOP. Discuss first."
+  echo "  - Ken approving this: Override with --no-verify"
+  echo ""
+  echo "Commit blocked. No exceptions without discussion."
+  exit 1
+fi
+
+# Run critical VRP scripts (manifest validation skipped - legacy routes not yet in SMAC manifests)
+npm run vrp:isv || exit 1
+npm run vrp:naming || exit 1
+
+# Run lint-staged for TypeScript/ESLint checks
+npx lint-staged

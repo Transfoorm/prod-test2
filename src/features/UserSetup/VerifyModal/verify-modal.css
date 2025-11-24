@@ -1,0 +1,382 @@
+/* ═══════════════════════════════════════════════════════════════════
+   EMAIL VERIFICATION MODAL STYLES
+   Phoenix animation system - email verification UI
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Background Gradients */
+  --verify-container-bg: linear-gradient(135deg, #fff5f0 0%, #fff 50%, #fff0f0 100%);
+  --verify-success-icon-bg: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --verify-progress-fill-bg: linear-gradient(90deg, #f40 0%, #f63 100%);
+  --verify-submit-button-bg: linear-gradient(90deg, #f40 0%, #f63 100%);
+
+  /* Overlay & Shadows */
+  --verify-overlay-bg: rgb(0 0 0 / 50%);
+  --verify-container-shadow: 0 25px 50px -12px rgb(0 0 0 / 25%);
+  --verify-border-brand: rgb(255 68 0 / 10%);
+  --verify-success-icon-shadow: 0 10px 15px -3px rgb(16 185 129 / 30%);
+  --verify-focus-shadow: 0 0 0 3px rgb(255 68 0 / 10%);
+  --verify-button-shadow: 0 10px 15px -3px rgb(255 68 0 / 30%);
+  --verify-button-hover-shadow: 0 20px 25px -5px rgb(255 68 0 / 40%);
+
+  /* Text Colors */
+  --verify-text-primary: #374151;
+  --verify-text-secondary: #6b7280;
+  --verify-text-tertiary: #9ca3af;
+  --verify-text-heading: #d30;
+  --verify-text-brand: #f40;
+  --verify-text-brand-hover: #d30;
+  --verify-text-success: #10b981;
+  --verify-text-error: #dc2626;
+  --verify-text-white: #fff;
+
+  /* Background Colors */
+  --verify-bg-white: #fff;
+  --verify-bg-input: rgb(249 250 251 / 50%);
+  --verify-bg-error: #fef2f2;
+  --verify-bg-progress: #e5e7eb;
+
+  /* Border Colors */
+  --verify-border-default: #e5e7eb;
+  --verify-border-error: #fecaca;
+  --verify-border-focus: #f40;
+}
+
+/* Modal Overlay */
+.ft-verify-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--verify-overlay-bg);
+  backdrop-filter: blur(4px);
+}
+
+/* Modal Container */
+.ft-verify-container {
+  background: var(--verify-container-bg);
+  border-radius: 24px;
+  padding: 48px;
+  width: 100%;
+  margin: 20px;
+  box-shadow: var(--verify-container-shadow);
+  border: 1px solid var(--verify-border-brand);
+  animation: fade-in 0.3s ease-out;
+}
+
+.ft-verify-container--narrow {
+  max-width: 480px;
+}
+
+.ft-verify-container--wide {
+  max-width: 520px;
+}
+
+/* Logo */
+.ft-verify-logo {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.ft-verify-logo-img {
+  width: 350px;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+}
+
+/* Success Icon */
+.ft-verify-success-icon {
+  width: 80px;
+  height: 80px;
+  background: var(--verify-success-icon-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  box-shadow: var(--verify-success-icon-shadow);
+}
+
+.ft-verify-success-icon svg {
+  width: 40px;
+  height: 40px;
+  color: var(--verify-text-white);
+}
+
+/* Headings */
+.ft-verify-heading {
+  font-size: var(--font-size-4xl);
+  font-weight: bold;
+  color: var(--verify-text-heading);
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.ft-verify-heading--sm {
+  margin-bottom: 8px;
+}
+
+/* Description Text */
+.ft-verify-description {
+  color: var(--verify-text-secondary);
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+/* Progress Bar */
+.ft-verify-progress-bar {
+  height: 4px;
+  background: var(--verify-bg-progress);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.ft-verify-progress-fill {
+  height: 100%;
+  background: var(--verify-progress-fill-bg);
+  border-radius: 999px;
+  animation: loading 1.5s ease-in-out;
+}
+
+.ft-verify-progress-text {
+  font-size: var(--font-size-sm);
+  color: var(--verify-text-secondary);
+  text-align: center;
+}
+
+/* Form */
+.ft-verify-form-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--verify-text-primary);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* Code Inputs */
+.ft-verify-code-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ft-verify-code-input {
+  width: 48px;
+  height: 56px;
+  text-align: center;
+  font-size: var(--font-size-2xl);
+  font-weight: bold;
+  background: var(--verify-bg-input);
+  border: 2px solid var(--verify-border-default);
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.ft-verify-code-input:focus {
+  border-color: var(--verify-border-focus);
+  background: var(--verify-bg-white);
+  box-shadow: var(--verify-focus-shadow);
+}
+
+.ft-verify-code-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ft-verify-code-sent-to {
+  font-size: var(--font-size-xs);
+  color: var(--verify-text-tertiary);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.ft-verify-code-email {
+  color: var(--verify-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Error Message */
+.ft-verify-error {
+  padding: 12px;
+  background: var(--verify-bg-error);
+  border: 1px solid var(--verify-border-error);
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.ft-verify-error-text {
+  font-size: var(--font-size-sm);
+  color: var(--verify-text-error);
+  text-align: center;
+}
+
+/* Submit Button */
+.ft-verify-submit-button {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--verify-submit-button-bg);
+  color: var(--verify-text-white);
+  font-weight: var(--font-weight-semibold);
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--verify-button-shadow);
+  transition: all 0.2s;
+  margin-bottom: 16px;
+}
+
+.ft-verify-submit-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--verify-button-hover-shadow);
+}
+
+.ft-verify-submit-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+  box-shadow: var(--verify-button-shadow);
+}
+
+.ft-verify-submit-button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Loading Spinner */
+.ft-verify-spinner {
+  animation: spin 1s linear infinite;
+  margin-right: 12px;
+  width: 20px;
+  height: 20px;
+}
+
+.ft-verify-spinner-circle {
+  opacity: 0.25;
+}
+
+.ft-verify-spinner-path {
+  opacity: 0.75;
+}
+
+/* Resend Section */
+.ft-verify-resend {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.ft-verify-resend-text {
+  font-size: var(--font-size-sm);
+  color: var(--verify-text-secondary);
+}
+
+.ft-verify-resend-button {
+  font-size: var(--font-size-sm);
+  color: var(--verify-text-brand);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: var(--font-weight-medium);
+  transition: all 0.2s;
+  text-decoration: none;
+  padding: 0;
+}
+
+.ft-verify-resend-button:hover {
+  color: var(--verify-text-brand-hover);
+  text-decoration: underline;
+}
+
+.ft-verify-resend-success {
+  font-size: var(--font-size-sm);
+  color: var(--verify-text-success);
+  font-weight: var(--font-weight-semibold);
+  animation: fade-in-bounce 0.3s ease-out;
+}
+
+/* Cancel Section */
+.ft-verify-cancel {
+  text-align: center;
+}
+
+.ft-verify-cancel-button {
+  font-size: var(--font-size-sm);
+  color: var(--verify-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.ft-verify-cancel-button:hover {
+  color: var(--verify-text-primary);
+}
+
+/* Footer */
+.ft-verify-footer {
+  font-size: var(--font-size-xs);
+  color: var(--verify-text-tertiary);
+  text-align: center;
+  margin-top: 32px;
+}
+
+.ft-verify-footer--lg {
+  margin-top: 48px;
+}
+
+/* Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fade-in-bounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-10px);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.05) translateY(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes loading {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: 100%;
+  }
+}

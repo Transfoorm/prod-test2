@@ -1,0 +1,125 @@
+/* ═══════════════════════════════════════════════════════════════════
+   INPUT RADIO VARIANT
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-input-radio-group {
+  display: flex;
+
+  /* NO external margins - TTT Gap Model compliant */
+}
+
+/* Layout directions */
+.vr-input-radio-group--vertical {
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.vr-input-radio-group--horizontal {
+  flex-flow: row wrap;
+  gap: var(--space-lg);
+}
+
+/* Individual radio item */
+.vr-input-radio {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Hidden native radio */
+.vr-input-radio-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Custom radio button */
+.vr-input-radio-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: var(--bg-fieldbox-primary);
+  border: 2px solid var(--border-medium);
+  border-radius: var(--radius-full);
+  transition: all 0.2s ease;
+}
+
+/* Size variants */
+.vr-input-radio--sm .vr-input-radio-button {
+  width: 16px;
+  height: 16px;
+}
+
+.vr-input-radio--md .vr-input-radio-button {
+  width: 20px;
+  height: 20px;
+}
+
+.vr-input-radio--lg .vr-input-radio-button {
+  width: 24px;
+  height: 24px;
+}
+
+/* Radio dot (inner circle) */
+.vr-input-radio-dot {
+  display: none;
+  width: 40%;
+  height: 40%;
+  background-color: var(--white);
+  border-radius: var(--radius-full);
+  transition: transform 0.2s ease;
+}
+
+/* Label */
+.vr-input-radio-label {
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.vr-input-radio--sm .vr-input-radio-label {
+  font-size: var(--font-size-sm);
+}
+
+.vr-input-radio--md .vr-input-radio-label {
+  font-size: var(--font-size-md);
+}
+
+.vr-input-radio--lg .vr-input-radio-label {
+  font-size: var(--font-size-lg);
+}
+
+/* States */
+.vr-input-radio:hover .vr-input-radio-button {
+  border-color: var(--brand-primary);
+}
+
+.vr-input-radio-input:checked + .vr-input-radio-button {
+  background-color: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+
+.vr-input-radio-input:checked + .vr-input-radio-button .vr-input-radio-dot {
+  display: block;
+}
+
+.vr-input-radio-input:focus-visible + .vr-input-radio-button {
+  box-shadow: 0 0 0 3px var(--brand-light);
+}
+
+/* Disabled state */
+.vr-input-radio--disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.vr-input-radio--disabled .vr-input-radio-label {
+  color: var(--text-tertiary);
+}
+
+.vr-input-radio--disabled:hover .vr-input-radio-button {
+  border-color: var(--border-medium);
+}

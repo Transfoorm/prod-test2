@@ -1,0 +1,17 @@
+/** ──────────────────────────────────────────────────────────────────────┐
+│  ROOT LAYOUT STYLES                                                    │
+│  /src/app/root-layout.css                                              │
+│                                                                        │
+│  FUSE 4.0 - God Layout Foundation                                      │
+└────────────────────────────────────────────────────────────────────────┘ */
+
+.root-layout-body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: var(--body-bg);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

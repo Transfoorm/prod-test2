@@ -1,0 +1,573 @@
+/**──────────────────────────────────────────────────────────────────────┐
+│  👤 USER BUTTON - Avatar + Dropdown Menu                              │
+│  /src/components/features/UserButton.tsx                              │
+│                                                                        │
+│  Complete user profile management with avatar upload/crop.             │
+│  Pure CSS styling with FUSE-STYLE architecture.                        │
+│                                                                        │
+│  ISVEA COMPLIANCE: ✅ 100% GOLD STANDARD                               │
+│  - 0 ISV violations                                                    │
+│  - 0 inline styles                                                     │
+│  - 100% compliance (TRUE ZERO inline styles)                          │
+│                                                                        │
+│  FEATURES:                                                             │
+│  - Avatar with upload/crop functionality                               │
+│  - Dropdown menu with account actions                                  │
+│  - Email verification status                                           │
+│  - Error messaging                                                     │
+│  - Optimistic UI updates                                               │
+└────────────────────────────────────────────────────────────────────────┘ */
+
+"use client";
+
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { useMutation, useConvex } from "convex/react";
+import { useAuth } from "@clerk/nextjs";
+import Cropper from "react-easy-crop";
+import { api } from '@/convex/_generated/api';
+import { refreshSessionAfterUpload } from '@/app/actions/user-mutations';
+import { Id } from "@/convex/_generated/dataModel";
+import { useFuse } from "@/store/fuse";
+import { Icon, Tooltip } from "@/prebuilts";
+import { Button } from "@/prebuilts/button";
+import ThemeToggle from '@/features/ThemeToggle';
+
+export default function UserButton() {
+  const user = useFuse((s) => s.user);
+  const { signOut } = useAuth();
+  const router = useRouter();
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const generateUploadUrl = useMutation(api.storage.generateUploadUrl.generateUploadUrl);
+  const uploadAvatar = useMutation(api.domains.admin.users.uploadAvatar.uploadAvatar);
+  const convex = useConvex();
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isFilePickerOpen, setIsFilePickerOpen] = useState(false);
+  const [isMenuClosing, setIsMenuClosing] = useState(false);
+  const [isModalClosing, setIsModalClosing] = useState(false);
+
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
+  const [isCropping, setIsCropping] = useState(false);
+
+  const [committedUrl, setCommittedUrl] = useState<string | null>(null);
+  const [optimisticUrl, setOptimisticUrl] = useState<string | null>(null);
+  const [previousUrl, setPreviousUrl] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const waitForImageUrl = async (storageId: Id<"_storage">) => {
+    for (let i = 0; i < 10; i++) {
+      const url = await convex.query(api.storage.getImageUrl.getImageUrl, { storageId });
+      if (url) return url;
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    throw new Error("Image URL did not hydrate in time");
+  };
+
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreviewUrl(null);
+      return;
+    }
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreviewUrl(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [selectedFile]);
+
+  const onCropComplete = useCallback((_: { x: number; y: number; width: number; height: number }, croppedPixels: { x: number; y: number; width: number; height: number }) => {
+    setCroppedAreaPixels(croppedPixels);
+  }, []);
+
+  const createImage = (url: string) =>
+    new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = new Image();
+      img.addEventListener("load", () => resolve(img));
+      img.addEventListener("error", error => reject(error));
+      img.src = url;
+    });
+
+  const getCroppedImg = async (imageSrc: string, pixelCrop: { x: number; y: number; width: number; height: number }) => {
+    const image = await createImage(imageSrc);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d")!;
+
+    // Resize to max 400x400 for avatars (TTT Ready: keeps file sizes small)
+    const maxSize = 400;
+    let targetWidth = pixelCrop.width;
+    let targetHeight = pixelCrop.height;
+
+    if (targetWidth > maxSize || targetHeight > maxSize) {
+      const scale = Math.min(maxSize / targetWidth, maxSize / targetHeight);
+      targetWidth = Math.round(targetWidth * scale);
+      targetHeight = Math.round(targetHeight * scale);
+    }
+
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, targetWidth, targetHeight);
+    ctx.drawImage(
+      image,
+      pixelCrop.x,
+      pixelCrop.y,
+      pixelCrop.width,
+      pixelCrop.height,
+      0,
+      0,
+      targetWidth,
+      targetHeight
+    );
+    return new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(blob => {
+        if (blob) resolve(blob);
+        else reject(new Error("Canvas export failed"));
+      }, "image/jpeg", 0.8); // 80% quality for smaller file sizes
+    });
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    setIsFilePickerOpen(false);
+    setErrorMessage(null);
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setErrorMessage("Only image files are allowed. Please select a JPG, PNG, or GIF.");
+      setShowUserMenu(true); // Reopen menu to show error
+      return;
+    }
+
+    // No size limit needed - cropping auto-resizes to 400x400 @ 80% quality
+    setSelectedFile(file);
+    setShowUserMenu(false);
+    setShowProfileModal(true);
+    setIsCropping(true);
+  };
+
+  const handleUpload = async () => {
+    if (!previewUrl && !selectedFile) {
+      console.error("Please select an image first");
+      return;
+    }
+
+    try {
+      let fileToUpload: File | null = selectedFile;
+      let optimisticBlobUrl: string | null = null;
+
+      if (previewUrl && isCropping && croppedAreaPixels) {
+        const croppedBlob = await getCroppedImg(previewUrl, croppedAreaPixels);
+        const img = await createImage(URL.createObjectURL(croppedBlob));
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d")!;
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+
+        const whiteBgBlob = await new Promise<Blob>((resolve, reject) => {
+          canvas.toBlob(blob => {
+            if (blob) resolve(blob);
+            else reject(new Error("Canvas export failed"));
+          }, "image/jpeg");
+        });
+
+        fileToUpload = new File([whiteBgBlob], "avatar.jpg", { type: "image/jpeg" });
+        optimisticBlobUrl = URL.createObjectURL(whiteBgBlob);
+      }
+
+      if (!fileToUpload) {
+        throw new Error("No image to upload");
+      }
+
+      const currentAvatar = optimisticUrl || committedUrl || user?.avatarUrl || "/images/sitewide/avatar.png";
+      setPreviousUrl(currentAvatar);
+      if (optimisticBlobUrl) {
+        setOptimisticUrl(optimisticBlobUrl);
+      }
+
+      setIsCropping(false);
+      setSelectedFile(null);
+      setShowProfileModal(false);
+      setIsUploading(true);
+
+      const url = await generateUploadUrl({ clerkId: user!.clerkId });
+      // eslint-disable-next-line no-restricted-globals -- Convex-generated upload URL for file storage
+      const uploadRes = await fetch(url, {
+        method: "POST",
+        body: fileToUpload,
+      });
+
+      if (!uploadRes.ok) throw new Error("Upload failed");
+
+      const { storageId } = await uploadRes.json();
+      await uploadAvatar({ fileId: storageId, clerkId: user!.clerkId });
+      const newAvatarUrl = await waitForImageUrl(storageId);
+
+      setCommittedUrl(newAvatarUrl);
+      setOptimisticUrl(null);
+      setPreviousUrl(null);
+
+      if (optimisticBlobUrl) {
+        URL.revokeObjectURL(optimisticBlobUrl);
+      }
+
+      // Refresh FUSE store
+      const freshUser = await convex.query(api.domains.admin.users.api.getCurrentUser, {
+        clerkId: user!.clerkId,
+      });
+      if (freshUser) {
+        const { setUser } = useFuse.getState();
+
+        setUser({
+          id: String(freshUser._id),         // ✅ SOVEREIGNTY: Convex _id (canonical)
+          convexId: String(freshUser._id),   // Explicit alias
+          clerkId: freshUser.clerkId,        // ⚠️ Auth reference only
+          email: freshUser.email || '',
+          emailVerified: freshUser.emailVerified,
+          firstName: freshUser.firstName,
+          lastName: freshUser.lastName,
+          avatarUrl: freshUser.avatarUrl,
+          brandLogoUrl: freshUser.brandLogoUrl,
+          rank: freshUser.rank as 'crew' | 'captain' | 'commodore' | 'admiral' | null | undefined,
+          setupStatus: freshUser.setupStatus as 'pending' | 'complete' | null | undefined,
+          businessCountry: freshUser.businessCountry,
+          entityName: freshUser.entityName,
+          socialName: freshUser.socialName,
+          mirorAvatarProfile: freshUser.mirorAvatarProfile,
+          mirorEnchantmentEnabled: freshUser.mirorEnchantmentEnabled,
+          mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming
+        });
+        console.log('✅ FUSE store updated with new avatar:', freshUser.avatarUrl?.substring(0, 50));
+      }
+
+      // Refresh session cookie with new avatar
+      await refreshSessionAfterUpload();
+    } catch (err) {
+      console.error("Upload failed:", err);
+      setErrorMessage("Upload failed. Please try again.");
+      setShowUserMenu(true);
+      if (previousUrl) {
+        setOptimisticUrl(null);
+        if (optimisticUrl) {
+          URL.revokeObjectURL(optimisticUrl);
+        }
+      }
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    // Show loading overlay immediately
+    setIsSigningOut(true);
+
+    // FUSE 4.0 Logout Flow:
+    // 1. Clear session cookie (FUSE sovereignty)
+    // 2. Sign out from Clerk (auth provider cleanup)
+    // 3. Clear all client state (FUSE store, session storage)
+    // Note: We don't rely on Clerk events (Clerk is banished after login per FUSE Doctrine)
+
+    // eslint-disable-next-line no-restricted-globals -- Session deletion API call required for sign-out flow
+    await fetch('/api/session', { method: 'DELETE' });
+
+    // Sign out from Clerk and redirect to sign-in
+    await signOut({ redirectUrl: '/sign-in' });
+
+    // Clear all client state immediately (don't wait for Clerk events)
+    sessionStorage.clear();
+    const { collapseAllSections, clearUser, setAISidebarState, setModalSkipped } = useFuse.getState();
+    collapseAllSections();
+    clearUser();
+    setAISidebarState('closed');
+    setModalSkipped(false);  // Reset setup modal state for fresh login
+  };
+
+  const avatarSrc = optimisticUrl || committedUrl || user?.avatarUrl || "/images/sitewide/avatar.png";
+
+  // Check if user has a custom avatar (not the default)
+  const hasCustomAvatar = user?.avatarUrl && user.avatarUrl !== "/images/sitewide/avatar.png";
+
+  const closeAllModals = () => {
+    // Close instantly without animation
+    setShowUserMenu(false);
+    setIsMenuClosing(false);
+    setShowProfileModal(false);
+    setIsModalClosing(false);
+    setSelectedFile(null);
+    setErrorMessage(null);
+  };
+
+  const isActive = showUserMenu || showProfileModal || isFilePickerOpen;
+
+  if (!user) {
+    return <div className="ft-userbutton-loading" />;
+  }
+
+  return (
+    <div className="ft-userbutton-container">
+      <div
+        onClick={() => {
+          if (showUserMenu || showProfileModal) {
+            closeAllModals();
+          } else if (!isUploading) {
+            setShowUserMenu(true);
+          }
+        }}
+        className="ft-userbutton-avatar-wrapper"
+      >
+        <img
+          src={avatarSrc}
+          alt="User Avatar"
+          className={`ft-userbutton-avatar ${isActive ? 'ft-userbutton-avatar--active' : ''}`}
+        />
+      </div>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="ft-userbutton-file-input"
+        onChange={handleFileChange}
+        onBlur={() => setIsFilePickerOpen(false)}
+      />
+
+      {showUserMenu && (
+        <div className={`ft-userbutton-menu ${isMenuClosing ? 'ft-userbutton-menu--closing' : ''}`} onClick={(e) => e.stopPropagation()}>
+          <button
+            className="ft-userbutton-close-button"
+            onClick={closeAllModals}
+          >
+            ×
+          </button>
+
+          <div className="ft-userbutton-menu-header" onClick={(e) => e.stopPropagation()}>
+            <div className="ft-userbutton-menu-header-content">
+              {user.emailVerified ? (
+                <img
+                  src="/images/sitewide/email_verified.png"
+                  alt="Email verified"
+                  className="ft-userbutton-menu-header-icon"
+                />
+              ) : (
+                <img
+                  src="/images/sitewide/email_unverified.png"
+                  alt="Email unverified"
+                  className="ft-userbutton-menu-header-icon"
+                />
+              )}
+              <div className="ft-userbutton-menu-header-text">
+                <p className={`ft-userbutton-menu-email ${!user.emailVerified ? 'ft-userbutton-menu-email--unverified' : ''}`}>
+                  {user.email}
+                </p>
+                {!user.emailVerified && (
+                  <p className="ft-userbutton-menu-email-status">
+                    Unverified - Setup incomplete
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {errorMessage && (
+            <div className="ft-userbutton-error-container">
+              <p className="ft-userbutton-error-text">
+                {errorMessage}
+              </p>
+              <div className="ft-userbutton-error-buttons">
+                <button
+                  onClick={() => {
+                    setErrorMessage(null);
+                    setIsFilePickerOpen(true);
+                    requestAnimationFrame(() => {
+                      fileInputRef.current?.click();
+                    });
+                  }}
+                  className="ft-userbutton-error-button"
+                >
+                  OK
+                </button>
+                <button
+                  onClick={() => {
+                    setErrorMessage(null);
+                    setShowUserMenu(false);
+                  }}
+                  className="ft-userbutton-error-button"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="ft-userbutton-menu-items">
+            <div className="ft-userbutton-menu-item-wrapper">
+              <button
+                onClick={() => {
+                  router.push('/settings/account');
+                  closeAllModals();
+                }}
+                className="ft-userbutton-menu-item"
+              >
+                <Icon variant="user" size="xs" />
+                Manage Account
+              </button>
+            </div>
+
+            <div className="ft-userbutton-menu-item-wrapper">
+              <button
+                onClick={() => {
+                  router.push('/settings/preferences');
+                  closeAllModals();
+                }}
+                className="ft-userbutton-menu-item"
+              >
+                <Icon variant="sparkles" size="xs" />
+                Preferences
+              </button>
+            </div>
+
+            <div className="ft-userbutton-menu-item-wrapper">
+              <button
+                onClick={() => {
+                  setErrorMessage(null);
+                  setIsFilePickerOpen(true);
+                  // Use requestAnimationFrame to ensure the click happens after React finishes rendering
+                  requestAnimationFrame(() => {
+                    closeAllModals();
+                    fileInputRef.current?.click();
+                  });
+                }}
+                className="ft-userbutton-menu-item"
+              >
+                <Icon variant="camera" size="xs" />
+                {hasCustomAvatar ? 'Change Photo' : 'Add Photo'}
+              </button>
+            </div>
+
+            <div className="ft-userbutton-menu-item-wrapper">
+              <button
+                onClick={() => {
+                  const { toggleThemeMode } = useFuse.getState();
+                  toggleThemeMode();
+                }}
+                className="ft-userbutton-menu-item"
+              >
+                <ThemeToggle />
+                <span className="ft-userbutton-theme-text">Light / Dark Mode</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="ft-userbutton-menu-divider">
+            <div className="ft-userbutton-menu-item-wrapper">
+              <button
+                onClick={() => {
+                  closeAllModals();
+                  handleSignOut();
+                }}
+                className="ft-userbutton-menu-item"
+              >
+                <Icon variant="logout" size="xs" />
+                Log out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showProfileModal && (
+        <>
+          <div className={`ft-userbutton-modal ${isModalClosing ? 'ft-userbutton-modal--closing' : ''}`}>
+            <button
+              className="ft-userbutton-close-button"
+              onClick={closeAllModals}
+            >
+              ×
+            </button>
+
+            <div className="ft-userbutton-modal-header">
+              Resize and crop image
+              <Tooltip.basic content="Use your mouse scroll wheel to zoom and adjust image" side="top">
+                <Icon variant="info" size="sm" className="ft-userbutton-modal-header-icon" />
+              </Tooltip.basic>
+            </div>
+
+            {previewUrl && isCropping && (
+              <div className="ft-userbutton-cropper-container">
+                <Cropper
+                  image={previewUrl}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={1}
+                  minZoom={0.5}
+                  maxZoom={3}
+                  restrictPosition={false}
+                  onCropChange={setCrop}
+                  onZoomChange={setZoom}
+                  onCropComplete={onCropComplete}
+                />
+              </div>
+            )}
+
+            <div className="ft-userbutton-upload-actions">
+              {previewUrl && (
+                <button
+                  className={`ft-userbutton-upload-button ${isUploading ? 'ft-userbutton-upload-button--uploading' : ''}`}
+                  onClick={() => {
+                    if (isUploading) return;
+                    handleUpload();
+                  }}
+                >
+                  {isUploading ? "Uploading..." : "Save cropped image"}
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div
+            className="ft-userbutton-backdrop ft-userbutton-backdrop--dimmed"
+            onClick={closeAllModals}
+          />
+        </>
+      )}
+
+      {showUserMenu && (
+        <div
+          className="ft-userbutton-backdrop"
+          onClick={() => {
+            closeAllModals();
+            // Also close header menu if open
+            const headerMenu = document.querySelector('.ly-sidebar-header-menu');
+            if (headerMenu) {
+              const headerButton = document.querySelector('.ly-sidebar-header-button') as HTMLElement;
+              headerButton?.click();
+            }
+          }}
+        />
+      )}
+
+      {/* Sign-out loading overlay */}
+      {isSigningOut && (
+        <div className="ft-userbutton-signout-overlay">
+          <Button.fire
+            icon={<span className="ft-userbutton-spinner" />}
+            iconPosition="left"
+            fullWidth={false}
+          >
+            Logging you out securely...
+          </Button.fire>
+        </div>
+      )}
+    </div>
+  );
+}

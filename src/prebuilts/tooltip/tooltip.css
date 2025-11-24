@@ -1,0 +1,48 @@
+/* ═══════════════════════════════════════════════════════════════════
+   💬 TOOLTIP VARIANT ROBOT - Basic Text Tooltip
+   ═══════════════════════════════════════════════════════════════════
+
+   FUSE-STYLE Compliant: All static layout/structure styles in CSS.
+   Dynamic positioning (top/left/transform) computed in React for
+   viewport awareness - TTT God exemption for computed positioning.
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Tooltip Dimensions */
+  --tooltip-padding-y: 6px;
+  --tooltip-padding-x: 10px;
+  --tooltip-radius: 6px;
+
+  /* Typography */
+  --tooltip-font-size: 13px;
+
+  /* Shadow */
+  --tooltip-shadow-y: 2px;
+  --tooltip-shadow-blur: 8px;
+  --tooltip-shadow-opacity: 0.15;
+  --tooltip-shadow: 0 2px 8px rgb(0 0 0 / 15%);
+
+  /* Z-Index */
+  --tooltip-z-index: 9999;
+}
+
+/* Trigger wrapper */
+.vr-tooltip-trigger {
+  display: inline-block;
+}
+
+/* Tooltip content */
+.vr-tooltip-basic {
+  position: fixed;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  padding: var(--tooltip-padding-y) var(--tooltip-padding-x);
+  border: 1px solid var(--border-light);
+  border-radius: var(--tooltip-radius);
+  font-size: var(--tooltip-font-size);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  box-shadow: var(--tooltip-shadow);
+  z-index: var(--tooltip-z-index);
+  pointer-events: none;
+}

@@ -1,0 +1,159 @@
+/* ═══════════════════════════════════════════════════════════════════
+   🎨 DESIGN TOKENS - FUSE Foundation Layer
+   ═══════════════════════════════════════════════════════════════════
+   Cast in stone design tokens - set once, never change
+   Typography, spacing, radius, shadows, transitions
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ===========================================================
+   🟨  TYPOGRAPHY
+   =========================================================== */
+:root {
+
+  /* FUSE STYLE FONT (FSF) Stack - Families */
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Font Sizes */
+  --font-size-4xl: 36px;   /* h1 - Display text */
+  --font-size-3xl: 30px;   /* h2 - Hero headings */
+  --font-size-2xl: 24px;   /* h3 - Section titles */
+  --font-size-xl: 20px;    /* h4 - Headings */
+  --font-size-lg: 18px;    /* h5 - Subheadings */
+  --font-size-md: 16px;    /* h6 - Default */
+  --font-size-sm: 14px;    /* Body text */
+  --font-size-xs: 12px;    /* Captions, labels */
+
+  /* Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Line Heights */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+}
+
+/* ===========================================================
+   SPACING SCALE & PADDING
+   =========================================================== */
+:root {
+  --space-xs: 4px;      /* Tiny gaps */
+  --space-sm: 8px;      /* Small gaps */
+  --space-md: 16px;     /* Standard spacing */
+  --space-lg: 24px;     /* Large gaps */
+  --space-xl: 32px;     /* Extra large gaps */
+  --space-2xl: 48px;    /* Huge gaps */
+  --space-3xl: 64px;    /* Massive gaps */
+
+  /* Size Scale (explicit naming for component dimensions) */
+  --size-xxs: 4px;
+  --size-xs: 8px;
+  --size-sm: 12px;
+  --size-md: 16px;
+  --size-lg: 24px;
+  --size-xl: 32px;
+  --size-2xl: 48px;
+  --size-3xl: 64px;
+}
+
+/* ===========================================================
+   BORDER RADIUS
+   =========================================================== */
+:root {
+  --radius-sm: 4px;       /* Small corners */
+  --radius-md: 8px;       /* Standard corners */
+  --radius-lg: 12px;      /* Large corners */
+  --radius-xl: 16px;      /* Extra large corners */
+  --radius-2xl: 20px;     /* Huge corners */
+  --radius-full: 9999px;  /* Pills, circles */
+}
+
+/* ===========================================================
+   BORDERS & OUTLINES
+   =========================================================== */
+:root {
+  --border-width-sm: 1px;
+  --border-width-md: 2px;
+  --border-width-lg: 3px;
+
+  --focus-outline-width: 2px;
+  --focus-outline-offset: 2px;
+}
+
+/* ===========================================================
+   EFFECTS & MOTION
+   =========================================================== */
+:root {
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --shadow-elevated: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --shadow-dropdown: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --shadow-modal: 0 25px 50px -12px rgba(0,0,0,0.25);
+
+  /* Brand Glows */
+  --shadow-brand-light: 0 4px 12px rgba(255, 80, 32, 0.25);
+  --shadow-brand-medium: 0 8px 20px rgba(255, 80, 32, 0.35);
+
+  /* Transitions */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+  --easing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===========================================================
+   RANK SYSTEM COLORS
+   Admiral's Secret Law: Internal comprehension only
+   =========================================================== */
+:root {
+  --rank-crew: #7c3aed;      /* Purple - Learning */
+  --rank-captain: #1e40af;   /* Blue - Command */
+  --rank-commodore: #78350f; /* Dark Brown - Coordination */
+  --rank-admiral: #dc2626;   /* Red - Sovereignty */
+}
+
+/* ===========================================================
+   ACCENT PALETTE - NAV OVERHAUL 2025-11-09
+   Softer amber gradient replacing stark orange
+   =========================================================== */
+:root {
+  --accent-primary: #f8b14a;                /* Soft amber */
+  --accent-primary-dark: #c97b2d;           /* Hover depth */
+  --accent-primary-gradient: linear-gradient(135deg, #f8b14a 0%, #ffb86b 100%);
+  --accent-primary-shadow: 0 2px 4px rgba(248, 177, 74, 0.2);
+}
+
+/* ===========================================================
+   INTERACTION TIMING - Universal animation controls
+   =========================================================== */
+:root {
+  --interaction-press-duration: 100ms;
+  --interaction-hover-duration: 180ms;
+  --interaction-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* ===========================================================
+   SCROLLBAR
+   =========================================================== */
+:root {
+  --scrollbar-width: 10px;
+  --scrollbar-height: 10px;
+  --scrollbar-thumb-border-width: 3px;
+  --scrollbar-border-radius: 8px;  /* Aligned with --radius-md */
+}
+
+/* ===========================================================
+   ANIMATIONS
+   =========================================================== */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

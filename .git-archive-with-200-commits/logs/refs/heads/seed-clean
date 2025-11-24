@@ -1,0 +1,4 @@
+0000000000000000000000000000000000000000 d088100ef33241f8d40d1c136926f65893fe5fde Ken Roberts <ken@transfoorm.com> 1763964271 +1030	commit (initial): SEED-V1: Production-ready baseline with Approval Bridge System
+d088100ef33241f8d40d1c136926f65893fe5fde 93ef3dfbf28915d7d1ff9fb7f6ea941bf3d18067 Ken Roberts <ken@transfoorm.com> 1763965499 +1030	commit: fix: Update build script to generate Convex files before Next.js build
+93ef3dfbf28915d7d1ff9fb7f6ea941bf3d18067 1dc82a1c9a2913ca5e0f8abde8490ead5b0ccdd8 Ken Roberts <ken@transfoorm.com> 1763966389 +1030	commit: fix: Add --yes flag to Convex deploy for non-interactive builds
+1dc82a1c9a2913ca5e0f8abde8490ead5b0ccdd8 f561a78ef6a4180b50ab16f94637dc9f45a869d5 Ken Roberts <ken@transfoorm.com> 1763967761 +1030	commit: perf: Remove force-dynamic for 40x faster navigation

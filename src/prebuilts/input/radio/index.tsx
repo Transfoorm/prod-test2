@@ -1,0 +1,80 @@
+/**──────────────────────────────────────────────────────────────────────┐
+│  🤖 VARIANT ROBOT - Input Radio                                        │
+│  /src/components/prebuilts/input/radio/index.tsx                       │
+│                                                                        │
+│  Radio button group with consistent styling.                          │
+└────────────────────────────────────────────────────────────────────────┘ */
+
+export interface RadioOption {
+  value: string;
+  label: string;
+  disabled?: boolean;
+}
+
+export interface InputRadioProps {
+  /** Current value */
+  value: string;
+  /** Change handler */
+  onChange: (value: string) => void;
+  /** Options array */
+  options: RadioOption[];
+  /** Layout direction */
+  direction?: 'vertical' | 'horizontal';
+  /** Size variant */
+  size?: 'sm' | 'md' | 'lg';
+  /** Disabled state for entire group */
+  disabled?: boolean;
+  /** Additional className */
+  className?: string;
+}
+
+/**
+ * InputRadio - Radio button group
+ * TTT Gap Model compliant - no external margins
+ */
+export default function InputRadio({
+  value,
+  onChange,
+  options,
+  direction = 'vertical',
+  size = 'md',
+  disabled = false,
+  className = ''
+}: InputRadioProps) {
+  const groupClasses = [
+    'vr-input-radio-group',
+    `vr-input-radio-group--${direction}`,
+    className
+  ].filter(Boolean).join(' ');
+
+  const itemClasses = [
+    'vr-input-radio',
+    `vr-input-radio--${size}`,
+    disabled && 'vr-input-radio--disabled'
+  ].filter(Boolean).join(' ');
+
+  return (
+    <div className={groupClasses} role="radiogroup">
+      {options.map((option) => (
+        <label
+          key={option.value}
+          className={`${itemClasses} ${option.disabled ? 'vr-input-radio--disabled' : ''}`}
+        >
+          <input
+            type="radio"
+            name="radio-group"
+            value={option.value}
+            checked={value === option.value}
+            onChange={() => onChange(option.value)}
+            disabled={disabled || option.disabled}
+            className="vr-input-radio-input"
+          />
+          <span className="vr-input-radio-button">
+            <span className="vr-input-radio-dot" />
+          </span>
+          <span className="vr-input-radio-label">{option.label}</span>
+        </label>
+      ))}
+    </div>
+  );
+}

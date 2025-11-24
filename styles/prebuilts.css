@@ -1,0 +1,164 @@
+/*   PREBUILTS VARIABLES AND CLASSES PANEL */
+
+/* 🟦🟦🟦🟦🟦🟦 COMPONENT STYLES - All 19 Prebuilt Components 🟦🟦🟦🟦🟦🟦
+   Import order: alphabetical for easy maintenance
+   NOTE: @import must come BEFORE all other CSS rules
+   * BASE CLASSES - Shared by all variants */ 
+@import '../src/prebuilts/actions/actions.css';
+@import '../src/prebuilts/badge/badge.css';
+@import '../src/prebuilts/button/button.css';
+@import '../src/prebuilts/card/card.css';
+@import '../src/prebuilts/divider/divider.css';
+@import '../src/prebuilts/dropdown/dropdown.css';
+@import '../src/prebuilts/fieldbox/fieldbox.css';
+@import '../src/prebuilts/form/form.css';
+@import '../src/prebuilts/grid/grid.css';
+@import '../src/prebuilts/input/input.css';
+@import '../src/prebuilts/label/label.css';
+@import '../src/prebuilts/modal/modal.css';
+@import '../src/prebuilts/page/page.css';
+@import '../src/prebuilts/rank/rank.css';
+@import '../src/prebuilts/search/search.css';
+@import '../src/prebuilts/stack/stack.css';
+@import '../src/prebuilts/table/table.css';
+@import '../src/prebuilts/tabs/tabs.css';
+@import '../src/prebuilts/tooltip/tooltip.css';
+@import '../src/prebuilts/typography/typography.css';
+
+/* ═══════════════════════════════════════════════════════════════════
+   🟩🟩🟩🟩🟩🟩 VARIABLES - Shared by all components 🟩🟩🟩🟩🟩🟩
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ═══════════════════════════════════════════════════════════════════
+   PAGE VARIANT VARIABLES - Shared infrastructure for PageVC
+   ═══════════════════════════════════════════════════════════════════ */
+  --page-split-gap: var(--space-2xl);     /* ✅ Gap between split columns */
+  --page-sidebar-width: 250px;            /* ✅ Sidebar width */
+  --page-sidebar-gap: var(--space-xl);    /* ✅ Gap between sidebar and content */
+  --page-sidebar-sticky-top: var(--space-lg); /* ✅ Sticky sidebar top offset */
+  --page-sidebar-sticky-offset: var(--space-2xl); /* ✅ Sticky sidebar bottom offset */
+  --page-dashboard-gap: var(--space-lg);  /* ✅ Gap between dashboard widgets */
+  --page-dashboard-min-width: 300px;      /* ✅ Minimum widget width */
+  --page-constrained-max-width: 1200px;   /* ✅ Max width for constrained pages */
+
+  /* Bridge Page Variant */
+  --page-bridge-title-size: var(--page-title-size);        /* ✅ Bridge title font size - matches page header */
+  --page-bridge-title-weight: 700;                         /* ✅ Bridge title font weight */
+  --page-bridge-title-margin-bottom: 28px;                 /* ✅ Space below title - matches PageHeader */
+  --page-bridge-title-padding-bottom: var(--space-xs);     /* ✅ Title padding before border */
+  --page-bridge-subtitle-size: var(--page-subtitle-size);  /* ✅ Bridge subtitle font size - matches page header */
+  --page-bridge-subtitle-gap: var(--page-subtitle-gap);    /* ✅ Gap between title and subtitle - matches page header */
+  --page-bridge-grid-gap: var(--space-lg);                 /* ✅ Gap between feed sections */
+  --page-bridge-grid-min-width: 320px;                     /* ✅ Minimum section width */
+
+  /* ═══════════════════════════════════════════════════════════════════
+   DIVIDER VARIANT VARIABLES - Shared infrastructure for DividerVC
+   ═══════════════════════════════════════════════════════════════════ */
+  /* Divider colors defined in theme - --divider-color1 through --divider-color5 */
+  --divider-thickness: 1px;                           /* ✅ Divider line thickness */
+  --divider-gradient-height: 2px;                     /* ✅ Gradient divider height */
+
+  /* Divider spacing sizes */
+  --divider-spacing-xs: var(--space-xs);              /* ✅ Extra small spacing */
+  --divider-spacing-sm: var(--space-sm);              /* ✅ Small spacing */
+  --divider-spacing-md: var(--space-md);              /* ✅ Medium spacing */
+  --divider-spacing-lg: var(--space-lg);              /* ✅ Large spacing */
+  --divider-spacing-xl: var(--space-xl);              /* ✅ Extra large spacing */
+  --divider-spacing-2xl: var(--space-2xl);            /* ✅ 2X large spacing */
+
+  /* ═══════════════════════════════════════════════════════════════════
+   CARD VARIANT VARIABLES - Shared infrastructure for CardVC
+   ═══════════════════════════════════════════════════════════════════ */
+  --card-padding: var(--space-lg);        /* ✅ Default card padding */
+  --card-radius: var(--radius-lg);        /* ✅ Card border radius */
+  --card-border-width: 1px;               /* ✅ Card border thickness */
+  --card-shadow: var(--shadow-sm);        /* ✅ Card elevation */
+  --card-gap: var(--space-md);            /* ✅ Internal spacing between elements */
+  --card-header-padding: var(--space-lg); /* ✅ Card header padding */
+  --card-content-padding: var(--space-lg); /* ✅ Card content padding */
+  --card-footer-padding: var(--space-md); /* ✅ Card footer padding */
+  --card-min-height: 160px;               /* ✅ Minimum card height */
+  --card-icon-size: 24px;                 /* ✅ Icon size in cards */
+
+  /* ═══════════════════════════════════════════════════════════════════
+   MODAL VARIANT VARIABLES - Shared infrastructure for ModalVC
+   ═══════════════════════════════════════════════════════════════════ */
+  --modal-max-width: 480px;               /* ✅ Maximum modal width */
+  --modal-radius: var(--radius-xl);       /* ✅ Modal border radius */
+  --modal-backdrop-blur: 6px;             /* ✅ Backdrop blur amount */
+  --modal-shadow: var(--shadow-lg);       /* ✅ Modal elevation */
+  --modal-padding: var(--space-xl);       /* ✅ Modal content padding */
+  --modal-header-gap: var(--space-md);    /* ✅ Gap between header elements */
+  --modal-footer-gap: var(--space-sm);    /* ✅ Gap between footer buttons */
+
+  /* ═══════════════════════════════════════════════════════════════════
+   BUTTON VARIANT VARIABLES - Shared infrastructure for ButtonVC
+   ═══════════════════════════════════════════════════════════════════ */
+  --button-padding-y: var(--space-sm);    /* ✅ Vertical button padding */
+  --button-padding-x: var(--space-lg);    /* ✅ Horizontal button padding */
+  --button-radius: var(--radius-md);      /* ✅ Button border radius */
+  --button-font-size: var(--font-size-md); /* ✅ Button text size */
+  --button-font-weight: var(--font-weight-medium); /* ✅ Button text weight */
+  --button-icon-gap: var(--space-sm);     /* ✅ Gap between icon and text */
+  --button-shadow: var(--shadow-sm);      /* ✅ Button elevation */
+  --button-min-width: 100px;              /* ✅ Minimum button width */
+
+  /* Phoenix Button - Onboarding flow animation system
+     These override button defaults for .phoenix-button class
+     CRITICAL: All three button states (Modal, Flying, Topbar) must match exactly */
+  --phoenix-button-padding-y: 0.9rem;     /* ✅ 14.4px - Phoenix vertical padding */
+  --phoenix-button-padding-x: 1.5rem;     /* ✅ 24px - Phoenix horizontal padding */
+  --phoenix-button-font-size: 1rem;       /* ✅ 16px - Phoenix font size */
+  --phoenix-button-icon-gap: 0.5rem;      /* ✅ 8px - Phoenix icon gap */
+
+  /* ═══════════════════════════════════════════════════════════════════
+   FORM VARIANT VARIABLES - Shared infrastructure for FormVC
+   ═══════════════════════════════════════════════════════════════════ */
+  --form-field-gap: var(--space-md);      /* ✅ Gap between form fields */
+  --form-label-gap: var(--space-xs);      /* ✅ Gap between label and input */
+  --form-input-padding: var(--space-sm);  /* ✅ Input field padding */
+  --form-input-radius: var(--radius-md);  /* ✅ Input field border radius */
+  --form-input-border-width: 1px;         /* ✅ Input border thickness */
+  --form-input-height: 40px;              /* ✅ Input field height */
+  --form-label-font-size: var(--font-size-sm); /* ✅ Label text size */
+  --form-label-font-weight: var(--font-weight-medium); /* ✅ Label text weight */
+  --form-error-font-size: var(--font-size-xs); /* ✅ Error text size */
+  --form-inline-label-width: 150px;       /* ✅ Label width in inline forms */
+
+  /* ═══════════════════════════════════════════════════════════════════
+   TABLE VARIANT VARIABLES - Shared infrastructure for TableVC
+   ═══════════════════════════════════════════════════════════════════ */
+  --table-cell-padding: var(--space-sm);  /* ✅ Table cell padding */
+  --table-header-padding: var(--space-md); /* ✅ Table header padding */
+  --table-border-width: 1px;              /* ✅ Table border thickness */
+  --table-row-hover-bg: var(--bg-hover);  /* ✅ Row hover background */
+  --table-header-font-size: var(--font-size-xs); /* ✅ Header text size */
+  --table-header-font-weight: var(--font-weight-semibold); /* ✅ Header text weight */
+  --table-cell-font-size: var(--font-size-xs); /* ✅ Cell text size */
+  --table-stripe-bg: var(--bg-tertiary);  /* ✅ Striped row background */
+
+  /* ═══════════════════════════════════════════════════════════════════
+   ICON SIZES - Shared infrastructure for Icon utility
+   ═══════════════════════════════════════════════════════════════════ */
+  --icon-size-xs: 16px;                   /* ✅ Extra small icon size */
+  --icon-size-sm: 20px;                   /* ✅ Small icon size */
+  --icon-size-md: 24px;                   /* ✅ Medium icon size */
+  --icon-size-lg: 32px;                   /* ✅ Large icon size */
+  --icon-size-xl: 40px;                   /* ✅ Extra large icon size */
+  --icon-stroke-width: 1.5;               /* ✅ Icon stroke thickness */
+
+  /* ═══════════════════════════════════════════════════════════════════
+   STACK VARIANT VARIABLES - Shared infrastructure for StackVC
+   ═══════════════════════════════════════════════════════════════════ */
+  --stack-gap: var(--space-xl);           /* ✅ 32px Default vertical gap between stack items */
+  --stack-gap-xs: var(--space-xs);        /* ✅ 4px Extra small stack gap */
+  --stack-gap-sm: var(--space-sm);        /* ✅ 8px Small stack gap */
+  --stack-gap-md: var(--space-md);        /* ✅ 16px Medium stack gap */
+  --stack-gap-lg: var(--space-lg);        /* ✅ 24px Large stack gap */
+  --stack-gap-xl: var(--space-xl);        /* ✅ 32px Extra large stack gap */
+  --stack-gap-2xl: var(--space-2xl);      /* ✅ 48px 2X large stack gap */
+  --stack-gap-3xl: var(--space-3xl);      /* ✅ 64px 3X large stack gap */
+}
+
+

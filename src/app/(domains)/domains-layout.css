@@ -1,0 +1,64 @@
+/** ──────────────────────────────────────────────────────────────────────┐
+│  DOMAIN & DASHBOARD LAYOUT STYLES - SMAC Architecture                 │
+│  /src/app/domain/domain-layout.css                                    │
+│                                                                        │
+│  Layout styles for SMAC domain routes and dashboard.                  │
+│  Self-contained - no dependencies on legacy modes folder.             │
+└────────────────────────────────────────────────────────────────────────┘ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   DOMAIN LAYOUT - SMAC Routes
+   ═══════════════════════════════════════════════════════════════════ */
+
+.modes-layout-app-container {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+}
+
+.modes-layout-right-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-left: 200px;
+}
+
+.modes-layout-main-container {
+  display: flex;
+  flex: 1;
+}
+
+.modes-layout-main-content-with-arch {
+  flex: 1;
+  transition: all 0.2s ease;
+  position: relative;
+  background: var(--page-arch-foundation);
+}
+
+.modes-layout-main-content-without-arch {
+  flex: 1;
+  transition: all 0.2s ease;
+  position: relative;
+  background: transparent;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   DASHBOARD LAYOUT - Modal Animations
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Dashboard content wrapper - NO transition by default to prevent nav glitches */
+.dashboard-content-wrapper {
+  transform: translateY(0);
+  margin-top: 0;
+}
+
+/* When modal is present, push content down (no animation on nav) */
+.dashboard-content-wrapper--pushed {
+  transform: translateY(var(--space-lg));
+  margin-top: var(--space-lg);
+}
+
+/* Only animate when modal is actually fading in/out */
+.dashboard-content-wrapper--animating {
+  transition: transform 600ms ease-in-out, margin-top 600ms ease-in-out;
+}

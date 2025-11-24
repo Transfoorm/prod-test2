@@ -1,0 +1,50 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+	precomposeunicode = true
+	hooksPath = .husky/_
+[branch "BRAND-LOGO-FIX"]
+	vscode-merge-base = origin/BRAND-LOGO-FIX
+[branch "PANELS-TABS-MAC-AIR"]
+	vscode-merge-base = origin/BRAND-LOGO-FIX
+[branch "WHITE-SPACE-SCROLL-TEST-2"]
+	vscode-merge-base = origin/WHITE-SPACE-SCROLL-TEST-2
+[branch "CLEAN-FRESH-PERFECT-REPO"]
+	vscode-merge-base = origin/CLEAN-FRESH-PERFECT-REPO
+[branch "FAILED-PROD-LOGIN"]
+	vscode-merge-base = origin/main
+[branch "NEW-DIRECTION-CLEANUP"]
+	vscode-merge-base = origin/main
+[branch "REFACTORED-PAGEHEADER-REMOVED-BOD-20251122"]
+	vscode-merge-base = origin/main
+[remote "origin"]
+	url = git@github.com:Transfoorm/prod-test.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[user]
+	name = Ken Roberts
+	email = ken@transfoorm.com
+[branch "fresh-start"]
+	vscode-merge-base = origin/main
+[branch "wccc-prevent-page-css"]
+	vscode-merge-base = origin/main
+[branch "PROD-TEST-BRANCH-#1-FUSE-PATCH"]
+	remote = origin
+	merge = "refs/heads/PROD-TEST-BRANCH-#1-FUSE-PATCH"
+[remote "seed"]
+	url = https://github.com/Transfoorm-Team/prod-test.git
+	fetch = +refs/heads/*:refs/remotes/seed/*
+[remote "seed-correct"]
+	url = https://github.com/Transfoorm/prod-test.git
+	fetch = +refs/heads/*:refs/remotes/seed-correct/*
+[remote "dev"]
+	url = git@github.com:Transfoorm-Team/FUSE6.0.git
+	fetch = +refs/heads/*:refs/remotes/dev/*
+[remote "backup"]
+	url = https://github.com/Transfoorm/prod-test-bak.git
+	fetch = +refs/heads/*:refs/remotes/backup/*
+[remote "prod-test2"]
+	url = https://github.com/Transfoorm/prod-test2.git
+	fetch = +refs/heads/*:refs/remotes/prod-test2/*

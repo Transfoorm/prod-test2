@@ -1,0 +1,356 @@
+/** ──────────────────────────────────────────────────────────────────────┐
+│  🏢 COMPANY BUTTON STYLES                                              │
+│  /src/features/CompanyButton/company-button.css                       │
+│                                                                        │
+│  Organized into clear sections for easy navigation.                   │
+└────────────────────────────────────────────────────────────────────────┘ */
+
+:root {
+  /* Loading State */
+  --company-button-loading-height: 54px;
+
+  /* Button Transition */
+  --company-button-transition-duration: 0.05s;
+
+  /* Logo Dimensions */
+  --company-button-logo-size: 32px;
+
+  /* Chevron Dimensions */
+  --company-button-chevron-size: 16px;
+
+  /* Menu Positioning */
+  --company-button-menu-top: 12px;
+  --company-button-menu-radius: 10px;
+
+  /* Menu Animation */
+  --company-button-fade-in-duration: 0.15s;
+
+  /* Header Icon */
+  --company-button-header-icon-size: 18px;
+
+  /* Menu Content */
+  --company-button-menu-content-padding: 4px;
+
+  /* Menu Item */
+  --company-button-menu-item-gap: 8px;
+  --company-button-menu-item-icon-size: 16px;
+
+  /* Error Message */
+  --company-button-error-margin-top: 6px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   1. CONTAINER
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.ft-company-button-container {
+  position: relative;
+}
+
+.ft-company-button-loading {
+  width: 100%;
+  height: var(--company-button-loading-height);
+  background-color: var(--appshell-bg);
+  border-radius: var(--radius-md);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   2. BUTTON - Main trigger button
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.ft-company-button {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md) var(--space-sm) var(--space-xs);
+  background-color: var(--sidebar-button-rest);  /* 🟨 BUTTON REST COLOR */
+  color: var(--sidebar-button-text);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--company-button-transition-duration);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+  margin-bottom: var(--space-lg);
+}
+
+.ft-company-button:hover {
+  background-color: var(--sidebar-button-hover);
+}
+
+.ft-company-button--active,
+.ft-company-button--active:hover {
+  background-color: var(--sidebar-button-active);  /* 🟨 BUTTON ACTIVE COLOR */
+}
+
+/* Brand logo icon - larger with rounded corners */
+.ft-company-button .ft-brandlogo-button-logo {
+  width: var(--company-button-logo-size);
+  height: var(--company-button-logo-size);
+  border-radius: var(--radius-md);
+  background-color: var(--white);
+}
+
+.ft-company-button-chevron {
+  width: var(--company-button-chevron-size);
+  height: var(--company-button-chevron-size);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.ft-company-button-text {
+  flex: 1;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ft-company-button-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+}
+
+.ft-company-button-subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  line-height: 1.2;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   3. MENU - Dropdown panel
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.ft-company-button-menu {
+  position: fixed;
+  top: var(--company-button-menu-top);  /* 🟨 MENU TOP DISTANCE */
+  left: calc(var(--sidebar-width) - 0px);  /* 🟨 MENU RIGHT POSITION */
+  background-color: var(--page-arch-color);
+  box-shadow: var(--userbutton-menu-shadow);
+  border: 1px solid var(--border-light);
+  border-radius: var(--company-button-menu-radius);
+  min-width: var(--userbutton-menu-width);
+  z-index: 200;
+  animation: ft-company-button-fade-in var(--company-button-fade-in-duration) ease-out;
+}
+
+@keyframes ft-company-button-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.ft-company-button-menu-close {
+  display: none;
+}
+
+.ft-company-button-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: transparent;
+  z-index: 49;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   4. MENU HEADER
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.ft-company-button-menu-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-light);
+  background-color: var(--bg-secondary);     /* Title Background */
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--text-secondary);
+}
+
+.ft-company-button-menu-header-icon {
+  width: var(--company-button-header-icon-size);
+  height: var(--company-button-header-icon-size);
+  flex-shrink: 0;
+}
+
+.ft-company-button-menu-header-text {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   5. MENU CONTENT - Item list
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.ft-company-button-menu-content {
+  padding: var(--company-button-menu-content-padding) 0;
+}
+
+.ft-company-button-menu-item-wrapper {
+  padding: 0 var(--company-button-menu-content-padding);
+  user-select: none;
+}
+
+.ft-company-button-menu-item-wrapper * {
+  user-select: none !important;
+}
+
+.ft-company-button-menu-item-wrapper *::selection {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+.ft-company-button-menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--company-button-menu-item-gap);
+  text-align: left;
+  padding: 8px 12px;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  background-color: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--company-button-transition-duration) ease;
+  user-select: none;
+}
+
+.ft-company-button-menu-item:hover {
+  background-color: var(--bg-secondary);
+}
+
+.ft-company-button-menu-item--active {
+  background-color: var(--bg-secondary);
+}
+
+.ft-company-button-menu-icon {
+  width: var(--company-button-menu-item-icon-size);
+  height: var(--company-button-menu-item-icon-size);
+  flex-shrink: 0;
+  color: var(--text-secondary);
+}
+
+.ft-company-button-menu-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+.ft-company-button-menu-value {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  font-weight: var(--font-weight-normal);
+}
+
+/* Error message */
+.ft-company-button-error {
+  margin-top: var(--company-button-error-margin-top);
+  margin-left: 12px;
+  margin-right: 12px;
+  padding: 8px 12px;
+  background-color: var(--color-error-light);
+  border-left: 3px solid var(--color-error);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  color: var(--color-error-dark);
+  line-height: 1.4;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   6. MENU FOOTER
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.ft-company-button-menu-footer {
+  border-top: 1px solid var(--border-light);
+  padding: var(--company-button-menu-content-padding) 0;
+}
+
+.ft-company-button-menu-link-wrapper {
+  padding: 0 var(--company-button-menu-content-padding);
+}
+
+.ft-company-button-menu-link {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--company-button-menu-item-gap);
+  text-align: left;
+  padding: 8px 12px;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  background-color: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--company-button-transition-duration) ease;
+}
+
+.ft-company-button-menu-link:hover {
+  background-color: var(--bg-secondary);
+}
+
+.ft-company-button-menu-link-icon {
+  width: var(--company-button-menu-item-icon-size);
+  height: var(--company-button-menu-item-icon-size);
+  flex-shrink: 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   7. COUNTRY SELECTOR OVERRIDES
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.ft-company-button-menu-flag {
+  font-size: var(--font-size-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ft-company-button-menu-item--country {
+  gap: var(--space-sm);
+}
+
+/* Don't show hover on Country Selector wrapper - only on the button itself */
+.ft-company-button-menu-item:has(.ft-country-button):hover {
+  background-color: transparent !important;
+}
+
+/* Remove CountrySelector button padding when inside menu */
+.ft-company-button-menu-item .ft-country-button {
+  padding: 0 !important;
+  margin: 0 !important;
+  height: auto !important;
+  width: auto !important;
+  min-height: 0 !important;
+  min-width: 0 !important;
+}
+
+.ft-company-button-menu-item .ft-country-button:hover {
+  background-color: transparent !important;
+}
+
+/* Constrain flag size inside menu */
+.ft-company-button-menu-item .ft-country-flag {
+  font-size: var(--font-size-lg) !important;
+}
+
+/* Country modal positioning */
+.ft-company-button-country-modal {
+  position: fixed;
+  top: 200px;  /* 🟨 MODAL UP/DOWN POSITION */
+  left: calc(var(--sidebar-width) + 0px);  /* 🟨 MODAL LEFT/RIGHT POSITION */
+}

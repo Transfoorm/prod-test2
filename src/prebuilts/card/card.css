@@ -1,0 +1,297 @@
+/* ═══════════════════════════════════════════════════════════════════
+   🤖 CARD COMPONENT - All variants consolidated
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   BASE CARD - Shared styles for all card variants
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-card {
+  background-color: var(--bg-secondary);
+  border: var(--card-border-width) solid var(--border-light);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   STANDARD CARD VARIANT - Default Card
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-card-standard {
+  background-color: var(--bg-primary);
+  border: var(--card-border-width) solid var(--border-medium);
+
+  /* border-radius and overflow inherited from .vr-card */
+}
+
+.vr-card-standard .vr-card-standard-header {
+  padding: var(--card-header-padding);
+  border-bottom: var(--card-border-width) solid var(--border-medium);
+  background-color: var(--card-header-bg);
+}
+
+.vr-card-standard .vr-card-standard-title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.vr-card-standard .vr-card-standard-subtitle {
+  margin: var(--space-xs) 0 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.vr-card-standard .vr-card-standard-content {
+  padding: var(--card-content-padding);
+  background-color: var(--card-content-bg);
+}
+
+.vr-card-standard .vr-card-standard-footer {
+  padding: var(--card-footer-padding) var(--card-padding);
+  border-top: var(--card-border-width) solid var(--border-medium);
+  background-color: var(--bg-tertiary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ACTION CARD VARIANT - Quick Actions Card
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-card-action {
+  padding: var(--card-padding);
+}
+
+.vr-card-action .vr-card-action-title {
+  margin: 0 0 var(--card-gap) 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.vr-card-action .vr-card-action-list {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+/* Vertical layout (default) */
+.vr-card-action.vr-card-action-layout-vertical .vr-card-action-list {
+  flex-direction: column;
+}
+
+/* Horizontal layout */
+.vr-card-action.vr-card-action-layout-horizontal .vr-card-action-list {
+  flex-flow: row wrap;
+}
+
+/* Action buttons */
+.vr-card-action .vr-card-action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--easing);
+  text-decoration: none;
+  border: none;
+  width: 100%;
+}
+
+.vr-card-action.vr-card-action-layout-horizontal .vr-card-action-button {
+  width: auto;
+  flex: 1;
+  min-width: 120px; /* Keep this specific value - button UX requirement */
+}
+
+/* Primary action */
+.vr-card-action .vr-card-action-button.vr-card-action-primary {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.vr-card-action .vr-card-action-button.vr-card-action-primary:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+}
+
+/* Secondary action */
+.vr-card-action .vr-card-action-button.vr-card-action-secondary {
+  background-color: transparent;
+  color: var(--text-primary);
+  border: var(--card-border-width) solid var(--border-normal);
+}
+
+.vr-card-action .vr-card-action-button.vr-card-action-secondary:hover:not(:disabled) {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-dark);
+}
+
+/* Disabled state */
+.vr-card-action .vr-card-action-button:disabled,
+.vr-card-action .vr-card-action-button[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.vr-card-action .vr-card-action-icon {
+  display: flex;
+  align-items: center;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   METRIC CARD VARIANT - KPI Display Card
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-card-metric {
+  padding: var(--card-padding);
+  min-height: var(--card-min-height);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.vr-card-metric .vr-card-metric-title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.vr-card-metric .vr-card-metric-value {
+  margin: var(--card-gap) 0;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.vr-card-metric .vr-card-metric-trend {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.vr-card-metric .vr-card-metric-trend.vr-card-metric-trend-up {
+  color: var(--success-600);
+}
+
+.vr-card-metric .vr-card-metric-trend.vr-card-metric-trend-down {
+  color: var(--error-600);
+}
+
+.vr-card-metric .vr-card-metric-trend.vr-card-metric-trend-flat {
+  color: var(--text-secondary);
+}
+
+.vr-card-metric .vr-card-metric-context {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ACTIVITY CARD VARIANT - Timeline/Feed Card
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-card-activity {
+  padding: var(--card-padding);
+}
+
+/* Span controls for dashboard grids */
+.vr-card-activity.vr-card-activity-span-2 {
+  grid-column: span 2;
+}
+
+.vr-card-activity.vr-card-activity-span-3 {
+  grid-column: span 3;
+}
+
+.vr-card-activity.vr-card-activity-span-full {
+  grid-column: 1 / -1;
+}
+
+.vr-card-activity .vr-card-activity-title {
+  margin: 0 0 var(--card-gap) 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.vr-card-activity .vr-card-activity-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.vr-card-activity .vr-card-activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+  border-bottom: var(--card-border-width) solid var(--border-light);
+}
+
+.vr-card-activity .vr-card-activity-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.vr-card-activity .vr-card-activity-item:first-child {
+  padding-top: 0;
+}
+
+.vr-card-activity .vr-card-activity-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.vr-card-activity .vr-card-activity-text {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+}
+
+.vr-card-activity .vr-card-activity-time {
+  margin: var(--space-xs) 0 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.vr-card-activity .vr-card-activity-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--card-icon-size);
+  height: var(--card-icon-size);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+/* Status variants */
+.vr-card-activity .vr-card-activity-item.vr-card-activity-item-status-success .vr-card-activity-icon {
+  background-color: var(--success-100);
+  color: var(--success-700);
+}
+
+.vr-card-activity .vr-card-activity-item.vr-card-activity-item-status-warning .vr-card-activity-icon {
+  background-color: var(--warning-100);
+  color: var(--warning-700);
+}
+
+.vr-card-activity .vr-card-activity-item.vr-card-activity-item-status-error .vr-card-activity-icon {
+  background-color: var(--error-100);
+  color: var(--error-700);
+}
+
+.vr-card-activity .vr-card-activity-empty {
+  padding: var(--card-padding);
+  text-align: center;
+  color: var(--text-tertiary);
+}

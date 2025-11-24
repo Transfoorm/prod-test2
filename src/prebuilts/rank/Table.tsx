@@ -1,0 +1,207 @@
+/**──────────────────────────────────────────────────────────────────────┐
+│  🤖 VARIANT ROBOT - User Rank Table                                   │
+│  /src/prebuilts/rank/Table.tsx                                        │
+│                                                                        │
+│  TRUE VR: Complete user management table with rank controls.          │
+│  Fetches users, handles rank changes, manages everything internally.   │
+│                                                                        │
+│  Usage:                                                               │
+│  <UserRankTable />                                                    │
+│  That's it. Zero configuration. It handles EVERYTHING.                │
+└────────────────────────────────────────────────────────────────────────┘ */
+
+'use client';
+
+import { useState } from 'react';
+import { useQuery, useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import type { Id } from '@/convex/_generated/dataModel';
+import { Table } from '@/prebuilts';
+import type { SortableColumn } from '@/prebuilts/table/Sortable';
+import BadgeRank from '@/prebuilts/badge/Rank';
+import BadgeSetup from '@/prebuilts/badge/Setup';
+import type { SetupStatusType } from '@/prebuilts/badge/Setup';
+import RankSelector from './Selector';
+import { useConvexUser } from '@/hooks/useConvexUser';
+
+type UserRank = 'admiral' | 'commodore' | 'captain' | 'crew';
+
+interface UserData {
+  _id: Id<'admin_users'>;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  rank?: UserRank;
+  setupStatus?: SetupStatusType;
+  trialEndsAt?: number;
+}
+
+/**
+ * UserRankTable - Intelligent user management table
+ *
+ * TRUE VR Features:
+ * - Fetches all users automatically
+ * - Calculates trial days remaining
+ * - Shows user status (pending/active)
+ * - Handles rank changes internally
+ * - Updates database on selection
+ * - Prevents Admiral self-demotion (UX-level protection)
+ * - Zero props, zero configuration
+ * - TTT Gap Model compliant
+ *
+ * This is what VR Architecture is about!
+ */
+export default function UserRankTable() {
+  const users = useQuery(api.domains.admin.users.api.getAllUsers);
+  const currentUser = useConvexUser();
+  const setUserRank = useMutation(api.domains.admin.users.api.setUserRank);
+  const [changingRank, setChangingRank] = useState<string | null>(null);
+
+  // Calculate days left for trial users
+  const calculateDaysLeft = (trialEndsAt?: number) => {
+    if (!trialEndsAt) return null;
+    const now = Date.now();
+    const days = Math.ceil((trialEndsAt - now) / (1000 * 60 * 60 * 24));
+    return days > 0 ? days : 0;
+  };
+
+  const handleRankChange = async (userId: Id<'admin_users'>, newRank: UserRank) => {
+    setChangingRank(userId);
+    try {
+      await setUserRank({ userId, rank: newRank });
+    } catch (error) {
+      console.error('Failed to update rank:', error);
+    } finally {
+      setChangingRank(null);
+    }
+  };
+
+  if (!users) {
+    return (
+      <div className="vr-rank-table vr-rank-table--loading">
+        <div className="vr-rank-table-shimmer">Loading users...</div>
+      </div>
+    );
+  }
+
+  // Define table columns using Table.sortable VR
+  // Matches User Directory styling exactly - plain text, no Typography VR
+  const rankColumns: SortableColumn<UserData>[] = [
+    {
+      key: 'firstName',
+      header: 'User',
+      sortable: true,
+      width: '18%',
+      render: (_: unknown, user: UserData) => {
+        const isCurrentUser = currentUser?._id === user._id;
+        const name = user.firstName && user.lastName
+          ? `${user.firstName} ${user.lastName}`
+          : user.firstName || user.lastName || '—';
+
+        if (!isCurrentUser) {
+          return name;
+        }
+
+        return (
+          <span>
+            {name}
+            <span className="vr-current-user-badge">
+              (You)
+            </span>
+          </span>
+        );
+      }
+    },
+    {
+      key: 'email',
+      header: 'Email',
+      sortable: true,
+      width: '22%',
+      render: (_: unknown, user: UserData) => (
+        <span className="vr-rank-table-email">
+          {user.email || '—'}
+        </span>
+      )
+    },
+    {
+      key: 'setupStatus',
+      header: 'Status',
+      sortable: true,
+      width: '12%',
+      render: (_: unknown, user: UserData) => <BadgeSetup status={user.setupStatus || 'pending'} />
+    },
+    {
+      key: 'trialDays',
+      header: 'Trial Days',
+      sortable: true,
+      width: '12%',
+      render: (_: unknown, user: UserData) => {
+        const daysLeft = calculateDaysLeft(user.trialEndsAt);
+        if (daysLeft === null) return '—';
+
+        // VR-compliant: data-attribute for urgency styling (CSS in rank-table.css)
+        return (
+          <span className="vr-trial-days" data-urgency={daysLeft <= 3 ? 'high' : 'normal'}>
+            {daysLeft} days
+          </span>
+        );
+      }
+    },
+    {
+      key: 'rank',
+      header: 'Current Rank',
+      sortable: true,
+      width: '14%',
+      render: (_: unknown, user: UserData) => <BadgeRank rank={user.rank || 'crew'} />
+    },
+    {
+      key: 'actions',
+      header: 'Change Rank',
+      sortable: false,
+      width: '22%',
+      render: (_: unknown, user: UserData) => {
+        // 🔒 UX Protection: Prevent Admiral from changing their own rank
+        const isCurrentUser = currentUser?._id === user._id;
+        const isAdmiral = user.rank === 'admiral';
+        const isOwnAdmiralRow = isCurrentUser && isAdmiral;
+
+        return (
+          <div className="vr-rank-actions-cell">
+            <div className="vr-rank-selector-wrapper">
+              <RankSelector
+                value={user.rank || 'crew'}
+                onChange={(rank) => handleRankChange(user._id, rank as UserRank)}
+                disabled={changingRank === user._id || isOwnAdmiralRow}
+              />
+              {isOwnAdmiralRow && (
+                <div className="vr-rank-selector-disabled-tooltip">
+                  🔒 Cannot change your own rank
+                </div>
+              )}
+            </div>
+            {changingRank === user._id && (
+              <span className="vr-updating-indicator">Updating...</span>
+            )}
+          </div>
+        );
+      }
+    }
+  ];
+
+  return (
+    <div className="vr-rank-table">
+      <Table.sortable
+        columns={rankColumns}
+        data={users}
+        striped
+        bordered
+      />
+
+      {users.length === 0 && (
+        <div className="vr-empty-state">
+          <p>No users found</p>
+        </div>
+      )}
+    </div>
+  );
+}

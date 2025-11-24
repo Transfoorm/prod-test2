@@ -1,0 +1,209 @@
+0000000000000000000000000000000000000000 2ae885a5d731836f98945125aa6cb2caec1d3b00 Transfoorm <dev@transfoorm.com> 1763018077 +1000	clone: from github.com:Transfoorm-Team/fuse5.0.git
+2ae885a5d731836f98945125aa6cb2caec1d3b00 9e0935e465876372ca7076fdcbe970e4f11e2952 Transfoorm <dev@transfoorm.com> 1763018085 +1000	checkout: moving from main to BRAND-LOGO-FIX
+9e0935e465876372ca7076fdcbe970e4f11e2952 9e0935e465876372ca7076fdcbe970e4f11e2952 Transfoorm <dev@transfoorm.com> 1763060156 +1000	checkout: moving from BRAND-LOGO-FIX to PANELS-TABS-MAC-AIR
+9e0935e465876372ca7076fdcbe970e4f11e2952 3810a00780ca0ec1c1bfda28d851e201aed8ce25 Transfoorm <dev@transfoorm.com> 1763060182 +1000	commit: Add Panels tabs variant with shadcn-inspired design
+3810a00780ca0ec1c1bfda28d851e201aed8ce25 415ef129f690ba00aab880c1f89b604c20ab7898 Transfoorm <dev@transfoorm.com> 1763101061 +1000	checkout: moving from PANELS-TABS-MAC-AIR to FIX-NESTED-BUTTONS
+415ef129f690ba00aab880c1f89b604c20ab7898 36d2d48f9802224816a68a71fd7407b1c743e614 Transfoorm <dev@transfoorm.com> 1763101556 +1000	pull origin FIX-NESTED-BUTTONS: Fast-forward
+36d2d48f9802224816a68a71fd7407b1c743e614 6c63ab3ec54232c6834a6e8ea012ef71be889705 Transfoorm <dev@transfoorm.com> 1763104644 +1000	checkout: moving from FIX-NESTED-BUTTONS to WHITE-SPACE-SCROLL-TEST-2
+6c63ab3ec54232c6834a6e8ea012ef71be889705 6c63ab3ec54232c6834a6e8ea012ef71be889705 Transfoorm <dev@transfoorm.com> 1763252147 +1030	reset: moving to HEAD
+6c63ab3ec54232c6834a6e8ea012ef71be889705 461cd1b52315d6f005dddc5471a22e1327be9b70 Transfoorm <dev@transfoorm.com> 1763252152 +1030	checkout: moving from WHITE-SPACE-SCROLL-TEST-2 to CLEAN-FRESH-PERFECT-REPO
+461cd1b52315d6f005dddc5471a22e1327be9b70 9c1b3ca803fb94fb73f7a263c67e9436005aaa5b Transfoorm <dev@transfoorm.com> 1763257544 +1030	commit: Clean up sidebar styles and fix auth button spinners
+9c1b3ca803fb94fb73f7a263c67e9436005aaa5b ee759027e2d17020fb786dd7c930583f2c8dafcc Transfoorm <dev@transfoorm.com> 1763259519 +1030	commit: Add beautiful subtle active states for sidebar navigation
+ee759027e2d17020fb786dd7c930583f2c8dafcc 048366736068321a5fa2b3ff69d0ba592fa345fa Transfoorm <dev@transfoorm.com> 1763261108 +1030	commit: Fix brand logo button text to reflect actual upload state
+048366736068321a5fa2b3ff69d0ba592fa345fa faaa17b8ce5bb6d9e40bbe2b5198fe8a29279eb6 Transfoorm <dev@transfoorm.com> 1763321844 +1030	commit: Reduce page content padding for tighter layout
+faaa17b8ce5bb6d9e40bbe2b5198fe8a29279eb6 0d36fc84d5be2b7ca9a4dbf9fc65af7f990e9e38 Transfoorm <dev@transfoorm.com> 1763330003 +1030	commit: Add section headers and descriptive comments to sidebar CSS
+0d36fc84d5be2b7ca9a4dbf9fc65af7f990e9e38 65c19efe16352d15c59a0c447e0e6de54161c350 Transfoorm <dev@transfoorm.com> 1763334633 +1030	commit: Extract CompanyButton into standalone feature component
+65c19efe16352d15c59a0c447e0e6de54161c350 ccf297b823151051fecdb7ee732c9f7d01230fa3 Transfoorm <dev@transfoorm.com> 1763336689 +1030	commit: Rename Work domain to Productivity throughout codebase
+ccf297b823151051fecdb7ee732c9f7d01230fa3 3a5b02573f7a3c6e02c498b54ee2efb0b3371d58 Transfoorm <dev@transfoorm.com> 1763338222 +1030	commit: Rename Controls to Preferences and update Projects icon
+3a5b02573f7a3c6e02c498b54ee2efb0b3371d58 557e6dfa618b76ec174b3e819411dfed1d06b3ac Transfoorm <dev@transfoorm.com> 1763339152 +1030	commit: Update sidebar menu icons for better visual hierarchy
+557e6dfa618b76ec174b3e819411dfed1d06b3ac 557e6dfa618b76ec174b3e819411dfed1d06b3ac Transfoorm <dev@transfoorm.com> 1763344397 +1030	reset: moving to HEAD
+557e6dfa618b76ec174b3e819411dfed1d06b3ac 557e6dfa618b76ec174b3e819411dfed1d06b3ac Transfoorm <dev@transfoorm.com> 1763344398 +1030	reset: moving to HEAD
+557e6dfa618b76ec174b3e819411dfed1d06b3ac cf876336c4118aca67eaeecc46a6ff0d39dfd62e Transfoorm <dev@transfoorm.com> 1763344417 +1030	commit: Reorganize UserSetup and create FlyingButton (Phoenix) foundation
+cf876336c4118aca67eaeecc46a6ff0d39dfd62e 6fa3168536d3352f1468a4ac936fff5377693cf8 Transfoorm <dev@transfoorm.com> 1763345120 +1030	commit: Add Houdini switch with phantom buttons and width synchronization
+6fa3168536d3352f1468a4ac936fff5377693cf8 9f9c37603a66c74569c7420de118c456d76aa8ae Transfoorm <dev@transfoorm.com> 1763345766 +1030	commit: Add modal roll-up animation on skip with fade-out state
+9f9c37603a66c74569c7420de118c456d76aa8ae 9f9c37603a66c74569c7420de118c456d76aa8ae Transfoorm <dev@transfoorm.com> 1763349016 +1030	reset: moving to HEAD
+9f9c37603a66c74569c7420de118c456d76aa8ae 9f9c37603a66c74569c7420de118c456d76aa8ae Transfoorm <dev@transfoorm.com> 1763349017 +1030	reset: moving to HEAD
+9f9c37603a66c74569c7420de118c456d76aa8ae 360fbecd883f548fc3e796643e8a38cc3c5c6fd4 Transfoorm <dev@transfoorm.com> 1763349055 +1030	commit: Implement reverse flow for Phoenix flying button animation
+360fbecd883f548fc3e796643e8a38cc3c5c6fd4 efc232ab24711b32161d0c620cb34ec18153b8b7 Transfoorm <dev@transfoorm.com> 1763349218 +1030	commit: Update setup incomplete message in CompanyButton
+efc232ab24711b32161d0c620cb34ec18153b8b7 49c34e4b69839a2cf311be8ff012b1f501f5b68b Transfoorm <dev@transfoorm.com> 1763359495 +1030	commit: Fix modal persistence in skip mode across navigation
+49c34e4b69839a2cf311be8ff012b1f501f5b68b 3a9b543a5564fcb62660391a2d98db70d8b47316 Transfoorm <dev@transfoorm.com> 1763359757 +1030	commit: Fix topbar button timing - only appear after Phoenix lands
+3a9b543a5564fcb62660391a2d98db70d8b47316 3a9b543a5564fcb62660391a2d98db70d8b47316 Transfoorm <dev@transfoorm.com> 1763448946 +1030	reset: moving to HEAD
+3a9b543a5564fcb62660391a2d98db70d8b47316 3a9b543a5564fcb62660391a2d98db70d8b47316 Transfoorm <dev@transfoorm.com> 1763448946 +1030	reset: moving to HEAD
+3a9b543a5564fcb62660391a2d98db70d8b47316 3a6bb76b0109d92ad88424ab1a219c985be1ecc2 Transfoorm <dev@transfoorm.com> 1763448985 +1030	commit: Fix Phoenix debug mode and simplify timing configuration
+3a6bb76b0109d92ad88424ab1a219c985be1ecc2 3a6bb76b0109d92ad88424ab1a219c985be1ecc2 Transfoorm <dev@transfoorm.com> 1763449651 +1030	reset: moving to HEAD
+3a6bb76b0109d92ad88424ab1a219c985be1ecc2 88979288357f3312a3e90d4dcd0d2d74b030a40b Transfoorm <dev@transfoorm.com> 1763453011 +1030	commit: Move ALL timings to central config - single source of truth
+88979288357f3312a3e90d4dcd0d2d74b030a40b 83bdf4e0f5e269f584220d022eb8afd8ef518b57 Transfoorm <dev@transfoorm.com> 1763453369 +1030	commit: Wire up modalShowDelay to actually control modal appearance timing
+83bdf4e0f5e269f584220d022eb8afd8ef518b57 7e7b6b46a5b09038109b31298fb0cd3a22f1b51c Transfoorm <dev@transfoorm.com> 1763455045 +1030	commit: Fix Phoenix reverse flow timing and sync all durations to 600ms
+7e7b6b46a5b09038109b31298fb0cd3a22f1b51c 179e4b5332cc112b6f9b2ca9b831c59d206b5958 Transfoorm <dev@transfoorm.com> 1763498454 +1030	commit: Add smooth animations and enforce golden button rule
+179e4b5332cc112b6f9b2ca9b831c59d206b5958 d40ff4172be03a6175fb35c028c7d1bdd04af2d6 Transfoorm <dev@transfoorm.com> 1763501049 +1030	commit: Fix Phoenix animation glitches and consolidate timing config
+d40ff4172be03a6175fb35c028c7d1bdd04af2d6 89ca664724fe70814d2ce82e124ec1ca60e65a70 Transfoorm <dev@transfoorm.com> 1763501364 +1030	commit: Fix dashboard content glitch - PageHeader DOM stability
+89ca664724fe70814d2ce82e124ec1ca60e65a70 89ca664724fe70814d2ce82e124ec1ca60e65a70 Transfoorm <dev@transfoorm.com> 1763673686 +1030	reset: moving to HEAD
+89ca664724fe70814d2ce82e124ec1ca60e65a70 89ca664724fe70814d2ce82e124ec1ca60e65a70 Transfoorm <dev@transfoorm.com> 1763673686 +1030	reset: moving to HEAD
+89ca664724fe70814d2ce82e124ec1ca60e65a70 89ca664724fe70814d2ce82e124ec1ca60e65a70 Transfoorm <dev@transfoorm.com> 1763673875 +1030	reset: moving to HEAD
+89ca664724fe70814d2ce82e124ec1ca60e65a70 89ca664724fe70814d2ce82e124ec1ca60e65a70 Transfoorm <dev@transfoorm.com> 1763673875 +1030	reset: moving to HEAD
+89ca664724fe70814d2ce82e124ec1ca60e65a70 89ca664724fe70814d2ce82e124ec1ca60e65a70 Transfoorm <dev@transfoorm.com> 1763673909 +1030	reset: moving to HEAD
+89ca664724fe70814d2ce82e124ec1ca60e65a70 89ca664724fe70814d2ce82e124ec1ca60e65a70 Transfoorm <dev@transfoorm.com> 1763673909 +1030	reset: moving to HEAD
+89ca664724fe70814d2ce82e124ec1ca60e65a70 359e7257f527835fa353066a3e1589425811651d Transfoorm <dev@transfoorm.com> 1763673932 +1030	commit: Align domain naming across routes, adapters, and store
+359e7257f527835fa353066a3e1589425811651d 226e70916904901fb68dadfc41dd18fb062725f8 Transfoorm <dev@transfoorm.com> 1763675047 +1030	commit: Migrate all domain pages to SMAC Layer 4 architecture
+226e70916904901fb68dadfc41dd18fb062725f8 226e70916904901fb68dadfc41dd18fb062725f8 Transfoorm <dev@transfoorm.com> 1763675459 +1030	reset: moving to HEAD
+226e70916904901fb68dadfc41dd18fb062725f8 226e70916904901fb68dadfc41dd18fb062725f8 Transfoorm <dev@transfoorm.com> 1763675459 +1030	reset: moving to HEAD
+226e70916904901fb68dadfc41dd18fb062725f8 226e70916904901fb68dadfc41dd18fb062725f8 Transfoorm <dev@transfoorm.com> 1763675605 +1030	reset: moving to HEAD
+226e70916904901fb68dadfc41dd18fb062725f8 226e70916904901fb68dadfc41dd18fb062725f8 Transfoorm <dev@transfoorm.com> 1763675605 +1030	reset: moving to HEAD
+226e70916904901fb68dadfc41dd18fb062725f8 226e70916904901fb68dadfc41dd18fb062725f8 Transfoorm <dev@transfoorm.com> 1763675631 +1030	reset: moving to HEAD
+226e70916904901fb68dadfc41dd18fb062725f8 226e70916904901fb68dadfc41dd18fb062725f8 Transfoorm <dev@transfoorm.com> 1763675631 +1030	reset: moving to HEAD
+226e70916904901fb68dadfc41dd18fb062725f8 25b80a5bed98d124f2ae6cf8a3a985a8267b723b Transfoorm <dev@transfoorm.com> 1763675639 +1030	commit: Fix Convex backend domain naming inconsistencies
+25b80a5bed98d124f2ae6cf8a3a985a8267b723b f16688421b7ee8ecb63e1cf48c5c5991553370ae Transfoorm <dev@transfoorm.com> 1763675807 +1030	commit: Fix lint-staged to properly exclude generated files
+f16688421b7ee8ecb63e1cf48c5c5991553370ae 2098cc5c0481372e530a1bf3791736afc4a56583 Transfoorm <dev@transfoorm.com> 1763676125 +1030	commit: Stop tracking Convex generated files
+2098cc5c0481372e530a1bf3791736afc4a56583 267344efded98064d630f083b767e9200eaa14f9 Transfoorm <dev@transfoorm.com> 1763676362 +1030	commit: Rename (domain) folder to (domains) for naming consistency
+267344efded98064d630f083b767e9200eaa14f9 dcfa91a901ea42424ace34a000bf234aeee9a305 Transfoorm <dev@transfoorm.com> 1763676842 +1030	commit: refactor(nav): Use ROUTES constant instead of hardcoded strings
+dcfa91a901ea42424ace34a000bf234aeee9a305 7f05c480c4695c29d771f7e0a9e441a61f96da03 Transfoorm <dev@transfoorm.com> 1763677071 +1030	commit: fix: Move ClientHydrator state updates to useLayoutEffect
+7f05c480c4695c29d771f7e0a9e441a61f96da03 e215b4d5b87766f25015dfd00075a4af17f5603a Transfoorm <dev@transfoorm.com> 1763677249 +1030	commit: fix(routes): Correct ROUTES constant to match actual folder names
+e215b4d5b87766f25015dfd00075a4af17f5603a 6a0bc9ad640cb1c9ac90b0ad58ba12ca29d8e5d5 Transfoorm <dev@transfoorm.com> 1763677305 +1030	commit (amend): fix(routes): Correct ROUTES constant to match actual folder names
+6a0bc9ad640cb1c9ac90b0ad58ba12ca29d8e5d5 b5a4097c43a07dabe8aa08e9aaab391525233502 Transfoorm <dev@transfoorm.com> 1763677642 +1030	commit: fix(adapters): Add Clerk auth tokens to all Server Component adapters
+b5a4097c43a07dabe8aa08e9aaab391525233502 b5a4097c43a07dabe8aa08e9aaab391525233502 Transfoorm <dev@transfoorm.com> 1763678300 +1030	reset: moving to b5a4097c43a07dabe8aa08e9aaab391525233502
+b5a4097c43a07dabe8aa08e9aaab391525233502 359e7257f527835fa353066a3e1589425811651d Transfoorm <dev@transfoorm.com> 1763678300 +1030	reset: moving to 359e725
+359e7257f527835fa353066a3e1589425811651d 6074ea44cfd21db30f29f036de95c460951bffb3 Transfoorm <dev@transfoorm.com> 1763679729 +1030	commit: Remove wrong adapter pattern from src/domains
+6074ea44cfd21db30f29f036de95c460951bffb3 6074ea44cfd21db30f29f036de95c460951bffb3 Transfoorm <dev@transfoorm.com> 1763690137 +1030	reset: moving to HEAD
+6074ea44cfd21db30f29f036de95c460951bffb3 359e7257f527835fa353066a3e1589425811651d Transfoorm <dev@transfoorm.com> 1763690137 +1030	checkout: moving from CLEAN-FRESH-PERFECT-REPO to HEAD~1
+359e7257f527835fa353066a3e1589425811651d 359e7257f527835fa353066a3e1589425811651d Transfoorm <dev@transfoorm.com> 1763693532 +1030	checkout: moving from 359e7257f527835fa353066a3e1589425811651d to FAILED-PROD-LOGIN
+359e7257f527835fa353066a3e1589425811651d 359e7257f527835fa353066a3e1589425811651d Transfoorm <dev@transfoorm.com> 1763693594 +1030	checkout: moving from FAILED-PROD-LOGIN to 359e725
+359e7257f527835fa353066a3e1589425811651d 359e7257f527835fa353066a3e1589425811651d Transfoorm <dev@transfoorm.com> 1763694564 +1030	checkout: moving from 359e7257f527835fa353066a3e1589425811651d to FAILED-PROD-LOGIN
+359e7257f527835fa353066a3e1589425811651d 359e7257f527835fa353066a3e1589425811651d Transfoorm <dev@transfoorm.com> 1763694793 +1030	reset: moving to HEAD
+359e7257f527835fa353066a3e1589425811651d 267344efded98064d630f083b767e9200eaa14f9 Transfoorm <dev@transfoorm.com> 1763694797 +1030	checkout: moving from FAILED-PROD-LOGIN to 267344e
+267344efded98064d630f083b767e9200eaa14f9 dcfa91a901ea42424ace34a000bf234aeee9a305 Transfoorm <dev@transfoorm.com> 1763694903 +1030	checkout: moving from 267344efded98064d630f083b767e9200eaa14f9 to dcfa91a
+dcfa91a901ea42424ace34a000bf234aeee9a305 7f05c480c4695c29d771f7e0a9e441a61f96da03 Transfoorm <dev@transfoorm.com> 1763694945 +1030	checkout: moving from dcfa91a901ea42424ace34a000bf234aeee9a305 to 7f05c48
+7f05c480c4695c29d771f7e0a9e441a61f96da03 6a0bc9ad640cb1c9ac90b0ad58ba12ca29d8e5d5 Transfoorm <dev@transfoorm.com> 1763694982 +1030	checkout: moving from 7f05c480c4695c29d771f7e0a9e441a61f96da03 to 6a0bc9a
+6a0bc9ad640cb1c9ac90b0ad58ba12ca29d8e5d5 b5a4097c43a07dabe8aa08e9aaab391525233502 Transfoorm <dev@transfoorm.com> 1763695035 +1030	checkout: moving from 6a0bc9ad640cb1c9ac90b0ad58ba12ca29d8e5d5 to b5a4097
+b5a4097c43a07dabe8aa08e9aaab391525233502 6074ea44cfd21db30f29f036de95c460951bffb3 Transfoorm <dev@transfoorm.com> 1763695262 +1030	checkout: moving from b5a4097c43a07dabe8aa08e9aaab391525233502 to 6074ea4
+6074ea44cfd21db30f29f036de95c460951bffb3 6074ea44cfd21db30f29f036de95c460951bffb3 Transfoorm <dev@transfoorm.com> 1763696861 +1030	checkout: moving from 6074ea44cfd21db30f29f036de95c460951bffb3 to NEW-DIRECTION-CLEANUP
+6074ea44cfd21db30f29f036de95c460951bffb3 97cde0a972fbd64d3f065a99a17eb82cab655d29 Transfoorm <dev@transfoorm.com> 1763697415 +1030	commit: Align domain naming: (domain) → (domains), finances → finance, work → productivity
+97cde0a972fbd64d3f065a99a17eb82cab655d29 29f8cbcadc3a5353c2d1faccd1cf75863787ac4b Transfoorm <dev@transfoorm.com> 1763700792 +1030	commit: VRP-Compliant: Document ADP (Anticipated Delivery Pattern) with WARP + PRISM
+29f8cbcadc3a5353c2d1faccd1cf75863787ac4b 29f8cbcadc3a5353c2d1faccd1cf75863787ac4b Transfoorm <dev@transfoorm.com> 1763702666 +1030	reset: moving to HEAD
+29f8cbcadc3a5353c2d1faccd1cf75863787ac4b 29f8cbcadc3a5353c2d1faccd1cf75863787ac4b Transfoorm <dev@transfoorm.com> 1763702666 +1030	reset: moving to HEAD
+29f8cbcadc3a5353c2d1faccd1cf75863787ac4b f7661cad41a4099f13b3a6006bdbe5cd9ecd830b Transfoorm <dev@transfoorm.com> 1763702688 +1030	commit: VRP-Compliant: Enable sovereignty guard and migrate ESLint config
+f7661cad41a4099f13b3a6006bdbe5cd9ecd830b 2d79e95b9174a1fcf5e5c001d71d03ed1158ce72 Transfoorm <dev@transfoorm.com> 1763702776 +1030	commit: Fix: Add convex/_generated to .gitignore
+2d79e95b9174a1fcf5e5c001d71d03ed1158ce72 b352fe502d9dd6e0b0b79ff800775d0d4eb0ccec Transfoorm <dev@transfoorm.com> 1763703193 +1030	commit: Clean: Remove obsolete TTT documentation files
+b352fe502d9dd6e0b0b79ff800775d0d4eb0ccec b3ceba35849b07aa3b2ecd5aa75689f2a16d4369 Transfoorm <dev@transfoorm.com> 1763706425 +1030	commit: Fix FUSE cookie race condition - ensure handshake before homepage loads
+b3ceba35849b07aa3b2ecd5aa75689f2a16d4369 99f903fafb343b17bd6cbc6a0d762de940912701 Transfoorm <dev@transfoorm.com> 1763708362 +1030	commit: Fix avatar 404 errors - resolve storage URLs during cookie minting
+99f903fafb343b17bd6cbc6a0d762de940912701 50d8fdcb08e75da6133a6137fdbd43d6931235cf Transfoorm <dev@transfoorm.com> 1763709040 +1030	commit: Add edge case safeguards for cookie minting failures
+50d8fdcb08e75da6133a6137fdbd43d6931235cf 9ee69cdc5c847960396377489332cfab4deee5b3 Transfoorm <dev@transfoorm.com> 1763755268 +1030	commit: Fix Blink of Death on Dashboard and Email pages
+9ee69cdc5c847960396377489332cfab4deee5b3 a1f9e14ac13f3fe8b1cf601c0e7e0682dbf4f379 Transfoorm <dev@transfoorm.com> 1763756404 +1030	commit: Simplify sign-out page - remove loading text
+a1f9e14ac13f3fe8b1cf601c0e7e0682dbf4f379 2658861a19ace6d2ea01c94d8d4358eb25d3dae8 Transfoorm <dev@transfoorm.com> 1763757032 +1030	commit: VRP-Compliant: Eliminate No User Dilemma (NUD) with 3-layer defense
+2658861a19ace6d2ea01c94d8d4358eb25d3dae8 7d0b57a54708b3d0b85881d56b1cde24d208acbb Transfoorm <dev@transfoorm.com> 1763757905 +1030	commit: Align database table naming conventions across schema and codebase
+7d0b57a54708b3d0b85881d56b1cde24d208acbb 90f3829373c3a987be12281d422755e97cba52c9 Transfoorm <dev@transfoorm.com> 1763758940 +1030	commit: Remove unused PageHeader variant system - clean dead code
+90f3829373c3a987be12281d422755e97cba52c9 b6631965811dbac441e94e1df10cba63d50f1ffa Transfoorm <dev@transfoorm.com> 1763760314 +1030	commit: Refactor PageHeader into modular folder structure
+b6631965811dbac441e94e1df10cba63d50f1ffa b6631965811dbac441e94e1df10cba63d50f1ffa Transfoorm <dev@transfoorm.com> 1763761071 +1030	reset: moving to HEAD
+b6631965811dbac441e94e1df10cba63d50f1ffa b6631965811dbac441e94e1df10cba63d50f1ffa Transfoorm <dev@transfoorm.com> 1763761071 +1030	reset: moving to HEAD
+b6631965811dbac441e94e1df10cba63d50f1ffa 825b8f876ee694abd1bd664f3dd4dfc4f1caa06e Transfoorm <dev@transfoorm.com> 1763761105 +1030	commit: Fix UserButton flash during page refresh - add optimistic rendering
+825b8f876ee694abd1bd664f3dd4dfc4f1caa06e 9ee69cdc5c847960396377489332cfab4deee5b3 Transfoorm <dev@transfoorm.com> 1763762015 +1030	reset: moving to 9ee69cd
+9ee69cdc5c847960396377489332cfab4deee5b3 b3ceba35849b07aa3b2ecd5aa75689f2a16d4369 Transfoorm <dev@transfoorm.com> 1763762132 +1030	reset: moving to b3ceba3
+b3ceba35849b07aa3b2ecd5aa75689f2a16d4369 b3ceba35849b07aa3b2ecd5aa75689f2a16d4369 Transfoorm <dev@transfoorm.com> 1763763048 +1030	reset: moving to HEAD
+b3ceba35849b07aa3b2ecd5aa75689f2a16d4369 9ee69cdc5c847960396377489332cfab4deee5b3 Transfoorm <dev@transfoorm.com> 1763763398 +1030	reset: moving to 9ee69cd
+9ee69cdc5c847960396377489332cfab4deee5b3 b3ceba35849b07aa3b2ecd5aa75689f2a16d4369 Transfoorm <dev@transfoorm.com> 1763763661 +1030	reset: moving to b3ceba3
+b3ceba35849b07aa3b2ecd5aa75689f2a16d4369 825b8f876ee694abd1bd664f3dd4dfc4f1caa06e Transfoorm <dev@transfoorm.com> 1763768131 +1030	reset: moving to 825b8f8
+825b8f876ee694abd1bd664f3dd4dfc4f1caa06e 825b8f876ee694abd1bd664f3dd4dfc4f1caa06e Transfoorm <dev@transfoorm.com> 1763768160 +1030	reset: moving to 825b8f8
+825b8f876ee694abd1bd664f3dd4dfc4f1caa06e 9ee69cdc5c847960396377489332cfab4deee5b3 Transfoorm <dev@transfoorm.com> 1763768386 +1030	reset: moving to 9ee69cd
+9ee69cdc5c847960396377489332cfab4deee5b3 9ee69cdc5c847960396377489332cfab4deee5b3 Transfoorm <dev@transfoorm.com> 1763768823 +1030	reset: moving to HEAD
+9ee69cdc5c847960396377489332cfab4deee5b3 b3ceba35849b07aa3b2ecd5aa75689f2a16d4369 Transfoorm <dev@transfoorm.com> 1763768988 +1030	reset: moving to b3ceba3
+b3ceba35849b07aa3b2ecd5aa75689f2a16d4369 b3ceba35849b07aa3b2ecd5aa75689f2a16d4369 Transfoorm <dev@transfoorm.com> 1763769008 +1030	reset: moving to b3ceba3
+b3ceba35849b07aa3b2ecd5aa75689f2a16d4369 b3ceba35849b07aa3b2ecd5aa75689f2a16d4369 Transfoorm <dev@transfoorm.com> 1763769956 +1030	reset: moving to HEAD
+b3ceba35849b07aa3b2ecd5aa75689f2a16d4369 a1f9e14ac13f3fe8b1cf601c0e7e0682dbf4f379 Transfoorm <dev@transfoorm.com> 1763769956 +1030	checkout: moving from NEW-DIRECTION-CLEANUP to a1f9e14
+a1f9e14ac13f3fe8b1cf601c0e7e0682dbf4f379 2658861a19ace6d2ea01c94d8d4358eb25d3dae8 Transfoorm <dev@transfoorm.com> 1763770336 +1030	checkout: moving from a1f9e14ac13f3fe8b1cf601c0e7e0682dbf4f379 to 2658861
+2658861a19ace6d2ea01c94d8d4358eb25d3dae8 9ee69cdc5c847960396377489332cfab4deee5b3 Transfoorm <dev@transfoorm.com> 1763770817 +1030	checkout: moving from 2658861a19ace6d2ea01c94d8d4358eb25d3dae8 to 9ee69cd
+9ee69cdc5c847960396377489332cfab4deee5b3 9ee69cdc5c847960396377489332cfab4deee5b3 Transfoorm <dev@transfoorm.com> 1763771444 +1030	checkout: moving from 9ee69cdc5c847960396377489332cfab4deee5b3 to REFACTORED-PAGEHEADER-REMOVED-BOD-20251122
+9ee69cdc5c847960396377489332cfab4deee5b3 e52ad4d01894b5a6cd5443aae0514d652e8b4b79 Transfoorm <dev@transfoorm.com> 1763771453 +1030	cherry-pick: Align database table naming conventions across schema and codebase
+e52ad4d01894b5a6cd5443aae0514d652e8b4b79 fee88d075bc1d9fce90c67349ac95f9bc3e8edae Transfoorm <dev@transfoorm.com> 1763771459 +1030	cherry-pick: Remove unused PageHeader variant system - clean dead code
+fee88d075bc1d9fce90c67349ac95f9bc3e8edae 0a5f3a87a6f4460240c0288e4bf8f1d557ecf13b Transfoorm <dev@transfoorm.com> 1763771463 +1030	cherry-pick: Refactor PageHeader into modular folder structure
+0a5f3a87a6f4460240c0288e4bf8f1d557ecf13b ebb8037dd0ebb436e27413421e1b043eca468b76 Transfoorm <dev@transfoorm.com> 1763775500 +1030	commit: Refactor: Move /fuse to src/fuse for better organization
+ebb8037dd0ebb436e27413421e1b043eca468b76 fb86356e87ca55caf0856ab16aa6872bdaf5a2d9 Transfoorm <dev@transfoorm.com> 1763783546 +1030	commit: first deploy on prod-test
+fb86356e87ca55caf0856ab16aa6872bdaf5a2d9 44eb50ecdb272552946fff89a00b0f9ffb311990 Ken Roberts <ken@transfoorm.com> 1763784616 +1030	commit: Fix identity
+44eb50ecdb272552946fff89a00b0f9ffb311990 b3ce818c73e98163dcfb1567e1ce15a913cc8231 Ken Roberts <ken@transfoorm.com> 1763791500 +1030	commit: Fix identity - ensure Vercel matches local prod exactly
+b3ce818c73e98163dcfb1567e1ce15a913cc8231 120910ca62b545ccac15f5927d5b7badb1b99fd7 Ken Roberts <ken@transfoorm.com> 1763844637 +1030	commit: Refactor: Reorganize Vanish Protocol and users domain structure
+120910ca62b545ccac15f5927d5b7badb1b99fd7 c5ede919a94cef7f06498ee6c3e86bdaad099e8b Ken Roberts <ken@transfoorm.com> 1763844722 +1030	commit: Remove completed migrations folder
+c5ede919a94cef7f06498ee6c3e86bdaad099e8b 7dfd0fe253834fbc455733ccedfb849b27b7c0ba Ken Roberts <ken@transfoorm.com> 1763845041 +1030	commit: Refactor: Replace relative _generated imports with path aliases
+7dfd0fe253834fbc455733ccedfb849b27b7c0ba 41129763d911dbaab8f9f4138786a841f2a5d118 Ken Roberts <ken@transfoorm.com> 1763845336 +1030	commit: Refactor: Eliminate all relative imports + enforce with ESLint
+41129763d911dbaab8f9f4138786a841f2a5d118 92ab076f4c9e48c6e52d1f01799dfd7f1b518fc3 Ken Roberts <ken@transfoorm.com> 1763845692 +1030	commit: Refactor: Fix all remaining relative imports + extend enforcement
+92ab076f4c9e48c6e52d1f01799dfd7f1b518fc3 14d0bd0346678aa414f3176c6f5d7ee293bf142f Ken Roberts <ken@transfoorm.com> 1763845798 +1030	commit: Fix: Replace __dirname relative path with process.cwd()
+14d0bd0346678aa414f3176c6f5d7ee293bf142f 14d0bd0346678aa414f3176c6f5d7ee293bf142f Ken Roberts <ken@transfoorm.com> 1763856506 +1030	reset: moving to HEAD
+14d0bd0346678aa414f3176c6f5d7ee293bf142f 14d0bd0346678aa414f3176c6f5d7ee293bf142f Ken Roberts <ken@transfoorm.com> 1763856506 +1030	reset: moving to HEAD
+14d0bd0346678aa414f3176c6f5d7ee293bf142f 14d0bd0346678aa414f3176c6f5d7ee293bf142f Ken Roberts <ken@transfoorm.com> 1763856573 +1030	reset: moving to HEAD
+14d0bd0346678aa414f3176c6f5d7ee293bf142f 14d0bd0346678aa414f3176c6f5d7ee293bf142f Ken Roberts <ken@transfoorm.com> 1763856574 +1030	reset: moving to HEAD
+14d0bd0346678aa414f3176c6f5d7ee293bf142f 14d0bd0346678aa414f3176c6f5d7ee293bf142f Ken Roberts <ken@transfoorm.com> 1763858076 +1030	reset: moving to HEAD
+14d0bd0346678aa414f3176c6f5d7ee293bf142f 14d0bd0346678aa414f3176c6f5d7ee293bf142f Ken Roberts <ken@transfoorm.com> 1763858076 +1030	reset: moving to HEAD
+14d0bd0346678aa414f3176c6f5d7ee293bf142f 14d0bd0346678aa414f3176c6f5d7ee293bf142f Ken Roberts <ken@transfoorm.com> 1763858142 +1030	reset: moving to HEAD
+14d0bd0346678aa414f3176c6f5d7ee293bf142f 14d0bd0346678aa414f3176c6f5d7ee293bf142f Ken Roberts <ken@transfoorm.com> 1763858142 +1030	reset: moving to HEAD
+14d0bd0346678aa414f3176c6f5d7ee293bf142f 14d0bd0346678aa414f3176c6f5d7ee293bf142f Ken Roberts <ken@transfoorm.com> 1763858188 +1030	reset: moving to HEAD
+14d0bd0346678aa414f3176c6f5d7ee293bf142f 14d0bd0346678aa414f3176c6f5d7ee293bf142f Ken Roberts <ken@transfoorm.com> 1763858188 +1030	reset: moving to HEAD
+14d0bd0346678aa414f3176c6f5d7ee293bf142f 1fa0c5475cf505d4b8d532e823241a0581dc22c4 Ken Roberts <ken@transfoorm.com> 1763858274 +1030	commit: Refactor: FUSE consolidation + Shell Ritual + Schema rename
+1fa0c5475cf505d4b8d532e823241a0581dc22c4 2e04c96c0564fca327c1d5c4d245f4493ee8b3ae Ken Roberts <ken@transfoorm.com> 1763858320 +1030	commit: Revert: Remove unnecessary Convex action ESLint exception
+2e04c96c0564fca327c1d5c4d245f4493ee8b3ae c0e68ad7b96064b6bdfcbfaaaa489704e6cbe4a3 Ken Roberts <ken@transfoorm.com> 1763858458 +1030	commit: Add: ESLint rule to block ALL inline exceptions
+c0e68ad7b96064b6bdfcbfaaaa489704e6cbe4a3 11d48b0cba9b387bb40176053c14f47b240ecfd3 Ken Roberts <ken@transfoorm.com> 1763858889 +1030	commit: Revert: Remove eslint-comments rules that broke valid exceptions
+11d48b0cba9b387bb40176053c14f47b240ecfd3 53591497d41f7b8421aaec3ddb92c19bec12bbf2 Ken Roberts <ken@transfoorm.com> 1763859432 +1030	commit: Add: Sacred config protection - Block eslint.config.mjs changes
+0000000000000000000000000000000000000000 19e0d0c49ebd2e1fc5f1a487ecedf71a283a58c2 Ken Roberts <ken@transfoorm.com> 1763861671 +1030	commit (initial): Initial FUSE 6.0 snapshot - V1 CSS Architecture Baseline
+19e0d0c49ebd2e1fc5f1a487ecedf71a283a58c2 19e0d0c49ebd2e1fc5f1a487ecedf71a283a58c2 Ken Roberts <ken@transfoorm.com> 1763863030 +1030	checkout: moving from fresh-start to wccc-prevent-page-css
+19e0d0c49ebd2e1fc5f1a487ecedf71a283a58c2 25dd62671e0bc586bc25aa17d85b99801da0d4f8 Ken Roberts <ken@transfoorm.com> 1763863046 +1030	commit: Add WCCC enforcement: Block page-specific CSS files
+25dd62671e0bc586bc25aa17d85b99801da0d4f8 608996a1b890c191b97b91fceeb3e7edf5fe2855 Ken Roberts <ken@transfoorm.com> 1763864817 +1030	commit: Fix TTT Test #7: Remove dual CSS imports - Single source of truth
+608996a1b890c191b97b91fceeb3e7edf5fe2855 8423c589e17b2604e5c01fdb04f878fd9d21dac6 Ken Roberts <ken@transfoorm.com> 1763865035 +1030	commit: Fix: Add missing feature CSS imports to hub
+8423c589e17b2604e5c01fdb04f878fd9d21dac6 4ae9bd415fbca7b99f74b0389176a07ff36671b0 Ken Roberts <ken@transfoorm.com> 1763865908 +1030	commit: Replace magic numbers with component-scoped variables in sidebar.css
+4ae9bd415fbca7b99f74b0389176a07ff36671b0 53beebcd8e4e8bfe9dfb275d5ec512500f0021e2 Ken Roberts <ken@transfoorm.com> 1763866245 +1030	commit: Fix database table name mismatches after schema rename
+53beebcd8e4e8bfe9dfb275d5ec512500f0021e2 5b2d602b0f707c3acf47002f55e937d5199a950e Ken Roberts <ken@transfoorm.com> 1763866566 +1030	commit: Eliminate magic numbers in dropdown.css and modal.css
+5b2d602b0f707c3acf47002f55e937d5199a950e 51697769d64c6d86b50f44867ce80dfc4dcde397 Ken Roberts <ken@transfoorm.com> 1763866706 +1030	commit: Eliminate magic numbers in aisidebar.css
+51697769d64c6d86b50f44867ce80dfc4dcde397 7f2396c224fd4d6b1de7ca982cc88453a5d3bef0 Ken Roberts <ken@transfoorm.com> 1763867777 +1030	commit: CSS: Eliminate magic numbers from user-button, brand-logo-button, and topbar
+7f2396c224fd4d6b1de7ca982cc88453a5d3bef0 4da652d43fd66477aeb841f5d28ab0ba14c49fb4 Ken Roberts <ken@transfoorm.com> 1763867928 +1030	commit: CSS: Eliminate magic numbers from tabs.css
+4da652d43fd66477aeb841f5d28ab0ba14c49fb4 f7c3bdfb9789b034281597e8313abc294ea3aa38 Ken Roberts <ken@transfoorm.com> 1763868634 +1030	commit: CSS: Clean tokens.css - Move component tokens to component files
+f7c3bdfb9789b034281597e8313abc294ea3aa38 afeead05e7e685d36d9b9aa1bce3821490d0938a Ken Roberts <ken@transfoorm.com> 1763869015 +1030	commit: CSS: Foundation token sweep - Replace hardcoded typography with foundation tokens
+afeead05e7e685d36d9b9aa1bce3821490d0938a 45e4060fa0dedb727cc478877e84a505fb310e64 Ken Roberts <ken@transfoorm.com> 1763869514 +1030	commit: CSS: Magic number elimination - 5 component files (~72 magic numbers)
+45e4060fa0dedb727cc478877e84a505fb310e64 d14d58279fa8763da8bc3854bbdf6aaeb3e87175 Ken Roberts <ken@transfoorm.com> 1763869781 +1030	commit: CSS: Theme bypass fixes - Replace hardcoded colors with theme tokens (Part 1)
+d14d58279fa8763da8bc3854bbdf6aaeb3e87175 6cf484bf11b5c5d4d1679b81d67e2816f3a80119 Ken Roberts <ken@transfoorm.com> 1763870205 +1030	commit: CSS: Theme bypass fixes - badge.css + rank.css (Part 2)
+6cf484bf11b5c5d4d1679b81d67e2816f3a80119 8abe01861946b8cff2c2aa3493b56da3cdd78cb4 Ken Roberts <ken@transfoorm.com> 1763870505 +1030	commit: CSS: Theme bypass fixes - Input components (Part 3)
+8abe01861946b8cff2c2aa3493b56da3cdd78cb4 0a9287386b7a95a50dbca879a7b71adbb7884859 Ken Roberts <ken@transfoorm.com> 1763870801 +1030	commit: Part 4: Eliminate hardcoded colors from dropdown + checkbox components
+0a9287386b7a95a50dbca879a7b71adbb7884859 e1e564d18b021a589c9b601d183131c32420cf1f Ken Roberts <ken@transfoorm.com> 1763871031 +1030	commit: Part 5: Eliminate hardcoded colors from tooltip + feature components
+e1e564d18b021a589c9b601d183131c32420cf1f f6b6261beaf9600da5058f36c8b050972c77e387 Ken Roberts <ken@transfoorm.com> 1763871566 +1030	commit: Part 6: Replace ~85 hardcoded colors in UserSetup modals
+f6b6261beaf9600da5058f36c8b050972c77e387 3934f21c7fe71a70a73025ab9db1ff796f516084 Ken Roberts <ken@transfoorm.com> 1763871653 +1030	commit: Part 7: Replace 6 hardcoded colors in button.css
+3934f21c7fe71a70a73025ab9db1ff796f516084 d9d7183d501303592e4b0b41a6cd0951315f2ec5 Ken Roberts <ken@transfoorm.com> 1763871834 +1030	commit: Part 8: Replace ~45 hardcoded colors in modal.css (LARGEST)
+d9d7183d501303592e4b0b41a6cd0951315f2ec5 ad0c361b627934a72733673613ad99466e8c8ac9 Ken Roberts <ken@transfoorm.com> 1763872029 +1030	commit: Part 9: Replace ~50 hardcoded colors in auth.css (FINAL)
+ad0c361b627934a72733673613ad99466e8c8ac9 ad0c361b627934a72733673613ad99466e8c8ac9 Ken Roberts <ken@transfoorm.com> 1763872570 +1030	reset: moving to HEAD
+ad0c361b627934a72733673613ad99466e8c8ac9 ad0c361b627934a72733673613ad99466e8c8ac9 Ken Roberts <ken@transfoorm.com> 1763872570 +1030	reset: moving to HEAD
+ad0c361b627934a72733673613ad99466e8c8ac9 ad0c361b627934a72733673613ad99466e8c8ac9 Ken Roberts <ken@transfoorm.com> 1763872608 +1030	reset: moving to HEAD
+ad0c361b627934a72733673613ad99466e8c8ac9 ad0c361b627934a72733673613ad99466e8c8ac9 Ken Roberts <ken@transfoorm.com> 1763872609 +1030	reset: moving to HEAD
+ad0c361b627934a72733673613ad99466e8c8ac9 ad0c361b627934a72733673613ad99466e8c8ac9 Ken Roberts <ken@transfoorm.com> 1763876767 +1030	reset: moving to HEAD
+ad0c361b627934a72733673613ad99466e8c8ac9 ad0c361b627934a72733673613ad99466e8c8ac9 Ken Roberts <ken@transfoorm.com> 1763876767 +1030	reset: moving to HEAD
+ad0c361b627934a72733673613ad99466e8c8ac9 fec0fe154c0adce8c89507062c71be4cd291ee03 Ken Roberts <ken@transfoorm.com> 1763876849 +1030	commit: Add CSS Quality Gate - Enforce variable usage, catch magic numbers
+fec0fe154c0adce8c89507062c71be4cd291ee03 9f4786a64fa72123ab9c33036237b6fbdee71747 Ken Roberts <ken@transfoorm.com> 1763877787 +1030	commit: Remove emoji markers - Replace 🟨🟨 with clean /* 🟨 DESCRIPTION */ format
+9f4786a64fa72123ab9c33036237b6fbdee71747 96963e7bca7079f34a2b6fe2db7e7f9d2f840792 Ken Roberts <ken@transfoorm.com> 1763878742 +1030	commit: Remove primary button color override from button.css
+96963e7bca7079f34a2b6fe2db7e7f9d2f840792 48500ab8dda170592672269e4904a1bd66c6dee6 Ken Roberts <ken@transfoorm.com> 1763878828 +1030	commit: Fix primary button to use CSS variables
+48500ab8dda170592672269e4904a1bd66c6dee6 c047b462cc48abf1d46cc238d799219e62f7f661 Ken Roberts <ken@transfoorm.com> 1763879002 +1030	commit: Fix auth submit button CSS specificity
+c047b462cc48abf1d46cc238d799219e62f7f661 623e60905f73c92325bdff9156e87f52b43b00ee Ken Roberts <ken@transfoorm.com> 1763879444 +1030	commit: Restore primary button original hardcoded values
+623e60905f73c92325bdff9156e87f52b43b00ee 7140e890ce656f805790936999939e704680385d Ken Roberts <ken@transfoorm.com> 1763879582 +1030	commit: Change primary button to use brand orange gradient
+7140e890ce656f805790936999939e704680385d 32e2e1a3cbe7fb648e0eacda2803bf93e9b9589e Ken Roberts <ken@transfoorm.com> 1763880273 +1030	commit: Organize CSS documentation in /styles folder
+32e2e1a3cbe7fb648e0eacda2803bf93e9b9589e 32e2e1a3cbe7fb648e0eacda2803bf93e9b9589e Ken Roberts <ken@transfoorm.com> 1763880621 +1030	reset: moving to HEAD
+32e2e1a3cbe7fb648e0eacda2803bf93e9b9589e fb85adb243c5c5f74e772952a99cb3ee09c961a3 Ken Roberts <ken@transfoorm.com> 1763880621 +1030	commit: Update WCCC custom rule to match current architecture
+fb85adb243c5c5f74e772952a99cb3ee09c961a3 fb85adb243c5c5f74e772952a99cb3ee09c961a3 Ken Roberts <ken@transfoorm.com> 1763923773 +1030	reset: moving to HEAD
+fb85adb243c5c5f74e772952a99cb3ee09c961a3 fb85adb243c5c5f74e772952a99cb3ee09c961a3 Ken Roberts <ken@transfoorm.com> 1763923773 +1030	reset: moving to HEAD
+fb85adb243c5c5f74e772952a99cb3ee09c961a3 8fddfeb8de5af7f673261a8cd267e15770027ce4 Ken Roberts <ken@transfoorm.com> 1763923810 +1030	commit: Fix Phoenix navigation flow and add logout reset
+8fddfeb8de5af7f673261a8cd267e15770027ce4 8fddfeb8de5af7f673261a8cd267e15770027ce4 Ken Roberts <ken@transfoorm.com> 1763925527 +1030	checkout: moving from wccc-prevent-page-css to PROD-TEST-BRANCH-#1-FUSE-PATCH
+8fddfeb8de5af7f673261a8cd267e15770027ce4 c1552ce16ac9aa467ea4e9552560914a08f3b01a Ken Roberts <ken@transfoorm.com> 1763925572 +1030	commit: FUSE Performance Patch: Remove Clerk API blocker + Enhanced logout flow
+c1552ce16ac9aa467ea4e9552560914a08f3b01a c1552ce16ac9aa467ea4e9552560914a08f3b01a Ken Roberts <ken@transfoorm.com> 1763930405 +1030	reset: moving to HEAD
+c1552ce16ac9aa467ea4e9552560914a08f3b01a 2ae885a5d731836f98945125aa6cb2caec1d3b00 Ken Roberts <ken@transfoorm.com> 1763930416 +1030	checkout: moving from PROD-TEST-BRANCH-#1-FUSE-PATCH to main
+2ae885a5d731836f98945125aa6cb2caec1d3b00 2ae885a5d731836f98945125aa6cb2caec1d3b00 Ken Roberts <ken@transfoorm.com> 1763931007 +1030	reset: moving to HEAD
+2ae885a5d731836f98945125aa6cb2caec1d3b00 c1552ce16ac9aa467ea4e9552560914a08f3b01a Ken Roberts <ken@transfoorm.com> 1763931008 +1030	checkout: moving from main to PROD-TEST-BRANCH-#1-FUSE-PATCH
+c1552ce16ac9aa467ea4e9552560914a08f3b01a c1552ce16ac9aa467ea4e9552560914a08f3b01a Ken Roberts <ken@transfoorm.com> 1763931146 +1030	checkout: moving from c1552ce16ac9aa467ea4e9552560914a08f3b01a to PROD-TEST-BRANCH-#1-FUSE-PATCH
+0000000000000000000000000000000000000000 0519602970eb71b816049e88c173686837675bba Ken Roberts <ken@transfoorm.com> 1763933219 +1030	commit (initial): SEED-V1: Initial production-ready baseline with FUSE architecture
+0519602970eb71b816049e88c173686837675bba c1552ce16ac9aa467ea4e9552560914a08f3b01a Ken Roberts <ken@transfoorm.com> 1763933355 +1030	checkout: moving from seed-temp to main
+c1552ce16ac9aa467ea4e9552560914a08f3b01a 87a9602eebcf6850017ea5e78a938a3e5c2d6564 Ken Roberts <ken@transfoorm.com> 1763937207 +1030	commit: Fix Vercel build: Remove Turbopack from production
+87a9602eebcf6850017ea5e78a938a3e5c2d6564 65a407bdec53dbbdc07c02d2e3338ab863ef89c3 Ken Roberts <ken@transfoorm.com> 1763961371 +1030	commit: VRP-Compliant: Add protected files config + Restore Convex Action fetch exception
+65a407bdec53dbbdc07c02d2e3338ab863ef89c3 0519602970eb71b816049e88c173686837675bba Ken Roberts <ken@transfoorm.com> 1763961589 +1030	rebase (start): checkout origin/main
+0519602970eb71b816049e88c173686837675bba 65a407bdec53dbbdc07c02d2e3338ab863ef89c3 Ken Roberts <ken@transfoorm.com> 1763961601 +1030	rebase (abort): returning to refs/heads/main
+0000000000000000000000000000000000000000 feb19124c4378b434d99f0d0409c09082c197822 Ken Roberts <ken@transfoorm.com> 1763962015 +1030	commit (initial): SEED-V1: Production-ready baseline with FUSE architecture, Vercel fixes, and VRP protection
+0000000000000000000000000000000000000000 d088100ef33241f8d40d1c136926f65893fe5fde Ken Roberts <ken@transfoorm.com> 1763964271 +1030	commit (initial): SEED-V1: Production-ready baseline with Approval Bridge System
+d088100ef33241f8d40d1c136926f65893fe5fde 93ef3dfbf28915d7d1ff9fb7f6ea941bf3d18067 Ken Roberts <ken@transfoorm.com> 1763965499 +1030	commit: fix: Update build script to generate Convex files before Next.js build
+93ef3dfbf28915d7d1ff9fb7f6ea941bf3d18067 1dc82a1c9a2913ca5e0f8abde8490ead5b0ccdd8 Ken Roberts <ken@transfoorm.com> 1763966389 +1030	commit: fix: Add --yes flag to Convex deploy for non-interactive builds
+1dc82a1c9a2913ca5e0f8abde8490ead5b0ccdd8 f561a78ef6a4180b50ab16f94637dc9f45a869d5 Ken Roberts <ken@transfoorm.com> 1763967761 +1030	commit: perf: Remove force-dynamic for 40x faster navigation
+f561a78ef6a4180b50ab16f94637dc9f45a869d5 65a407bdec53dbbdc07c02d2e3338ab863ef89c3 Ken Roberts <ken@transfoorm.com> 1763967980 +1030	checkout: moving from seed-clean to main
+65a407bdec53dbbdc07c02d2e3338ab863ef89c3 f561a78ef6a4180b50ab16f94637dc9f45a869d5 Ken Roberts <ken@transfoorm.com> 1763968009 +1030	checkout: moving from main to seed-clean
+f561a78ef6a4180b50ab16f94637dc9f45a869d5 65a407bdec53dbbdc07c02d2e3338ab863ef89c3 Ken Roberts <ken@transfoorm.com> 1763968016 +1030	checkout: moving from seed-clean to main
+65a407bdec53dbbdc07c02d2e3338ab863ef89c3 7e0e3eccdf35104732d7d47c8f2ae51aedc9ab52 Ken Roberts <ken@transfoorm.com> 1763968016 +1030	cherry-pick: perf: Remove force-dynamic for 40x faster navigation
+7e0e3eccdf35104732d7d47c8f2ae51aedc9ab52 7e0e3eccdf35104732d7d47c8f2ae51aedc9ab52 Ken Roberts <ken@transfoorm.com> 1763968346 +1030	checkout: moving from main to main
+7e0e3eccdf35104732d7d47c8f2ae51aedc9ab52 1dc82a1c9a2913ca5e0f8abde8490ead5b0ccdd8 Ken Roberts <ken@transfoorm.com> 1763968346 +1030	reset: moving to BEFORE-PERF-FIX
+1dc82a1c9a2913ca5e0f8abde8490ead5b0ccdd8 d088100ef33241f8d40d1c136926f65893fe5fde Ken Roberts <ken@transfoorm.com> 1763969807 +1030	checkout: moving from main to d088100
+d088100ef33241f8d40d1c136926f65893fe5fde 0519602970eb71b816049e88c173686837675bba Ken Roberts <ken@transfoorm.com> 1763970174 +1030	checkout: moving from d088100ef33241f8d40d1c136926f65893fe5fde to 0519602
