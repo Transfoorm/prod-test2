@@ -27,22 +27,38 @@ if git diff --cached --name-only | grep -E 'src/app/.*/page\.css$'; then
 fi
 
 # ═══════════════════════════════════════════════════════════════════
-# 🔒 SACRED CONFIG PROTECTION - Block unauthorized ESLint changes
+# 🔒 SACRED CONFIG PROTECTION - Approval Bridge for ESLint changes
 # ═══════════════════════════════════════════════════════════════════
 if git diff --cached --name-only | grep -q "^eslint.config.mjs$"; then
-  echo ""
-  echo "⛔ CRITICAL: eslint.config.mjs modification detected!"
-  echo ""
-  echo "This file contains the VIRGIN EXCEPTION LIST."
-  echo "Changes to ESLint rules or exceptions require explicit approval."
-  echo ""
-  echo "If you are:"
-  echo "  - Fixing a legitimate bug: FIX THE CODE, not the rule"
-  echo "  - Adding an exception: STOP. Discuss first."
-  echo "  - Ken approving this: Override with --no-verify"
-  echo ""
-  echo "Commit blocked. No exceptions without discussion."
-  exit 1
+  # Check for approval token
+  if [ -f ".vrp-approval" ]; then
+    echo "✅ Approval token found - ESLint change authorized"
+    rm -f .vrp-approval  # Consume token (single-use)
+    echo "🔥 Token consumed (single-use)"
+  else
+    echo ""
+    echo "⛔ CRITICAL: eslint.config.mjs modification detected!"
+    echo ""
+    echo "This file contains the VIRGIN EXCEPTION LIST."
+    echo "Changes to ESLint rules or exceptions require explicit approval."
+    echo ""
+    echo "═══════════════════════════════════════════════════════════════"
+    echo "  🚫 NO VERIFY CANCER WARNING"
+    echo "  Using --no-verify is FORBIDDEN in this repository."
+    echo "  It bypasses ALL protections and corrupts the VRP."
+    echo "═══════════════════════════════════════════════════════════════"
+    echo ""
+    echo "APPROVED WORKFLOW:"
+    echo "  1. Claude Code asks user for approval"
+    echo "  2. User approves the specific change"
+    echo "  3. Claude creates .vrp-approval token"
+    echo "  4. Commit proceeds with token (token is consumed)"
+    echo ""
+    echo "If you are manually editing, create .vrp-approval file first."
+    echo ""
+    echo "Commit blocked. Approval token required."
+    exit 1
+  fi
 fi
 
 # Run critical VRP scripts (manifest validation skipped - legacy routes not yet in SMAC manifests)

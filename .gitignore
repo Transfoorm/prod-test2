@@ -47,3 +47,6 @@ convex/_generated/
 .claude.json.lock
 .archive/
 .reference/
+
+# VRP (Virgin Repo Protocol) - Approval Bridge System
+.vrp-approval  # Temporary approval token for protected file edits

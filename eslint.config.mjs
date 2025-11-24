@@ -162,6 +162,13 @@ const eslintConfig = [
       "no-restricted-globals": "off"  // Server-side session cookie deletion
     }
   },
+  // Exception: Allow fetch in Convex actions (server-side external API calls)
+  {
+    files: ["convex/**/*Action.ts"],
+    rules: {
+      "no-restricted-globals": "off"  // Convex actions are server-side
+    }
+  },
   // ═══════════════════════════════════════════════════════════════════
   // 🛡️ WCCC PROTECTION - PREVENT PAGE-SPECIFIC CSS FILES
   // ═══════════════════════════════════════════════════════════════════
