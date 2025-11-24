@@ -9,10 +9,9 @@
    🟨  TYPOGRAPHY
    =========================================================== */
 :root {
-
   /* FUSE STYLE FONT (FSF) Stack - Families */
-  --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-family: system-ui, -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --font-family-mono: ui-monospace, sfmono-regular, "SF Mono", menlo, consolas, "Liberation Mono", "Courier New", monospace;
 
   /* Font Sizes */
   --font-size-4xl: 36px;   /* h1 - Display text */
@@ -78,7 +77,6 @@
   --border-width-sm: 1px;
   --border-width-md: 2px;
   --border-width-lg: 3px;
-
   --focus-outline-width: 2px;
   --focus-outline-offset: 2px;
 }
@@ -88,15 +86,15 @@
    =========================================================== */
 :root {
   /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-  --shadow-elevated: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-  --shadow-dropdown: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-  --shadow-modal: 0 25px 50px -12px rgba(0,0,0,0.25);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 5%);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -1px rgb(0 0 0 / 6%);
+  --shadow-elevated: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -1px rgb(0 0 0 / 6%);
+  --shadow-dropdown: 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -2px rgb(0 0 0 / 5%);
+  --shadow-modal: 0 25px 50px -12px rgb(0 0 0 / 25%);
 
   /* Brand Glows */
-  --shadow-brand-light: 0 4px 12px rgba(255, 80, 32, 0.25);
-  --shadow-brand-medium: 0 8px 20px rgba(255, 80, 32, 0.35);
+  --shadow-brand-light: 0 4px 12px rgb(255 80 32 / 25%);
+  --shadow-brand-medium: 0 8px 20px rgb(255 80 32 / 35%);
 
   /* Transitions */
   --duration-fast: 150ms;
@@ -124,7 +122,7 @@
   --accent-primary: #f8b14a;                /* Soft amber */
   --accent-primary-dark: #c97b2d;           /* Hover depth */
   --accent-primary-gradient: linear-gradient(135deg, #f8b14a 0%, #ffb86b 100%);
-  --accent-primary-shadow: 0 2px 4px rgba(248, 177, 74, 0.2);
+  --accent-primary-shadow: 0 2px 4px rgb(248 177 74 / 20%);
 }
 
 /* ===========================================================
@@ -153,6 +151,7 @@
   0%, 100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }

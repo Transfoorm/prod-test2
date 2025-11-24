@@ -4,26 +4,26 @@
    Import order: alphabetical for easy maintenance
    NOTE: @import must come BEFORE all other CSS rules
    * BASE CLASSES - Shared by all variants */ 
-@import '../src/prebuilts/actions/actions.css';
-@import '../src/prebuilts/badge/badge.css';
-@import '../src/prebuilts/button/button.css';
-@import '../src/prebuilts/card/card.css';
-@import '../src/prebuilts/divider/divider.css';
-@import '../src/prebuilts/dropdown/dropdown.css';
-@import '../src/prebuilts/fieldbox/fieldbox.css';
-@import '../src/prebuilts/form/form.css';
-@import '../src/prebuilts/grid/grid.css';
-@import '../src/prebuilts/input/input.css';
-@import '../src/prebuilts/label/label.css';
-@import '../src/prebuilts/modal/modal.css';
-@import '../src/prebuilts/page/page.css';
-@import '../src/prebuilts/rank/rank.css';
-@import '../src/prebuilts/search/search.css';
-@import '../src/prebuilts/stack/stack.css';
-@import '../src/prebuilts/table/table.css';
-@import '../src/prebuilts/tabs/tabs.css';
-@import '../src/prebuilts/tooltip/tooltip.css';
-@import '../src/prebuilts/typography/typography.css';
+@import url('../src/prebuilts/actions/actions.css');
+@import url('../src/prebuilts/badge/badge.css');
+@import url('../src/prebuilts/button/button.css');
+@import url('../src/prebuilts/card/card.css');
+@import url('../src/prebuilts/divider/divider.css');
+@import url('../src/prebuilts/dropdown/dropdown.css');
+@import url('../src/prebuilts/fieldbox/fieldbox.css');
+@import url('../src/prebuilts/form/form.css');
+@import url('../src/prebuilts/grid/grid.css');
+@import url('../src/prebuilts/input/input.css');
+@import url('../src/prebuilts/label/label.css');
+@import url('../src/prebuilts/modal/modal.css');
+@import url('../src/prebuilts/page/page.css');
+@import url('../src/prebuilts/rank/rank.css');
+@import url('../src/prebuilts/search/search.css');
+@import url('../src/prebuilts/stack/stack.css');
+@import url('../src/prebuilts/table/table.css');
+@import url('../src/prebuilts/tabs/tabs.css');
+@import url('../src/prebuilts/tooltip/tooltip.css');
+@import url('../src/prebuilts/typography/typography.css');
 
 /* ═══════════════════════════════════════════════════════════════════
    🟩🟩🟩🟩🟩🟩 VARIABLES - Shared by all components 🟩🟩🟩🟩🟩🟩
@@ -55,6 +55,7 @@
   /* ═══════════════════════════════════════════════════════════════════
    DIVIDER VARIANT VARIABLES - Shared infrastructure for DividerVC
    ═══════════════════════════════════════════════════════════════════ */
+
   /* Divider colors defined in theme - --divider-color1 through --divider-color5 */
   --divider-thickness: 1px;                           /* ✅ Divider line thickness */
   --divider-gradient-height: 2px;                     /* ✅ Gradient divider height */

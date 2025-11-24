@@ -1,11 +1,11 @@
 /* FUSE Style System - Global Reset & Base Styles */
 
-@import './features.css';
-@import './layout.css';
-@import './prebuilts.css';
+@import url('./features.css');
+@import url('./layout.css');
+@import url('./prebuilts.css');
+@import url('./tokens.css');
+@import url('./themes/transtheme.css');
 
-@import './tokens.css';
-@import './themes/transtheme.css';
 /* Box model reset */
 * {
   box-sizing: border-box;
@@ -24,12 +24,12 @@ body {
   overflow-x: hidden;
   min-height: 100vh;
   overscroll-behavior-y: none;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--body-bg, #ffffff);
-  color: var(--text-primary, #000000);
+  background-color: var(--body-bg, #fff);
+  color: var(--text-primary, #000);
 }
 
 #__next {
@@ -69,6 +69,7 @@ p + p {
 small { font-size: var(--font-size-sm); }
 strong { font-weight: var(--font-weight-bold); }
 em { font-style: italic; }
+
 code {
   font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
   font-size: var(--font-size-sm);

@@ -1,12 +1,12 @@
 /* Layout Components - App Frame Structure & Navigation (IMPORTS - Must come before all CSS rules) */
 
 /*  SHELL COMPONENTS (WCCC ly-* Compliant) */
-@import '../src/shell/shell.css';
+@import url('../src/shell/shell.css');
 
 /*  APP LAYOUT FILES (Root, Domain, Auth) */
-@import '../src/app/root-layout.css';
-@import '../src/app/(domains)/domains-layout.css';
-@import '../src/app/(auth)/auth.css';
+@import url('../src/app/root-layout.css');
+@import url('../src/app/(domains)/domains-layout.css');
+@import url('../src/app/(auth)/auth.css');
 
 /* ═══════════════════════════════════════════════════════════════════
    LAYOUT CONTROL VARIABLES - App Shell & Page Architecture
@@ -31,7 +31,7 @@
   --ai-sidebar-closed: 45px;             /* AI sidebar width when closed (avatar only) */
   --ai-sidebar-open: 256px;              /* AI sidebar width when open (default) */
   --ai-sidebar-expanded: 512px;          /* AI sidebar width when expanded (full chat) */
-  --ai-sidebar-top-margin: 0px;          /* Vertical offset for AI sidebar */
+  --ai-sidebar-top-margin: 0;          /* Vertical offset for AI sidebar */
   --ai-sidebar-top-border-extend: 41px;  /* Top border extension width */
   --ai-sidebar-top-border-angle: 11px;   /* Diagonal angle on border */
   --ai-sidebar-avatar-size: 40px;        /* Avatar circle size */
@@ -40,7 +40,7 @@
   /* Page Header - Auto-generated titles */
   --page-header-margin-top: 30px;        /* Gap above title/subtitle block */
   --page-header-margin-left: var(--page-content-padding-left);
-  --page-subtitle-gap: 0px;              /* Gap between title and subtitle */
+  --page-subtitle-gap: 0;              /* Gap between title and subtitle */
   --page-header-margin-bottom: 25px;     /* Gap below title/subtitle block */
   --page-title-size: 30px;               /* Page title font size */
   --page-subtitle-size: 14px;            /* Page subtitle font size */

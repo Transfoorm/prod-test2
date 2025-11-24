@@ -1,32 +1,32 @@
 /* Feature Components - Application-Level Reusable Features */
 
 /* Brand Logo Button */
-@import '../src/features/BrandLogoButton/brand-logo-button.css';
+@import url('../src/features/BrandLogoButton/brand-logo-button.css');
 
 /* Company Button */
-@import '../src/features/CompanyButton/company-button.css';
+@import url('../src/features/CompanyButton/company-button.css');
 
 /* Country Selector */
-@import '../src/features/CountrySelector/country-selector.css';
+@import url('../src/features/CountrySelector/country-selector.css');
 
 /* Theme Toggle */
-@import '../src/features/ThemeToggle/theme-toggle.css';
+@import url('../src/features/ThemeToggle/theme-toggle.css');
 
 /* User Button */
-@import '../src/features/UserButton/user-button.css';
+@import url('../src/features/UserButton/user-button.css');
 
 /* Setup Modal */
-@import '../src/features/UserSetup/SetupModal/setup-modal.css';
+@import url('../src/features/UserSetup/SetupModal/setup-modal.css');
 
 /* Verify Modal */
-@import '../src/features/UserSetup/VerifyModal/verify-modal.css';
+@import url('../src/features/UserSetup/VerifyModal/verify-modal.css');
 
 /* Flying Button (Phoenix) */
-@import '../src/features/UserSetup/FlyingButton/flying-button.css';
+@import url('../src/features/UserSetup/FlyingButton/flying-button.css');
 
 /* ☢️ Vanish Protocol - QUARANTINED (WCCC ft-* Compliant)
    Lives at PROJECT ROOT /vanish/ to signal architectural boundary
    This is the ONLY feature that breaks Clerk Exclusion (user deletion requires Clerk API)
    Root location makes the doctrine violation visible and intentional
    Uses ft-vanish-* prefix despite quarantine for CSS discoverability */
-@import '../vanish/vanish.css';
+@import url('../vanish/vanish.css');
