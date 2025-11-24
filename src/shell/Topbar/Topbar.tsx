@@ -197,42 +197,27 @@ export default function Topbar() {
                   }, reverseFlow.phoenixTakeoffDelay); // THE ONE CLEAR DELAY from config
                 }
               } else {
-                // NOT on homepage - we need to navigate AND bring modal back
-                // First, reset the modal skip state BEFORE navigation
-                const setModalSkipped = useFuse.getState().setModalSkipped;
-                setModalSkipped(false);
+                // NOT on homepage - different behavior for skipped vs unskipped
+                const modalIsSkipped = modalSkipped;
+
+                if (modalIsSkipped) {
+                  // SKIPPED MODE: Reset skip state and bring modal back
+                  const setModalSkipped = useFuse.getState().setModalSkipped;
+                  setModalSkipped(false);
+                }
 
                 // Navigate to home
                 router.push('/');
 
-                // Then trigger the Phoenix reverse flow after navigation
+                // Just fade out the topbar button - NO PHOENIX
                 setTimeout(() => {
-                  // Get button position for Phoenix flight
-                  const sourceButton = document.querySelector('.ly-topbar-right-container button') as HTMLElement;
+                  setIsFadingOut(true);
 
-                  if (sourceButton) {
-                    // Fire Phoenix event after the takeoff delay
-                    setTimeout(() => {
-                      const freshRect = sourceButton.getBoundingClientRect();
-                      window.dispatchEvent(new CustomEvent('phoenixReverseFlow', {
-                        detail: {
-                          sourceX: freshRect.left,
-                          sourceY: freshRect.top,
-                          sourceWidth: freshRect.width
-                        }
-                      }));
-
-                      // Start fade-out animation
-                      setIsFadingOut(true);
-
-                      // Hide button completely after fade animation
-                      setTimeout(() => {
-                        setFlyingButtonVisible(false);
-                        setIsFadingOut(false);
-                      }, reverseFlow.topbarButtonHideDelay);
-                    }, reverseFlow.phoenixTakeoffDelay);
-                  }
-                }, 300); // Small delay to let navigation complete
+                  setTimeout(() => {
+                    setFlyingButtonVisible(false);
+                    setIsFadingOut(false);
+                  }, 600); // Match fade-out duration
+                }, 100); // Small delay to let navigation start
               }
             }}
           >
