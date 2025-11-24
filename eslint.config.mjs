@@ -190,7 +190,7 @@ const eslintConfig = [
     }
   },
   // ═══════════════════════════════════════════════════════════════════
-  // 🛡️ ISV PROTECTION - GLOBAL INLINE STYLE VIRUS PREVENTION
+  // 🛡️ ISV PROTECTION - GLOBAL "INLINE STYLE VIRUS" PREVENTION
   // ═══════════════════════════════════════════════════════════════════
   // Block ALL inline styles except documented FUSE-compliant exceptions
   {
