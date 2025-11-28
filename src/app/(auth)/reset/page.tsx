@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useSignIn } from "@clerk/nextjs";
 import { Icon } from '@/prebuilts/icon/iconRegistry';
+import { Button } from '@/prebuilts/button';
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -286,13 +287,16 @@ export default function ResetPasswordPage() {
                   </div>
                 )}
 
-                <button
+                <Button.primary
                   type="submit"
                   disabled={isSubmitting || !isLoaded}
                   className="auth-submit-gradient"
+                  icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
+                  iconPosition="left"
+                  fullWidth
                 >
                   {isSubmitting ? "Sending code..." : "Send Reset Code"}
-                </button>
+                </Button.primary>
               </form>
             )}
 
@@ -364,13 +368,16 @@ export default function ResetPasswordPage() {
                   </div>
                 )}
 
-                <button
+                <Button.primary
                   type="submit"
                   disabled={isSubmitting || !isLoaded || code.length !== 6}
                   className="auth-submit-gradient"
+                  icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
+                  iconPosition="left"
+                  fullWidth
                 >
                   {isSubmitting ? "Verifying..." : "Verify Code"}
-                </button>
+                </Button.primary>
 
                 <button
                   type="button"
@@ -425,13 +432,16 @@ export default function ResetPasswordPage() {
                   </div>
                 )}
 
-                <button
+                <Button.primary
                   type="submit"
                   disabled={isSubmitting || !isLoaded}
                   className="auth-submit-gradient"
+                  icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
+                  iconPosition="left"
+                  fullWidth
                 >
                   {isSubmitting ? "Resetting..." : "Reset Password"}
-                </button>
+                </Button.primary>
               </form>
             )}
           </div>
