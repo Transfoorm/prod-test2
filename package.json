@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "dev:convex": "convex dev",
-    "build": "next build --turbopack",
+    "build": "npx convex codegen && next build --turbopack",
     "start": "next start",
     "lint": "eslint",
     "lint:admiral": "eslint 'src/app/(modes)/(admiral)/**/*.{ts,tsx}'",
