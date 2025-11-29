@@ -7,6 +7,7 @@ import noComponentCss from "./eslint-custom-rules/no-component-css.js";
 import noUseStateForData from "./eslint-custom-rules/no-usestate-for-data.js";
 import noRuntimeRankChecks from "./eslint-custom-rules/no-runtime-rank-checks.js";
 import noHardcodedSecrets from "./eslint-custom-rules/no-hardcoded-secrets.js";
+import tttsRules from "./eslint-custom-rules/ttts/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -27,6 +28,7 @@ const eslintConfig = [
       ".ops/**",
       "convex/_generated/**",
       ".archive/**",  // Archived legacy code - reference only
+      "eslint-custom-rules/**",  // ESLint plugins use CommonJS require()
     ],
   },
   // Register custom VRP enforcement plugins
@@ -38,6 +40,7 @@ const eslintConfig = [
       "no-usestate-for-data": noUseStateForData,
       "no-runtime-rank-checks": noRuntimeRankChecks,
       "no-hardcoded-secrets": noHardcodedSecrets,
+      "ttts": tttsRules,
     },
   },
   // Global lint configuration + Superior VRP Layer 2 Rules
@@ -62,6 +65,22 @@ const eslintConfig = [
 
       // SECURITY ENFORCEMENT
       "no-hardcoded-secrets/no-hardcoded-secrets": "error",
+
+      // ═══════════════════════════════════════════════════════════
+      // TTTS - TRIPLE-T SOVEREIGNTY ENFORCEMENT (Strategy 1 Protection)
+      // ═══════════════════════════════════════════════════════════
+      // Enforces FUSE/ADP/PRISM/WARP architectural sovereignty
+      // These rules make Strategy 1 (full domain preload) impossible to break
+
+      // TTTS-2: Golden Bridge - No direct Convex in pages/components
+      "ttts/no-direct-convex-in-pages": "error",
+
+      // TTTS-5: Domain Sovereignty - No cross-domain imports
+      "ttts/no-cross-domain-imports": "error",
+
+      // TTTS-1: Slice Discipline - Enforce ADP slice shape
+      // NOTE: Set to "warn" initially until all slices are migrated
+      "ttts/enforce-slice-shape": "warn",
 
       // NOTE: class-prefix and no-component-css DISABLED for now
       // Legacy uses VR architecture, not 5-file system yet

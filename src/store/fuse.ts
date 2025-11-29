@@ -75,9 +75,13 @@ const emptyClientsSlice: ClientsSlice = {
 const emptyProductivitySlice: ProductivitySlice = {
   emails: [],
   calendar: [],
-  pipeline: [],
+  meetings: [],
   bookings: [],
   tasks: [],
+  // ADP Coordination fields
+  status: 'idle',
+  lastFetchedAt: undefined,
+  source: undefined,
 };
 
 const emptyProjectsSlice: ProjectsSlice = {
@@ -581,18 +585,27 @@ export const useFuse = create<FuseState>((set, get) => ({
     fuseTimer.end('clearClients', start);
   },
 
-  // Work Domain Hydration
-  hydrateProductivity: (data: Partial<ProductivitySlice>) => {
+  // Work Domain Hydration (ADP/PRISM Compliant)
+  hydrateProductivity: (data: Partial<ProductivitySlice>, source?: 'SSR' | 'WARP' | 'CONVEX_LIVE' | 'MUTATION' | 'ROLLBACK') => {
     const start = fuseTimer.start('hydrateProductivity');
     set((state) => ({
-      productivity: { ...state.productivity, ...data },
+      productivity: {
+        ...state.productivity,
+        ...data,
+        // ADP Coordination: Track source and timing
+        status: 'ready',
+        lastFetchedAt: Date.now(),
+        source: source || data.source || 'WARP',
+      },
       isProductivityHydrated: true,
       lastActionTiming: performance.now()
     }));
-    console.log('⚡ FUSE: Work domain hydrated', {
+    console.log('⚡ FUSE: Productivity domain hydrated', {
       emails: data.emails?.length || 0,
       calendar: data.calendar?.length || 0,
-      tasks: data.tasks?.length || 0,
+      meetings: data.meetings?.length || 0,
+      bookings: data.bookings?.length || 0,
+      source: source || data.source || 'WARP',
     });
     fuseTimer.end('hydrateProductivity', start);
   },

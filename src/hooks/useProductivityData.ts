@@ -37,7 +37,7 @@ export function useProductivityData() {
     data: {
       emails: productivity.emails,
       calendar: productivity.calendar,
-      pipeline: productivity.pipeline,
+      meetings: productivity.meetings,
       bookings: productivity.bookings,
       tasks: productivity.tasks,
     },
@@ -46,7 +46,7 @@ export function useProductivityData() {
     computed: {
       totalEmails: productivity.emails.length,
       totalCalendarEvents: productivity.calendar.length,
-      totalPipelineItems: productivity.pipeline.length,
+      totalMeetings: productivity.meetings.length,
       totalBookings: productivity.bookings.length,
       totalTasks: productivity.tasks.length,
       hasData: productivity.emails.length > 0 || productivity.calendar.length > 0 || productivity.tasks.length > 0,

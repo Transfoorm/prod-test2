@@ -172,7 +172,7 @@ export type FuseState = {
   // Domain hydration methods - Great Provider Ecosystem
   hydrateFinance: (data: Partial<FinanceSlice>) => void;
   hydrateClients: (data: Partial<ClientsSlice>) => void;
-  hydrateProductivity: (data: Partial<ProductivitySlice>) => void;
+  hydrateProductivity: (data: Partial<ProductivitySlice>, source?: 'SSR' | 'WARP' | 'CONVEX_LIVE' | 'MUTATION' | 'ROLLBACK') => void;
   hydrateProjects: (data: Partial<ProjectsSlice>) => void;
   hydrateSettings: (data: Partial<SettingsSlice>) => void;
   hydrateAdmin: (data: Partial<AdminSlice>, source?: 'SSR' | 'WARP' | 'MUTATION' | 'CONVEX_LIVE') => void;
@@ -249,14 +249,19 @@ export type ClientsSlice = {
 
 /**
  * Productivity Domain Slice
- * Handles email, calendar, pipeline, bookings
+ * Handles email, calendar, meetings, bookings
+ * ADP/PRISM Compliant: Includes coordination fields for WARP preloading
  */
 export type ProductivitySlice = {
   emails: Record<string, unknown>[];
   calendar: Record<string, unknown>[];
-  pipeline: Record<string, unknown>[];
+  meetings: Record<string, unknown>[];
   bookings: Record<string, unknown>[];
   tasks: Record<string, unknown>[];
+  // ADP Coordination fields (REQUIRED for PRISM)
+  status: 'idle' | 'loading' | 'ready' | 'error';
+  lastFetchedAt?: number;
+  source?: 'SSR' | 'WARP' | 'CONVEX_LIVE' | 'MUTATION' | 'ROLLBACK';
 };
 
 /**

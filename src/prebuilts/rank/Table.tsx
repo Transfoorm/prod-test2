@@ -3,18 +3,21 @@
 │  /src/prebuilts/rank/Table.tsx                                        │
 │                                                                        │
 │  TRUE VR: Complete user management table with rank controls.          │
-│  Fetches users, handles rank changes, manages everything internally.   │
+│  Reads from FUSE store (WARP preloaded), handles rank changes.        │
 │                                                                        │
 │  Usage:                                                               │
 │  <UserRankTable />                                                    │
 │  That's it. Zero configuration. It handles EVERYTHING.                │
+│                                                                        │
+│  FUSE/ADP Compliant: Reads from admin slice, no direct Convex query.  │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
 
 import { useState } from 'react';
-import { useQuery, useMutation } from 'convex/react';
+import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import { useFuse } from '@/store/fuse';
 import type { Id } from '@/convex/_generated/dataModel';
 import { Table } from '@/prebuilts';
 import type { SortableColumn } from '@/prebuilts/table/Sortable';
@@ -39,20 +42,23 @@ interface UserData {
 /**
  * UserRankTable - Intelligent user management table
  *
- * TRUE VR Features:
- * - Fetches all users automatically
+ * FUSE/ADP Features:
+ * - Reads users from FUSE admin slice (WARP preloaded)
  * - Calculates trial days remaining
  * - Shows user status (pending/active)
- * - Handles rank changes internally
+ * - Handles rank changes via Convex mutation
  * - Updates database on selection
  * - Prevents Admiral self-demotion (UX-level protection)
- * - Zero props, zero configuration
+ * - Zero loading states (data is preloaded)
  * - TTT Gap Model compliant
  *
- * This is what VR Architecture is about!
+ * This is what FUSE/ADP Architecture is about!
  */
 export default function UserRankTable() {
-  const users = useQuery(api.domains.admin.users.api.getAllUsers);
+  // Read from FUSE store - data preloaded by WARP
+  const { users: fuseUsers, status } = useFuse((state) => state.admin);
+  const isHydrated = useFuse((state) => state.isAdminHydrated);
+  const users = fuseUsers as unknown as UserData[] | undefined;
   const currentUser = useConvexUser();
   const setUserRank = useMutation(api.domains.admin.users.api.setUserRank);
   const [changingRank, setChangingRank] = useState<string | null>(null);
@@ -76,12 +82,9 @@ export default function UserRankTable() {
     }
   };
 
-  if (!users) {
-    return (
-      <div className="vr-rank-table vr-rank-table--loading">
-        <div className="vr-rank-table-shimmer">Loading users...</div>
-      </div>
-    );
+  // Show nothing until hydrated (FUSE doctrine: no loading spinners)
+  if (!isHydrated || status !== 'ready' || !users) {
+    return null;
   }
 
   // Define table columns using Table.sortable VR

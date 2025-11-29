@@ -4,6 +4,8 @@
 │                                                                        │
 │  Building from scratch - iterative, user-directed.                    │
 │  Old sidebar preserved in /src/appshell/ as reference.                │
+│                                                                        │
+│  🔮 PRISM Integration: Preloads domains on dropdown open              │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 "use client";
@@ -16,6 +18,17 @@ import CompanyButton from '@/features/CompanyButton';
 import { useFuse } from '@/store/fuse';
 import { Icon } from '@/prebuilts';
 import { getNavForRank } from './navigation';
+import { usePrism } from '@/fuse/hooks/usePrism';
+
+// 🔮 PRISM: Map section labels to domain keys for preloading
+const SECTION_TO_DOMAIN: Record<string, 'productivity' | 'admin'> = {
+  productivity: 'productivity',
+  admin: 'admin',
+  // Add more as WARP routes are created
+  // clients: 'clients',
+  // finance: 'finance',
+  // projects: 'projects',
+};
 
 export default function Sidebar() {
   const router = useRouter();
@@ -26,6 +39,9 @@ export default function Sidebar() {
   const toggleSection = useFuse((s) => s.toggleSection);
   const collapseAllSections = useFuse((s) => s.collapseAllSections);
   const [isFooterMenuOpen, setIsFooterMenuOpen] = useState(false);
+
+  // 🔮 PRISM: Preload domains on dropdown open
+  const { preloadDomain } = usePrism();
 
   const navItems = getNavForRank(rank);
   const hydrateExpandedSections = useFuse((s) => s.hydrateExpandedSections);
@@ -90,13 +106,27 @@ export default function Sidebar() {
           }
 
           if (item.children) {
-            const open = expandedSections.includes(item.label.toLowerCase());
+            const sectionKey = item.label.toLowerCase();
+            const open = expandedSections.includes(sectionKey);
             const hasActiveChild = item.children.some((child) => isActive(child.path));
+
+            // 🔮 PRISM: Handle section click with preload
+            const handleSectionClick = () => {
+              toggleSection(sectionKey);
+              // If section is being opened (not already open), trigger PRISM
+              if (!open) {
+                const domain = SECTION_TO_DOMAIN[sectionKey];
+                if (domain) {
+                  preloadDomain(domain);
+                }
+              }
+            };
+
             return (
               <div key={item.label} className="ly-sidebar-section">
                 <button
                   className={`ly-sidebar-button ${hasActiveChild ? 'ly-sidebar-button--active' : ''}`}
-                  onClick={() => toggleSection(item.label.toLowerCase())}
+                  onClick={handleSectionClick}
                 >
                   <Icon variant={item.icon} size="sm" className="ly-sidebar-icon" />
                   <span>{item.label}</span>
