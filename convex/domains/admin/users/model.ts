@@ -10,6 +10,7 @@ import { RANK_SYSTEM_DEFAULTS, calculateTrialEndDate } from "@/fuse/constants/ra
 export class UsersModel {
 
   // Create new user with defaults
+  // 🛡️ UNIQUE CONSTRAINT: Prevents duplicate emails in database
   static async createUser(
     db: DatabaseWriter,
     args: {
@@ -23,6 +24,26 @@ export class UsersModel {
       businessCountry?: string;
     }
   ): Promise<string> {
+    // 🛡️ DUPLICATE CHECK: Enforce email uniqueness (Convex has no native unique constraint)
+    const existingByEmail = await db
+      .query("admin_users")
+      .filter((q) => q.eq(q.field("email"), args.email))
+      .first();
+
+    if (existingByEmail) {
+      throw new Error(`User with email ${args.email} already exists`);
+    }
+
+    // 🛡️ DUPLICATE CHECK: Enforce clerkId uniqueness
+    const existingByClerkId = await db
+      .query("admin_users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
+      .first();
+
+    if (existingByClerkId) {
+      throw new Error(`User with clerkId ${args.clerkId} already exists`);
+    }
+
     const defaultTheme = THEME_DEFAULTS.DEFAULT_THEME;
     const defaultMode = THEME_DEFAULTS.DEFAULT_MODE;
     const now = Date.now();
