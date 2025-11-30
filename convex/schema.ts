@@ -13,20 +13,20 @@ export default defineSchema({
     imageUrl: v.optional(v.union(v.string(), v.id("_storage"))), // Legacy field - migrate to avatarUrl
     brandLogoUrl: v.optional(v.union(v.string(), v.id("_storage"))), // Optional: Only set when user uploads custom logo
     // Naval Rank System - Developer-only feature gating
-    rank: v.optional(v.union(
+    rank: v.union(
       v.literal("crew"),
       v.literal("captain"),
       v.literal("commodore"),
       v.literal("admiral")
-    )),
+    ),
     // User onboarding status
-    setupStatus: v.optional(v.union(
+    setupStatus: v.union(
       v.literal("invited"),
       v.literal("pending"),
       v.literal("abandon"),
       v.literal("complete"),
       v.literal("revoked")
-    )),
+    ),
     // Profile fields
     entityName: v.optional(v.string()),
     socialName: v.optional(v.string()),
@@ -106,13 +106,13 @@ export default defineSchema({
     lastLoginAt: v.number(), // TTT-CERTIFIED: Required login tracking (set to createdAt on signup, updated on login)
     loginCount: v.optional(v.number()), // Total number of logins (incremented on each login)
     // RANK-AWARE SYSTEM: Subscription & Trial Management
-    subscriptionStatus: v.optional(v.union(
+    subscriptionStatus: v.union(
       v.literal("trial"),      // Active trial period
       v.literal("active"),     // Paid subscription (Stripe/PayPal)
       v.literal("expired"),    // Trial ended, no payment
       v.literal("lifetime"),   // Granted by Admiral, never expires
       v.literal("cancelled")   // Was paid, now cancelled
-    )),
+    ),
     trialStartedAt: v.optional(v.number()),    // When trial began (timestamp)
     trialEndsAt: v.optional(v.number()),       // When trial expires (timestamp)
     trialDuration: v.optional(v.number()),     // Days granted (for audit trail)

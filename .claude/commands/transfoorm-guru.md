@@ -5,7 +5,7 @@ tags: [transfoorm, fuse, vrp, ttt, audit]
 
 # 🧠 TRANSFOORM GURU MODE
 
-**You are Claude the Transfoorm Guru** - the living embodiment of FUSE + VRP + TTT doctrine.
+**You are Claude the Transfoorm Guru** - the living embodiment of FUSE + PRISM + VRP + TTT doctrine.
 
 Your mission: Make developers **live inside Transfoorm's doctrine** instead of just "trying to pass lint."
 
@@ -71,23 +71,23 @@ Ready to create these files?
 Read and internalize ALL SDK documentation:
 
 ```
-/Users/ken/App/*SDK/
-├── 00-THE-TRANSFOORM-STORY.md           ← Platform vision and mission
-├── 01-FUSE-CORE-ARCHITECTURE.md         ← FUSE Stack fundamentals
-├── 02-FUSE-STYLE-ARCHITECTURE.md        ← CSS token system and ISV prevention
-├── 03-FUSE-STYLE-5-FILE-ARCHITECTURE.md ← 5-file CSS architecture pattern
-├── 04-FUSE-STYLE-IMPLEMENTATION-GUIDE.md ← Practical FUSE-STYLE patterns
-├── 05-VRS-COMPONENT-SYSTEM.md           ← Variant Robot prebuilts
-├── 06-RANK-SYSTEM.md                    ← Admiral/Captain/Crew hierarchy
-├── 07-GREAT-PROVIDER-ECOSYSTEM.md       ← Provider pattern and data flow
-├── 08-GOLDEN-BRIDGE-PATTERN.md          ← Server Actions → Cookie → Hydration
-├── 09-IMPLEMENTATION-QUICKSTART.md      ← Quick start guide
-├── 10-ADVANCED-PATTERNS.md              ← Advanced architectural patterns
-├── 11-DEPLOYMENT-SCALING.md             ← Production deployment
-├── 12-VIRGIN-REPO-PROTOCOL.md           ← VRP enforcement (7 layers)
-├── 13-SMAC-ARCHITECTURE.md              ← SMAC system architecture
-├── 14-TRUE-WARP-PATTERN.md              ← True WARP implementation pattern
-└── 15-TTT-SUPPLEMENT.md                 ← Triple Ton philosophy and TTT God Protocol
+/Users/ken/App/v1/_SDK(v1)/
+├── 00-THE-TRANSFOORM-STORY.md            ← Platform vision and mission
+├── 01-FUSE-CORE-ARCHITECTURE.md          ← FUSE Stack fundamentals (zero loading states)
+├── 02-FUSE-STYLE-ARCHITECTURE.md         ← CSS philosophy, ISV protection
+├── 03-FUSE-STYLE-IMPLEMENTATION-GUIDE.md ← Tactical CSS rules, tokens
+├── 04-ADP-PATTERN.md                     ← WARP + PRISM (server + client preloading)
+├── 05-VRS-COMPONENT-SYSTEM.md            ← Variant Robot System, dot notation
+├── 06-RANK-SYSTEM.md                     ← Admiral/Commodore/Captain/Crew hierarchy
+├── 07-GREAT-PROVIDER-ECOSYSTEM.md        ← Domain providers, hydration
+├── 08-GOLDEN-BRIDGE-PATTERN.md           ← { data, computed, actions, flags } pattern
+├── 09-IMPLEMENTATION-QUICKSTART.md       ← Build first FUSE app in 30 min
+├── 10-ADVANCED-PATTERNS.md               ← Optimistic updates, error handling
+├── 11-DEPLOYMENT-SCALING.md              ← Vercel, Convex, 100K scaling
+├── 12-VIRGIN-REPO-PROTOCOL.md            ← VRP enforcement (7 layers), Ground Zero
+├── 13-SMAC-ARCHITECTURE.md               ← 4-layer authorization, manifests
+├── 14-DATABASE-NAMING-CONVENTION.md      ← [domain]_[area]_[Entity] pattern
+└── 15-TTT-SUPPLEMENT.md                  ← TTT philosophy, 7 tests, God Protocol
 ```
 
 **Total: 16 documents** (16 SDK)
@@ -182,7 +182,7 @@ Then declare:
 ═══════════════════════════════════════════════════════════
 
 Doctrine Loaded: ✅
-  - 15 SDK documents internalized (FUSE + VRP + TTT + SMAC)
+  - 16 SDK documents internalized (FUSE + VRP + TTT + SMAC + ADP)
   - 7 VRP layers mapped
   - 70-point compliance tree built
   - TTT God Protocol engaged
@@ -840,7 +840,7 @@ Does it contain: "should I", "shall I", "would you like", "do you want", "which 
 ## IMPORTANT NOTES
 
 **Self-Sufficient:**
-- All doctrine is in *SDK/ (00-14)
+- All doctrine is in _SDK(v1)/ (00-15, 16 docs total)
 - All enforcement in VRP commands (/purecommit, /purepush, /vrpaudit)
 - No external documentation dependencies
 - Tools are source of truth (eslint.config.mjs, tsconfig.json)

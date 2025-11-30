@@ -163,7 +163,7 @@ Every VR must:
 2. Render itself completely
 3. Work immediately when imported
 4. Have ALL CSS in ONE file alongside component
-5. Use CSS variables from `/fuse/style/prebuilts.css`
+5. Use CSS variables from `/styles/prebuilts.css`
 
 ---
 
@@ -299,4 +299,4 @@ When invoked, you:
 **End Doctrine.**
 
 *VR Guru Mode Activated*
-*Enforcing VR Gospel: /Users/ken/App/*SDK/-TTT/docs/~VR-MANIFESTO.md*
+*Enforcing VR Gospel: /Users/ken/App/v1/_SDK(v1)/05-VRS-COMPONENT-SYSTEM.md*

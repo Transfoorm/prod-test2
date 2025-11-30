@@ -51,18 +51,18 @@ You are the **VRP Audit Master**. Execute the complete 70-point FUSE Stack compl
 35. Font optimization working
 
 ### Layer 4: FUSE Architecture (15 points)
-36. `fuse/store/` directory exists with proper structure
-37. `useFuse` hook properly exported
-38. Provider pattern in layout files exists
+36. `src/store/` and `src/fuse/` directories exist with proper structure
+37. `src/store/fuse.ts` exports FUSE store properly
+38. Provider pattern in layout files exists (PRISM)
 39. All domains have hydration flags (isProductivityHydrated, etc.)
-40. Cookie client exists: `fuse/store/session/cookieClient.ts`
+40. Cookie client exists: `src/fuse/hydration/session/cookieClient.ts`
 41. `FuseCookiePayload` interface exists and is complete
 42. `ClientHydrator.tsx` has cookie polling (500ms interval)
-43. Domain registry exists: `src/lib/fuse/domains.ts`
+43. Domain registry exists: `src/fuse/domains/registry.ts`
 44. All 5 domains registered (productivity, financial, clients, project, settings)
-45. WRAP hooks follow `{ data, computed, actions, flags }` contract
-46. All WRAP hooks export TypeScript return types
-47. No direct Zustand usage outside `useFuse`
+45. Bridge hooks follow `{ data, computed, actions, flags }` contract
+46. All Bridge hooks export TypeScript return types
+47. No direct Zustand usage outside FUSE store
 48. No loading states in components (FUSE violation)
 49. No fetch() in components (FUSE violation)
 50. Golden Bridge pattern enforced (mutations → cookie → hydration)
@@ -130,22 +130,23 @@ This command runs:
 
 **Check Store Structure:**
 ```bash
-ls -la fuse/store/
+ls -la src/store/
+ls -la src/fuse/
 ```
 Verify:
-- `useFuse.ts` exists
-- `session/cookieClient.ts` exists
-- Store slices exist (productivity, financial, clients, project, settings)
+- `src/store/fuse.ts` exists (main FUSE store)
+- `src/fuse/hydration/session/cookieClient.ts` exists
+- `src/fuse/domains/registry.ts` exists
 
 **Check ClientHydrator:**
 ```bash
-grep -c "setInterval" fuse/store/ClientHydrator.tsx
+grep -c "setInterval" src/fuse/hydration/ClientHydrator.tsx
 ```
 Should return 1 (500ms polling exists)
 
 **Check Domain Registry:**
 ```bash
-cat src/lib/fuse/domains.ts | grep -c "productivity\|financial\|clients\|project\|settings"
+cat src/fuse/domains/registry.ts | grep -c "productivity\|financial\|clients\|project\|settings"
 ```
 Should return 5 (all domains present)
 
@@ -238,11 +239,11 @@ Display results as you audit:
 🔍 Phase 2: FUSE Architecture (Points 36-50)
    Checking store structure...
 
-   ✅ Store structure: Valid
-   ✅ Cookie client: Exists
+   ✅ Store structure: Valid (src/store/ + src/fuse/)
+   ✅ Cookie client: Exists (src/fuse/hydration/session/cookieClient.ts)
    ✅ ClientHydrator: Polling active
    ✅ Domain registry: Complete (5/5 domains)
-   ✅ WRAP hooks: Compliant
+   ✅ Bridge hooks: Compliant
 
    Score: 15/15 ✅
 

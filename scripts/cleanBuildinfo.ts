@@ -22,7 +22,7 @@ import { join } from 'path';
 // Config
 const ROOT_DIR = process.cwd();
 const KEEP_FILE = 'tsconfig.tsbuildinfo'; // Main buildinfo to keep
-const PATTERN = /^tsconfig\.[a-z0-9]+\.tsbuildinfo$/; // Match: tsconfig.xyz123.tsbuildinfo
+const PATTERN = /^tsconfig\.[a-z0-9-]+\.tsbuildinfo$/; // Match: tsconfig.xyz123.tsbuildinfo or tsconfig.virgin-check.tsbuildinfo
 
 // Parse CLI args
 const args = process.argv.slice(2);
