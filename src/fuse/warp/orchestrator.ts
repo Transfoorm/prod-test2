@@ -38,7 +38,7 @@ export function startBackgroundWARP(
     try {
       // Check if data is fresh (within 5 minutes)
       const admin = getAdminState();
-      const fresh = admin.status === 'ready' && admin.lastFetchedAt && Date.now() - admin.lastFetchedAt < FIVE_MIN;
+      const fresh = admin.status === 'hydrated' && admin.lastFetchedAt && Date.now() - admin.lastFetchedAt < FIVE_MIN;
 
       if (fresh) {
         console.log(`🔄 WARP: Skipping admin preload (fresh via ${admin.source})`);

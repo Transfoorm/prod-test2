@@ -2,23 +2,15 @@
 │  🔥 VANISH PROTOCOL 2.0 - SINGLE SOURCE OF IDENTITY                      │
 │  /src/hooks/useConvexUser.ts                                             │
 │                                                                            │
-│  The ONLY valid way to access user identity in React components.         │
+│  GOLDEN BRIDGE COMPLIANT (TTTS-2):                                        │
+│  - useQuery ONLY hydrates FUSE                                            │
+│  - Components read from FUSE only                                         │
+│  - NO direct Convex data returns                                          │
 │                                                                            │
 │  VANISH LAW:                                                               │
 │  "There is only one identity: the Convex user._id.                        │
 │   Clerk authenticates — Convex governs.                                   │
 │   No component shall accept userId as prop."                              │
-│                                                                            │
-│  ENFORCEMENT:                                                              │
-│  - All components must use this hook                                      │
-│  - No userId prop drilling permitted                                      │
-│  - Server-side identity derivation from ctx.auth                          │
-│  - Client-side identity from this hook only                               │
-│                                                                            │
-│  USAGE:                                                                    │
-│  const user = useConvexUser();                                            │
-│  if (!user) return <Loading />;                                           │
-│  return <div>{user.email}</div>;                                          │
 │                                                                            │
 │  TTT CERTIFIED: Single source prevents identity confusion at scale        │
 └──────────────────────────────────────────────────────────────────────────┘ */
@@ -28,54 +20,60 @@
 import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from '@/convex/_generated/api';
-import type { Doc } from "@/convex/_generated/dataModel";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { useFuse } from "@/store/fuse";
+import type { FuseUser } from "@/store/types";
 
 /**
- * USE CONVEX USER
+ * CONVEX → FUSE SYNC HOOK (Internal)
  *
- * Hook that provides the authenticated user's Convex document.
- * This is the ONLY valid way to access user identity in components.
+ * This hook syncs Convex user data INTO FUSE.
+ * It NEVER returns Convex data directly.
  *
- * VANISH LAW COMPLIANCE:
- * - No userId props accepted
- * - No identity confusion
- * - Single source of truth
- * - Clerk auth → Convex identity
- *
- * @returns Convex user document or null/undefined
- *
- * STATES:
- * - undefined: Loading (Clerk auth or Convex query in progress)
- * - null: Not authenticated OR user not found in Convex
- * - Doc<"admin_users">: Authenticated user document
- *
- * PATTERN:
- * ```tsx
- * const user = useConvexUser();
- *
- * if (user === undefined) {
- *   return <LoadingSpinner />; // Still loading
- * }
- *
- * if (user === null) {
- *   return <LoginPrompt />; // Not authenticated
- * }
- *
- * // User is authenticated and loaded
- * return <div>Welcome {user.firstName}!</div>;
- * ```
+ * GOLDEN BRIDGE PATTERN:
+ * - Convex query runs
+ * - Data hydrates FUSE via setUser()
+ * - Components read from FUSE only
  */
-export function useConvexUser(): Doc<"admin_users"> | null | undefined {
+export function useConvexUserSync(): void {
   const { userId: clerkId, isLoaded: clerkLoaded } = useAuth();
   const router = useRouter();
   const redirectedRef = useRef(false);
+  const setUser = useFuse((state) => state.setUser);
 
+  // Query Convex for user data
   const userDoc = useQuery(
     api.domains.admin.users.api.getUserByClerkId,
     clerkLoaded && clerkId ? { clerkId } : "skip"
   );
+
+  // SYNC TO FUSE: When Convex data arrives, hydrate FUSE store
+  useEffect(() => {
+    if (userDoc) {
+      // Convert Convex Doc to FuseUser format and hydrate FUSE
+      // FuseUser uses 'id' and 'convexId' instead of '_id' (SOVEREIGNTY DOCTRINE)
+      const fuseUser: FuseUser = {
+        id: userDoc._id,
+        convexId: userDoc._id,
+        clerkId: userDoc.clerkId,
+        email: userDoc.email,
+        firstName: userDoc.firstName,
+        lastName: userDoc.lastName,
+        avatarUrl: userDoc.avatarUrl ?? undefined,
+        rank: userDoc.rank,
+        setupStatus: userDoc.setupStatus,
+        subscriptionStatus: userDoc.subscriptionStatus,
+        brandLogoUrl: userDoc.brandLogoUrl ?? undefined,
+        businessCountry: userDoc.businessCountry ?? undefined,
+        entityName: userDoc.entityName ?? undefined,
+        socialName: userDoc.socialName ?? undefined,
+        createdAt: userDoc._creationTime,
+      };
+      setUser(fuseUser);
+      console.log('🔥 VANISH: User synced to FUSE via CONVEX_LIVE');
+    }
+  }, [userDoc, setUser]);
 
   // ORPHAN DETECTION: Redirect if Clerk auth exists but no Convex user
   useEffect(() => {
@@ -86,45 +84,48 @@ export function useConvexUser(): Doc<"admin_users"> | null | undefined {
     }
   }, [clerkLoaded, clerkId, userDoc, router]);
 
-  if (!clerkLoaded) return undefined;
-  if (!clerkId) return null;
-  if (!userDoc) return null;
+  // Clear user from FUSE when logged out
+  useEffect(() => {
+    if (clerkLoaded && !clerkId) {
+      setUser(null);
+    }
+  }, [clerkLoaded, clerkId, setUser]);
+}
 
-  // Convert avatarUrl from null to undefined to match schema
-  return {
-    ...userDoc,
-    avatarUrl: userDoc.avatarUrl ?? undefined
-  };
+/**
+ * USE CONVEX USER - GOLDEN BRIDGE COMPLIANT
+ *
+ * Reads user from FUSE store (not Convex directly).
+ * Use useConvexUserSync() in a provider to keep FUSE hydrated.
+ *
+ * @returns FUSE user or null
+ *
+ * USAGE:
+ * ```tsx
+ * const user = useConvexUser();
+ * if (!user) return <Loading />;
+ * return <div>{user.email}</div>;
+ * ```
+ */
+export function useConvexUser(): FuseUser {
+  return useFuse((state) => state.user);
 }
 
 /**
  * USE CONVEX USER (REQUIRED)
  *
- * Variant that throws if user is not authenticated.
+ * Variant that throws if user is not in FUSE.
  * Use in components that require authentication.
  *
- * @returns Convex user document (never null)
+ * @returns FUSE user document (never null)
  * @throws Error if not authenticated or user not found
- *
- * USAGE:
- * ```tsx
- * const user = useConvexUserRequired();
- * // TypeScript knows user is never null here
- * return <div>{user.email}</div>;
- * ```
  */
-export function useConvexUserRequired(): Doc<"admin_users"> {
+export function useConvexUserRequired(): NonNullable<FuseUser> {
   const user = useConvexUser();
 
-  if (user === undefined) {
+  if (!user) {
     throw new Error(
-      "[VANISH] Authentication state loading - wrap component in Suspense"
-    );
-  }
-
-  if (user === null) {
-    throw new Error(
-      "[VANISH] User not authenticated or not found in Convex database"
+      "[VANISH] User not in FUSE store - ensure useConvexUserSync() is running in a provider"
     );
   }
 
@@ -135,44 +136,22 @@ export function useConvexUserRequired(): Doc<"admin_users"> {
  * USE USER ID
  *
  * Convenience hook for when you only need the user ID.
- * Still enforces single source of identity.
+ * Reads from FUSE (Golden Bridge compliant).
  *
- * @returns Convex user._id or null/undefined
- *
- * USAGE:
- * ```tsx
- * const userId = useUserId();
- * if (!userId) return null;
- *
- * const myProjects = useQuery(
- *   api.projects.getMyProjects,
- *   userId ? { userId } : "skip"
- * );
- * ```
- *
- * NOTE: This is acceptable for query parameters,
- * but mutations should still derive identity server-side from ctx.auth
+ * @returns FUSE user._id or undefined
  */
 export function useUserId() {
   const user = useConvexUser();
-  return user?._id;
+  return user?.id;
 }
 
 /**
  * USE USER RANK
  *
  * Convenience hook for rank-based UI gating.
- * Returns user's naval rank or null.
+ * Reads from FUSE (Golden Bridge compliant).
  *
- * @returns User rank or null/undefined
- *
- * USAGE:
- * ```tsx
- * const rank = useUserRank();
- * if (rank === 'admiral') {
- *   return <AdminPanel />;
- * }
- * ```
+ * @returns User rank or null
  */
 export function useUserRankFromConvex() {
   const user = useConvexUser();
@@ -183,22 +162,12 @@ export function useUserRankFromConvex() {
  * IS USER RANK
  *
  * Check if user has specific rank(s).
- * Useful for conditional rendering and access control.
+ * Reads from FUSE (Golden Bridge compliant).
  *
  * @param ranks - Single rank or array of acceptable ranks
  * @returns true if user has one of the specified ranks
- *
- * USAGE:
- * ```tsx
- * const isAdmin = useIsUserRank(['admiral', 'commodore']);
- * if (isAdmin) {
- *   return <AdminControls />;
- * }
- * ```
  */
-export function useIsUserRank(
-  ranks: string | string[]
-): boolean {
+export function useIsUserRank(ranks: string | string[]): boolean {
   const user = useConvexUser();
   if (!user?.rank) return false;
 

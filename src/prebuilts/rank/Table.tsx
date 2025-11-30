@@ -57,7 +57,9 @@ interface UserData {
 export default function UserRankTable() {
   // Read from FUSE store - data preloaded by WARP
   const { users: fuseUsers, status } = useFuse((state) => state.admin);
-  const isHydrated = useFuse((state) => state.isAdminHydrated);
+
+  // TTTS-1 compliant: status === 'hydrated' means data is ready (ONE source of truth)
+  const isHydrated = status === 'hydrated';
   const users = fuseUsers as unknown as UserData[] | undefined;
   const currentUser = useConvexUser();
   const setUserRank = useMutation(api.domains.admin.users.api.setUserRank);
@@ -83,7 +85,8 @@ export default function UserRankTable() {
   };
 
   // Show nothing until hydrated (FUSE doctrine: no loading spinners)
-  if (!isHydrated || status !== 'ready' || !users) {
+  // TTTS-1 compliant: isHydrated already checks status === 'hydrated'
+  if (!isHydrated || !users) {
     return null;
   }
 
@@ -96,7 +99,7 @@ export default function UserRankTable() {
       sortable: true,
       width: '18%',
       render: (_: unknown, user: UserData) => {
-        const isCurrentUser = currentUser?._id === user._id;
+        const isCurrentUser = currentUser?.id === user._id;
         const name = user.firstName && user.lastName
           ? `${user.firstName} ${user.lastName}`
           : user.firstName || user.lastName || '—';
@@ -164,7 +167,7 @@ export default function UserRankTable() {
       width: '22%',
       render: (_: unknown, user: UserData) => {
         // 🔒 UX Protection: Prevent Admiral from changing their own rank
-        const isCurrentUser = currentUser?._id === user._id;
+        const isCurrentUser = currentUser?.id === user._id;
         const isAdmiral = user.rank === 'admiral';
         const isOwnAdmiralRow = isCurrentUser && isAdmiral;
 

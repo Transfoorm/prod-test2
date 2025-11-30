@@ -39,8 +39,10 @@ import { useProjectData } from '@/hooks/useProjectData';
 export function useDashboardData() {
   // Dashboard UI state (owned by dashboard)
   const dashboard = useFuse((state) => state.dashboard);
-  const isDashboardHydrated = useFuse((state) => state.isDashboardHydrated);
   const rank = useFuse((state) => state.rank);
+
+  // TTTS-1 compliant: status === 'hydrated' means data is ready (ONE source of truth)
+  const isDashboardHydrated = dashboard.status === 'hydrated';
 
   // WARP-primed domain data (owned by domains)
   const admin = useAdminData();
@@ -103,10 +105,10 @@ export function useDashboardData() {
       // setLayout, toggleWidget, etc.
     },
 
-    // FLAGS: Hydration and state flags
+    // FLAGS: Hydration and state flags (TTTS-1 compliant)
     flags: {
       isHydrated: isDashboardHydrated,
-      isReady: dashboard.status === 'ready',
+      isReady: dashboard.status === 'hydrated',
     },
   };
 }

@@ -30,7 +30,9 @@ import { useFuse } from '@/store/fuse';
  */
 export function useClientData() {
   const clients = useFuse((state) => state.clients);
-  const isHydrated = useFuse((state) => state.isClientsHydrated);
+
+  // TTTS-1 compliant: status === 'hydrated' means data is ready (ONE source of truth)
+  const isHydrated = clients.status === 'hydrated';
 
   return {
     // DATA: Raw domain data from FUSE store

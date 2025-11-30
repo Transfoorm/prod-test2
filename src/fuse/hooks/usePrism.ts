@@ -38,17 +38,17 @@ export function usePrism() {
   const hydrateProductivity = useFuse((s) => s.hydrateProductivity);
   const hydrateAdmin = useFuse((s) => s.hydrateAdmin);
 
-  // Get current hydration status to skip if already loaded
-  const isProductivityHydrated = useFuse((s) => s.isProductivityHydrated);
-  const isAdminHydrated = useFuse((s) => s.isAdminHydrated);
+  // TTTS-1 compliant: status === 'hydrated' means data is ready (ONE source of truth)
+  const productivityStatus = useFuse((s) => s.productivity.status);
+  const adminStatus = useFuse((s) => s.admin.status);
 
   const preloadDomain = useCallback(async (domain: DomainKey) => {
-    // Skip if already hydrated
-    if (domain === 'productivity' && isProductivityHydrated) {
+    // Skip if already hydrated (TTTS-1: status === 'hydrated')
+    if (domain === 'productivity' && productivityStatus === 'hydrated') {
       console.log(`🔮 PRISM: ${domain} already hydrated, skipping`);
       return;
     }
-    if (domain === 'admin' && isAdminHydrated) {
+    if (domain === 'admin' && adminStatus === 'hydrated') {
       console.log(`🔮 PRISM: ${domain} already hydrated, skipping`);
       return;
     }
@@ -95,7 +95,7 @@ export function usePrism() {
       // Remove from in-flight
       inFlightRef.current.delete(domain);
     }
-  }, [hydrateProductivity, hydrateAdmin, isProductivityHydrated, isAdminHydrated]);
+  }, [hydrateProductivity, hydrateAdmin, productivityStatus, adminStatus]);
 
   return { preloadDomain };
 }

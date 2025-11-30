@@ -1,5 +1,98 @@
 // FUSE Store Brain - Type Definitions
 // Following FUSE Doctrine: 2BA + Triple-T Ready
+//
+// ══════════════════════════════════════════════════════════════════════════════
+// DOMAIN SLICE TYPES - Imported from ./domains/ for single source of truth
+// ══════════════════════════════════════════════════════════════════════════════
+
+import type {
+  ProductivitySlice,
+  ProductivityData,
+  ProductivityActions,
+} from './domains/productivity';
+
+import type {
+  AdminSlice,
+  AdminData,
+  AdminActions,
+} from './domains/admin';
+
+import type {
+  DashboardSlice,
+  DashboardData,
+  DashboardActions,
+} from './domains/dashboard';
+
+import type {
+  FinanceSlice,
+  FinanceData,
+  FinanceActions,
+} from './domains/finance';
+
+import type {
+  ClientsSlice,
+  ClientsData,
+  ClientsActions,
+} from './domains/clients';
+
+import type {
+  ProjectsSlice,
+  ProjectsData,
+  ProjectsActions,
+} from './domains/projects';
+
+import type {
+  SettingsSlice,
+  SettingsData,
+  SettingsActions,
+} from './domains/settings';
+
+import type {
+  SystemSlice,
+  SystemData,
+  SystemActions,
+} from './domains/system';
+
+import type {
+  ADPSource,
+  ADPStatus,
+  ADPCoordination,
+} from './domains/_template';
+
+// Re-export all domain types for consumers
+export type {
+  ProductivitySlice,
+  ProductivityData,
+  ProductivityActions,
+  AdminSlice,
+  AdminData,
+  AdminActions,
+  DashboardSlice,
+  DashboardData,
+  DashboardActions,
+  FinanceSlice,
+  FinanceData,
+  FinanceActions,
+  ClientsSlice,
+  ClientsData,
+  ClientsActions,
+  ProjectsSlice,
+  ProjectsData,
+  ProjectsActions,
+  SettingsSlice,
+  SettingsData,
+  SettingsActions,
+  SystemSlice,
+  SystemData,
+  SystemActions,
+  ADPSource,
+  ADPStatus,
+  ADPCoordination,
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// CORE TYPES
+// ══════════════════════════════════════════════════════════════════════════════
 
 /**
  * User document type - ready for 100K users
@@ -127,15 +220,8 @@ export type FuseState = {
   dashboard: DashboardSlice;
   system: SystemSlice;
 
-  // Hydration tracking for each domain
-  isFinanceHydrated: boolean;
-  isClientsHydrated: boolean;
-  isProductivityHydrated: boolean;
-  isProjectsHydrated: boolean;
-  isSettingsHydrated: boolean;
-  isAdminHydrated: boolean;
-  isDashboardHydrated: boolean;
-  isSystemHydrated: boolean;
+  // NOTE: Domain hydration is tracked via domain.status === 'hydrated'
+  // No separate isXHydrated booleans needed - ONE source of truth (PRISM pattern)
 
   // Core methods - instant, tracked operations
   setUser: (user: FuseUser | null) => void;
@@ -170,14 +256,15 @@ export type FuseState = {
   setPhoenixNavigating: (value: boolean) => void;
 
   // Domain hydration methods - Great Provider Ecosystem
-  hydrateFinance: (data: Partial<FinanceSlice>) => void;
-  hydrateClients: (data: Partial<ClientsSlice>) => void;
-  hydrateProductivity: (data: Partial<ProductivitySlice>, source?: 'SSR' | 'WARP' | 'CONVEX_LIVE' | 'MUTATION' | 'ROLLBACK') => void;
-  hydrateProjects: (data: Partial<ProjectsSlice>) => void;
-  hydrateSettings: (data: Partial<SettingsSlice>) => void;
-  hydrateAdmin: (data: Partial<AdminSlice>, source?: 'SSR' | 'WARP' | 'MUTATION' | 'CONVEX_LIVE') => void;
-  hydrateDashboard: (data: Partial<DashboardSlice>) => void;
-  hydrateSystem: (data: Partial<SystemSlice>) => void;
+  // Uses *Data types (not *Slice) - ADP coordination fields are set internally
+  hydrateFinance: (data: Partial<FinanceData>, source?: ADPSource) => void;
+  hydrateClients: (data: Partial<ClientsData>, source?: ADPSource) => void;
+  hydrateProductivity: (data: Partial<ProductivityData>, source?: ADPSource) => void;
+  hydrateProjects: (data: Partial<ProjectsData>, source?: ADPSource) => void;
+  hydrateSettings: (data: Partial<SettingsData>, source?: ADPSource) => void;
+  hydrateAdmin: (data: Partial<AdminData>, source?: ADPSource) => void;
+  hydrateDashboard: (data: Partial<DashboardData>, source?: ADPSource) => void;
+  hydrateSystem: (data: Partial<SystemData>, source?: ADPSource) => void;
 
   // Domain clear methods
   clearFinance: () => void;
@@ -192,6 +279,7 @@ export type FuseState = {
 
 /**
  * FUSE Timer interface - millisecond precision tracking
+ * NOTE: Implementation lives in ./domains/_template.ts
  */
 export interface FuseTimer {
   start: (action: string) => number;
@@ -199,123 +287,17 @@ export interface FuseTimer {
 }
 
 // ══════════════════════════════════════════════════════════════════════
-// DOMAIN SLICES - Great Provider Ecosystem
-// Following _T2 proven pattern for WARP + Provider architecture
+// DOMAIN SLICES - Single Source of Truth
 // ══════════════════════════════════════════════════════════════════════
-
-/**
- * Finance Domain Slice
- * Handles banking, invoicing, expenses, payroll
- */
-export type FinanceSlice = {
-  // Business setup
-  businessProfile: Record<string, unknown> | null;
-  categories: Record<string, unknown>[];
-
-  // Banking
-  accounts: Record<string, unknown>[];
-  transactions: Record<string, unknown>[];
-  patterns: Record<string, unknown>[];
-
-  // Income
-  customers: Record<string, unknown>[];
-  quotes: Record<string, unknown>[];
-  invoices: Record<string, unknown>[];
-
-  // Expense
-  suppliers: Record<string, unknown>[];
-  purchases: Record<string, unknown>[];
-  bills: Record<string, unknown>[];
-
-  // Accounting
-  chartOfAccounts: Record<string, unknown>[];
-  fixedAssets: Record<string, unknown>[];
-
-  // Payroll
-  employees: Record<string, unknown>[];
-  payrollRuns: Record<string, unknown>[];
-};
-
-/**
- * Clients Domain Slice
- * Handles people, teams, sessions, reports
- */
-export type ClientsSlice = {
-  people: Record<string, unknown>[];
-  teams: Record<string, unknown>[];
-  sessions: Record<string, unknown>[];
-  reports: Record<string, unknown>[];
-};
-
-/**
- * Productivity Domain Slice
- * Handles email, calendar, meetings, bookings
- * ADP/PRISM Compliant: Includes coordination fields for WARP preloading
- */
-export type ProductivitySlice = {
-  emails: Record<string, unknown>[];
-  calendar: Record<string, unknown>[];
-  meetings: Record<string, unknown>[];
-  bookings: Record<string, unknown>[];
-  tasks: Record<string, unknown>[];
-  // ADP Coordination fields (REQUIRED for PRISM)
-  status: 'idle' | 'loading' | 'ready' | 'error';
-  lastFetchedAt?: number;
-  source?: 'SSR' | 'WARP' | 'CONVEX_LIVE' | 'MUTATION' | 'ROLLBACK';
-};
-
-/**
- * Projects Domain Slice
- * Handles charts, locations, tracking
- */
-export type ProjectsSlice = {
-  charts: Record<string, unknown>[];
-  locations: Record<string, unknown>[];
-  tracking: Record<string, unknown>[];
-};
-
-/**
- * Settings Domain Slice
- * Handles user profile, preferences, account settings
- */
-export type SettingsSlice = {
-  // User profile data - fresh from server
-  userProfile: FuseUser;
-  // Additional settings data can be added here
-  preferences: Record<string, unknown>[];
-  notifications: Record<string, unknown>[];
-};
-
-/**
- * Admin Domain Slice
- * Handles user management, deletion logs, admin operations
- */
-export type AdminSlice = {
-  users: Record<string, unknown>[];
-  deletionLogs: Record<string, unknown>[];
-  status: 'idle' | 'loading' | 'ready' | 'error';
-  lastFetchedAt?: number; // Timestamp in ms
-  source?: 'SSR' | 'WARP' | 'MUTATION' | 'CONVEX_LIVE'; // Track where data came from
-};
-
-/**
- * Dashboard Domain Slice - UI Preferences Only
- * Dashboard owns ZERO data. Only UI state (layout, widgets, expanded sections)
- * Following SMAC Doctrine: Dashboard is a shell, not a domain
- */
-export type DashboardSlice = {
-  layout: 'classic' | 'focus' | 'metrics';
-  visibleWidgets: string[];
-  expandedSections: string[];
-  status: 'idle' | 'ready';
-};
-
-/**
- * System Domain Slice
- * Handles AI configuration, user management, rank management (Admiral-only)
- */
-export type SystemSlice = {
-  users: Record<string, unknown>[];
-  ranks: Record<string, unknown>[];
-  aiConfig: Record<string, unknown> | null;
-};
+//
+// All domain slice types are now defined in ./domains/*.ts
+// and re-exported at the top of this file.
+//
+// THE STANDARD:
+//   - Domain slices live in src/store/domains/
+//   - Each domain has: status, lastFetchedAt, source (ADP Coordination)
+//   - status === 'hydrated' means data is ready (NO separate isXHydrated booleans)
+//   - ONE source of truth
+//
+// Reference: 04-ADP-PATTERN.md, 15-TTT-SUPPLEMENT.md
+// ══════════════════════════════════════════════════════════════════════

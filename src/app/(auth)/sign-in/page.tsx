@@ -34,17 +34,29 @@ export default function SignInPage() {
     }
   }, [isLoaded, isSignedIn, router]);
 
-  // Timeout warning: Show message if authentication takes too long (but keep waiting)
+  // Timeout warning: Show message if authentication takes too long, then auto-refresh
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+    let warningTimeoutId: NodeJS.Timeout;
+    let refreshTimeoutId: NodeJS.Timeout;
+
     if (isSubmitting) {
-      timeoutId = setTimeout(() => {
+      // Show warning after 5 seconds
+      warningTimeoutId = setTimeout(() => {
         setSlowConnectionWarning(true);
-      }, 10000); // 10 seconds
+      }, 5000);
+
+      // Auto-refresh after 10 seconds total (5 more seconds after warning)
+      refreshTimeoutId = setTimeout(() => {
+        window.location.reload();
+      }, 10000);
     } else {
       setSlowConnectionWarning(false);
     }
-    return () => clearTimeout(timeoutId);
+
+    return () => {
+      clearTimeout(warningTimeoutId);
+      clearTimeout(refreshTimeoutId);
+    };
   }, [isSubmitting]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -174,7 +186,7 @@ export default function SignInPage() {
               {slowConnectionWarning && (
                 <div className="auth-warning">
                   <p className="auth-warning-text">
-                    This is taking longer than usual. Please wait while we complete the secure handshake...
+                    This is taking longer than usual. Refreshing page in a few seconds...
                   </p>
                 </div>
               )}

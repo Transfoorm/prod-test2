@@ -36,7 +36,9 @@ export interface RankCardProps {
 export default function RankCard({ rank }: RankCardProps) {
   // Read from FUSE store - data preloaded by WARP
   const { users, status } = useFuse((state) => state.admin);
-  const isHydrated = useFuse((state) => state.isAdminHydrated);
+
+  // TTTS-1 compliant: status === 'hydrated' means data is ready (ONE source of truth)
+  const isHydrated = status === 'hydrated';
 
   // Compute rank distribution from users array (memoized)
   const rankDist = useMemo(() => {
@@ -55,7 +57,8 @@ export default function RankCard({ rank }: RankCardProps) {
   }, [users]);
 
   // Show nothing until hydrated (FUSE doctrine: no loading spinners)
-  if (!isHydrated || status !== 'ready') {
+  // TTTS-1 compliant: isHydrated already checks status === 'hydrated'
+  if (!isHydrated) {
     return null;
   }
 

@@ -1,20 +1,16 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  ⚙️ SETTINGS PROVIDER - Domain Provider Pattern                       │
+│  ⚙️ SETTINGS PROVIDER - GOLDEN BRIDGE COMPLIANT                     │
 │  /src/providers/SettingsProvider.tsx                                   │
 │                                                                        │
-│  Part of the Great Provider Ecosystem                                  │
-│  Hydrates settings domain slice with WARP-preloaded data               │
-│  Following proven _T2 pattern                                          │
-│                                                                        │
-│  Fallback: Loads client-side via Convex when SSR preload disabled     │
+│  TTTS-2: Hydrates FUSE via WARP + real-time sync.                     │
+│  Components read from FUSE only via useSettingsData().                │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
 
 import { ReactNode, useEffect } from 'react';
 import { useFuse } from '@/store/fuse';
-import { useQuery } from 'convex/react';
-import { api } from '@/convex/_generated/api';
+import { useSettingsSync } from '@/hooks/useSettingsSync';
 import type { SettingsSlice } from '@/store/types';
 
 interface SettingsProviderProps {
@@ -23,40 +19,26 @@ interface SettingsProviderProps {
 }
 
 /**
- * SettingsProvider - Hydrates settings domain with WARP-preloaded data
+ * SettingsProvider - Hydrates settings domain with WARP + real-time sync
  *
- * Architecture:
- * - Receives initialData from section layout's WARP preload function
- * - Hydrates FUSE store settings slice on mount
- * - Fallback: If no SSR data, loads client-side via Convex live query
- * - Zero UI - pure state hydration
- * - Children render with instant data access
+ * GOLDEN BRIDGE PATTERN:
+ * 1. WARP preload: SSR hydration via initialData
+ * 2. Real-time sync: useSettingsSync() keeps FUSE fresh
+ * 3. Components read: useSettingsData() → FUSE only
  */
 export function SettingsProvider({ children, initialData }: SettingsProviderProps) {
   const hydrateSettings = useFuse((state) => state.hydrateSettings);
 
-  // CLIENT-SIDE FALLBACK: Load settings via Convex when SSR disabled
-  const settingsData = useQuery(api.domains.settings.api.getUserSettings);
+  // Real-time sync: Convex → FUSE (TTTS-2 compliant)
+  useSettingsSync();
 
   useEffect(() => {
-    // SSR hydration (if WARP preload provided data)
+    // SSR hydration (WARP preload)
     if (initialData?.userProfile) {
-      console.log('⚙️ SettingsProvider: Hydrating from SSR data');
-      hydrateSettings(initialData);
+      console.log('⚙️ SettingsProvider: Hydrating settings domain from WARP');
+      hydrateSettings(initialData, 'WARP');
     }
-    // CLIENT-SIDE FALLBACK: Hydrate when Convex query loads
-    else if (settingsData) {
-      console.log('⚙️ SettingsProvider: Hydrating from Convex live query');
-      hydrateSettings({
-        userProfile: settingsData.userProfile,
-        preferences: settingsData.preferences || [],
-        notifications: settingsData.notifications || [],
-      });
-    }
+  }, [hydrateSettings, initialData]);
 
-  }, [settingsData, hydrateSettings, initialData]); // Re-run when query data arrives
-
-  // Zero UI - just wrap children
-  // All domain data now available via useFuse() hooks
   return <>{children}</>;
 }

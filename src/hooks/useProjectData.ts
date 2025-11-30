@@ -28,7 +28,9 @@ import { useFuse } from '@/store/fuse';
  */
 export function useProjectData() {
   const projects = useFuse((state) => state.projects);
-  const isHydrated = useFuse((state) => state.isProjectsHydrated);
+
+  // TTTS-1 compliant: status === 'hydrated' means data is ready (ONE source of truth)
+  const isHydrated = projects.status === 'hydrated';
 
   return {
     // DATA: Raw domain data

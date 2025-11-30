@@ -44,7 +44,7 @@ export async function GET() {
       bookings: bookings || [],
       meetings: meetings || [],
       // ADP coordination metadata
-      status: 'ready',
+      status: 'hydrated',
       lastFetchedAt: Date.now(),
       source: 'WARP',
     });

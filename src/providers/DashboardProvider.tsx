@@ -89,11 +89,11 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     }
 
     // Hydrate dashboard with loaded/default preferences
+    // Note: status is set internally by hydrateDashboard (ADP coordination)
     hydrateDashboard({
       layout: savedLayout || 'classic',
       visibleWidgets,
       expandedSections,
-      status: 'ready',
     });
 
     console.log('🎯 DashboardProvider: Hydrated from localStorage', {
@@ -103,16 +103,16 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
     });
   }, [rank, hydrateDashboard]);
 
-  // Sync layout changes to localStorage
+  // Sync layout changes to localStorage (TTTS-1 compliant: check 'hydrated')
   useEffect(() => {
-    if (typeof window === 'undefined' || dashboard.status !== 'ready') return;
+    if (typeof window === 'undefined' || dashboard.status !== 'hydrated') return;
 
     localStorage.setItem(STORAGE_KEYS.LAYOUT, dashboard.layout);
   }, [dashboard.layout, dashboard.status]);
 
   // Sync visible widgets to localStorage
   useEffect(() => {
-    if (typeof window === 'undefined' || dashboard.status !== 'ready') return;
+    if (typeof window === 'undefined' || dashboard.status !== 'hydrated') return;
 
     localStorage.setItem(
       STORAGE_KEYS.VISIBLE_WIDGETS,
@@ -122,7 +122,7 @@ export function DashboardProvider({ children }: DashboardProviderProps) {
 
   // Sync expanded sections to localStorage
   useEffect(() => {
-    if (typeof window === 'undefined' || dashboard.status !== 'ready') return;
+    if (typeof window === 'undefined' || dashboard.status !== 'hydrated') return;
 
     localStorage.setItem(
       STORAGE_KEYS.EXPANDED_SECTIONS,
@@ -171,19 +171,15 @@ export function useDashboardActions() {
     useFuse.getState().hydrateDashboard({ expandedSections });
   };
 
-  const setStatus = (status: DashboardSlice['status']) => {
-    useFuse.getState().hydrateDashboard({ status });
-  };
-
   const resetToDefaults = () => {
     const { rank } = useFuse.getState();
     const defaultWidgets = rank ? DEFAULT_WIDGETS_BY_RANK[rank] : [];
 
+    // Note: status is set internally by hydrateDashboard (ADP coordination)
     useFuse.getState().hydrateDashboard({
       layout: 'classic',
       visibleWidgets: defaultWidgets,
       expandedSections: [],
-      status: 'ready',
     });
 
     // Clear localStorage
@@ -198,7 +194,6 @@ export function useDashboardActions() {
     setLayout,
     toggleWidget,
     toggleSection,
-    setStatus,
     resetToDefaults,
   };
 }

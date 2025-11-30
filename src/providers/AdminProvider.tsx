@@ -1,16 +1,16 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🛡️ ADMIN PROVIDER - Domain Provider Pattern                         │
+│  🛡️ ADMIN PROVIDER - GOLDEN BRIDGE COMPLIANT                        │
 │  /src/providers/AdminProvider.tsx                                      │
 │                                                                        │
-│  Part of the Great Provider Ecosystem                                  │
-│  Hydrates admin domain slice with WARP-preloaded data                  │
-│  Following proven _T2 pattern                                          │
+│  TTTS-2: Hydrates FUSE via WARP + real-time sync.                     │
+│  Components read from FUSE only via useAdminData().                   │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
 
 import { ReactNode, useEffect } from 'react';
 import { useFuse } from '@/store/fuse';
+import { useAdminSync } from '@/hooks/useAdminSync';
 import type { AdminSlice } from '@/store/types';
 
 interface AdminProviderProps {
@@ -19,28 +19,26 @@ interface AdminProviderProps {
 }
 
 /**
- * AdminProvider - Hydrates admin domain with WARP-preloaded data
+ * AdminProvider - Hydrates admin domain with WARP + real-time sync
  *
- * Architecture:
- * - Receives initialData from domain layout's WARP preload function
- * - Hydrates FUSE store admin slice on mount
- * - Zero UI - pure state hydration
- * - Children render with instant data access
+ * GOLDEN BRIDGE PATTERN:
+ * 1. WARP preload: SSR hydration via initialData
+ * 2. Real-time sync: useAdminSync() keeps FUSE fresh
+ * 3. Components read: useAdminData() → FUSE only
  */
 export function AdminProvider({ children, initialData }: AdminProviderProps) {
   const hydrateAdmin = useFuse((state) => state.hydrateAdmin);
 
-  useEffect(() => {
-    // SSR hydration (legacy - mostly unused now, TRUE WARP handles it)
-    if (initialData && (initialData.users?.length || initialData.deletionLogs?.length)) {
-      console.log('🛡️ AdminProvider: Hydrating admin domain from SSR');
-      hydrateAdmin(initialData, 'SSR');
-    } else {
-      console.log('🛡️ AdminProvider: No SSR data - relying on TRUE WARP');
-    }
-  }, [hydrateAdmin, initialData]); // Only run on mount - initialData comes from server preload
+  // Real-time sync: Convex → FUSE (TTTS-2 compliant)
+  useAdminSync();
 
-  // Zero UI - just wrap children
-  // All domain data now available via useFuse() hooks
+  useEffect(() => {
+    // SSR hydration (WARP preload)
+    if (initialData && (initialData.users?.length || initialData.deletionLogs?.length)) {
+      console.log('🛡️ AdminProvider: Hydrating admin domain from WARP');
+      hydrateAdmin(initialData, 'WARP');
+    }
+  }, [hydrateAdmin, initialData]);
+
   return <>{children}</>;
 }

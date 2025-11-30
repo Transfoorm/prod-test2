@@ -2,65 +2,37 @@
 │  🛡️ GOLDEN BRIDGE HOOK - Admin Domain                                │
 │  /src/hooks/useAdminData.ts                                            │
 │                                                                        │
-│  Clean API for accessing admin domain data                             │
-│  Abstracts FUSE store complexity from components                       │
-│  Following proven _T2 Golden Bridge pattern                            │
+│  TTTS-2 COMPLIANT: Reads from FUSE only.                              │
+│  NO useQuery here - sync happens in useAdminSync().                   │
 │                                                                        │
-│  ARCHITECTURE:                                                         │
-│  - WARP preload: Fast initial data (one-time background fetch)         │
-│  - Convex live query: Real-time updates (WebSocket subscription)       │
-│  - Auto-sync: Convex → FUSE store (seamless reactivity)               │
-│  - Result: Instant initial load + live updates across tabs            │
+│  Usage:                                                                │
+│  const { data, computed, flags } = useAdminData();                    │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
 
-import { useEffect, useMemo } from 'react';
-import { useQuery } from 'convex/react';
-import { api } from '@/convex/_generated/api';
+import { useMemo } from 'react';
 import { useFuse } from '@/store/fuse';
 
 /**
  * Golden Bridge Hook - Admin Domain
  *
- * Provides clean, domain-specific API for components
- * Hides FUSE store structure and complexity
- * Following WRAP pattern: { data, computed, actions, flags }
- *
- * HYBRID DATA FLOW:
- * 1. Initial load: Reads from FUSE (instant - preloaded via WARP)
- * 2. Real-time: Subscribes to Convex (live updates via WebSocket)
- * 3. Auto-sync: Convex updates → FUSE store → Component re-renders
- * 4. Cross-tab sync: All tabs share same Convex subscription
+ * TTTS-2 COMPLIANT:
+ * - Reads from FUSE store ONLY
+ * - NO useQuery (sync happens in useAdminSync)
+ * - Components get data through this hook
  *
  * Usage:
  * ```tsx
  * const { data, computed, flags } = useAdminData();
  * const { users, deletionLogs } = data;
- * const { usersCount, deletionLogsCount } = computed;
- * const { isHydrated } = flags;
  * ```
  */
 export function useAdminData() {
   const admin = useFuse((state) => state.admin);
-  const isHydrated = useFuse((state) => state.isAdminHydrated);
-  const hydrateAdmin = useFuse((state) => state.hydrateAdmin);
 
-  // 🔴 LIVE QUERY: Convex WebSocket subscription for real-time updates
-  const liveUsers = useQuery(api.domains.admin.users.api.getAllUsers);
-  const liveDeletionLogs = useQuery(api.domains.admin.users.api.getAllDeletionLogs);
-
-  // 🔄 AUTO-SYNC: When Convex data updates, sync to FUSE store
-  // This keeps FUSE in sync with Convex for seamless reactivity
-  // Components read from FUSE, Convex keeps it fresh
-  useEffect(() => {
-    if (liveUsers && liveDeletionLogs) {
-      hydrateAdmin({
-        users: liveUsers,
-        deletionLogs: liveDeletionLogs
-      }, 'CONVEX_LIVE');
-    }
-  }, [liveUsers, liveDeletionLogs, hydrateAdmin]);
+  // TTTS-1 compliant: status === 'hydrated' means data is ready (ONE source of truth)
+  const isHydrated = admin.status === 'hydrated';
 
   // Memoize computed object to prevent new reference on every render
   const computed = useMemo(() => ({
@@ -71,7 +43,7 @@ export function useAdminData() {
   }), [admin.users.length, admin.deletionLogs.length]);
 
   return {
-    // DATA: Raw domain data
+    // DATA: Raw domain data (from FUSE)
     data: {
       users: admin.users,
       deletionLogs: admin.deletionLogs,
@@ -83,14 +55,12 @@ export function useAdminData() {
     // ACTIONS: Mutations and operations (add as needed)
     actions: {
       // Future: Add mutations here
-      // deleteUser: (id) => store.deleteUser(id),
-      // restoreUser: (id) => store.restoreUser(id),
     },
 
     // FLAGS: Hydration and state flags
     flags: {
       isHydrated,
-      isLoading: false, // Always false with WARP preloading
+      isLoading: admin.status === 'loading',
     },
   };
 }
