@@ -11,7 +11,6 @@ import { ReactNode } from 'react';
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { AdminProvider } from '@/providers/AdminProvider';
-import { VanishProvider, VanishPortal } from '@/vanish/Drawer';
 
 /**
  * Admin Domain Layout
@@ -44,14 +43,8 @@ export default async function AdminLayout({
   // No SSR fetch - rely on TRUE WARP background preload
   // Data already in FUSE store by the time user navigates here
   return (
-    <VanishProvider>
-      <AdminProvider>
-        {children}
-        {/* VANISH Drawer Portal - Admiral-only (SMAC quarantine) */}
-        <VanishPortal />
-        {/* Portal target for VANISH drawer */}
-        <div id="vanish-drawer-portal" />
-      </AdminProvider>
-    </VanishProvider>
+    <AdminProvider>
+      {children}
+    </AdminProvider>
   );
 }

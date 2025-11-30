@@ -254,7 +254,7 @@ export function VanishQuarantine() {
                 VANISH PROTOCOL (Clerk Quarantine)
               </div>
               <div className="ft-vanish-header-subtitle">
-                You have moved out of FUSE • Deletions are Irreversible • Close Vanish to see Deletion Logs
+                You have moved out of FUSE • Deletions are Irreversible • Deleted users are recorded in the <em><b>Deleted Users</b></em> tab
               </div>
             </div>
           </div>

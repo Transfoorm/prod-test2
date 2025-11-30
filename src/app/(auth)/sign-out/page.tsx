@@ -4,6 +4,7 @@
 import { useEffect } from 'react';
 import { useClerk } from '@clerk/nextjs';
 import { useFuse } from '@/store/fuse';
+import { Button } from '@/prebuilts/button';
 
 export default function SignOutPage() {
 
@@ -31,7 +32,14 @@ export default function SignOutPage() {
     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-centered-content">
-          <p className="auth-subtitle">Signing out...</p>
+          <Button.fire
+                disabled
+                icon={<span className="auth-spinner" />}
+                iconPosition="left"
+                fullWidth
+              >
+                Signing out...
+              </Button.fire>
         </div>
       </div>
     </div>

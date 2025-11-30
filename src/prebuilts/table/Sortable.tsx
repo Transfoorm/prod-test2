@@ -293,7 +293,7 @@ export default function SortableTable<TData = Record<string, unknown>>({
 
                   // VR auto-generates tooltip for self rows
                   const tooltipText = isSelfRow
-                    ? "You cannot select yourself for deletion"
+                    ? "You cannot delete yourself"
                     : (col.checkboxTooltip ? col.checkboxTooltip(row) : undefined);
 
                   const checkbox = (

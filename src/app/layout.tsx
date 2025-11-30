@@ -15,6 +15,7 @@ import type { Metadata, Viewport } from 'next';
 import { ClerkProvider } from '@clerk/nextjs';
 import { ConvexClientProvider } from '@/providers/ConvexClientProvider';
 import { SideDrawerProvider, SideDrawerPortal } from '@/prebuilts/modal';
+import { VanishProvider, VanishPortal } from '@/vanish/Drawer';
 import { PageHeaderProvider } from '@/shell/PageHeader/PageHeaderContext';
 import { headers } from 'next/headers';
 import '@/app/root-layout.css';
@@ -75,13 +76,19 @@ export default async function RootLayout({
         <body className="root-layout-body">
           <ConvexClientProvider>
             <SideDrawerProvider>
-              <PageHeaderProvider>
-                {children}
-              </PageHeaderProvider>
-              {/* Global SideDrawer - only renders when drawer is open */}
-              <SideDrawerPortal />
-              {/* Global portal target for SideDrawer */}
-              <div id="side-drawer-portal" />
+              <VanishProvider>
+                <PageHeaderProvider>
+                  {children}
+                </PageHeaderProvider>
+                {/* Global SideDrawer - only renders when drawer is open */}
+                <SideDrawerPortal />
+                {/* Global portal target for SideDrawer */}
+                <div id="side-drawer-portal" />
+                {/* VANISH Drawer - quarantined deletion portal */}
+                <VanishPortal />
+                {/* Global portal target for VANISH drawer */}
+                <div id="vanish-drawer-portal" />
+              </VanishProvider>
             </SideDrawerProvider>
           </ConvexClientProvider>
         </body>
