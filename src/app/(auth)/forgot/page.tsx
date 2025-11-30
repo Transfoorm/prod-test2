@@ -289,7 +289,7 @@ export default function ResetPasswordPage() {
 
                 <Button.primary
                   type="submit"
-                  disabled={isSubmitting || !isLoaded}
+                  disabled={isSubmitting}
                   className="auth-submit-gradient"
                   icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
                   iconPosition="left"
@@ -370,7 +370,7 @@ export default function ResetPasswordPage() {
 
                 <Button.primary
                   type="submit"
-                  disabled={isSubmitting || !isLoaded || code.length !== 6}
+                  disabled={isSubmitting || code.length !== 6}
                   className="auth-submit-gradient"
                   icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
                   iconPosition="left"
@@ -434,7 +434,7 @@ export default function ResetPasswordPage() {
 
                 <Button.primary
                   type="submit"
-                  disabled={isSubmitting || !isLoaded}
+                  disabled={isSubmitting}
                   className="auth-submit-gradient"
                   icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
                   iconPosition="left"

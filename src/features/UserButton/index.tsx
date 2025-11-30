@@ -559,13 +559,13 @@ export default function UserButton() {
       {/* Sign-out loading overlay */}
       {isSigningOut && (
         <div className="ft-userbutton-signout-overlay">
-          <Button.fire
+          <Button.primary
+            className="ft-userbutton-signout-button"
             icon={<span className="ft-userbutton-spinner" />}
             iconPosition="left"
-            fullWidth={false}
           >
             Logging you out securely...
-          </Button.fire>
+          </Button.primary>
         </div>
       )}
     </div>

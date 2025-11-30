@@ -194,7 +194,7 @@ export default function SignInPage() {
               {/* Submit Button */}
               <Button.primary
                 type="submit"
-                disabled={isSubmitting || !isLoaded}
+                disabled={isSubmitting}
                 className="auth-submit-gradient"
                 icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
                 iconPosition="left"
@@ -205,7 +205,7 @@ export default function SignInPage() {
 
               {/* Forgot Password Link */}
               <div className="auth-link-wrapper">
-                <a href="/reset" className="auth-link">
+                <a href="/forgot" className="auth-link">
                   Forgot your password?
                 </a>
               </div>

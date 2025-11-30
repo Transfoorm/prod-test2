@@ -157,7 +157,7 @@ export default function SignUpPage() {
               {/* Submit Button */}
               <Button.primary
                 type="submit"
-                disabled={isSubmitting || !signUpLoaded}
+                disabled={isSubmitting}
                 className="auth-submit-gradient"
                 icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
                 iconPosition="left"
