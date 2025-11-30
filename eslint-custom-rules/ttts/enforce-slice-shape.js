@@ -8,8 +8,8 @@
  *   // Domain data
  *   data: { ... },
  *
- *   // Coordination fields (REQUIRED for PRISM)
- *   status: 'idle' | 'loading' | 'ready' | 'error',
+ *   // Coordination fields (REQUIRED for PRISM) - TTTS-1 COMPLIANT
+ *   status: 'idle' | 'loading' | 'hydrated' | 'error',
  *   lastFetchedAt: number | undefined,
  *   source: 'SSR' | 'WARP' | 'CONVEX_LIVE' | 'MUTATION' | 'ROLLBACK' | undefined,
  *
@@ -36,12 +36,15 @@ module.exports = {
           category: 'TTTS Slice Discipline',
         },
         messages: {
-          missingField: `⛔ TTTS SLICE VIOLATION: Domain slice is missing required field '{{field}}'.
+          missingField: `⛔ TTTS-1 SLICE VIOLATION: Domain slice is missing required field '{{field}}'.
 
-Every domain slice MUST have:
-  ✓ status: 'idle' | 'loading' | 'ready' | 'error'
+Every domain slice MUST have (TTTS-1 COMPLIANT):
+  ✓ status: 'idle' | 'loading' | 'hydrated' | 'error'
   ✓ lastFetchedAt: number | undefined
   ✓ source: 'SSR' | 'WARP' | 'CONVEX_LIVE' | 'MUTATION' | 'ROLLBACK' | undefined
+
+NOTE: status === 'hydrated' is THE ONE source of truth for data readiness.
+      NO isXHydrated booleans. NO 'ready' status.
 
 These enable:
   • WARP freshness checks (prevents duplicate fetches)

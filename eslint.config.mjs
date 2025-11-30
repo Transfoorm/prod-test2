@@ -79,8 +79,8 @@ const eslintConfig = [
       "ttts/no-cross-domain-imports": "error",
 
       // TTTS-1: Slice Discipline - Enforce ADP slice shape
-      // NOTE: Set to "warn" initially until all slices are migrated
-      "ttts/enforce-slice-shape": "warn",
+      // UPGRADED TO ERROR: All slices are now TTTS-1 compliant (status === 'hydrated')
+      "ttts/enforce-slice-shape": "error",
 
       // NOTE: class-prefix and no-component-css DISABLED for now
       // Legacy uses VR architecture, not 5-file system yet

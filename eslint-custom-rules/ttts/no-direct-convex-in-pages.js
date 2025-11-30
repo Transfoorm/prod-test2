@@ -1,20 +1,29 @@
 /**
- * TTTS Rule: no-direct-convex-in-pages
+ * TTTS-2 Rule: no-direct-convex-in-pages (GOLDEN BRIDGE ENFORCEMENT)
  *
  * Enforces Golden Bridge pattern - components must read from FUSE store,
  * not directly from Convex via useQuery.
  *
+ * THE LAW:
+ *   Convex → FUSE → Components (one-way data flow)
+ *   ALL useQuery calls must ONLY hydrate FUSE.
+ *   Components read from FUSE only.
+ *
  * VIOLATION:
  *   import { useQuery } from 'convex/react';
- *   const data = useQuery(api.domains.clients.getAllPeople);
+ *   const data = useQuery(api.domains.clients.getAllPeople);  // ❌ Direct read
  *
  * CORRECT:
- *   import { useFuse } from '@/fuse/store';
- *   const { clients } = useFuse();
+ *   import { useFuse } from '@/store/fuse';
+ *   const { clients } = useFuse();  // ✅ Reads from FUSE
  *
- * Exception zones:
- *   - Golden Bridge hooks (src/fuse/hooks/*) - they bridge Convex → FUSE
- *   - Domain providers that auto-sync Convex → FUSE
+ * Exception zones (files that ARE the Golden Bridge):
+ *   - src/hooks/*Sync.ts - Sync hooks (hydrate FUSE, return void)
+ *   - src/hooks/useConvexUser.ts - User sync hook
+ *   - src/providers/* - Domain providers (bridge Convex → FUSE)
+ *   - src/fuse/hooks/* - Golden Bridge hooks
+ *   - src/fuse/warp/* - WARP orchestrator
+ *   - vanish/Quarantine.tsx - Clerk quarantine (documented exception)
  *
  * Ref: TTTS-ENFORCEMENT-PACK-(v1.0).md, 04-ADP-PATTERN.md
  */
@@ -48,12 +57,15 @@ See: 04-ADP-PATTERN.md, TTTS-ENFORCEMENT-PACK-(v1.0).md`,
       create(context) {
         const filename = context.getFilename();
 
-        // Exception zones - these files ARE the Golden Bridge
+        // Exception zones - these files ARE the Golden Bridge (TTTS-2 compliant)
         const exceptionPatterns = [
           /\/fuse\/hooks\//,           // Golden Bridge hooks
           /\/fuse\/warp\//,            // WARP orchestrator
           /\/providers\//,             // Domain providers (bridge Convex → FUSE)
           /\/fuse\/hydration\//,       // Hydration utilities
+          /\/hooks\/.*Sync\.ts$/,      // Sync hooks (useAdminSync, useSettingsSync, etc.)
+          /\/hooks\/useConvexUser\.ts$/,  // User sync hook (Golden Bridge)
+          /\/vanish\/Quarantine\.tsx$/,   // Clerk quarantine zone (documented exception)
           /\.test\.(ts|tsx|js|jsx)$/,  // Test files
           /\.spec\.(ts|tsx|js|jsx)$/,  // Spec files
         ];
