@@ -1,6 +1,0 @@
-0000000000000000000000000000000000000000 2ae885a5d731836f98945125aa6cb2caec1d3b00 Transfoorm <dev@transfoorm.com> 1763018077 +1000	clone: from github.com:Transfoorm-Team/fuse5.0.git
-2ae885a5d731836f98945125aa6cb2caec1d3b00 c1552ce16ac9aa467ea4e9552560914a08f3b01a Ken Roberts <ken@transfoorm.com> 1763932551 +1030	branch: Reset to c1552ce
-c1552ce16ac9aa467ea4e9552560914a08f3b01a 87a9602eebcf6850017ea5e78a938a3e5c2d6564 Ken Roberts <ken@transfoorm.com> 1763937207 +1030	commit: Fix Vercel build: Remove Turbopack from production
-87a9602eebcf6850017ea5e78a938a3e5c2d6564 65a407bdec53dbbdc07c02d2e3338ab863ef89c3 Ken Roberts <ken@transfoorm.com> 1763961371 +1030	commit: VRP-Compliant: Add protected files config + Restore Convex Action fetch exception
-65a407bdec53dbbdc07c02d2e3338ab863ef89c3 7e0e3eccdf35104732d7d47c8f2ae51aedc9ab52 Ken Roberts <ken@transfoorm.com> 1763968016 +1030	cherry-pick: perf: Remove force-dynamic for 40x faster navigation
-7e0e3eccdf35104732d7d47c8f2ae51aedc9ab52 1dc82a1c9a2913ca5e0f8abde8490ead5b0ccdd8 Ken Roberts <ken@transfoorm.com> 1763968346 +1030	reset: moving to BEFORE-PERF-FIX

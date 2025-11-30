@@ -1,2 +1,0 @@
-0000000000000000000000000000000000000000 8fddfeb8de5af7f673261a8cd267e15770027ce4 Ken Roberts <ken@transfoorm.com> 1763925527 +1030	branch: Created from HEAD
-8fddfeb8de5af7f673261a8cd267e15770027ce4 c1552ce16ac9aa467ea4e9552560914a08f3b01a Ken Roberts <ken@transfoorm.com> 1763925572 +1030	commit: FUSE Performance Patch: Remove Clerk API blocker + Enhanced logout flow
