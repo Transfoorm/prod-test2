@@ -21,13 +21,14 @@ import { getNavForRank } from './navigation';
 import { usePrism } from '@/fuse/hooks/usePrism';
 
 // 🔮 PRISM: Map section labels to domain keys for preloading
-const SECTION_TO_DOMAIN: Record<string, 'productivity' | 'admin'> = {
+const SECTION_TO_DOMAIN: Record<string, 'productivity' | 'admin' | 'clients' | 'finance' | 'projects' | 'system' | 'settings'> = {
   productivity: 'productivity',
   admin: 'admin',
-  // Add more as WARP routes are created
-  // clients: 'clients',
-  // finance: 'finance',
-  // projects: 'projects',
+  clients: 'clients',
+  finance: 'finance',
+  projects: 'projects',
+  system: 'system',
+  settings: 'settings',
 };
 
 export default function Sidebar() {

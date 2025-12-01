@@ -14,21 +14,23 @@
 
 'use client';
 
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useFuse } from '@/store/fuse';
+import type { ADPSource } from '@/store/domains/_template';
 
-// Domain to WARP route mapping
+// Domain to WARP route mapping - ALL domains now have WARP routes
 const DOMAIN_ROUTES: Record<string, string> = {
   productivity: '/api/warp/productivity',
   admin: '/api/warp/admin',
-  // Add more domains as WARP routes are created
-  // clients: '/api/warp/clients',
-  // finance: '/api/warp/finance',
-  // projects: '/api/warp/projects',
+  clients: '/api/warp/clients',
+  finance: '/api/warp/finance',
+  projects: '/api/warp/projects',
+  system: '/api/warp/system',
+  settings: '/api/warp/settings',
 };
 
 // Domain to FUSE hydration function mapping
-type DomainKey = 'productivity' | 'admin';
+type DomainKey = 'productivity' | 'admin' | 'clients' | 'finance' | 'projects' | 'system' | 'settings';
 
 export function usePrism() {
   // Track in-flight requests to prevent duplicate calls
@@ -37,18 +39,47 @@ export function usePrism() {
   // Get hydration functions from FUSE store
   const hydrateProductivity = useFuse((s) => s.hydrateProductivity);
   const hydrateAdmin = useFuse((s) => s.hydrateAdmin);
+  const hydrateClients = useFuse((s) => s.hydrateClients);
+  const hydrateFinance = useFuse((s) => s.hydrateFinance);
+  const hydrateProjects = useFuse((s) => s.hydrateProjects);
+  const hydrateSystem = useFuse((s) => s.hydrateSystem);
+  const hydrateSettings = useFuse((s) => s.hydrateSettings);
 
   // TTTS-1 compliant: status === 'hydrated' means data is ready (ONE source of truth)
   const productivityStatus = useFuse((s) => s.productivity.status);
   const adminStatus = useFuse((s) => s.admin.status);
+  const clientsStatus = useFuse((s) => s.clients.status);
+  const financeStatus = useFuse((s) => s.finance.status);
+  const projectsStatus = useFuse((s) => s.projects.status);
+  const systemStatus = useFuse((s) => s.system.status);
+  const settingsStatus = useFuse((s) => s.settings.status);
+
+  // Map domain to status for hydration check
+  const domainStatusMap = useMemo<Record<DomainKey, string>>(() => ({
+    productivity: productivityStatus,
+    admin: adminStatus,
+    clients: clientsStatus,
+    finance: financeStatus,
+    projects: projectsStatus,
+    system: systemStatus,
+    settings: settingsStatus,
+  }), [productivityStatus, adminStatus, clientsStatus, financeStatus, projectsStatus, systemStatus, settingsStatus]);
+
+  // Map domain to hydration function
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const hydrateMap = useMemo<Record<DomainKey, (data: any, source?: ADPSource) => void>>(() => ({
+    productivity: hydrateProductivity,
+    admin: hydrateAdmin,
+    clients: hydrateClients,
+    finance: hydrateFinance,
+    projects: hydrateProjects,
+    system: hydrateSystem,
+    settings: hydrateSettings,
+  }), [hydrateProductivity, hydrateAdmin, hydrateClients, hydrateFinance, hydrateProjects, hydrateSystem, hydrateSettings]);
 
   const preloadDomain = useCallback(async (domain: DomainKey) => {
     // Skip if already hydrated (TTTS-1: status === 'hydrated')
-    if (domain === 'productivity' && productivityStatus === 'hydrated') {
-      console.log(`🔮 PRISM: ${domain} already hydrated, skipping`);
-      return;
-    }
-    if (domain === 'admin' && adminStatus === 'hydrated') {
+    if (domainStatusMap[domain] === 'hydrated') {
       console.log(`🔮 PRISM: ${domain} already hydrated, skipping`);
       return;
     }
@@ -82,10 +113,9 @@ export function usePrism() {
       const duration = performance.now() - start;
 
       // Hydrate the appropriate slice
-      if (domain === 'productivity') {
-        hydrateProductivity(data, 'WARP');
-      } else if (domain === 'admin') {
-        hydrateAdmin(data, 'WARP');
+      const hydrateFn = hydrateMap[domain];
+      if (hydrateFn) {
+        hydrateFn(data, 'WARP');
       }
 
       console.log(`🔮 PRISM: ${domain} loaded in ${duration.toFixed(2)}ms`, data);
@@ -95,7 +125,10 @@ export function usePrism() {
       // Remove from in-flight
       inFlightRef.current.delete(domain);
     }
-  }, [hydrateProductivity, hydrateAdmin, productivityStatus, adminStatus]);
+  }, [
+    domainStatusMap,
+    hydrateMap
+  ]);
 
   return { preloadDomain };
 }
