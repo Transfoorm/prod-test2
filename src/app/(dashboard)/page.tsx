@@ -124,7 +124,7 @@ export default function DashboardPage() {
       <Grid.cards>
         <Card.metric
           title="Your Account"
-          value={user?.email || 'No email'}
+          value={user?.email || ''}
           context="Logged in"
         />
       </Grid.cards>

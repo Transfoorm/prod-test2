@@ -80,7 +80,7 @@ export default function SignUpPage() {
     <>
       {/* Header */}
       <div className="auth-header">
-        <h1 className="auth-title">Create your account</h1>
+        <h1 className="auth-title">Create Your Account</h1>
         <p className="auth-subtitle">Start your transformation journey today</p>
       </div>
 

@@ -211,10 +211,10 @@ export default function ForgotPasswordPage() {
       {/* Header */}
       <div className="auth-header">
         <h1 className="auth-title">
-          {stage === "password" ? "Reset Password" : "Forgot Password"}
+          {stage === "password" ? "Reset Password" : "Forgot Password?"}
         </h1>
         <p className="auth-subtitle">
-          {stage === "email" && "Enter your email to receive a reset code"}
+          {stage === "email" && "If you have an account with us, enter your email address and you will receive a reset code"}
           {stage === "code" && "Enter the 6-digit code sent to your email"}
           {stage === "password" && "Enter your new password"}
         </p>

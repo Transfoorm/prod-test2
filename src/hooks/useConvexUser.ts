@@ -17,7 +17,7 @@
 
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, useClerk } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from '@/convex/_generated/api';
 import { useRouter } from "next/navigation";
@@ -38,6 +38,7 @@ import type { FuseUser } from "@/store/types";
  */
 export function useConvexUserSync(): void {
   const { userId: clerkId, isLoaded: clerkLoaded } = useAuth();
+  const { signOut } = useClerk();
   const router = useRouter();
   const redirectedRef = useRef(false);
   const setUser = useFuse((state) => state.setUser);
@@ -75,14 +76,22 @@ export function useConvexUserSync(): void {
     }
   }, [userDoc, setUser]);
 
-  // ORPHAN DETECTION: Redirect if Clerk auth exists but no Convex user
+  // ORPHAN DETECTION: Sign out and redirect if Clerk auth exists but no Convex user
+  // THIS IS CRITICAL: A user must NEVER see a "No email" or fallback UI state
+  // If Convex user is missing (deleted, DB issue, etc.), force full sign-out
   useEffect(() => {
     if (clerkLoaded && clerkId && userDoc === null && !redirectedRef.current) {
       redirectedRef.current = true;
-      console.error(`[VANISH] Orphaned Clerk account detected: ${clerkId} - redirecting to signup`);
-      router.push('/signup');
+      console.error(`[VANISH] ⚠️ ORPHAN DETECTED: Clerk ID ${clerkId} has no Convex user - forcing sign-out`);
+
+      // Clear FUSE store immediately
+      setUser(null);
+
+      // Sign out of Clerk and redirect to sign-in
+      // This ensures clean slate - no stale cookies, no partial state
+      signOut({ redirectUrl: '/sign-in' });
     }
-  }, [clerkLoaded, clerkId, userDoc, router]);
+  }, [clerkLoaded, clerkId, userDoc, router, setUser, signOut]);
 
   // Clear user from FUSE when logged out
   useEffect(() => {

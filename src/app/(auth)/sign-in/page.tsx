@@ -116,8 +116,8 @@ export default function SignInPage() {
     <>
       {/* Header */}
       <div className="auth-header">
-        <h1 className="auth-title">Welcome back!</h1>
-        <p className="auth-subtitle">Sign in to your account</p>
+        <h1 className="auth-title">Sign In</h1>
+        <p className="auth-subtitle">Welcome back! Enter your credentials.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="auth-form">

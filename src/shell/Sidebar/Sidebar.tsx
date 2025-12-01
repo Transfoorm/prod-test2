@@ -188,14 +188,14 @@ export default function Sidebar() {
         </div>
         <div className="ly-sidebar-footer-text">
           <div className="ly-sidebar-footer-name">
-            {(user as Record<string, unknown>)?.socialName as string || user?.email?.split('@')[0] || 'Call Sign'}
+            {(user as Record<string, unknown>)?.socialName as string || user?.email?.split('@')[0] || ''}
           </div>
-          <div className="ly-sidebar-footer-email">{user?.email || 'user@email.com'}</div>
+          <div className="ly-sidebar-footer-email">{user?.email || ''}</div>
         </div>
         <ChevronsUpDown
           className={`ly-sidebar-footer-chevron ${
-            ((user as Record<string, unknown>)?.socialName as string || user?.email?.split('@')[0] || 'Call Sign').length > 12 ||
-            (user?.email || 'user@email.com').length > 14
+            ((user as Record<string, unknown>)?.socialName as string || user?.email?.split('@')[0] || '').length > 12 ||
+            (user?.email || '').length > 14
               ? 'ly-sidebar-footer-chevron--hidden'
               : ''
           }`}
