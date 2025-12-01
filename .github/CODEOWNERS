@@ -1,0 +1,76 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# CODEOWNERS - TTT SOVEREIGNTY MODE
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# This file defines WHO must approve changes to sacred files.
+# GitHub enforces this server-side - NO LOCAL BYPASS POSSIBLE.
+#
+# Requirements:
+# 1. Branch protection must be enabled on main
+# 2. "Require review from Code Owners" must be checked
+# 3. Direct pushes to main must be blocked
+#
+# With this config, NO developer can:
+# - Create ESLint exceptions
+# - Modify build configs
+# - Disable VRP checks
+# - Change security scripts
+# - Bypass Husky hooks
+# - Modify custom rules
+#
+# WITHOUT Ken's explicit approval.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ESLINT - The Iron Wall
+# ─────────────────────────────────────────────────────────────────────────────
+eslint.config.mjs                    @Transfoorm
+.eslintrc*                           @Transfoorm
+eslint-custom-rules/                 @Transfoorm
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PACKAGE & BUILD CONFIG
+# ─────────────────────────────────────────────────────────────────────────────
+package.json                         @Transfoorm
+package-lock.json                    @Transfoorm
+tsconfig*.json                       @Transfoorm
+
+# ─────────────────────────────────────────────────────────────────────────────
+# VRP SCRIPTS & ENFORCEMENT
+# ─────────────────────────────────────────────────────────────────────────────
+scripts/                             @Transfoorm
+.vrp-approval*                       @Transfoorm
+
+# ─────────────────────────────────────────────────────────────────────────────
+# HUSKY GIT HOOKS
+# ─────────────────────────────────────────────────────────────────────────────
+.husky/                              @Transfoorm
+
+# ─────────────────────────────────────────────────────────────────────────────
+# STYLING ENFORCEMENT
+# ─────────────────────────────────────────────────────────────────────────────
+.stylelintrc.json                    @Transfoorm
+stylelint.config.js                  @Transfoorm
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CLAUDE AI CONTROLS
+# ─────────────────────────────────────────────────────────────────────────────
+.claude/                             @Transfoorm
+CLAUDE.md                            @Transfoorm
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GITHUB WORKFLOWS & SECURITY
+# ─────────────────────────────────────────────────────────────────────────────
+.github/                             @Transfoorm
+
+# ─────────────────────────────────────────────────────────────────────────────
+# FUSE ARCHITECTURE CORE
+# ─────────────────────────────────────────────────────────────────────────────
+ttts/                                @Transfoorm
+vrs/                                 @Transfoorm
+smac/                                @Transfoorm
+
+# ─────────────────────────────────────────────────────────────────────────────
+# MIDDLEWARE & AUTH
+# ─────────────────────────────────────────────────────────────────────────────
+src/middleware.ts                    @Transfoorm
