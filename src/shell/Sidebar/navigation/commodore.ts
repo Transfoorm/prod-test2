@@ -21,7 +21,7 @@ export const commodoreNav: NavSection[] = [
     children: [
       { path: ROUTES.productivity.email, label: 'Email' },
       { path: ROUTES.productivity.calendar, label: 'Calendar' },
-      { path: ROUTES.productivity.meeting, label: 'Meetings' }
+      { path: ROUTES.productivity.meetings, label: 'Meetings' }
     ]
   },
   {
