@@ -191,7 +191,7 @@ export default function EmailVerificationModal({
 
           {/* Footer */}
           <p className="ft-verify-footer ft-verify-footer--lg">
-            Powered by FUSE 2.0 Fast User-Session Experience
+            Powered by FUSE • Instant Everything!
           </p>
         </div>
       </div>
@@ -367,7 +367,7 @@ export default function EmailVerificationModal({
 
         {/* Footer */}
         <p className="ft-verify-footer">
-          Powered by FUSE Revolution -  Fast User Session Experience
+          Powered by FUSE * Instant Everything!
         </p>
       </div>
     </div>

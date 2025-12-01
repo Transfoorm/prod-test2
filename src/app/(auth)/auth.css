@@ -151,6 +151,11 @@
   padding: 2rem;
 }
 
+/* TTT: Stable card prevents layout collapse during hydration */
+.auth-card-stable {
+  min-height: 420px;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════
    AUTH HEADER
    ═══════════════════════════════════════════════════════════════════════ */
@@ -353,6 +358,19 @@
 
 .auth-link-wrapper {
   margin-top: 1.5rem;
+  text-align: center;
+}
+
+/* TTT: Inline link wrapper for forms inside card */
+.auth-link-wrapper-inline {
+  text-align: center;
+}
+
+/* TTT: Footer inside card (after form) */
+.auth-footer-inline {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--auth-card-border);
   text-align: center;
 }
 
