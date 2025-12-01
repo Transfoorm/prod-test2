@@ -18,59 +18,59 @@
 # - Bypass Husky hooks
 # - Modify custom rules
 #
-# WITHOUT Ken's explicit approval.
+# WITHOUT approval from @Metafoorm (Ken's approval account).
 # ═══════════════════════════════════════════════════════════════════════════════
 
 # ─────────────────────────────────────────────────────────────────────────────
 # ESLINT - The Iron Wall
 # ─────────────────────────────────────────────────────────────────────────────
-eslint.config.mjs                    @Transfoorm
-.eslintrc*                           @Transfoorm
-eslint-custom-rules/                 @Transfoorm
+eslint.config.mjs                    @Metafoorm
+.eslintrc*                           @Metafoorm
+eslint-custom-rules/                 @Metafoorm
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PACKAGE & BUILD CONFIG
 # ─────────────────────────────────────────────────────────────────────────────
-package.json                         @Transfoorm
-package-lock.json                    @Transfoorm
-tsconfig*.json                       @Transfoorm
+package.json                         @Metafoorm
+package-lock.json                    @Metafoorm
+tsconfig*.json                       @Metafoorm
 
 # ─────────────────────────────────────────────────────────────────────────────
 # VRP SCRIPTS & ENFORCEMENT
 # ─────────────────────────────────────────────────────────────────────────────
-scripts/                             @Transfoorm
-.vrp-approval*                       @Transfoorm
+scripts/                             @Metafoorm
+.vrp-approval*                       @Metafoorm
 
 # ─────────────────────────────────────────────────────────────────────────────
 # HUSKY GIT HOOKS
 # ─────────────────────────────────────────────────────────────────────────────
-.husky/                              @Transfoorm
+.husky/                              @Metafoorm
 
 # ─────────────────────────────────────────────────────────────────────────────
 # STYLING ENFORCEMENT
 # ─────────────────────────────────────────────────────────────────────────────
-.stylelintrc.json                    @Transfoorm
-stylelint.config.js                  @Transfoorm
+.stylelintrc.json                    @Metafoorm
+stylelint.config.js                  @Metafoorm
 
 # ─────────────────────────────────────────────────────────────────────────────
 # CLAUDE AI CONTROLS
 # ─────────────────────────────────────────────────────────────────────────────
-.claude/                             @Transfoorm
-CLAUDE.md                            @Transfoorm
+.claude/                             @Metafoorm
+CLAUDE.md                            @Metafoorm
 
 # ─────────────────────────────────────────────────────────────────────────────
 # GITHUB WORKFLOWS & SECURITY
 # ─────────────────────────────────────────────────────────────────────────────
-.github/                             @Transfoorm
+.github/                             @Metafoorm
 
 # ─────────────────────────────────────────────────────────────────────────────
 # FUSE ARCHITECTURE CORE
 # ─────────────────────────────────────────────────────────────────────────────
-ttts/                                @Transfoorm
-vrs/                                 @Transfoorm
-smac/                                @Transfoorm
+ttts/                                @Metafoorm
+vrs/                                 @Metafoorm
+smac/                                @Metafoorm
 
 # ─────────────────────────────────────────────────────────────────────────────
 # MIDDLEWARE & AUTH
 # ─────────────────────────────────────────────────────────────────────────────
-src/middleware.ts                    @Transfoorm
+src/middleware.ts                    @Metafoorm
