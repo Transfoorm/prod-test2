@@ -66,6 +66,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run Convex codegen
+        run: npx convex codegen
+
       - name: Run TypeScript check
         run: npx tsc --noEmit
 
