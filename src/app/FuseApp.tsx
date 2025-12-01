@@ -1,12 +1,12 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🔱 FUSE APP - The Sovereign Runtime                                  │
-│  /src/app/app/FuseApp.tsx                                             │
+│  /src/app/FuseApp.tsx                                                 │
 │                                                                        │
 │  FUSE 6.0: This component NEVER unmounts after initial load.          │
 │  It is the persistent client shell that owns all domain navigation.   │
 │                                                                        │
 │  Architecture:                                                        │
-│  • Mounts once from /app/app/page.tsx (server handover)               │
+│  • Mounts once from /app/page.tsx (server handover at ROOT)           │
 │  • Contains the full app shell (Sidebar, Topbar, AISidebar)           │
 │  • RouterView switches domain views based on FUSE sovereign.route     │
 │  • WARP Orchestrator preloads all domain data on mount                │
@@ -33,7 +33,7 @@ import PageHeader from '@/shell/PageHeader/PageHeader';
 import Footer from '@/shell/Footer';
 
 // Sovereign Router
-import RouterView from './RouterView';
+import RouterView from './views/RouterView';
 
 // Domain providers (will be removed in Phase F - currently needed for data)
 import { FinanceProvider } from '@/providers/FinanceProvider';

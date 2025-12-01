@@ -304,9 +304,10 @@ export function isRouteInDomain(route: DomainRoute, domain: string): boolean {
 
 /** Convert URL path to DomainRoute (for initial load) */
 export function urlPathToRoute(path: string): DomainRoute {
-  // Remove /app prefix and leading slash
-  const cleaned = path.replace(/^\/app\/?/, '').replace(/^\//, '');
+  // Remove leading slash: '/admin/users' → 'admin/users'
+  const cleaned = path.replace(/^\//, '');
 
+  // Root path is dashboard
   if (!cleaned || cleaned === '') return 'dashboard';
 
   // Validate it's a known route

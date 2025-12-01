@@ -1,3 +1,11 @@
+/**──────────────────────────────────────────────────────────────────────┐
+│  🔱 DASHBOARD VIEW - Sovereign Domain View                            │
+│  /src/app/views/DashboardView.tsx                                     │
+│                                                                        │
+│  FUSE 6.0: Pure client view that reads from FUSE store.               │
+│  No server fetch. No RSC. Instant render.                             │
+└────────────────────────────────────────────────────────────────────────┘ */
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -10,7 +18,7 @@ import { completeSetupAction } from '@/app/actions/user-mutations';
 import { Card } from '@/prebuilts/card';
 import { Grid } from '@/prebuilts/grid';
 
-export default function DashboardPage() {
+export default function DashboardView() {
   const user = useFuse((s) => s.user);
   const updateUser = useFuse((s) => s.updateUser);
   const modalSkipped = useFuse((s) => s.modalSkipped);
@@ -129,8 +137,8 @@ export default function DashboardPage() {
         />
         <Card.metric
           title="Build Milestone"
-          value="3 Dec 2024 @ 12:30am"
-          context="🔮 Full TTTS-3 PRISM Compliance"
+          value="3 Dec 2024 @ 8:30am"
+          context="🔱 FUSE 6.0 Sovereign Router"
         />
       </Grid.cards>
       </div>

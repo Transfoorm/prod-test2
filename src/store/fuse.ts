@@ -958,7 +958,7 @@ export const useFuse = create<FuseStore>()((set, get) => {
 
       // Update browser URL (cosmetic only - not functional)
       if (typeof window !== 'undefined') {
-        const urlPath = route === 'dashboard' ? '/app' : `/app/${route}`;
+        const urlPath = route === 'dashboard' ? '/' : `/${route}`;
         window.history.pushState({ route }, '', urlPath);
       }
 
@@ -985,7 +985,7 @@ export const useFuse = create<FuseStore>()((set, get) => {
           },
         }));
         if (typeof window !== 'undefined') {
-          window.history.pushState({ route: 'dashboard' }, '', '/app');
+          window.history.pushState({ route: 'dashboard' }, '', '/');
         }
         fuseTimer.end('goBack (to dashboard)', start);
         return;

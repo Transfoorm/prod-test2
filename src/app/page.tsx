@@ -1,8 +1,8 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🔱 SOVEREIGN HANDOVER - App Router → FUSE 6.0                        │
-│  /src/app/app/page.tsx                                                │
+│  /src/app/page.tsx                                                    │
 │                                                                        │
-│  This is THE handover point.                                          │
+│  This is THE handover point at ROOT.                                  │
 │  App Router loads this page ONCE.                                     │
 │  Then FUSE takes command. Forever.                                    │
 │                                                                        │

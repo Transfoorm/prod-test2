@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🔱 ROUTER VIEW - The Sovereign Switch                                │
-│  /src/app/app/RouterView.tsx                                          │
+│  /src/app/views/RouterView.tsx                                        │
 │                                                                        │
 │  FUSE 6.0: This component switches views based on sovereign.route.    │
 │  No server fetch. No RSC. Pure client-side routing.                   │
@@ -19,10 +19,11 @@
 import { useFuse } from '@/store/fuse';
 
 // ═══════════════════════════════════════════════════════════════════════
-// PLACEHOLDER VIEWS
+// SOVEREIGN VIEWS
 // ═══════════════════════════════════════════════════════════════════════
-// TODO: Phase B - Move actual page components here from /(domains)/*
-// For now, we use placeholder views to prove the routing works
+
+// Migrated views
+import DashboardView from './DashboardView';
 
 // Placeholder component for views not yet migrated
 function PlaceholderView({ route }: { route: string }) {
@@ -54,7 +55,7 @@ export default function RouterView() {
       // DASHBOARD
       // ═══════════════════════════════════════════════════════════════
       case 'dashboard':
-        return <PlaceholderView route={route} />;
+        return <DashboardView />;
 
       // ═══════════════════════════════════════════════════════════════
       // PRODUCTIVITY
