@@ -122,31 +122,34 @@ export const getAllUsers = query({
 });
 
 // Get paginated admin_users (Admiral-only, for large-scale user management)
-export const getAllUsersPaginated = query(async (ctx) => {
-  // 🔒 SECURITY: Admiral-only access (return empty if unauthorized)
-  try {
-    await requireAdmiral(ctx);
-  } catch {
-    return []; // Return empty array instead of throwing
-  }
+export const getAllUsersPaginated = query({
+  args: {},
+  handler: async (ctx) => {
+    // 🔒 SECURITY: Admiral-only access (return empty if unauthorized)
+    try {
+      await requireAdmiral(ctx);
+    } catch {
+      return []; // Return empty array instead of throwing
+    }
 
-  // Query all admin_users with descending order
-  const admin_users = await ctx.db.query("admin_users").order("desc").collect();
+    // Query all admin_users with descending order
+    const admin_users = await ctx.db.query("admin_users").order("desc").collect();
 
-  // Return with basic info (no sensitive data)
-  return admin_users.map(user => ({
-    _id: user._id,
-    clerkId: user.clerkId,
-    email: user.email,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    entityName: user.entityName,
-    socialName: user.socialName,
-    phoneNumber: user.phoneNumber,
-    rank: user.rank,
-    setupStatus: user.setupStatus,
-    createdAt: user.createdAt,
-  }));
+    // Return with basic info (no sensitive data)
+    return admin_users.map((user) => ({
+      _id: user._id,
+      clerkId: user.clerkId,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      entityName: user.entityName,
+      socialName: user.socialName,
+      phoneNumber: user.phoneNumber,
+      rank: user.rank,
+      setupStatus: user.setupStatus,
+      createdAt: user.createdAt,
+    }));
+  },
 });
 
 // Get user by Convex ID for editing (Admiral-only, TTT-compliant)
