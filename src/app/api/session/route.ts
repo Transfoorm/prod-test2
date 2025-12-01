@@ -9,6 +9,7 @@ import { clerkClient } from '@clerk/nextjs/server';
 import { mintSession, setSessionCookie, clearSessionCookie } from '@/fuse/hydration/session/cookie';
 import { ConvexHttpClient } from 'convex/browser';
 import { api } from '@/convex/_generated/api';
+import { DEFAULT_WIDGETS_BY_RANK } from '@/store/domains/dashboard';
 
 // GET /api/session — Clerk redirects here after sign-in, we mint FUSE cookie and redirect to dashboard
 export async function GET(request: Request) {
@@ -87,6 +88,7 @@ export async function GET(request: Request) {
       const step5 = Date.now();
       // FUSE 5.0: Mint session cookie with user data from Convex (or defaults for new users)
       // Use database values if they exist, fallback to Clerk values
+      const userRank = existingUser?.rank ?? 'captain';
       token = await mintSession({
         _id: existingUser?._id ? String(existingUser._id) : '',  // ✅ Convex _id (sovereignty restored)
         clerkId: userId,
@@ -94,7 +96,7 @@ export async function GET(request: Request) {
         emailVerified: existingUser?.emailVerified ?? false,
         firstName: existingUser?.firstName ?? firstName,
         lastName: existingUser?.lastName ?? lastName,
-        rank: existingUser?.rank ?? 'captain',
+        rank: userRank,
         setupStatus: existingUser?.setupStatus ?? 'pending',
         subscriptionStatus: existingUser?.subscriptionStatus ?? 'trial',
         businessCountry: existingUser?.businessCountry ?? 'AU',
@@ -104,7 +106,10 @@ export async function GET(request: Request) {
         brandLogoUrl: existingUser?.brandLogoUrl ?? undefined,
         mirorAvatarProfile: existingUser?.mirorAvatarProfile,
         mirorEnchantmentEnabled: existingUser?.mirorEnchantmentEnabled,
-        mirorEnchantmentTiming: existingUser?.mirorEnchantmentTiming
+        mirorEnchantmentTiming: existingUser?.mirorEnchantmentTiming,
+        // 🚀 WARP: Dashboard preferences (baked during login)
+        dashboardLayout: 'classic',
+        dashboardWidgets: DEFAULT_WIDGETS_BY_RANK[userRank] || DEFAULT_WIDGETS_BY_RANK['captain']
       });
       console.log(`  ├─ mintSession() → ${Date.now() - step5}ms`);
     } catch (dbError) {
@@ -129,7 +134,10 @@ export async function GET(request: Request) {
         brandLogoUrl: undefined,
         mirorAvatarProfile: undefined,
         mirorEnchantmentEnabled: undefined,
-        mirorEnchantmentTiming: undefined
+        mirorEnchantmentTiming: undefined,
+        // 🚀 WARP: Dashboard preferences (fallback to captain defaults)
+        dashboardLayout: 'classic',
+        dashboardWidgets: DEFAULT_WIDGETS_BY_RANK['captain']
       });
 
       const res = NextResponse.redirect(new URL('/', request.url), 303);

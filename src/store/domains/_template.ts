@@ -9,7 +9,7 @@
  * ADP Coordination Fields (REQUIRED per TTTS-1):
  *   - status: 'idle' | 'loading' | 'hydrated' | 'error'
  *   - lastFetchedAt: number | undefined
- *   - source: 'SSR' | 'WARP' | 'CONVEX_LIVE' | 'MUTATION' | 'ROLLBACK' | undefined
+ *   - source: 'SSR' | 'WARP' | 'COOKIE' | 'CONVEX_LIVE' | 'MUTATION' | 'ROLLBACK' | undefined
  *
  * Required Functions:
  *   - hydrate[Domain]: (data, source?) => void
@@ -38,7 +38,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** ADP Source tracking - where did the data come from? */
-export type ADPSource = 'SSR' | 'WARP' | 'CONVEX_LIVE' | 'MUTATION' | 'ROLLBACK';
+export type ADPSource = 'SSR' | 'WARP' | 'COOKIE' | 'CONVEX_LIVE' | 'MUTATION' | 'ROLLBACK';
 
 /** ADP Status - domain hydration state (TTTS-1 compliant) */
 export type ADPStatus = 'idle' | 'loading' | 'hydrated' | 'error';

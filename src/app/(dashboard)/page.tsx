@@ -127,6 +127,11 @@ export default function DashboardPage() {
           value={user?.email || ''}
           context="Logged in"
         />
+        <Card.metric
+          title="Build Milestone"
+          value="2 Dec 2024 @ 11:45pm"
+          context="🟥 Dashboard WARP Plumbing"
+        />
       </Grid.cards>
       </div>
     </Grid.verticalBig>

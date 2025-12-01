@@ -39,6 +39,9 @@ type SessionPayload = {
   mirorAvatarProfile?: 'male' | 'female' | 'inclusive';
   mirorEnchantmentEnabled?: boolean;
   mirorEnchantmentTiming?: 'subtle' | 'magical' | 'playful';
+  // Dashboard preferences (WARP'd during login)
+  dashboardLayout?: 'classic' | 'focus' | 'metrics';
+  dashboardWidgets?: string[];
 };
 
 export async function mintSession(payload: Omit<SessionPayload, 'iat'>) {
@@ -65,7 +68,10 @@ export async function mintSession(payload: Omit<SessionPayload, 'iat'>) {
     themeMode: payload.themeMode,
     mirorAvatarProfile: payload.mirorAvatarProfile,
     mirorEnchantmentEnabled: payload.mirorEnchantmentEnabled,
-    mirorEnchantmentTiming: payload.mirorEnchantmentTiming
+    mirorEnchantmentTiming: payload.mirorEnchantmentTiming,
+    // Dashboard preferences (WARP'd during login)
+    dashboardLayout: payload.dashboardLayout,
+    dashboardWidgets: payload.dashboardWidgets
   })
     .setProtectedHeader({ alg: ALG })
     .setIssuedAt()
@@ -136,7 +142,10 @@ export async function readSessionCookie(): Promise<SessionPayload | null> {
       themeMode: payload.themeMode as string | undefined,
       mirorAvatarProfile: payload.mirorAvatarProfile as 'male' | 'female' | 'inclusive' | undefined,
       mirorEnchantmentEnabled: payload.mirorEnchantmentEnabled as boolean | undefined,
-      mirorEnchantmentTiming: payload.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined
+      mirorEnchantmentTiming: payload.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
+      // Dashboard preferences
+      dashboardLayout: payload.dashboardLayout as 'classic' | 'focus' | 'metrics' | undefined,
+      dashboardWidgets: payload.dashboardWidgets as string[] | undefined
     };
 
     console.log(`FUSE Cookie: Session read ${Date.now() - startTime}ms (${sessionData.email})`);
@@ -198,7 +207,10 @@ export function getSessionFromCookie(cookieStore: { get: (name: string) => { val
       themeMode: payload.themeMode,
       mirorAvatarProfile: payload.mirorAvatarProfile,
       mirorEnchantmentEnabled: payload.mirorEnchantmentEnabled,
-      mirorEnchantmentTiming: payload.mirorEnchantmentTiming
+      mirorEnchantmentTiming: payload.mirorEnchantmentTiming,
+      // Dashboard preferences
+      dashboardLayout: payload.dashboardLayout,
+      dashboardWidgets: payload.dashboardWidgets
     };
   } catch {
     return null;

@@ -28,6 +28,7 @@ export function ClientHydrator() {
   const hydrateThemeName = useFuse((state) => state.hydrateThemeName);
   const rank = useFuse((state) => state.rank);
   const hydrateAdmin = useFuse((state) => state.hydrateAdmin);
+  const hydrateDashboard = useFuse((state) => state.hydrateDashboard);
   const setAISidebarState = useFuse((state) => state.setAISidebarState);
 
   // TRUE WARP: Track if background preload has run
@@ -75,9 +76,18 @@ export function ClientHydrator() {
       hydrateThemeName(decoded.themeName);
     }
 
+    // 🚀 WARP: Hydrate Dashboard from cookie (baked during login)
+    if (decoded.dashboardLayout || decoded.dashboardWidgets) {
+      hydrateDashboard({
+        layout: decoded.dashboardLayout || 'classic',
+        visibleWidgets: decoded.dashboardWidgets || [],
+        expandedSections: []
+      }, 'COOKIE');
+    }
+
     setAISidebarState('closed');
     console.log('⚡ FUSE: Store hydrated synchronously from cookie');
-  }, [setUser, hydrateThemeMode, hydrateThemeName, setAISidebarState]);
+  }, [setUser, hydrateThemeMode, hydrateThemeName, hydrateDashboard, setAISidebarState]);
 
   // Helper function to hydrate store from decoded cookie data
   // Currently unused - reserved for future cookie polling implementation

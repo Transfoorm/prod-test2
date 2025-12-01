@@ -54,6 +54,9 @@ export interface FuseCookiePayload {
   mirorEnchantmentTiming?: 'subtle' | 'magical' | 'playful';
   themeDark?: boolean;
   themeName?: 'transtheme';
+  // Dashboard preferences (WARP'd during login)
+  dashboardLayout?: 'classic' | 'focus' | 'metrics';
+  dashboardWidgets?: string[];
 }
 
 /**
