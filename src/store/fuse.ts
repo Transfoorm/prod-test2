@@ -44,6 +44,10 @@ import {
   type SystemSlice,
   type SystemData,
   type ADPSource,
+  // 🔱 SOVEREIGN ROUTER
+  type NavigationSlice,
+  type DomainRoute,
+  initialNavigationState,
 } from './domains';
 
 // Core types
@@ -77,13 +81,18 @@ interface FuseStore {
   isHydrated: boolean;
   themeMode: ThemeMode;
   themeName: ThemeName;
-  navigation: NavigationState;
+  navigation: NavigationState; // Legacy - being replaced by sovereign router
   aiSidebarState: AISidebarState;
   modalSkipped: boolean;
   phoenixButtonVisible: boolean;
   phoenixNavigating: boolean;
   lastActionTiming?: number;
   navClickTime?: number;
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // 🔱 SOVEREIGN ROUTER - FUSE 6.0
+  // ─────────────────────────────────────────────────────────────────────────────
+  sovereign: NavigationSlice;
 
   // ─────────────────────────────────────────────────────────────────────────────
   // Domain Slices (types from ./domains/)
@@ -130,6 +139,22 @@ interface FuseStore {
   // Navigation timing - click-to-render measurement
   setNavClickTime: () => void;
   clearNavClickTime: () => void;
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // 🔱 SOVEREIGN ROUTER ACTIONS - FUSE 6.0
+  // ─────────────────────────────────────────────────────────────────────────────
+  /** Navigate to a route - THE SOVEREIGN COMMAND */
+  navigate: (route: DomainRoute) => void;
+  /** Go back to previous route */
+  goBack: () => void;
+  /** Toggle sidebar section */
+  sovereignToggleSection: (sectionId: string) => void;
+  /** Collapse all sections */
+  sovereignCollapseAll: () => void;
+  /** Hydrate sections from localStorage */
+  sovereignHydrateSections: () => void;
+  /** Toggle sidebar collapsed */
+  sovereignToggleSidebar: () => void;
 
   // ─────────────────────────────────────────────────────────────────────────────
   // Domain Actions
@@ -192,6 +217,11 @@ export const useFuse = create<FuseStore>()((set, get) => {
     phoenixNavigating: false,
     lastActionTiming: undefined,
     navClickTime: undefined,
+
+    // ════════════════════════════════════════════════════════════════════════
+    // 🔱 SOVEREIGN ROUTER STATE - FUSE 6.0
+    // ════════════════════════════════════════════════════════════════════════
+    sovereign: initialNavigationState,
 
     // ════════════════════════════════════════════════════════════════════════
     // DOMAIN SLICES (state only - actions are spread below)
@@ -900,6 +930,165 @@ export const useFuse = create<FuseStore>()((set, get) => {
     clearNavClickTime: () => {
       set({ navClickTime: undefined });
     },
+
+    // ════════════════════════════════════════════════════════════════════════
+    // 🔱 SOVEREIGN ROUTER ACTIONS - FUSE 6.0
+    // ════════════════════════════════════════════════════════════════════════
+
+    navigate: (route: DomainRoute) => {
+      const start = fuseTimer.start('navigate');
+      const current = get().sovereign.route;
+
+      // Don't navigate to same route
+      if (current === route) {
+        fuseTimer.end('navigate (same route)', start);
+        return;
+      }
+
+      const now = performance.now();
+
+      set((state) => ({
+        sovereign: {
+          ...state.sovereign,
+          route,
+          history: [...state.sovereign.history.slice(-9), current],
+          lastNavigatedAt: now,
+        },
+      }));
+
+      // Update browser URL (cosmetic only - not functional)
+      if (typeof window !== 'undefined') {
+        const urlPath = route === 'dashboard' ? '/app' : `/app/${route}`;
+        window.history.pushState({ route }, '', urlPath);
+      }
+
+      const duration = fuseTimer.end('navigate', start);
+
+      // Performance gate
+      if (duration > 65) {
+        console.warn(`🔱 SR: Navigation exceeded 65ms target: ${duration.toFixed(1)}ms`);
+      }
+
+      console.log(`🔱 SR: ${current} → ${route} (${duration.toFixed(1)}ms)`);
+    },
+
+    goBack: () => {
+      const start = fuseTimer.start('goBack');
+      const { history } = get().sovereign;
+
+      if (history.length === 0) {
+        set((state) => ({
+          sovereign: {
+            ...state.sovereign,
+            route: 'dashboard',
+            lastNavigatedAt: performance.now(),
+          },
+        }));
+        if (typeof window !== 'undefined') {
+          window.history.pushState({ route: 'dashboard' }, '', '/app');
+        }
+        fuseTimer.end('goBack (to dashboard)', start);
+        return;
+      }
+
+      const previousRoute = history[history.length - 1];
+
+      set((state) => ({
+        sovereign: {
+          ...state.sovereign,
+          route: previousRoute,
+          history: state.sovereign.history.slice(0, -1),
+          lastNavigatedAt: performance.now(),
+        },
+      }));
+
+      if (typeof window !== 'undefined') {
+        window.history.back();
+      }
+
+      fuseTimer.end('goBack', start);
+      console.log(`🔱 SR: ← Back to ${previousRoute}`);
+    },
+
+    sovereignToggleSection: (sectionId: string) => {
+      const start = fuseTimer.start('sovereignToggleSection');
+
+      set((state) => {
+        const isExpanded = state.sovereign.expandedSections.includes(sectionId);
+        const newSections = isExpanded
+          ? state.sovereign.expandedSections.filter((id) => id !== sectionId)
+          : [...state.sovereign.expandedSections, sectionId];
+
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('fuse-sidebar-sections', JSON.stringify(newSections));
+        }
+
+        return {
+          sovereign: {
+            ...state.sovereign,
+            expandedSections: newSections,
+          },
+        };
+      });
+
+      fuseTimer.end('sovereignToggleSection', start);
+    },
+
+    sovereignCollapseAll: () => {
+      const start = fuseTimer.start('sovereignCollapseAll');
+
+      set((state) => ({
+        sovereign: {
+          ...state.sovereign,
+          expandedSections: [],
+        },
+      }));
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('fuse-sidebar-sections', JSON.stringify([]));
+      }
+
+      fuseTimer.end('sovereignCollapseAll', start);
+    },
+
+    sovereignHydrateSections: () => {
+      const start = fuseTimer.start('sovereignHydrateSections');
+
+      if (typeof window === 'undefined') {
+        fuseTimer.end('sovereignHydrateSections (SSR skip)', start);
+        return;
+      }
+
+      const stored = localStorage.getItem('fuse-sidebar-sections');
+      if (stored) {
+        try {
+          const sections = JSON.parse(stored);
+          set((state) => ({
+            sovereign: {
+              ...state.sovereign,
+              expandedSections: sections,
+            },
+          }));
+        } catch {
+          // Invalid JSON - ignore
+        }
+      }
+
+      fuseTimer.end('sovereignHydrateSections', start);
+    },
+
+    sovereignToggleSidebar: () => {
+      const start = fuseTimer.start('sovereignToggleSidebar');
+
+      set((state) => ({
+        sovereign: {
+          ...state.sovereign,
+          sidebarCollapsed: !state.sovereign.sidebarCollapsed,
+        },
+      }));
+
+      fuseTimer.end('sovereignToggleSidebar', start);
+    },
   };
 });
 
@@ -908,3 +1097,6 @@ export const useFuse = create<FuseStore>()((set, get) => {
 // ══════════════════════════════════════════════════════════════════════════════
 
 export type { FuseStore };
+
+// 🔱 Re-export Sovereign Router types for convenience
+export type { DomainRoute, NavigationSlice } from './domains';

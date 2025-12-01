@@ -11,14 +11,23 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { ChevronRight, ChevronsUpDown } from 'lucide-react';
 import UserButton from '@/features/UserButton';
 import CompanyButton from '@/features/CompanyButton';
 import { useFuse } from '@/store/fuse';
+import type { DomainRoute } from '@/store/fuse';
 import { Icon } from '@/prebuilts';
 import { getNavForRank } from './navigation';
 import { usePrism } from '@/fuse/hooks/usePrism';
+
+// 🔱 Helper: Convert URL path to DomainRoute
+function pathToRoute(path: string): DomainRoute {
+  // Remove leading slash: '/admin/users' → 'admin/users'
+  const route = path.replace(/^\//, '');
+  // Dashboard is '/' → 'dashboard'
+  return (route === '' ? 'dashboard' : route) as DomainRoute;
+}
 
 // 🔮 PRISM: Map section labels to domain keys for preloading
 const SECTION_TO_DOMAIN: Record<string, 'productivity' | 'admin' | 'clients' | 'finance' | 'projects' | 'system' | 'settings'> = {
@@ -32,20 +41,19 @@ const SECTION_TO_DOMAIN: Record<string, 'productivity' | 'admin' | 'clients' | '
 };
 
 export default function Sidebar() {
-  const router = useRouter();
   const pathname = usePathname();
   const user = useFuse((s) => s.user);
-  const rank = useFuse ((s) => s.rank);
+  const rank = useFuse((s) => s.rank);
   const expandedSections = useFuse((s) => s.navigation.expandedSections);
   const toggleSection = useFuse((s) => s.toggleSection);
   const collapseAllSections = useFuse((s) => s.collapseAllSections);
   const [isFooterMenuOpen, setIsFooterMenuOpen] = useState(false);
 
+  // 🔱 SOVEREIGN ROUTER: navigate() replaces router.push()
+  const navigate = useFuse((s) => s.navigate);
+
   // 🔮 PRISM: Preload domains on dropdown open
   const { preloadDomain } = usePrism();
-
-  // ⏱️ Navigation timing
-  const setNavClickTime = useFuse((s) => s.setNavClickTime);
 
   const navItems = getNavForRank(rank);
   const hydrateExpandedSections = useFuse((s) => s.hydrateExpandedSections);
@@ -102,8 +110,8 @@ export default function Sidebar() {
                 key={item.label}
                 className={`ly-sidebar-button ${active ? 'ly-sidebar-button--active' : ''}`}
                 onClick={() => {
-                  setNavClickTime();
-                  router.push(item.path!);
+                  // 🔱 SOVEREIGN ROUTER: Instant navigation, zero server
+                  navigate(pathToRoute(item.path!));
                 }}
               >
                 <Icon variant={item.icon} size="sm" className="ly-sidebar-icon" />
@@ -151,8 +159,8 @@ export default function Sidebar() {
                           key={child.path}
                           className={`ly-sidebar-sublink ${childActive ? 'ly-sidebar-sublink--active' : ''}`}
                           onClick={() => {
-                            setNavClickTime();
-                            router.push(child.path);
+                            // 🔱 SOVEREIGN ROUTER: Instant navigation, zero server
+                            navigate(pathToRoute(child.path));
                           }}
                         >
                           {child.label}
