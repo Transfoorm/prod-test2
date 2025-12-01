@@ -22,7 +22,8 @@ on:
     branches: [main]
 
 env:
-  CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+    CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+    NEXT_PUBLIC_CONVEX_URL: ${{ secrets.NEXT_PUBLIC_CONVEX_URL }}
 
 jobs:
   # ─────────────────────────────────────────────────────────────────────────────
