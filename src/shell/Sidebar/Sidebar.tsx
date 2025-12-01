@@ -43,6 +43,9 @@ export default function Sidebar() {
   // 🔮 PRISM: Preload domains on dropdown open
   const { preloadDomain } = usePrism();
 
+  // ⏱️ Navigation timing
+  const setNavClickTime = useFuse((s) => s.setNavClickTime);
+
   const navItems = getNavForRank(rank);
   const hydrateExpandedSections = useFuse((s) => s.hydrateExpandedSections);
 
@@ -97,7 +100,10 @@ export default function Sidebar() {
               <button
                 key={item.label}
                 className={`ly-sidebar-button ${active ? 'ly-sidebar-button--active' : ''}`}
-                onClick={() => router.push(item.path!)}
+                onClick={() => {
+                  setNavClickTime();
+                  router.push(item.path!);
+                }}
               >
                 <Icon variant={item.icon} size="sm" className="ly-sidebar-icon" />
                 <span>{item.label}</span>
@@ -143,7 +149,10 @@ export default function Sidebar() {
                         <button
                           key={child.path}
                           className={`ly-sidebar-sublink ${childActive ? 'ly-sidebar-sublink--active' : ''}`}
-                          onClick={() => router.push(child.path)}
+                          onClick={() => {
+                            setNavClickTime();
+                            router.push(child.path);
+                          }}
                         >
                           {child.label}
                         </button>

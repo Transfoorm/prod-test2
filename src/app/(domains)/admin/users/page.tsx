@@ -2,12 +2,14 @@
 
 import { useSetPageHeader } from '@/hooks/useSetPageHeader';
 import { useAdminData } from '@/hooks/useAdminData';
+import { usePageTiming } from '@/fuse/hooks/usePageTiming';
 import { Tabs, Stack } from '@/prebuilts';
 import UsersTab from './_tabs/UsersTab';
 import DeletionsTab from './_tabs/DeletionsTab';
 
 export default function AdminUsersPage() {
   useSetPageHeader(undefined, 'All current users who use the platform');
+  usePageTiming('/admin/users');
 
   // 🚀 WARP: Get counts from FUSE store (server-preloaded)
   const { computed } = useAdminData();

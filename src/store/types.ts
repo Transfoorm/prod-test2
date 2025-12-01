@@ -209,6 +209,7 @@ export type FuseState = {
 
   // Performance tracking
   lastActionTiming?: number;
+  navClickTime?: number; // Timestamp when sidebar nav click occurs (for click-to-render timing)
 
   // Domain slices - Great Provider Ecosystem
   finance: FinanceSlice;
@@ -254,6 +255,10 @@ export type FuseState = {
   setModalSkipped: (value: boolean) => void;
   setPhoenixButtonVisible: (value: boolean) => void;
   setPhoenixNavigating: (value: boolean) => void;
+
+  // Navigation timing - click-to-render measurement
+  setNavClickTime: () => void; // Sets timestamp when nav link clicked
+  clearNavClickTime: () => void; // Clears after timing is logged
 
   // Domain hydration methods - Great Provider Ecosystem
   // Uses *Data types (not *Slice) - ADP coordination fields are set internally

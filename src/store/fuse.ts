@@ -83,6 +83,7 @@ interface FuseStore {
   phoenixButtonVisible: boolean;
   phoenixNavigating: boolean;
   lastActionTiming?: number;
+  navClickTime?: number;
 
   // ─────────────────────────────────────────────────────────────────────────────
   // Domain Slices (types from ./domains/)
@@ -125,6 +126,10 @@ interface FuseStore {
   setModalSkipped: (value: boolean) => void;
   setPhoenixButtonVisible: (value: boolean) => void;
   setPhoenixNavigating: (value: boolean) => void;
+
+  // Navigation timing - click-to-render measurement
+  setNavClickTime: () => void;
+  clearNavClickTime: () => void;
 
   // ─────────────────────────────────────────────────────────────────────────────
   // Domain Actions
@@ -186,6 +191,7 @@ export const useFuse = create<FuseStore>()((set, get) => {
     phoenixButtonVisible: false,
     phoenixNavigating: false,
     lastActionTiming: undefined,
+    navClickTime: undefined,
 
     // ════════════════════════════════════════════════════════════════════════
     // DOMAIN SLICES (state only - actions are spread below)
@@ -885,6 +891,14 @@ export const useFuse = create<FuseStore>()((set, get) => {
       const start = fuseTimer.start('setPhoenixNavigating');
       set({ phoenixNavigating: value, lastActionTiming: performance.now() });
       fuseTimer.end('setPhoenixNavigating', start);
+    },
+
+    // Navigation timing - click-to-render measurement
+    setNavClickTime: () => {
+      set({ navClickTime: performance.now() });
+    },
+    clearNavClickTime: () => {
+      set({ navClickTime: undefined });
     },
   };
 });
