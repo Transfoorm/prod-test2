@@ -1,15 +1,15 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  📍 TOPBAR - Full-Width Frame with Logo (WCCC ly-* Compliant)         │
-│  /src/shell/Topbar.tsx                                                 │
+│  /src/shell/Topbar/Topbar.tsx                                         │
 │                                                                        │
 │  Topbar with logo on left side and Clerk UserButton on right.          │
+│  Uses Sovereign Router for navigation (FUSE 6.0).                      │
 │  Uses: --topbar-height, --topbar-bg, --topbar-logo-width              │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 "use client";
 
 import React from 'react';
-import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { Sparkles } from 'lucide-react';
 import { Button } from '@/prebuilts/button';
@@ -23,8 +23,8 @@ import {
 
 
 export default function Topbar() {
-  const router = useRouter();
-  const pathname = usePathname();
+  const navigate = useFuse((s) => s.navigate);
+  const route = useFuse((s) => s.sovereign.route);
   const user = useFuse((s) => s.user);
   const { isCaptain, isAdmiral } = useRankCheck();
   const modalSkipped = useFuse((s) => s.modalSkipped);
@@ -83,7 +83,7 @@ export default function Topbar() {
 
   // Show button when navigating away from unskipped modal
   React.useEffect(() => {
-    const isOnHome = pathname === '/';
+    const isOnHome = route === 'dashboard';
     const needsSetup = isCaptain() && user?.setupStatus === 'pending';
     const modalIsUnskipped = needsSetup && !modalSkipped;
 
@@ -138,7 +138,7 @@ export default function Topbar() {
         setTimeout(() => setShouldFadeIn(false), 400);
       }
     }
-  }, [pathname, modalSkipped, user, flyingButtonVisible, isCaptain, setFlyingButtonVisible, setShouldFadeIn, isFadingOut]);
+  }, [route, modalSkipped, user, flyingButtonVisible, isCaptain, setFlyingButtonVisible, setShouldFadeIn, isFadingOut]);
 
   return (
     <header className="ly-topbar-header">
@@ -161,7 +161,7 @@ export default function Topbar() {
             className={`whitespace-nowrap animate-pulse-slow ly-topbar-setup-button ${shouldFadeIn ? 'ly-topbar-setup-button--fade-in' : ''} ${isFadingOut ? 'ly-topbar-setup-button--fade-out' : ''}`}
             icon={<Sparkles />}
             onMouseDown={() => {
-              const isOnHomePage = pathname === '/';
+              const isOnHomePage = route === 'dashboard';
 
               if (isOnHomePage) {
                 // REVERSE FLOW: Bring modal back down
@@ -207,7 +207,7 @@ export default function Topbar() {
                 }
 
                 // Navigate to home
-                router.push('/');
+                navigate('dashboard');
 
                 // Just fade out the topbar button - NO PHOENIX
                 setTimeout(() => {

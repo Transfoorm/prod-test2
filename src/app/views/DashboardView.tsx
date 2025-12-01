@@ -138,7 +138,7 @@ export default function DashboardView() {
         <Card.metric
           title="Build Milestone"
           value="3 Dec 2024 @ 8:30am"
-          context="🔱 FUSE 6.0 Sovereign Router"
+          context="⚡ FUSE 6.0 Sovereign Router"
         />
       </Grid.cards>
       </div>

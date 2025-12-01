@@ -17,6 +17,7 @@
 'use client';
 
 import { useFuse } from '@/store/fuse';
+import { useSetPageHeader } from '@/hooks/useSetPageHeader';
 
 // ═══════════════════════════════════════════════════════════════════════
 // SOVEREIGN VIEWS
@@ -27,9 +28,15 @@ import DashboardView from './DashboardView';
 
 // Placeholder component for views not yet migrated
 function PlaceholderView({ route }: { route: string }) {
+  // Generate title from route: 'settings/security' → 'Security'
+  const pageName = route.split('/').pop() || route;
+  const title = pageName.charAt(0).toUpperCase() + pageName.slice(1);
+
+  useSetPageHeader(title, 'Coming soon');
+
   return (
     <div className="sovereign-placeholder">
-      <h2>🔱 Sovereign Route: {route}</h2>
+      <h2>Sovereign Route: {route}</h2>
       <p>This view will be migrated from /(domains) in Phase B.</p>
       <p>Navigation is now instant - FUSE 6.0 is working!</p>
     </div>
