@@ -122,31 +122,43 @@ Server Cookie (<1ms) → FUSE Store (Zustand) → Components
 
 One Zustand store. Five domains. Everything connected.
 
-### The 5 Domains
+### The Domain Slices
 
 | Domain | Purpose | Data |
 |--------|---------|------|
 | **Session** | Current user | user, rank, preferences |
+| **Admin** | Platform management | users, deletion logs |
 | **Clients** | Business data | people, sessions, notes |
-| **Finances** | Money matters | invoices, transactions |
+| **Finance** | Money matters | invoices, transactions |
 | **Productivity** | Work tools | calendar, email, pipeline |
+| **Projects** | Project tracking | charts, locations |
 | **Settings** | Configuration | theme, notifications |
+| **System** | Platform config | AI, ranks |
 
-### The ADP Pattern (Always-Data-Present)
+### The ADP Pattern (Anticipatory Data Preloading)
 
 Two complementary systems work together:
 
-1. **WARP** (Write And Read Pattern) - Server-side preloading via cookies
-2. **PRISM** (Provider-Rich Intelligent State Management) - Client-side hydration via Providers
+1. **WARP** (Wholesale Anticipatory Resource Preloading) - Proactive batch preload on mount via `requestIdleCallback`
+2. **PRISM** (Predictive Reactive Intent-Signal Mechanism) - Reactive single-domain preload on dropdown click
 
 ```
-Layout.tsx (Server)                    Provider (Client)
-       ↓                                     ↓
-  Read Cookie                         Hydrate from Cookie
-       ↓                                     ↓
-  Pass to Provider                    Write to FUSE Store
-       ↓                                     ↓
-  Zero Loading States ←←←←←←←←←← Components Read FUSE
+┌─────────────────────────────────────────────────────────────┐
+│                    ADP = WARP + PRISM                       │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  WARP (On Mount)              PRISM (On Click)              │
+│  ────────────────             ─────────────────             │
+│  • Batch preload              • Single domain preload       │
+│  • requestIdleCallback        • Dropdown click trigger      │
+│  • All likely domains         • Specific domain             │
+│  • Background, proactive      • Foreground, reactive        │
+│                                                             │
+│  Dashboard loads →            User clicks "Finance" →       │
+│  WARP preloads all domains    PRISM preloads finance slice  │
+│                                                             │
+│  Result: Click → Instant. Zero delay. Data already there.   │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -512,13 +524,26 @@ export const getClients = query({
 | 6 | Build Integrity | Output analysis |
 | 7 | Random Sampling | Manual inspection |
 
-### The 3 Sacred Commands
+### VRP Scripts
 
-| Command | Purpose | When |
-|---------|---------|------|
-| `/purecommit` | Create VRP-compliant commit | Every commit |
-| `/purepush` | Push with VRP verification | When sharing |
-| `/vrpaudit` | Full 70-point audit | Weekly |
+| Script | Purpose | When |
+|--------|---------|------|
+| `npm run vrp:isv` | Check inline style violations | Pre-commit |
+| `npm run vrp:naming` | Check CSS naming conventions | Pre-commit |
+| `npm run vrp:warp` | Verify WARP-NAV sync (TTTS-4) | Pre-commit |
+| `npm run vrp:prism` | Verify PRISM coverage (TTTS-3) | Pre-commit |
+| `npm run vrp:cascade` | Verify Vanish cascade coverage | Pre-build |
+| `npm run vrp:all` | Run all VRP checks | Manual audit |
+
+### TTTS Enforcement (ESLint)
+
+| Rule | What it blocks |
+|------|----------------|
+| `ttts/enforce-slice-shape` | Non-compliant FUSE slices |
+| `ttts/no-direct-convex-in-pages` | Direct Convex queries in components |
+| `ttts/no-cross-domain-imports` | Domain boundary violations |
+| `ttts/no-lazy-domains` | dynamic()/React.lazy() in domain views |
+| `ttts/no-runtime-debt` | useQuery/useEffect fetch in components |
 
 ### TAV Protection (Type Any Virus)
 
@@ -534,10 +559,10 @@ const result = value as User;
 
 ### Ground Zero
 
-A **virgin repository** has **zero violations** across all 7 layers.
+A **virgin repository** has **zero violations** across all layers.
 
 **The Golden Rule:**
-> Never commit without `/purecommit`. Never push without `/purepush`.
+> Git hooks enforce VRP automatically. Protected files require PR approval via Knox Protocol.
 
 ---
 
@@ -672,15 +697,19 @@ v1/                         # Project root
 # Make changes
 git add .
 
-# Commit with VRP enforcement
-/purecommit
+# Commit - hooks run automatically
+git commit -m "feat: your change"
+# → VRP checks run automatically
+# → Protected files blocked without approval
 
-# Choose to push (1) or not (2)
-# If 2, push later with:
-/purepush
+# Push - full verification runs
+git push
+# → TypeScript check
+# → Full build verification
+# → All VRP scripts
 
-# Periodic audit
-/vrpaudit
+# Manual audit
+npm run vrp:all
 ```
 
 ---
@@ -700,84 +729,41 @@ git add .
 
 ---
 
-# APPENDIX: SOURCE DOCTRINE FILES
+# APPENDIX: DOCUMENTATION INDEX
 
-This Bible consolidates the following 16 SDK documents. Reference them for deep dives:
+Reference the `/docs/` folder for detailed documentation:
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        THE 16 DOCTRINE FILES                                │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  📖 FOUNDATION                                                              │
-│  ├── 00-THE-TRANSFOORM-STORY.md      Vision, mission, why we exist          │
-│  └── 15-TTT-SUPPLEMENT.md            TTT philosophy, 7 tests, God Protocol  │
-│                                                                             │
-│  ⚡ CORE ARCHITECTURE                                                        │
-│  ├── 01-FUSE-CORE-ARCHITECTURE.md    Zero loading states, data flow         │
-│  ├── 04-ADP-PATTERN.md               WARP + PRISM (server + client)         │
-│  ├── 07-GREAT-PROVIDER-ECOSYSTEM.md  Domain providers, hydration            │
-│  └── 08-GOLDEN-BRIDGE-PATTERN.md     { data, computed, actions, flags }     │
-│                                                                             │
-│  🎨 STYLING                                                                 │
-│  ├── 02-FUSE-STYLE-ARCHITECTURE.md   CSS philosophy, ISV protection         │
-│  └── 03-FUSE-STYLE-IMPLEMENTATION.md Tactical CSS rules, tokens             │
-│                                                                             │
-│  🤖 COMPONENTS                                                              │
-│  └── 05-VRS-COMPONENT-SYSTEM.md      Variant Robot System, dot notation     │
-│                                                                             │
-│  ⚓ ACCESS CONTROL                                                           │
-│  ├── 06-RANK-SYSTEM.md               Admiral/Commodore/Captain/Crew         │
-│  └── 13-SMAC-ARCHITECTURE.md         4-layer authorization, manifests       │
-│                                                                             │
-│  🗄️ DATABASE                                                                │
-│  └── 14-DATABASE-NAMING-CONVENTION.md  [domain]_[area]_[Entity] pattern     │
-│                                                                             │
-│  🛡️ QUALITY                                                                 │
-│  └── 12-VIRGIN-REPO-PROTOCOL.md      7 layers, /purecommit, Ground Zero     │
-│                                                                             │
-│  🚀 IMPLEMENTATION                                                          │
-│  ├── 09-IMPLEMENTATION-QUICKSTART.md Build first FUSE app in 30 min         │
-│  ├── 10-ADVANCED-PATTERNS.md         Optimistic updates, error handling     │
-│  └── 11-DEPLOYMENT-SCALING.md        Vercel, Convex, 100K scaling           │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+docs/
+├── 00-TRANSFOORM-STORY.md      # Vision and mission
+├── 01-app-router/              # Next.js App Router patterns
+├── 02-fuse-app/                # FUSE app mounting and shell
+├── 03-sovereign-router/        # Client-side routing (1.7ms nav)
+├── 04-domain-views/            # Domain view architecture
+├── 05-fuse-store/              # Zustand store and slices
+├── 06-warp-orchestrator/       # WARP preloading + PRISM synergy
+├── 07-convex-sync/             # Convex mutations and queries
+├── 08-architecture/            # System architecture overview
+├── 09-protocols/               # ADP, VRP, SMAC protocols
+├── 10-philosophy/              # TTT philosophy
+└── 11-conventions/             # Naming and component standards
 ```
 
-### Quick Lookup: "I need to understand..." 
--For the layman:
-| I need to understand...     | Read this doc                | Bible section |
-|-----------------------------|------------------------------|---------------|
-| Why no loading spinners?    | 01-FUSE-CORE-ARCHITECTURE    | Part 1, 3     |
-| The 100K scale philosophy   | 15-TTT-SUPPLEMENT            | Part 2.       |
-| How data gets to components | 04-ADP-PATTERN               | Part 3, 4     |
-| How to style things         | 02, 03-FUSE-STYLE            | Part 5        |
-| How to build a component    | 05-VRS-COMPONENT-SYSTEM      | Part 6        |
-| Who can access what         | 06-RANK-SYSTEM               | Part 7        |
-| How to read from the store  | 08-GOLDEN-BRIDGE-PATTERN     | Part 8        |
-| How data hydrates on load   | 07-GREAT-PROVIDER-ECOSYSTEM  | Part 9        |
-| How to name database tables | 14-DATABASE-NAMING-CONVENTION| Part 10       |
-| How routes are protected    | 13-SMAC-ARCHITECTURE         | Part 11       |
-| How to commit clean code    | 12-VIRGIN-REPO-PROTOCOL      | Part 12       |
+### Quick Lookup
 
--For the Pro
-| I need understanding| Read this doc         | Bible    |
-|         Topic       |      Primary Doc      | Section  |
-|---------------------|-----------------------|----------|
-| Why zero loading?   | 01-FUSE-CORE          | Part 1, 3|
-| TTT 100K/10K/1K     | 15-TTT-SUPPLEMENT     | Part 2   |
-| WARP + PRISM        | 04-ADP-PATTERN        | Part 3, 4|
-| CSS tokens          | 02, 03-FUSE-STYLE     | Part 5   |
-| VRS components      | 05-VRS-COMPONENT      | Part 6   |
-| Rank hierarchy      | 06-RANK-SYSTEM        | Part 7   |
-| Bridge hooks        | 08-GOLDEN-BRIDGE      | Part 8   |
-| Providers           | 07-PROVIDER-ECOSYSTEM | Part 9   |
-| DB naming           | 14-DATABASE-NAMING    | Part 10  |
-| SMAC auth           | 13-SMAC-ARCHITECTURE  | Part 11  |
-| VRP quality         | 12-VIRGIN-REPO        | Part 12  |
+| I need to understand...     | Read this folder      | Bible section |
+|-----------------------------|-----------------------|---------------|
+| Why no loading spinners?    | 02-fuse-app           | Part 1, 3     |
+| The 100K scale philosophy   | 10-philosophy         | Part 2        |
+| How data preloads           | 06-warp-orchestrator  | Part 3, 4     |
+| How to style things         | 11-conventions        | Part 5        |
+| How to build a component    | 11-conventions        | Part 6        |
+| How routing works           | 03-sovereign-router   | Part 7        |
+| How to read from the store  | 05-fuse-store         | Part 8        |
+| How routes are protected    | 09-protocols          | Part 11       |
+| How to commit clean code    | 09-protocols          | Part 12       |
 
 ---
 
-*Version: 1.0*
-*Consolidated from 16 SDK doctrine files*
-*Last Updated: 2025-11-30*
+*Version: 2.0*
+*Last Updated: 2025-12-02*
