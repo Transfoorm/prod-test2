@@ -59,6 +59,7 @@ export function useConvexUserSync(): void {
         convexId: userDoc._id,
         clerkId: userDoc.clerkId,
         email: userDoc.email,
+        emailVerified: userDoc.emailVerified ?? false,
         firstName: userDoc.firstName,
         lastName: userDoc.lastName,
         avatarUrl: userDoc.avatarUrl ?? undefined,
