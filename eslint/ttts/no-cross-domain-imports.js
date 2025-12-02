@@ -5,21 +5,22 @@
  * No domain may import from another domain.
  *
  * VIOLATION:
- *   // In src/app/(modes)/clients/page.tsx
- *   import { something } from '@/app/(modes)/finance/utils';
+ *   // In src/app/domains/clients/People.tsx
+ *   import { something } from '@/app/domains/finance/utils';
  *
  * CORRECT:
  *   - Shared logic goes in @/fuse/, @/lib/, @/utils/
  *   - Domain-specific logic stays in its domain
  *   - Cross-domain data flows through FUSE store only
  *
- * Domain boundaries:
+ * Domain boundaries (Sovereign Router):
  *   - clients/
  *   - finance/
  *   - productivity/
  *   - projects/
  *   - settings/
  *   - admin/
+ *   - system/
  *
  * Ref: TTTS-ENFORCEMENT-PACK-(v1.0).md, TTTS-5
  */
@@ -61,7 +62,7 @@ See: TTTS-ENFORCEMENT-PACK-(v1.0).md`,
       create(context) {
         const filename = context.getFilename();
 
-        // Define domain boundaries
+        // Define domain boundaries (Sovereign Router structure)
         const domains = [
           'clients',
           'finance',
@@ -69,17 +70,16 @@ See: TTTS-ENFORCEMENT-PACK-(v1.0).md`,
           'projects',
           'settings',
           'admin',
+          'system',
         ];
 
         // Extract current domain from filename
         const getCurrentDomain = (filepath) => {
           for (const domain of domains) {
-            // Match patterns like /app/(modes)/clients/ or /domains/clients/
+            // Match patterns like /app/domains/clients/ (Sovereign Router)
             const patterns = [
-              new RegExp(`/app/\\(modes\\)/${domain}/`),
-              new RegExp(`/app/\\(modes\\)/\\(shared\\)/${domain}/`),
+              new RegExp(`/app/domains/${domain}/`),
               new RegExp(`/domains/${domain}/`),
-              new RegExp(`/app/${domain}/`),
             ];
 
             if (patterns.some(p => p.test(filepath))) {

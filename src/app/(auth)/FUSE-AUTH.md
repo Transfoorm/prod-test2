@@ -22,18 +22,18 @@ app/
 │   ├── sign-in/[[...sign-in]]  # Clerk sign-in catch-all
 │   └── sign-up/[[...sign-up]]  # Clerk sign-up catch-all
 │
-├── (modes)/                   # Protected routes - WITH authentication
-│   ├── layout.tsx             # 🔐 Root Provider Wrapper
-│   │   └── ClerkProvider      # Clerk authentication
-│   │       └── FuseProvider   # FUSE store hydration
-│   │           └── children   # Your app
-│   │
-│   └── (shared)/              # Shared authenticated routes
-│       ├── settings/
-│       │   └── account/
-│       │       └── page.tsx   # Client component (uses Clerk hooks)
-│       └── dashboard/
-│           └── page.tsx       # Can be server or client
+├── domains/                   # Protected routes - Sovereign Router
+│   ├── Router.tsx             # Sovereign Router switch
+│   ├── admin/                 # Admin domain views
+│   ├── clients/               # Clients domain views
+│   ├── finance/               # Finance domain views
+│   ├── productivity/          # Productivity domain views
+│   ├── projects/              # Projects domain views
+│   ├── settings/              # Settings domain views
+│   └── system/                # System domain views
+│
+├── FuseApp.tsx                # 🔐 Sovereign Runtime (mounts once, never unmounts)
+│   └── FUSE Store             # All domain data from cookie + WARP
 │
 └── api/
     ├── webhooks/
@@ -50,7 +50,7 @@ app/
 
 ### Layer 1: ClerkProvider (Authentication)
 
-**File**: `app/(modes)/layout.tsx`
+**File**: `app/FuseApp.tsx` (Sovereign Router)
 
 ```typescript
 import { ClerkProvider } from '@clerk/nextjs';
@@ -70,7 +70,7 @@ export default function ProtectedLayout({ children }) {
 **What it does:**
 - Provides `useUser()`, `useAuth()`, `useClerk()` hooks
 - Handles authentication state globally
-- Protects all routes under `(modes)/`
+- Protects all routes (Clerk relegated to auth only via Golden Bridge)
 
 ---
 
@@ -144,7 +144,7 @@ Page component renders (data already available)
 ### Server Component (Default)
 
 ```typescript
-// app/(modes)/(shared)/dashboard/page.tsx
+// app/domains/Dashboard.tsx (Sovereign Router - client component)
 export default async function DashboardPage() {
   // Can access server-side data directly
   const data = await fetchServerData();
@@ -476,7 +476,7 @@ The `auth.css` file demonstrates the **FUSE Consumer Doctrine** - a critical arc
 Every domain follows this pattern:
 
 - **(auth) domain** → `auth.css` → 40 `.auth-*` classes
-- **(modes) domain** → Various CSS files → `.mode-*` classes
+- **domains/** → Various CSS files → `.domains-*` classes (Sovereign Router)
 - **Component domains** → VR component CSS → Component-specific classes
 
 **All consume FUSE-STYLE Brain tokens. None are standalone.**

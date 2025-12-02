@@ -64,16 +64,16 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   RANK-BASED SHELL STYLING
+   👨🏻‍✈️ RANK-BASED SHELL STYLING 🎨
    ═══════════════════════════════════════════════════════════════════ */
 
-/* Admiral rank - distinct shell appearance */
-[data-user-rank="admiral"] {
-  --appshell-bg: #f0f0f3;
-  --page-arch-foundation: #f0f0f3;
-  --topbar-bg: #f0f0f3;
-  --sidebar-bg: #f0f0f3;
-  --ai-sidebar-bg: #f0f0f3;
-  --page-arch-border-color: #dfe0ef;
-  --page-arch-border: 1px solid #dfe0ef;
+/*  👨🏻‍✈️ Admiral rank - distinct shell appearance (light mode only) */
+[data-theme="light"] [data-user-rank="admiral"] {
+  --appshell-bg: #f1eded;
+  --page-arch-foundation: #f1eded;
+  --topbar-bg: #f1eded;
+  --sidebar-bg: #f1eded;
+  --ai-sidebar-bg: #f1eded;
+  --page-arch-border-color: #ac0202;
+  --page-arch-border: 1px solid #ac0202;
 }

@@ -15,8 +15,6 @@ import { readFileSync, existsSync } from 'fs';
 // FUSE-compliant exception files (allowed to have inline styles)
 const EXCEPTION_FILES = new Set([
   // Phoenix Animation System (Dynamic Law - runtime transforms)
-  'src/app/(modes)/(shared)/home/@captain/complete-setup/FlyingEngine.tsx',
-  'src/app/(modes)/(shared)/home/@captain/complete-setup/SetupModal.tsx',
   'src/features/UserSetup/FlyingButton/index.tsx',  // CSS custom properties for positioning
 
   // Portal components (Dynamic Law - getBoundingClientRect positioning)

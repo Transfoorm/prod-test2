@@ -6,7 +6,7 @@
 │  Reads data from PageHeaderContext (set by pages via hook)            │
 │                                                                        │
 │  Layout Integration:                                                   │
-│  • Placed in (modes)/layout.tsx after PageArch                         │
+│  • Placed in FuseApp.tsx after PageArch (Sovereign Router)              │
 │  • Every page gets identical positioning automatically                 │
 │  • Spacing controlled by layout.css Control Panel                      │
 └────────────────────────────────────────────────────────────────────────┘ */

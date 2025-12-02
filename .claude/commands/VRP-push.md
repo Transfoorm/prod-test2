@@ -74,6 +74,73 @@ git push origin <branch>
 - `--no-verify`
 - `-f`
 
+## KNOX PROTOCOL: THE TENACIOUS TEN
+
+Before pushing, check if ANY of these protected files were modified:
+
+| # | Protected Item | Why Protected |
+|---|----------------|---------------|
+| 1 | `eslint.config.mjs` | Code quality rules |
+| 2 | `eslint/` | Custom enforcement rules |
+| 3 | `package.json` | Dependencies |
+| 4 | `tsconfig*` | TypeScript config |
+| 5 | `scripts/` | Build/enforcement scripts |
+| 6 | `.husky/` | Git hooks |
+| 7 | `.vrp-approval*` | Approval tokens |
+| 8 | `.github/` | Workflows & CODEOWNERS |
+| 9 | `src/middleware.ts` | Auth/routing gate |
+| 10 | `.claude/` | AI guardrails |
+
+### IF TENACIOUS TEN FILES ARE MODIFIED:
+
+```
+⚠️  KNOX PROTOCOL ACTIVATED
+
+Protected files detected in this push:
+  - [list modified protected files]
+
+Direct push to main is BLOCKED by GitHub (CODEOWNERS protection).
+```
+
+**THE REQUIRED FLOW:**
+
+```
+Without Tenacious Ten changes:
+  Your code → Push directly to main → Done
+
+With Tenacious Ten changes:
+  Your code → Push to main BLOCKED by GitHub
+                        ↓
+              Must use feature branch
+                        ↓
+              Push feature branch to GitHub
+                        ↓
+              Create PR (feature branch → main)
+                        ↓
+              Ken approves (CODEOWNERS auto-requests)
+                        ↓
+              PR merges to main
+                        ↓
+              Delete feature branch
+```
+
+**Steps:**
+1. Create feature branch: `git checkout -b feature/your-change`
+2. Commit your changes: `/VRP-commit`
+3. Push feature branch: `git push origin feature/your-change`
+4. Create PR on GitHub (feature → main)
+5. Wait for Ken's approval
+6. Merge PR (this is how your code reaches main)
+7. Delete feature branch
+
+**There is NO bypass. Server-side enforcement.**
+
+### IF NO PROTECTED FILES MODIFIED:
+
+Proceed with normal push flow to main.
+
+---
+
 ## FORBIDDEN ACTIONS
 
 **NEVER** allow these bypass mechanisms:
@@ -119,7 +186,7 @@ Violation Report:
 
 Virgin-Repo Protocol demands:
   1. Fix ALL violations locally
-  2. Commit fixes with /purecommit
+  2. Commit fixes with /VRP-commit
   3. Re-run virgin-check
   4. THEN push to remote
 
@@ -177,7 +244,7 @@ Push Safety Assessment:
 
 ## EXECUTION FLOW
 
-1. User invokes `/purepush`
+1. User invokes `/VRP-push`
 2. Run `npm run virgin-check`
 3. Parse results from all 3 checks
 4. Check git status and branch state
@@ -226,8 +293,8 @@ If contaminated code somehow reaches remote:
 
 Immediate action required:
 1. git revert <contaminated-commit>
-2. Run /purecommit to commit revert
-3. Run /purepush to restore purity
+2. Run /VRP-commit to commit revert
+3. Run /VRP-push to restore purity
 
 The Virgin-Repo Protocol has been breached.
 Restoration protocol initiated.

@@ -80,6 +80,9 @@ const eslintConfig = [
       // TTTS-7: No Runtime Debt - Block useEffect fetch chains and async hooks
       "ttts/no-runtime-debt": "error",
 
+      // SRB-7: No Clerk in Domains - Enforces Golden Bridge (Clerk relegated to auth only)
+      "ttts/no-clerk-in-domains": "error",
+
       // NOTE: class-prefix and no-component-css DISABLED for now
       // Legacy uses VR architecture, not 5-file system yet
       // "class-prefix/enforce-class-prefix": "error",  // DISABLED
@@ -247,10 +250,6 @@ const eslintConfig = [
   // Exception patterns for FUSE-compliant dynamic styles
   {
     files: [
-      // Phoenix Animation System (Dynamic Law - runtime transforms)
-      "src/app/(modes)/(shared)/home/@captain/complete-setup/FlyingEngine.tsx",
-      "src/app/(modes)/(shared)/home/@captain/complete-setup/SetupModal.tsx",
-
       // Portal components (Dynamic Law - getBoundingClientRect positioning)
       "src/components/features/CountrySelector/index.tsx",
       "src/prebuilts/tooltip/Basic.tsx",

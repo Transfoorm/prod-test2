@@ -38,7 +38,7 @@ const PageHeaderContext = createContext<PageHeaderContextValue | undefined>(unde
 /**
  * PageHeaderProvider - Wraps the app to provide header state
  *
- * Place this in (modes)/layout.tsx to enable page header system
+ * Place this in FuseApp.tsx to enable page header system (Sovereign Router)
  */
 export function PageHeaderProvider({ children }: { children: ReactNode }) {
   const [headerData, setHeaderData] = useState<PageHeaderData>({

@@ -21,9 +21,9 @@ The Great Provider Ecosystem is Transfoorm's **revolutionary pattern** for elimi
 ## 🏗 ARCHITECTURE OVERVIEW
 
 ```
-app/(modes)/
-├── financial/                    # Financial section
-│   ├── layout.tsx               # 🔥 FinancialProvider (WARP)
+app/domains/
+├── finance/                      # Finance section (Sovereign Router)
+│   └── Views render from FUSE   # Data preloaded by WARP
 │   │   └── Preloads:
 │   │       ├── Banking data
 │   │       ├── Invoices
@@ -63,9 +63,9 @@ A pattern where **section-level layout providers** preload ALL data for every pa
 
 ---
 
-### Example: FinancialProvider
+### Example: FinanceProvider
 
-**File**: `app/(modes)/financial/layout.tsx`
+**File**: `fuse/warp/finance.ts` (WARP preloader)
 
 ```typescript
 'use client';
@@ -75,16 +75,16 @@ import { api } from '@/convex/_generated/api';
 import { useFuse } from '@/store/fuse';
 import { useEffect } from 'react';
 
-export default function FinancialLayout({ children }) {
+export default function FinanceLayout({ children }) {
   const user = useFuse(s => s.user);
 
-  // WARP: Load ALL financial data upfront
-  const bankingData = useQuery(api.financial.banking.getAll, { userId: user._id });
-  const invoices = useQuery(api.financial.invoices.getAll, { userId: user._id });
-  const reports = useQuery(api.financial.reports.getAll, { userId: user._id });
-  const categories = useQuery(api.financial.categories.getAll, { userId: user._id });
+  // WARP: Load ALL finance data upfront
+  const bankingData = useQuery(api.finance.banking.getAll, { userId: user._id });
+  const invoices = useQuery(api.finance.invoices.getAll, { userId: user._id });
+  const reports = useQuery(api.finance.reports.getAll, { userId: user._id });
+  const categories = useQuery(api.finance.categories.getAll, { userId: user._id });
 
-  // Hydrate FUSE store with all financial data
+  // Hydrate FUSE store with all finance data
   useEffect(() => {
     if (bankingData) useFuse.getState().setBankingData(bankingData);
     if (invoices) useFuse.getState().setInvoices(invoices);
@@ -94,7 +94,7 @@ export default function FinancialLayout({ children }) {
 
   // Don't render until ALL data is loaded
   if (!bankingData || !invoices || !reports || !categories) {
-    return <LoadingScreen section="financial" />;
+    return <LoadingScreen section="finance" />;
   }
 
   // All data loaded - render children with ZERO loading states!
@@ -106,7 +106,7 @@ export default function FinancialLayout({ children }) {
 
 ### Result: Child Pages Have NO Loading States
 
-**File**: `app/(modes)/financial/banking/page.tsx`
+**File**: `app/domains/finance/Banking.tsx` (Domain View)
 
 ```typescript
 'use client';
@@ -114,7 +114,7 @@ export default function FinancialLayout({ children }) {
 import { useFuse } from '@/store/fuse';
 
 export default function BankingPage() {
-  // Data is ALREADY LOADED by FinancialProvider!
+  // Data is ALREADY LOADED by FinanceProvider!
   const bankingData = useFuse(s => s.bankingData);
 
   // NO useQuery here
@@ -139,14 +139,14 @@ export default function BankingPage() {
 
 The Great Provider Ecosystem works seamlessly with the Golden Bridge Pattern to create domain-specific hooks.
 
-### Example: useFinancialData Hook
+### Example: useFinanceData Hook
 
-**File**: `hooks/financial/useFinancialData.ts`
+**File**: `hooks/finance/useFinanceData.ts`
 
 ```typescript
 import { useFuse } from '@/store/fuse';
 
-export function useFinancialData() {
+export function useFinanceData() {
   return {
     banking: useFuse(s => s.bankingData),
     invoices: useFuse(s => s.invoices),
@@ -164,10 +164,10 @@ export function useFinancialData() {
 ```typescript
 'use client';
 
-import { useFinancialData } from '@/hooks/financial/useFinancialData';
+import { useFinanceData } from '@/hooks/finance/useFinanceData';
 
 export default function BankingPage() {
-  const { banking, addTransaction } = useFinancialData();
+  const { banking, addTransaction } = useFinanceData();
 
   // Clean, simple, INSTANT
   return (
@@ -190,10 +190,10 @@ Root Level (Authentication)
 └── FuseProvider (loads user data)
 
 Section Level (WARP Providers)
-├── FinancialProvider
-│   ├── /financial/banking
-│   ├── /financial/invoices
-│   └── /financial/reports
+├── FinanceProvider
+│   ├── /finance/banking
+│   ├── /finance/invoices
+│   └── /finance/reports
 │
 ├── ProductivityProvider
 │   ├── /productivity/email
@@ -209,7 +209,7 @@ Section Level (WARP Providers)
 
 ### Step 1: Create Section Layout
 
-**File**: `app/(modes)/[section]/layout.tsx`
+**File**: `fuse/warp/{section}.ts` (WARP preloader)
 
 ```typescript
 'use client';
@@ -297,7 +297,7 @@ export function useSectionData() {
 
 ### Step 4: Use in Child Pages
 
-**File**: `app/(modes)/[section]/page-a/page.tsx`
+**File**: `app/domains/{section}/PageA.tsx` (Domain View)
 
 ```typescript
 'use client';
@@ -413,7 +413,7 @@ export default function SectionLayout({ children }) {
 
 ---
 
-**Status**: ✅ Production-Ready (Battle-tested in Financial section)
+**Status**: ✅ Production-Ready (Battle-tested in Finance section)
 **Pattern Origin**: Discovered during Reconciliation refactor
 **Breakthrough Moment**: When Ken realized loading states could be eliminated section-wide
 
