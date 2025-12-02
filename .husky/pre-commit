@@ -51,7 +51,7 @@ if git diff --cached --name-only | grep -qE "^($PROTECTED_FILES)"; then
     echo "  Modified: $MODIFIED_PROTECTED"
     echo ""
     echo "  Even if you bypass this hook, GitHub will BLOCK your push."
-    echo "  These files are protected by CODEOWNERS - only @Transfoorm"
+    echo "  These files are protected by CODEOWNERS - only @Metafoorm"
     echo "  can approve changes. There is NO backdoor. NO bypass."
     echo ""
     echo "═══════════════════════════════════════════════════════════════"

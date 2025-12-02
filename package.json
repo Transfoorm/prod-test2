@@ -16,8 +16,9 @@
     "vrp:naming": "tsx scripts/checkNaming.ts",
     "vrp:manifest": "tsx scripts/validateManifest.ts",
     "vrp:cascade": "tsx scripts/verifyCascadeCoverage.ts",
+    "vrp:warp": "tsx scripts/verifyWarpNavSync.ts",
     "vrp:css": "tsx scripts/checkCSS.ts",
-    "vrp:all": "npm run vrp:isv && npm run vrp:naming && npm run vrp:manifest && npm run vrp:cascade && npm run vrp:css",
+    "vrp:all": "npm run vrp:isv && npm run vrp:naming && npm run vrp:manifest && npm run vrp:cascade && npm run vrp:warp && npm run vrp:css",
     "prebuild": "npm run vrp:cascade",
     "clean:buildinfo": "tsx scripts/cleanBuildinfo.ts",
     "prepare": "husky"

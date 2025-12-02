@@ -25,7 +25,9 @@ Below are the 10 Core TTTS Rules, defined in an enforceable and linter-ready for
 
 ---
 
-### TTTS-1 — Slice Discipline Rule
+### TTTS-1 — Slice Discipline Rule ✅ IMPLEMENTED
+
+**Status:** ESLint rule `ttts/enforce-slice-shape`
 
 **Goal:** Ensure that every domain slice matches FUSE, PRISM, ADP, and WARP doctrine.
 
@@ -58,7 +60,9 @@ See TTTS-SLICE-DISCIPLINE (FUSE-DOCS).
 
 ---
 
-### TTTS-2 — Golden Bridge Enforcement Rule
+### TTTS-2 — Golden Bridge Enforcement Rule ✅ IMPLEMENTED
+
+**Status:** ESLint rule `ttts/no-direct-convex-in-pages`
 
 **Goal:** Force all components to read data only from the FUSE Store (never Convex).
 
@@ -100,7 +104,9 @@ Every domain must support anticipatory preloading.
 
 ---
 
-### TTTS-4 — WARP Endpoint Completeness Rule
+### TTTS-4 — WARP Endpoint Completeness Rule ✅ IMPLEMENTED
+
+**Status:** Build-time verification via `npm run vrp:warp`
 
 Every domain MUST provide:
 - `/api/warp/{domain}.ts`
@@ -108,16 +114,28 @@ Every domain MUST provide:
 - Promise.all batching
 - Server-side composition
 
+**Implementation:** `scripts/verifyWarpNavSync.ts`
+
+This script runs 4 checks:
+1. **Import Check** - Orchestrator imports all rank nav configs
+2. **Hardcode Check** - No hardcoded domain arrays
+3. **Endpoint Check** - Every nav domain has matching WARP endpoint
+4. **Derivation Check** - Domains derive from nav configs via `getDomainsForRank`
+
 **Error:**
 ```
-⛔ TTTS WARP VIOLATION:
-Domain is missing its WARP preload endpoint.
-ADP requires symmetrical WARP + PRISM pairings per domain.
+⛔ TTTS-4 VIOLATION: WARP Orchestrator is not synced with nav configs.
+   Domains must derive from sidebar navigation, not hardcoded arrays.
 ```
+
+**Run manually:** `npm run vrp:warp`
+**Included in:** `npm run vrp:all`
 
 ---
 
-### TTTS-5 — No Cross-Domain Imports Rule
+### TTTS-5 — No Cross-Domain Imports Rule ✅ IMPLEMENTED
+
+**Status:** ESLint rule `ttts/no-cross-domain-imports`
 
 Domains MUST NOT import each other:
 
