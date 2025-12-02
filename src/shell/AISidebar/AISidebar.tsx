@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🤖 AI SIDEBAR - Right Side Assistant (WCCC ly-* Compliant)           │
-│  /src/shell/AISidebar.tsx                                              │
+│  /src/shell/AISidebar/AISidebar.tsx                                   │
 │                                                                        │
 │  AI Assistant sidebar with three states:                               │
 │  - Closed: 45px (avatar only)                                          │
@@ -13,14 +13,13 @@
 "use client";
 
 import { useState, useCallback, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { Icon } from '@/prebuilts';
 import { useFuse } from '@/store/fuse';
 import { ENCHANTMENT_TIMINGS } from '@/fuse/constants/enchantment';
 import { MIROR_DEFAULTS } from '@/fuse/constants/coreThemeConfig';
 
 export default function AISidebar() {
-  const router = useRouter();
+  const navigate = useFuse(state => state.navigate);
   const sidebarState = useFuse(state => state.aiSidebarState);
   const setAISidebarState = useFuse(state => state.setAISidebarState);
   const toggleSection = useFuse(state => state.toggleSection);
@@ -196,7 +195,7 @@ export default function AISidebar() {
                   }
 
                   // Navigate
-                  router.push('/settings/preferences');
+                  navigate('settings/preferences');
                 }}
               >
                 <Icon variant="cog" size="xs" className="ly-aisidebar-settings-cog-icon" />
