@@ -137,8 +137,8 @@ export default function Dashboard() {
         />
         <Card.metric
           title="Build Milestone"
-          value="3 Dec 2024 @ 12:45am"
-          context="🏹 SRB admin/users migrated - 0.4ms nav"
+          value="2 Dec 2024"
+          context="⚡ WARP Orchestrator - nav-driven preloading"
         />
       </Grid.cards>
       </div>
