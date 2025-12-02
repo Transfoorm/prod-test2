@@ -152,8 +152,8 @@ export default function Dashboard() {
         />
         <Card.metric
           title="Build Milestone"
-          value="2 Dec 2024"
-          context="🛡️ TTTS-4 WARP-NAV sync verification"
+          value="3 Dec 2024"
+          context="🔱 TTTS-5 FUSE Virus quarantine"
         />
       </Grid.cards>
       </div>

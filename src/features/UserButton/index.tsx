@@ -440,11 +440,8 @@ export default function UserButton() {
                 onClick={() => {
                   setErrorMessage(null);
                   setIsFilePickerOpen(true);
-                  // Use requestAnimationFrame to ensure the click happens after React finishes rendering
-                  requestAnimationFrame(() => {
-                    closeAllModals();
-                    fileInputRef.current?.click();
-                  });
+                  // Open file picker immediately - don't wait for React re-renders
+                  fileInputRef.current?.click();
                 }}
                 className="ft-userbutton-menu-item"
               >

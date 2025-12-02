@@ -17,89 +17,33 @@
 
 "use client";
 
-import { useAuth, useClerk } from "@clerk/nextjs";
-import { useQuery } from "convex/react";
-import { api } from '@/convex/_generated/api';
-import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
 import { useFuse } from "@/store/fuse";
 import type { FuseUser } from "@/store/types";
 
 /**
- * CONVEX → FUSE SYNC HOOK (Internal)
+ * 🛑 FUSE VIRUS QUARANTINE - useConvexUserSync DISABLED
  *
- * This hook syncs Convex user data INTO FUSE.
- * It NEVER returns Convex data directly.
+ * This hook was a FUSE VIRUS - it constantly overwrote cookie-hydrated
+ * data with Convex WebSocket data, causing race conditions and
+ * breaking image URLs (brandLogoUrl, avatarUrl).
  *
- * GOLDEN BRIDGE PATTERN:
- * - Convex query runs
- * - Data hydrates FUSE via setUser()
- * - Components read from FUSE only
+ * FUSE PHILOSOPHY:
+ * - Cookie is the single source of truth
+ * - Server Actions update DB AND cookie atomically
+ * - No WebSocket polling needed for user data
+ *
+ * ORPHAN DETECTION moved to middleware (where it belongs).
  */
 export function useConvexUserSync(): void {
-  const { userId: clerkId, isLoaded: clerkLoaded } = useAuth();
-  const { signOut } = useClerk();
-  const router = useRouter();
-  const redirectedRef = useRef(false);
-  const setUser = useFuse((state) => state.setUser);
-
-  // Query Convex for user data
-  const userDoc = useQuery(
-    api.domains.admin.users.api.getUserByClerkId,
-    clerkLoaded && clerkId ? { clerkId } : "skip"
-  );
-
-  // SYNC TO FUSE: When Convex data arrives, hydrate FUSE store
-  useEffect(() => {
-    if (userDoc) {
-      // Convert Convex Doc to FuseUser format and hydrate FUSE
-      // FuseUser uses 'id' and 'convexId' instead of '_id' (SOVEREIGNTY DOCTRINE)
-      const fuseUser: FuseUser = {
-        id: userDoc._id,
-        convexId: userDoc._id,
-        clerkId: userDoc.clerkId,
-        email: userDoc.email,
-        emailVerified: userDoc.emailVerified ?? false,
-        firstName: userDoc.firstName,
-        lastName: userDoc.lastName,
-        avatarUrl: userDoc.avatarUrl ?? undefined,
-        rank: userDoc.rank,
-        setupStatus: userDoc.setupStatus,
-        subscriptionStatus: userDoc.subscriptionStatus,
-        brandLogoUrl: userDoc.brandLogoUrl ?? undefined,
-        businessCountry: userDoc.businessCountry ?? undefined,
-        entityName: userDoc.entityName ?? undefined,
-        socialName: userDoc.socialName ?? undefined,
-        createdAt: userDoc._creationTime,
-      };
-      setUser(fuseUser);
-      console.log('🔥 VANISH: User synced to FUSE via CONVEX_LIVE');
-    }
-  }, [userDoc, setUser]);
-
-  // ORPHAN DETECTION: Sign out and redirect if Clerk auth exists but no Convex user
-  // THIS IS CRITICAL: A user must NEVER see a "No email" or fallback UI state
-  // If Convex user is missing (deleted, DB issue, etc.), force full sign-out
-  useEffect(() => {
-    if (clerkLoaded && clerkId && userDoc === null && !redirectedRef.current) {
-      redirectedRef.current = true;
-      console.error(`[VANISH] ⚠️ ORPHAN DETECTED: Clerk ID ${clerkId} has no Convex user - forcing sign-out`);
-
-      // Clear FUSE store immediately
-      setUser(null);
-
-      // Sign out of Clerk and redirect to sign-in
-      // This ensures clean slate - no stale cookies, no partial state
-      signOut({ redirectUrl: '/sign-in' });
-    }
-  }, [clerkLoaded, clerkId, userDoc, router, setUser, signOut]);
-
-  // Clear user from FUSE when logged out
-  useEffect(() => {
-    if (clerkLoaded && !clerkId) {
-      setUser(null);
-    }
-  }, [clerkLoaded, clerkId, setUser]);
+  // 🛑 DISABLED - This was overwriting cookie data with stale Convex data
+  // Cookie hydration in ClientHydrator is the single source of truth
+  //
+  // If you need to update user data:
+  // 1. Call a Server Action (updates DB + cookie atomically)
+  // 2. Cookie change triggers ClientHydrator refresh
+  // 3. FUSE store updates from cookie
+  //
+  // NO CONVEX LIVE QUERIES FOR USER DATA
 }
 
 /**

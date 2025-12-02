@@ -246,14 +246,12 @@
   --sidebar-border-color: none;
   --sidebar-border: 0 none var(--sidebar-border-color);
 
-  /* Sidebar Button Elevation - Dark Mode (solid colors, no transparency) */
-  --sidebar-button-rest: #374151;                                /* Primary sections - lighter gray */
-  --sidebar-button-rest-secondary: #2d3747;                      /* Children - darker */
-  --sidebar-button-rest-tertiary: #232d3d;                       /* Deep items - darkest */
-  --sidebar-button-rest-text: #9ca3af;                           /* Resting text & icon color */
-  --sidebar-button-hover: #4b5563;
-  --sidebar-button-active-bg: var(--accent-primary-gradient);    /* NAV OVERHAUL 2025-11-09: Soft amber gradient */
-  --sidebar-button-active-text: #ff5020;                         /* NAV OVERHAUL 2025-11-09: Transfoorm orange for contrast */
+  /* Sidebar Button States - Clean 3-State System (matches light mode) */
+  --sidebar-button-rest: transparent;                            /* Resting: invisible/inherits bg */
+  --sidebar-button-hover: #374151;                               /* Hover: subtle highlight */
+  --sidebar-button-active: var(--sidebar-button-hover);          /* Active: same as hover (selected) */
+  --sidebar-button-text: #d1d5db;                                /* Text & icon color */
+  --sidebar-button-active-text: #ff7a52;                         /* Active text: Bright orange for dark mode */
 
   /* Shadow hierarchy - depth-based elevation (dark mode - stronger) */
   --sidebar-button-shadow-rest: 0 2px 4px rgb(0 0 0 / 20%);      /* Depth 0 - parent sections */
@@ -270,7 +268,7 @@
   --ai-sidebar-border-color: none;
   --ai-sidebar-border: 50px none var(--ai-sidebar-border-color);
   --ai-sidebar-top-border-color: var(--page-arch-border-color);
-  --ai-sidebar-top-border: 2px solid var(--ai-sidebar-top-border-color);
+  --ai-sidebar-top-border: 1px none var(--ai-sidebar-top-border-color);
   --ai-sidebar-icons-color: #9ca3af;
   --ai-sidebar-avatar-bg: #1f2937;
   --ai-chat-box-bg: #1f2937;
@@ -365,6 +363,7 @@
   --bg-tertiary: #374151;
   --bg-hover: #4b5563;                                           /* Hover state for buttons/interactive elements */
   --bg-active: #374151;                                          /* Active/pressed state for buttons/interactive elements */
+  --bg-sideline: #4b5563;                                        /* Vertical line indicator for active state */
 
   /* Field box backgrounds */
   --bg-fieldbox-primary: #1a2332;
@@ -383,7 +382,7 @@
   --color-primary: #ff5627;                                      /* CARD VALUES - Transfoorm orange */
   --color-primary-hover: #e53606;                                /* Darker orange hover state */
   --color-primary-active: #d92a00;                               /* Darkest orange active state */
-  --color-primary-light: #4a2817;                                /* Dark mode light tint */
+  --color-primary-light: #ff7a52;                                /* Bright orange for sidebar bracket */
   --color-primary-faint: #2d1a0f;                                /* Dark mode faint tint */
 
   /* Success */

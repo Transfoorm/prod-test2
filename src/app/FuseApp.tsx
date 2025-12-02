@@ -62,6 +62,7 @@ export default function FuseApp() {
   // Sovereign Router state and actions
   const sovereignHydrateSections = useFuse((s) => s.sovereignHydrateSections);
   const navigate = useFuse((s) => s.navigate);
+  const user = useFuse((s) => s.user);
 
   // ─────────────────────────────────────────────────────────────────────
   // INITIAL MOUNT - Happens ONCE, then FUSE takes over
@@ -127,7 +128,7 @@ export default function FuseApp() {
         <ClientsProvider>
           <ProductivityProvider>
             <ProjectsProvider>
-              <div data-theme="translight" className="modes-layout-app-container">
+              <div data-user-rank={user?.rank || undefined} className="modes-layout-app-container">
                 <Sidebar />
                 <div className="modes-layout-right-container">
                   <Topbar />

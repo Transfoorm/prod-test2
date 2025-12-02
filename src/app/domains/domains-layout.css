@@ -62,3 +62,18 @@
 .dashboard-content-wrapper--animating {
   transition: transform 600ms ease-in-out, margin-top 600ms ease-in-out;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   RANK-BASED SHELL STYLING
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Admiral rank - distinct shell appearance */
+[data-user-rank="admiral"] {
+  --appshell-bg: #f0f0f3;
+  --page-arch-foundation: #f0f0f3;
+  --topbar-bg: #f0f0f3;
+  --sidebar-bg: #f0f0f3;
+  --ai-sidebar-bg: #f0f0f3;
+  --page-arch-border-color: #dfe0ef;
+  --page-arch-border: 1px solid #dfe0ef;
+}

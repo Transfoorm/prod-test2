@@ -15,6 +15,10 @@
   /* Auth Page Background */
   --auth-page-bg: linear-gradient(to bottom right, #fff7ed, #fff, #fef2f2);
 
+  /* Auth Text - ISOLATED from theme (always light mode appearance) */
+  --auth-text-primary: #3f4958;
+  --auth-text-secondary: #6b7280;
+
   /* Auth Card */
   --auth-card-glow-bg: #db3e05;
   --auth-card-bg: rgb(255 255 255 / 95%);
@@ -174,7 +178,7 @@
 
 .auth-subtitle {
   margin-top: 0.5rem;
-  color: var(--text-secondary);
+  color: var(--auth-text-secondary);
   font-size: var(--font-size-base);
 }
 
@@ -208,7 +212,7 @@
   border: 1px solid var(--auth-input-border);
   border-radius: var(--radius-xl);
   font-size: var(--font-size-base);
-  color: var(--text-primary);
+  color: var(--auth-text-primary);
   transition: all 0.2s ease;
   outline: none;
 }
@@ -322,7 +326,7 @@
 
 .auth-success-message {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: var(--auth-text-secondary);
 }
 
 .auth-progress-bar {
@@ -388,7 +392,7 @@
 
 .auth-footer-text {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: var(--auth-text-secondary);
 }
 
 .auth-footer-link {
@@ -477,7 +481,7 @@
 .auth-secondary-button {
   width: 100%;
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: var(--auth-text-secondary);
   background: none;
   border: none;
   cursor: pointer;
@@ -486,7 +490,7 @@
 }
 
 .auth-secondary-button:hover {
-  color: var(--text-primary);
+  color: var(--auth-text-primary);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
