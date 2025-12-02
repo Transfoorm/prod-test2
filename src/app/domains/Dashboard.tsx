@@ -1,9 +1,9 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔱 DASHBOARD VIEW - Sovereign Domain View                            │
-│  /src/app/views/DashboardView.tsx                                     │
+│  🔱 DASHBOARD - Sovereign Domain                                        │
+│  /src/app/domains/Dashboard.tsx                                         │
 │                                                                        │
-│  FUSE 6.0: Pure client view that reads from FUSE store.               │
-│  No server fetch. No RSC. Instant render.                             │
+│  FUSE 6.0: Pure client view that reads from FUSE store.                │
+│  No server fetch. No RSC. Instant render.                              │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
@@ -18,7 +18,7 @@ import { completeSetupAction } from '@/app/actions/user-mutations';
 import { Card } from '@/prebuilts/card';
 import { Grid } from '@/prebuilts/grid';
 
-export default function DashboardView() {
+export default function Dashboard() {
   const user = useFuse((s) => s.user);
   const updateUser = useFuse((s) => s.updateUser);
   const modalSkipped = useFuse((s) => s.modalSkipped);
@@ -137,8 +137,8 @@ export default function DashboardView() {
         />
         <Card.metric
           title="Build Milestone"
-          value="3 Dec 2024 @ 8:30am"
-          context="⚡ FUSE 6.0 Sovereign Router"
+          value="2 Dec 2024 @ 11:30pm"
+          context="🔱 FUSE 6.0 /domains/ structure"
         />
       </Grid.cards>
       </div>

@@ -8,7 +8,7 @@
 │  Architecture:                                                        │
 │  • Mounts once from /app/page.tsx (server handover at ROOT)           │
 │  • Contains the full app shell (Sidebar, Topbar, AISidebar)           │
-│  • RouterView switches domain views based on FUSE sovereign.route     │
+│  • Router switches domain views based on FUSE sovereign.route         │
 │  • WARP Orchestrator preloads all domain data on mount                │
 │  • Zero server round-trips after initial load                         │
 │                                                                        │
@@ -33,7 +33,7 @@ import PageHeader from '@/shell/PageHeader/PageHeader';
 import Footer from '@/shell/Footer';
 
 // Sovereign Router
-import RouterView from './views/RouterView';
+import Router from './domains/Router';
 
 // Domain providers (will be removed in Phase F - currently needed for data)
 import { FinanceProvider } from '@/providers/FinanceProvider';
@@ -128,13 +128,13 @@ export default function FuseApp() {
                         <PageArch>
                           <PageHeader />
                           {/* 🔱 SOVEREIGN ROUTER - Views switch here */}
-                          <RouterView />
+                          <Router />
                         </PageArch>
                       ) : (
                         <>
                           <PageHeader />
                           {/* 🔱 SOVEREIGN ROUTER - Views switch here */}
-                          <RouterView />
+                          <Router />
                         </>
                       )}
                     </main>

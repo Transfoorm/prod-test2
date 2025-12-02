@@ -1,14 +1,14 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔱 ROUTER VIEW - The Sovereign Switch                                │
-│  /src/app/views/RouterView.tsx                                        │
+│  🔱 ROUTER - The Sovereign Switch                                     │
+│  /src/app/domains/Router.tsx                                          │
 │                                                                        │
 │  FUSE 6.0: This component switches views based on sovereign.route.    │
 │  No server fetch. No RSC. Pure client-side routing.                   │
 │                                                                        │
 │  When sovereign.route changes:                                        │
-│  • This component re-renders (32-65ms)                                │
-│  • The correct view component is returned                             │
-│  • View reads from FUSE store (data already there via WARP)           │
+│  • This component re-renders (sub-millisecond)                        │
+│  • The correct domain component is returned                           │
+│  • Domain reads from FUSE store (data already there via WARP)         │
 │  • Zero loading states. Instant perception.                           │
 │                                                                        │
 │  This is the spine of the Sovereign Router.                           │
@@ -23,8 +23,8 @@ import { useSetPageHeader } from '@/hooks/useSetPageHeader';
 // SOVEREIGN VIEWS
 // ═══════════════════════════════════════════════════════════════════════
 
-// Migrated views
-import DashboardView from './DashboardView';
+// Migrated domains
+import Dashboard from './Dashboard';
 
 // Placeholder component for views not yet migrated
 function PlaceholderView({ route }: { route: string }) {
@@ -47,7 +47,7 @@ function PlaceholderView({ route }: { route: string }) {
 // ROUTER VIEW - THE SOVEREIGN SWITCH
 // ═══════════════════════════════════════════════════════════════════════
 
-export default function RouterView() {
+export default function Router() {
   const route = useFuse((s) => s.sovereign.route);
 
   // Performance measurement
@@ -62,7 +62,7 @@ export default function RouterView() {
       // DASHBOARD
       // ═══════════════════════════════════════════════════════════════
       case 'dashboard':
-        return <DashboardView />;
+        return <Dashboard />;
 
       // ═══════════════════════════════════════════════════════════════
       // PRODUCTIVITY
@@ -163,7 +163,7 @@ export default function RouterView() {
   if (process.env.NODE_ENV === 'development') {
     const renderTime = performance.now() - startRender;
     if (renderTime > 1) {
-      console.log(`🔱 RouterView: ${route} rendered in ${renderTime.toFixed(1)}ms`);
+      console.log(`🔱 Router: ${route} rendered in ${renderTime.toFixed(1)}ms`);
     }
   }
 
