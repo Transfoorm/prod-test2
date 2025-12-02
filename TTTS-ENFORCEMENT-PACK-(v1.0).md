@@ -82,25 +82,30 @@ All reads MUST originate from useFuse() via WARP → Cookie → Hydration.
 
 ---
 
-### TTTS-3 — Predictive Trigger (PRISM) Enforcement Rule
+### TTTS-3 — Predictive Trigger (PRISM) Enforcement Rule ✅ IMPLEMENTED
 
-Every domain must register PRISM triggers:
+**Status:** Build-time verification via `npm run vrp:prism`
 
-```js
-preloadOnIntent("productivity")
-```
+Every domain must be registered in the Sidebar's `SECTION_TO_DOMAIN` map for PRISM preloading.
 
 **Applied at:**
-- dropdown open
-- menu hover
-- first view of sidebar
+- Dropdown click (not hover - click is the intent signal)
+
+**Implementation:** `scripts/verifyPrismCoverage.ts`
+
+This script runs 2 checks:
+1. **Infrastructure Check** - Sidebar has SECTION_TO_DOMAIN map, usePrism hook, preloadDomain call
+2. **Coverage Check** - Every nav domain is in the PRISM map
 
 **Error:**
 ```
-⛔ TTTS PRISM VIOLATION:
-Domain requires a PRISM preload trigger but none was found.
-Every domain must support anticipatory preloading.
+⛔ TTTS-3 VIOLATION: Not all domains have PRISM preload triggers.
+   Every domain dropdown click MUST trigger PRISM preload.
+   Add missing domains to SECTION_TO_DOMAIN in Sidebar.tsx
 ```
+
+**Run manually:** `npm run vrp:prism`
+**Included in:** `npm run vrp:all`
 
 ---
 
@@ -153,39 +158,50 @@ Cross-domain import detected. Domains MUST remain sovereign islands.
 
 ---
 
-### TTTS-6 — No Lazy Domain Loading Rule
+### TTTS-6 — No Lazy Domain Loading Rule ✅ IMPLEMENTED
+
+**Status:** ESLint rule `ttts/no-lazy-domains`
 
 **Enforces Strategy 1:**
 
-Entire domain must be preloaded upon user intent.
+Entire domain must be preloaded upon user intent. No lazy loading.
 
-**NO:**
-- lazy loading
-- dynamic fetching
-- incremental hydration
+**Blocks:**
+- `dynamic()` from next/dynamic
+- `React.lazy()`
+- `lazy()` imports
+
+**Only applies to:** `/app/domains/`, `/domains/`, `/views/`
 
 **Error:**
 ```
-⛔ TTTS ADP VIOLATION:
-Lazy-loading domains violates ADP Predictive Delivery.
-Entire domain MUST preload on dropdown intent.
+⛔ TTTS-6 VIOLATION: dynamic() imports are forbidden in domain views.
+FUSE Strategy 1 requires full domain preload via WARP/PRISM.
+Remove dynamic() and import directly.
 ```
 
 ---
 
-### TTTS-7 — No Render-Time Mutation Rule
+### TTTS-7 — No Render-Time Mutation Rule ✅ IMPLEMENTED
+
+**Status:** ESLint rule `ttts/no-runtime-debt`
 
 **No:**
 - useEffect fetch chains
 - async React hooks
-- runtime classification logic
-- layout recalculation
+- useQuery in components
+- fetch() in useEffect
+
+**Blocks:**
+- `async () => {}` as useEffect callback
+- `useQuery()` calls in components (violates Golden Bridge)
+- `fetch()` inside useEffect callbacks
 
 **Error:**
 ```
-⛔ TTTS RUNTIME DEBT:
-Render-time logic increases runtime cost at scale (fails TTT Performance Test).
-Move ALL logic to build or preload stage.
+⛔ TTTS-7 VIOLATION: useEffect with fetch/query detected.
+Data must be preloaded via WARP/PRISM, not fetched at render time.
+Move to server-side preloading.
 ```
 
 ---

@@ -5,9 +5,11 @@
  * It is not optional. It is not advisory. It is sovereign.
  *
  * Rules:
- *   - no-direct-convex-in-pages: Enforces Golden Bridge pattern
- *   - no-cross-domain-imports: Enforces domain sovereignty
- *   - enforce-slice-shape: Enforces FUSE/ADP slice contract
+ *   - no-direct-convex-in-pages: Enforces Golden Bridge pattern (TTTS-2)
+ *   - no-cross-domain-imports: Enforces domain sovereignty (TTTS-5)
+ *   - enforce-slice-shape: Enforces FUSE/ADP slice contract (TTTS-1)
+ *   - no-lazy-domains: Blocks dynamic()/React.lazy() in domain views (TTTS-6)
+ *   - no-runtime-debt: Blocks useEffect fetch chains and async hooks (TTTS-7)
  *
  * When these rules pass:
  *   - No one can bypass Golden Bridge
@@ -27,11 +29,15 @@
 const noDirectConvexInPages = require('./no-direct-convex-in-pages.js');
 const noCrossDomainImports = require('./no-cross-domain-imports.js');
 const enforceSliceShape = require('./enforce-slice-shape.js');
+const noLazyDomains = require('./no-lazy-domains.js');
+const noRuntimeDebt = require('./no-runtime-debt.js');
 
 module.exports = {
   rules: {
     'no-direct-convex-in-pages': noDirectConvexInPages.rules['no-direct-convex-in-pages'],
     'no-cross-domain-imports': noCrossDomainImports.rules['no-cross-domain-imports'],
     'enforce-slice-shape': enforceSliceShape.rules['enforce-slice-shape'],
+    'no-lazy-domains': noLazyDomains.rules['no-lazy-domains'],
+    'no-runtime-debt': noRuntimeDebt.rules['no-runtime-debt'],
   },
 };

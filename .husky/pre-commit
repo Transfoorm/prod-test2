@@ -64,7 +64,7 @@ if git diff --cached --name-only | grep -qE "^($PROTECTED_FILES)"; then
     echo "    1. Create a feature branch"
     echo "    2. Make your changes"
     echo "    3. Create a Pull Request"
-    echo "    4. Wait for @Transfoorm approval"
+    echo "    4. Wait for @Metafoorm approval"
     echo ""
     echo "  Commit blocked. Don't waste your time."
     echo ""
