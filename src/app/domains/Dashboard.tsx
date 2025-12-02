@@ -138,7 +138,7 @@ export default function Dashboard() {
         <Card.metric
           title="Build Milestone"
           value="2 Dec 2024"
-          context="⚡ WARP Orchestrator - nav-driven preloading"
+          context="🔗 WARP-PRISM Synergy documented"
         />
       </Grid.cards>
       </div>
