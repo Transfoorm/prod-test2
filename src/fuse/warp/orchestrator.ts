@@ -2,8 +2,8 @@
 │  🚀 TRUE WARP - Background Preload Orchestrator                       │
 │  /src/fuse/warp/orchestrator.ts                                       │
 │                                                                        │
-│  FUSE 6.0: Preload ALL domain data on mount via requestIdleCallback   │
-│  - Rank-aware: Admiral gets admin, all ranks get their domains        │
+│  FUSE 6.0: Preload domains based on rank's sidebar navigation         │
+│  - Derives domains from nav configs (single source of truth)          │
 │  - TTL revalidation (5 min) on focus/online events                    │
 │  - Non-blocking: runs during browser idle time                        │
 │  - Sequential to avoid network congestion                             │
@@ -12,6 +12,11 @@
 'use client';
 
 import { useFuse } from '@/store/fuse';
+import { admiralNav } from '@/shell/Sidebar/navigation/admiral';
+import { commodoreNav } from '@/shell/Sidebar/navigation/commodore';
+import { captainNav } from '@/shell/Sidebar/navigation/captain';
+import { crewNav } from '@/shell/Sidebar/navigation/crew';
+import type { NavSection } from '@/shell/Sidebar/navigation/types';
 
 // ═══════════════════════════════════════════════════════════════════════
 // TYPES
@@ -22,26 +27,48 @@ export type Rank = 'admiral' | 'commodore' | 'captain' | 'crew';
 type ADPSource = 'SSR' | 'WARP' | 'MUTATION';
 
 // ═══════════════════════════════════════════════════════════════════════
+// NAV CONFIG BY RANK
+// ═══════════════════════════════════════════════════════════════════════
+
+const navByRank: Record<Rank, NavSection[]> = {
+  admiral: admiralNav,
+  commodore: commodoreNav,
+  captain: captainNav,
+  crew: crewNav,
+};
+
+// ═══════════════════════════════════════════════════════════════════════
 // TTL TRACKING
 // ═══════════════════════════════════════════════════════════════════════
 
 const FIVE_MIN = 5 * 60 * 1000;
 
-// Per-domain TTL tracking
-const lastFetchAt: Record<string, number> = {
-  admin: 0,
-  clients: 0,
-  finance: 0,
-  productivity: 0,
-  projects: 0,
-};
+// Per-domain TTL tracking (dynamically populated)
+const lastFetchAt: Record<string, number> = {};
 
 // ═══════════════════════════════════════════════════════════════════════
-// CORE WARP FUNCTION - Preload all domains based on rank
+// EXTRACT DOMAINS FROM NAV CONFIG
 // ═══════════════════════════════════════════════════════════════════════
 
 /**
- * Run WARP preload for all domains
+ * Extract unique domain names from a rank's navigation config
+ * Domains are the top-level nav items (excluding Dashboard)
+ */
+function getDomainsForRank(rank: Rank): string[] {
+  const nav = navByRank[rank];
+  if (!nav) return [];
+
+  return nav
+    .filter((section) => section.label.toLowerCase() !== 'dashboard')
+    .map((section) => section.label.toLowerCase());
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// CORE WARP FUNCTION - Preload domains from rank's sidebar
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * Run WARP preload for rank's sidebar domains
  * Called once on FuseApp mount via requestIdleCallback
  * Non-blocking, sequential to avoid network congestion
  */
@@ -54,33 +81,23 @@ export async function runWarpPreload() {
     return;
   }
 
-  console.log(`🔱 WARP-O: Starting preload for rank="${rank}"`);
+  // Get domains from this rank's sidebar nav
+  const domains = getDomainsForRank(rank);
+
+  console.log(`🔱 WARP-O: Starting preload for rank="${rank}" domains=[${domains.join(', ')}]`);
   const startTime = performance.now();
 
-  // Preload based on rank
-  // All ranks get: clients, finance, productivity, projects
-  // Admiral also gets: admin
-
   try {
-    // 1. Clients (all ranks)
-    await preloadDomain('clients', state.hydrateClients);
+    for (const domain of domains) {
+      // Get hydrate function by domain name
+      const hydrateKey = `hydrate${domain.charAt(0).toUpperCase() + domain.slice(1)}` as keyof typeof state;
+      const hydrateFn = state[hydrateKey] as HydrateFn | undefined;
 
-    // 2. Finance (captain+)
-    if (['captain', 'commodore', 'admiral'].includes(rank)) {
-      await preloadDomain('finance', state.hydrateFinance);
-    }
-
-    // 3. Productivity (all ranks)
-    await preloadDomain('productivity', state.hydrateProductivity);
-
-    // 4. Projects (captain+)
-    if (['captain', 'commodore', 'admiral'].includes(rank)) {
-      await preloadDomain('projects', state.hydrateProjects);
-    }
-
-    // 5. Admin (admiral only)
-    if (rank === 'admiral') {
-      await preloadDomain('admin', state.hydrateAdmin);
+      if (hydrateFn) {
+        await preloadDomain(domain, hydrateFn);
+      } else {
+        console.warn(`⚠️ WARP-O: No hydrate function for domain "${domain}"`);
+      }
     }
 
     const duration = Math.round(performance.now() - startTime);
@@ -148,18 +165,10 @@ export function attachTTLRevalidation(): () => void {
 
     if (!rank) return;
 
+    // Get domains from this rank's sidebar nav
+    const domains = getDomainsForRank(rank);
+
     console.log('🔄 WARP-O: Checking TTL on focus/online...');
-
-    // Check each domain's freshness and revalidate if stale
-    const domains = ['clients', 'productivity'];
-
-    if (['captain', 'commodore', 'admiral'].includes(rank)) {
-      domains.push('finance', 'projects');
-    }
-
-    if (rank === 'admiral') {
-      domains.push('admin');
-    }
 
     for (const domain of domains) {
       const lastFetch = lastFetchAt[domain] || 0;
