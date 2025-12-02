@@ -74,6 +74,12 @@ const eslintConfig = [
       // UPGRADED TO ERROR: All slices are now TTTS-1 compliant (status === 'hydrated')
       "ttts/enforce-slice-shape": "error",
 
+      // TTTS-6: No Lazy Domains - Block dynamic()/React.lazy() in domain views
+      "ttts/no-lazy-domains": "error",
+
+      // TTTS-7: No Runtime Debt - Block useEffect fetch chains and async hooks
+      "ttts/no-runtime-debt": "error",
+
       // NOTE: class-prefix and no-component-css DISABLED for now
       // Legacy uses VR architecture, not 5-file system yet
       // "class-prefix/enforce-class-prefix": "error",  // DISABLED
@@ -178,6 +184,23 @@ const eslintConfig = [
     files: ["convex/**/*Action.ts"],
     rules: {
       "no-restricted-globals": "off"  // Convex actions are server-side
+    }
+  },
+  // ═══════════════════════════════════════════════════════════════════
+  // 🛡️ TTTS-7 EXCEPTIONS - GOLDEN BRIDGE SYNC INFRASTRUCTURE
+  // ═══════════════════════════════════════════════════════════════════
+  // These hooks are the OFFICIAL Convex → FUSE sync infrastructure.
+  // useQuery is allowed ONLY because they sync INTO FUSE, never return data.
+  // Components MUST read from FUSE, not from these sync hooks.
+  {
+    files: [
+      "src/hooks/useAdminSync.ts",      // Admin domain: Convex → FUSE
+      "src/hooks/useConvexUser.ts",     // User identity: Convex → FUSE
+      "src/hooks/useSettingsSync.ts",   // Settings domain: Convex → FUSE
+      "vanish/**/*.tsx",                // Quarantine/deprecated sync code
+    ],
+    rules: {
+      "ttts/no-runtime-debt": "off"  // TTTS-2 compliant sync infrastructure
     }
   },
   // ═══════════════════════════════════════════════════════════════════
