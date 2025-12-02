@@ -91,6 +91,19 @@ export default function Dashboard() {
         throw new Error(result.error || 'Setup failed');
       }
 
+      // Update store with fresh data from server (DB → Cookie → Store → UI)
+      if (result.user) {
+        updateUser({
+          emailVerified: result.user.emailVerified,
+          setupStatus: result.user.setupStatus as 'pending' | 'complete',
+          firstName: result.user.firstName || undefined,
+          lastName: result.user.lastName || undefined,
+          entityName: result.user.entityName || undefined,
+          socialName: result.user.socialName || undefined,
+          businessCountry: result.user.businessCountry || undefined,
+        });
+      }
+
       console.log('✅ Setup completed successfully');
     } catch (error) {
       console.error('Setup failed:', error);
