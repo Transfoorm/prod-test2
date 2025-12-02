@@ -17,32 +17,55 @@
 'use client';
 
 import { useFuse } from '@/store/fuse';
-import { useSetPageHeader } from '@/hooks/useSetPageHeader';
 
 // ═══════════════════════════════════════════════════════════════════════
 // SOVEREIGN VIEWS
 // ═══════════════════════════════════════════════════════════════════════
 
-// Migrated domains
+// Dashboard
 import Dashboard from './Dashboard';
+
+// Admin
 import Users from './admin/Users';
+import Plans from './admin/Plans';
+import Feature from './admin/Feature';
 
-// Placeholder component for views not yet migrated
-function PlaceholderView({ route }: { route: string }) {
-  // Generate title from route: 'settings/security' → 'Security'
-  const pageName = route.split('/').pop() || route;
-  const title = pageName.charAt(0).toUpperCase() + pageName.slice(1);
+// Clients
+import People from './clients/People';
+import Teams from './clients/Teams';
+import Sessions from './clients/Sessions';
+import Pipeline from './clients/Pipeline';
+import ClientsReports from './clients/Reports';
 
-  useSetPageHeader(title, 'Coming soon');
+// Finance
+import Overview from './finance/Overview';
+import Transactions from './finance/Transactions';
+import Invoices from './finance/Invoices';
+import Payments from './finance/Payments';
+import FinanceReports from './finance/Reports';
 
-  return (
-    <div className="sovereign-placeholder">
-      <h2>Sovereign Route: {route}</h2>
-      <p>This view will be migrated from /(domains) in Phase B.</p>
-      <p>Navigation is now instant - FUSE 6.0 is working!</p>
-    </div>
-  );
-}
+// Productivity
+import Calendar from './productivity/Calendar';
+import Booking from './productivity/Booking';
+import Tasks from './productivity/Tasks';
+import Email from './productivity/Email';
+import Meetings from './productivity/Meetings';
+
+// Projects
+import Charts from './projects/Charts';
+import Locations from './projects/Locations';
+import Tracking from './projects/Tracking';
+
+// Settings
+import Account from './settings/Account';
+import Preferences from './settings/Preferences';
+import Security from './settings/Security';
+import Billing from './settings/Billing';
+import Plan from './settings/Plan';
+
+// System
+import AI from './system/AI';
+import Ranks from './system/Ranks';
 
 // ═══════════════════════════════════════════════════════════════════════
 // ROUTER VIEW - THE SOVEREIGN SWITCH
@@ -69,15 +92,15 @@ export default function Router() {
       // PRODUCTIVITY
       // ═══════════════════════════════════════════════════════════════
       case 'productivity/calendar':
-        return <PlaceholderView route={route} />;
+        return <Calendar />;
       case 'productivity/booking':
-        return <PlaceholderView route={route} />;
+        return <Booking />;
       case 'productivity/tasks':
-        return <PlaceholderView route={route} />;
+        return <Tasks />;
       case 'productivity/email':
-        return <PlaceholderView route={route} />;
+        return <Email />;
       case 'productivity/meetings':
-        return <PlaceholderView route={route} />;
+        return <Meetings />;
 
       // ═══════════════════════════════════════════════════════════════
       // ADMIN
@@ -85,76 +108,76 @@ export default function Router() {
       case 'admin/users':
         return <Users />;
       case 'admin/plans':
-        return <PlaceholderView route={route} />;
+        return <Plans />;
       case 'admin/feature':
-        return <PlaceholderView route={route} />;
+        return <Feature />;
 
       // ═══════════════════════════════════════════════════════════════
       // CLIENTS
       // ═══════════════════════════════════════════════════════════════
       case 'clients/people':
-        return <PlaceholderView route={route} />;
+        return <People />;
       case 'clients/teams':
-        return <PlaceholderView route={route} />;
+        return <Teams />;
       case 'clients/sessions':
-        return <PlaceholderView route={route} />;
+        return <Sessions />;
       case 'clients/pipeline':
-        return <PlaceholderView route={route} />;
+        return <Pipeline />;
       case 'clients/reports':
-        return <PlaceholderView route={route} />;
+        return <ClientsReports />;
 
       // ═══════════════════════════════════════════════════════════════
       // FINANCE
       // ═══════════════════════════════════════════════════════════════
       case 'finance/overview':
-        return <PlaceholderView route={route} />;
+        return <Overview />;
       case 'finance/transactions':
-        return <PlaceholderView route={route} />;
+        return <Transactions />;
       case 'finance/invoices':
-        return <PlaceholderView route={route} />;
+        return <Invoices />;
       case 'finance/payments':
-        return <PlaceholderView route={route} />;
+        return <Payments />;
       case 'finance/reports':
-        return <PlaceholderView route={route} />;
+        return <FinanceReports />;
 
       // ═══════════════════════════════════════════════════════════════
       // PROJECTS
       // ═══════════════════════════════════════════════════════════════
       case 'projects/charts':
-        return <PlaceholderView route={route} />;
+        return <Charts />;
       case 'projects/locations':
-        return <PlaceholderView route={route} />;
+        return <Locations />;
       case 'projects/tracking':
-        return <PlaceholderView route={route} />;
+        return <Tracking />;
 
       // ═══════════════════════════════════════════════════════════════
       // SYSTEM
       // ═══════════════════════════════════════════════════════════════
       case 'system/ai':
-        return <PlaceholderView route={route} />;
+        return <AI />;
       case 'system/ranks':
-        return <PlaceholderView route={route} />;
+        return <Ranks />;
 
       // ═══════════════════════════════════════════════════════════════
       // SETTINGS
       // ═══════════════════════════════════════════════════════════════
       case 'settings/account':
-        return <PlaceholderView route={route} />;
+        return <Account />;
       case 'settings/preferences':
-        return <PlaceholderView route={route} />;
+        return <Preferences />;
       case 'settings/security':
-        return <PlaceholderView route={route} />;
+        return <Security />;
       case 'settings/billing':
-        return <PlaceholderView route={route} />;
+        return <Billing />;
       case 'settings/plan':
-        return <PlaceholderView route={route} />;
+        return <Plan />;
 
       // ═══════════════════════════════════════════════════════════════
       // FALLBACK
       // ═══════════════════════════════════════════════════════════════
       default:
         console.warn(`🔱 SR: Unknown route "${route}", showing dashboard`);
-        return <PlaceholderView route="dashboard" />;
+        return <Dashboard />;
     }
   };
 
