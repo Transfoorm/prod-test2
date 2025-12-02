@@ -1,13 +1,13 @@
 /** ──────────────────────────────────────────────────────────────────────┐
-│  DOMAIN & DASHBOARD LAYOUT STYLES - SMAC Architecture                 │
+│  DOMAIN & DASHBOARD LAYOUT STYLES - SRS Architecture                 │
 │  /src/app/domain/domain-layout.css                                    │
 │                                                                        │
-│  Layout styles for SMAC domain routes and dashboard.                  │
+│  Layout styles for SRS domain routes and dashboard.                  │
 │  Self-contained - no dependencies on legacy modes folder.             │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 /* ═══════════════════════════════════════════════════════════════════
-   DOMAIN LAYOUT - SMAC Routes
+   DOMAIN LAYOUT - SRS Routes
    ═══════════════════════════════════════════════════════════════════ */
 
 .modes-layout-app-container {

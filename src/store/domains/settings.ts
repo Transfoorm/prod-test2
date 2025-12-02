@@ -4,7 +4,7 @@
  * ══════════════════════════════════════════════════════════════════════════════
  *
  * Handles: user profile, preferences, notifications
- * Route: /(domains)/settings/*
+ * Route: /app/domains/settings/*
  * Backend: /convex/domains/settings/
  * Access: All ranks (SELF-scoped - unique!)
  *

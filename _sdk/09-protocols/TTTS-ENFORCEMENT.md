@@ -65,7 +65,7 @@ remote: - Changes must be made through a pull request.
 
 ## Part 2: TTTS Rules (Automated Enforcement)
 
-These 10 core rules protect Strategy 1, PRISM, WARP, FUSE, SMAC, VRP, and TTT.
+These 10 core rules protect Strategy 1, PRISM, WARP, FUSE, SRS, VRP, and TTT.
 
 ### TTTS-1 - Slice Discipline IMPLEMENTED
 

@@ -4,7 +4,7 @@
  * ══════════════════════════════════════════════════════════════════════════════
  *
  * Handles: people, teams, sessions, reports
- * Route: /(domains)/clients/*
+ * Route: /app/domains/clients/*
  * Backend: /convex/domains/clients/
  * Access: All ranks (scoped by rank)
  *

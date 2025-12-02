@@ -1,5 +1,5 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔌 PRODUCTIVITY DOMAIN QUERIES - SMAC Layer 4                         │
+│  🔌 PRODUCTIVITY DOMAIN QUERIES - SRS Layer 4                         │
 │  /convex/domains/productivity/queries.ts                               │
 │                                                                        │
 │  Rank-based data scoping for productivity tools:                       │
@@ -7,7 +7,7 @@
 │  • Captain/Commodore: Organization-scoped (full access)                │
 │  • Admiral: All data (cross-org, platform-wide)                        │
 │                                                                        │
-│  SMAC Commandment #4: Data scoping via Convex query filters            │
+│  SRS Commandment #4: Data scoping via Convex query filters            │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { query } from "@/convex/_generated/server";

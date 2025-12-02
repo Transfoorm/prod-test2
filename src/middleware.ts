@@ -29,8 +29,9 @@ const isAdminRoute = createRouteMatcher([
   '/admin(.*)'
 ])
 
-// SMAC: Soft mode flag (SMAC_ENFORCE=0 observes, =1 enforces)
-const SMAC_ENFORCE = process.env.SMAC_ENFORCE === '1'
+// SRS: Soft mode flag (SRS_ENFORCE=0 observes, =1 enforces)
+// NOTE: This only runs on INITIAL PAGE LOAD - Sovereign Router's navigate() bypasses middleware
+const SRS_ENFORCE = process.env.SRS_ENFORCE === '1'
 
 // NOTE: Admiral-only route protection is handled at Convex query level
 // Middleware redirect removed to prevent hydration issues
@@ -61,8 +62,12 @@ export default clerkMiddleware(async (auth, req) => {
     }
   }
 
-  // SMAC LAYER 3: Edge Gate (Soft Mode)
-  // Session already read above - reuse it
+  // SRS ENTRY GATE: Initial load authorization (Soft Mode)
+  // NOTE: This is NOT "Layer 3" - Sovereign Router only has 2 layers:
+  //   Layer 1: Rank Manifests (compile-time allowlists)
+  //   Layer 2: Convex Data Scoping (query-level filtering)
+  // This middleware is the ENTRY GATE - only runs on initial page load/refresh
+  // Client-side navigate() bypasses this entirely - security via Convex queries
 
   if (session && !isPublicRoute(req) && !pathname.startsWith('/api') && !pathname.startsWith('/_next')) {
     const effectiveRank: UserRank = session.rank as UserRank
@@ -73,14 +78,14 @@ export default clerkMiddleware(async (auth, req) => {
     const allowed = isRouteAllowed(effectiveRank, pathname)
 
     if (!allowed) {
-      if (SMAC_ENFORCE) {
+      if (SRS_ENFORCE) {
         // Hard mode: redirect to rank home
         const home = getRankHome(effectiveRank)
-        console.log(`[SMAC] Denied: ${effectiveRank} → ${pathname} (redirect → ${home})`)
+        console.log(`[SRS] Denied: ${effectiveRank} → ${pathname} (redirect → ${home})`)
         return NextResponse.redirect(new URL(home, req.url))
       } else {
         // Soft mode: log only, allow through
-        console.log(`[SMAC] Would block: ${effectiveRank} → ${pathname}`)
+        console.log(`[SRS] Would block: ${effectiveRank} → ${pathname}`)
       }
     }
 

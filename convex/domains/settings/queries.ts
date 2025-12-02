@@ -1,5 +1,5 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  ⚙️ SETTINGS DOMAIN QUERIES - SMAC Layer 4                             │
+│  ⚙️ SETTINGS DOMAIN QUERIES - SRS Layer 4                             │
 │  /convex/domains/settings/queries.ts                                   │
 │                                                                        │
 │  All-rank self-scoped access to user settings and preferences          │
@@ -8,7 +8,7 @@
 │  • Commodore: Own settings only                                        │
 │  • Admiral: Own settings only                                          │
 │                                                                        │
-│  SMAC Commandment #4: Data scoping via self-only user access           │
+│  SRS Commandment #4: Data scoping via self-only user access           │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { query } from "@/convex/_generated/server";
@@ -17,7 +17,7 @@ import type { QueryCtx } from "@/convex/_generated/server";
 /**
  * Get current user's profile and settings
  *
- * SMAC Layer 4: Self-Scoped Data Access
+ * SRS Layer 4: Self-Scoped Data Access
  * - All ranks can access their own settings
  * - Returns null if user not found (should never happen if authenticated)
  */

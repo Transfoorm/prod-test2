@@ -1,11 +1,11 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔌 CLIENTS DOMAIN API - SMAC Layer 4                                  │
+│  🔌 CLIENTS DOMAIN API - SRS Layer 4                                  │
 │  /convex/domains/clients/api.ts                                        │
 │                                                                        │
 │  Central export point for client domain Convex functions.              │
 │  Aggregates queries and mutations for client management.               │
 │                                                                        │
-│  SMAC Commandment #4: Data scoping via Convex (rank-based filtering)   │
+│  SRS Commandment #4: Data scoping via Convex (rank-based filtering)   │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 // Export queries

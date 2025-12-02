@@ -4,7 +4,7 @@
  * ══════════════════════════════════════════════════════════════════════════════
  *
  * Handles: charts (Gantt), locations, tracking
- * Route: /(domains)/projects/*
+ * Route: /app/domains/projects/*
  * Backend: /convex/domains/projects/
  * Access: Captain+ (org-scoped)
  *

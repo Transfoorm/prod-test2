@@ -186,7 +186,7 @@ export default defineSchema({
     .index("by_deleted_at", ["deletedAt"])
     .index("by_status", ["status"]),
 
-  // SMAC LAYER 4: Client Domain (Rank-Based Data Scoping)
+  // SRS LAYER 4: Client Domain (Rank-Based Data Scoping)
   clients: defineTable({
     // Client identity
     firstName: v.string(),
@@ -196,7 +196,7 @@ export default defineSchema({
     jobTitle: v.optional(v.string()),
     phoneNumber: v.optional(v.string()),
 
-    // SMAC rank-based scoping fields
+    // SRS rank-based scoping fields
     orgId: v.string(), // Organization this client belongs to (Captain/Commodore scope)
     assignedTo: v.optional(v.id("admin_users")), // User assigned to this client (Crew scope)
 
@@ -218,7 +218,7 @@ export default defineSchema({
     .index("by_email", ["email"])
     .index("by_status", ["status"]),
 
-  // SMAC LAYER 4: Finance Domain (Rank-Based Data Scoping)
+  // SRS LAYER 4: Finance Domain (Rank-Based Data Scoping)
   finance: defineTable({
     // Transaction identity
     type: v.union(
@@ -230,7 +230,7 @@ export default defineSchema({
     currency: v.string(), // USD, EUR, etc.
     description: v.string(),
 
-    // SMAC rank-scoping fields
+    // SRS rank-scoping fields
     orgId: v.string(), // Organization this transaction belongs to
 
     // Metadata
@@ -250,12 +250,12 @@ export default defineSchema({
     .index("by_status", ["status"])
     .index("by_date", ["date"]),
 
-  // SMAC LAYER 4: Project Domain (Rank-Based Data Scoping)
+  // SRS LAYER 4: Project Domain (Rank-Based Data Scoping)
   projects: defineTable({
     name: v.string(),
     description: v.optional(v.string()),
 
-    // SMAC rank-scoping fields
+    // SRS rank-scoping fields
     orgId: v.string(), // Organization this project belongs to
     assignedTo: v.optional(v.id("admin_users")), // User assigned to this project (Crew scope)
 
@@ -277,7 +277,7 @@ export default defineSchema({
     .index("by_status", ["status"])
     .index("by_date", ["startDate"]),
 
-  // SMAC LAYER 4: Productivity Domain - Email Management
+  // SRS LAYER 4: Productivity Domain - Email Management
   prod_email_Messages: defineTable({
     subject: v.string(),
     body: v.string(),
@@ -295,7 +295,7 @@ export default defineSchema({
   }).index("by_org", ["orgId"])
     .index("by_status", ["status"]),
 
-  // SMAC LAYER 4: Productivity Domain - Calendar Events
+  // SRS LAYER 4: Productivity Domain - Calendar Events
   prod_cal_Events: defineTable({
     title: v.string(),
     description: v.optional(v.string()),
@@ -309,7 +309,7 @@ export default defineSchema({
   }).index("by_org", ["orgId"])
     .index("by_start_time", ["startTime"]),
 
-  // SMAC LAYER 4: Productivity Domain - Bookings
+  // SRS LAYER 4: Productivity Domain - Bookings
   prod_book_Bookings: defineTable({
     clientName: v.string(),
     serviceType: v.string(),
@@ -326,7 +326,7 @@ export default defineSchema({
   }).index("by_org", ["orgId"])
     .index("by_status", ["status"]),
 
-  // SMAC LAYER 4: Productivity Domain - Meetings
+  // SRS LAYER 4: Productivity Domain - Meetings
   prod_pipe_Meetings: defineTable({
     title: v.string(),
     participants: v.array(v.string()),

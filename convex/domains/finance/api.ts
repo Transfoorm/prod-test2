@@ -1,11 +1,11 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔌 FINANCE DOMAIN API - SMAC Layer 4                                  │
+│  🔌 FINANCE DOMAIN API - SRS Layer 4                                  │
 │  /convex/domains/finance/api.ts                                        │
 │                                                                        │
 │  Central export point for finance domain Convex functions.             │
 │  Aggregates queries and mutations for financial management.            │
 │                                                                        │
-│  SMAC Commandment #4: Data scoping via Convex (rank-based filtering)   │
+│  SRS Commandment #4: Data scoping via Convex (rank-based filtering)   │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 // Export queries

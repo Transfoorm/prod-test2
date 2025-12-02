@@ -146,12 +146,12 @@ admin_users_DelLogs            ❌
 
 ---
 
-## SMAC Alignment
+## SRS Alignment
 
-Database naming aligns with SMAC architecture:
+Database naming aligns with SRS architecture:
 
 ```
-Routes:     /(domains)/admin/users/
+Routes:     /app/domains/admin/users/
 Backend:    /convex/domains/admin/users/
 Database:   admin_users, admin_users_DeletionLogs
 ```
@@ -202,7 +202,7 @@ client_notes_Notes
 ```
 
 ### 2. Easy Discovery
-Find database tables by knowing the SMAC route:
+Find database tables by knowing the SRS domain:
 - Route: `/admin/users`
 - Tables: `admin_users*`
 

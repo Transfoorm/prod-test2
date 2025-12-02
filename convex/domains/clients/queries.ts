@@ -1,5 +1,5 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔌 CLIENT DOMAIN QUERIES - SMAC Layer 4                               │
+│  🔌 CLIENT DOMAIN QUERIES - SRS Layer 4                               │
 │  /convex/domains/clients/queries.ts                                    │
 │                                                                        │
 │  Rank-based data scoping for client management:                        │
@@ -8,7 +8,7 @@
 │  • Commodore: Organization-scoped clients (by_org index)               │
 │  • Admiral: All clients (cross-org, platform-wide)                     │
 │                                                                        │
-│  SMAC Commandment #4: Data scoping via Convex query filters            │
+│  SRS Commandment #4: Data scoping via Convex query filters            │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { query } from "@/convex/_generated/server";
@@ -35,7 +35,7 @@ async function getCurrentUserWithRank(ctx: QueryCtx) {
 /**
  * List clients with rank-based scoping
  *
- * SMAC Layer 4: Data Scoping
+ * SRS Layer 4: Data Scoping
  * - Crew: Only assigned clients
  * - Captain/Commodore: Organization-scoped
  * - Admiral: All clients (cross-org)
@@ -72,7 +72,7 @@ export const listClients = query({
 /**
  * Get single client by ID with rank-based authorization
  *
- * SMAC Layer 4: Data Scoping
+ * SRS Layer 4: Data Scoping
  * - Validates user has access to this specific client
  */
 export const getClient = query({
