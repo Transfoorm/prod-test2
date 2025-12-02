@@ -81,12 +81,12 @@ Once contaminated, a repository loses its virgin status. VRP maintains this puri
 
 ## The 3 Sacred Commands
 
-### 1. `/purecommit` - Sacred Commit Ritual
+### 1. `/VRP-commit` - Sacred Commit Ritual
 
 Enforce VRP compliance before creating commits:
 
 ```
-/purecommit
+/VRP-commit
    ↓
 Run virgin-check (TypeScript + ESLint + Build)
    ↓
@@ -109,12 +109,12 @@ Implemented complete user profile system with:
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
-### 2. `/purepush` - Sacred Push Ritual
+### 2. `/VRP-push` - Sacred Push Ritual
 
 Enforce VRP compliance before pushing:
 
 ```
-/purepush
+/VRP-push
    ↓
 Run virgin-check
    ↓
@@ -123,7 +123,7 @@ Check branch status
 If CLEAN → Push to origin
 ```
 
-### 3. `/vrpaudit` - 70-Point Compliance Audit
+### 3. `/VRP-audit` - 70-Point Compliance Audit
 
 Complete FUSE Stack compliance audit:
 
@@ -199,16 +199,16 @@ The use of inline `style={{}}` props:
 
 ### Achieving Ground Zero
 
-1. Run `/vrpaudit` to baseline
+1. Run `/VRP-audit` to baseline
 2. Fix all violations
 3. Run `npm run virgin-check`
-4. Commit with `/purecommit`
-5. Push with `/purepush`
+4. Commit with `/VRP-commit`
+5. Push with `/VRP-push`
 6. Maintain with VRP commands
 
 ### The Golden Rule
 
-> **Never commit without `/purecommit`. Never push without `/purepush`.**
+> **Never commit without `/VRP-commit`. Never push without `/VRP-push`.**
 
 ---
 
@@ -256,9 +256,9 @@ VRP enforces FUSE principles:
 
 | Command | Purpose | When |
 |---------|---------|------|
-| `/purecommit` | Create compliant commit | Every commit |
-| `/purepush` | Push with verification | When sharing |
-| `/vrpaudit` | Full 70-point audit | Weekly/releases |
+| `/VRP-commit` | Create compliant commit | Every commit |
+| `/VRP-push` | Push with verification | When sharing |
+| `/VRP-audit` | Full 70-point audit | Weekly/releases |
 
 ### Violation Checklist
 
@@ -276,7 +276,7 @@ If VRP fails, check:
 # Accidentally committed violations:
 git reset --soft HEAD~1
 # Fix violations
-/purecommit
+/VRP-commit
 ```
 
 ---

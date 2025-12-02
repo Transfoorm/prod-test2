@@ -22,18 +22,17 @@ const APP_DIR = path.join(ROOT, 'src', 'app');
 
 /**
  * Check if a route file exists
+ * Note: With Sovereign Router, routes are in /app/domains/{domain}/
+ * The Router.tsx switch handles navigation, not file-based routing
  */
 function routeExists(routePath: string): boolean {
-  // Handle route groups: /clients -> src/app/(modes)/(captain)/clients/page.tsx
-  // Also check (shared) routes
   const trimmed = routePath.replace(/^\/+/, '');
-  
-  // Patterns to check (accommodate current structure)
+
+  // Patterns to check (Sovereign Router structure)
   const patterns = [
-    path.join(APP_DIR, `(modes)`, `(captain)`, trimmed, 'page.tsx'),
-    path.join(APP_DIR, `(modes)`, `(shared)`, trimmed, 'page.tsx'),
-    path.join(APP_DIR, `(modes)`, `(admiral)`, trimmed, 'page.tsx'),
-    path.join(APP_DIR, trimmed, 'page.tsx'),
+    path.join(APP_DIR, 'domains', trimmed, 'index.tsx'),  // Domain view file
+    path.join(APP_DIR, 'domains', trimmed + '.tsx'),       // Direct domain file
+    path.join(APP_DIR, trimmed, 'page.tsx'),               // Legacy page route
   ];
 
   return patterns.some(p => fs.existsSync(p));

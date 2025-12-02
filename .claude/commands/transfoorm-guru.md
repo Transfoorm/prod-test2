@@ -291,7 +291,7 @@ Every suggestion goes through the **TTT God Protocol** (from 15-TTT-SUPPLEMENT.m
 
 Track current context to give precise warnings:
 
-**Context detected:** User editing file in `src/app/(modes)/(admiral)/admin/`
+**Context detected:** User editing file in `src/app/domains/admin/`
 
 **Transfoorm Guru knows:**
 - This is Admiral-only territory (highest rank)
@@ -385,7 +385,7 @@ Here's the implementation:
    (Ref: 02-FUSE-STYLE-ARCHITECTURE.md §2, 12-VIRGIN-REPO-PROTOCOL.md ISV)
 
 Fix these 2 violations before commit.
-ESLint will reject at `/purecommit` stage.
+ESLint will reject at `/VRP-commit` stage.
 ```
 
 ---
@@ -454,14 +454,14 @@ Checking against 70-point checklist:
   ✅ FUSE Architecture: Compliant (Points 36-50)
   ✅ Naming: Valid (Points 51-60)
 
-Ready for `/purecommit`.
+Ready for `/VRP-commit`.
 
 Predicted outcome:
   ✅ Virgin-check will PASS
   ✅ Commit will be blessed
   ✅ VRP-Compliant tag will be added
 
-Proceed with `/purecommit` when ready.
+Proceed with `/VRP-commit` when ready.
 ```
 
 ### Commit Message Guidance
@@ -558,7 +558,7 @@ VRP Layer 2 Violation:
 Fix NOW (before commit):
   Remove loading state → Read from useFuse() instead
 
-This will fail `/purecommit` if not fixed.
+This will fail `/VRP-commit` if not fixed.
 ```
 
 **User pastes:**
@@ -580,14 +580,14 @@ Fix NOW:
   Replace with: className="text-error"
   Or create token: --text-error-color in tokens.css
 
-This will fail `/purecommit` if not fixed.
+This will fail `/VRP-commit` if not fixed.
 ```
 
 ### Context-Aware Suggestions
 
 Track what file/directory user is working in:
 
-**Context:** `src/app/(modes)/(captain)/client/people/page.tsx`
+**Context:** `src/app/domains/clients/People.tsx`
 
 **Guru knows:**
 - This is Captain rank territory
@@ -692,7 +692,7 @@ Components never fetch() - here's why:
 4. VRP Enforcement:
    - Layer 2: ESLint blocks fetch() in components
    - Layer 5: FUSE Rule 2 violation
-   - Will fail at `/purecommit` stage
+   - Will fail at `/VRP-commit` stage
 
 Understanding this makes you live inside the doctrine,
 not just avoid lint errors.
@@ -707,7 +707,7 @@ not just avoid lint errors.
 Transfoorm Guru mode succeeds when:
 
 ✅ Developer asks "how do I..." and you give ONE answer (TTT-compliant)
-✅ Developer writes code that passes `/purecommit` first try
+✅ Developer writes code that passes `/VRP-commit` first try
 ✅ Developer explains WHY patterns exist, not just follows them
 ✅ Developer catches their own violations before committing
 ✅ Developer speaks in FUSE terminology ("Golden Bridge", "WARP", "ISV-free")
@@ -840,8 +840,8 @@ Does it contain: "should I", "shall I", "would you like", "do you want", "which 
 ## IMPORTANT NOTES
 
 **Self-Sufficient:**
-- All doctrine is in _SDK(v1)/ (00-15, 16 docs total)
-- All enforcement in VRP commands (/purecommit, /purepush, /vrpaudit)
+- All doctrine is in _sdk/ (organized by topic)
+- All enforcement in VRP commands (/VRP-commit, /VRP-push, /VRP-audit)
 - No external documentation dependencies
 - Tools are source of truth (eslint.config.mjs, tsconfig.json)
 

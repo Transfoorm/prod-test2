@@ -120,7 +120,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ## EXECUTION FLOW
 
-1. User invokes `/purecommit`
+1. User invokes `/VRP-commit`
 2. Run `npm run virgin-check` **ONCE** (TypeScript + ESLint + Build)
 3. Parse results from all 3 checks
 4. If ANY fail: Report violations + REJECT commit
@@ -163,7 +163,7 @@ After successful commit, **IMMEDIATELY** use the AskUserQuestion tool with these
 
 **Options:**
 1. **YES** - Run sacred push ritual (push to origin)
-2. **NO** - Stay local (you can push later with /purepush)
+2. **NO** - Stay local (you can push later with /VRP-push)
 
 **IMPORTANT:** Use the AskUserQuestion tool so the user can press Enter or click to select. DO NOT ask them to type "1" or "2" in chat.
 
@@ -177,7 +177,7 @@ After successful commit, **IMMEDIATELY** use the AskUserQuestion tool with these
 
 **IF USER CHOOSES 2 (NO):**
 - Confirm commit is safe locally
-- Remind them to use `/purepush` when ready
+- Remind them to use `/VRP-push` when ready
 - Exit gracefully
 
 **POST-PUSH DECLARATION (if user chose YES):**
