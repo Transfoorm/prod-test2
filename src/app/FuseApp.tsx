@@ -35,6 +35,9 @@ import Footer from '@/shell/Footer';
 // Sovereign Router
 import Router from './domains/Router';
 
+// WARP Orchestrator
+import { runWarpPreload, attachTTLRevalidation } from '@/fuse/warp/orchestrator';
+
 // Domain providers (will be removed in Phase F - currently needed for data)
 import { FinanceProvider } from '@/providers/FinanceProvider';
 import { ClientsProvider } from '@/providers/ClientsProvider';
@@ -94,14 +97,19 @@ export default function FuseApp() {
     // This is the FUSE resurrection moment
     if ('requestIdleCallback' in window) {
       requestIdleCallback(() => {
-        console.log('🔱 WARP-O: Starting idle-time preload...');
-        // TODO: Implement runWarpPreload() in Phase D
-        // runWarpPreload();
-      });
+        runWarpPreload();
+      }, { timeout: 2000 });
+    } else {
+      // Fallback for Safari
+      setTimeout(runWarpPreload, 100);
     }
+
+    // 5. TTL Revalidation - Refresh stale data on focus/online
+    const cleanupTTL = attachTTLRevalidation();
 
     return () => {
       window.removeEventListener('popstate', handlePopState);
+      cleanupTTL();
     };
   }, [sovereignHydrateSections, navigate]);
 

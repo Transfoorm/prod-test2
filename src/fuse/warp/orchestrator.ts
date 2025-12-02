@@ -2,131 +2,198 @@
 │  🚀 TRUE WARP - Background Preload Orchestrator                       │
 │  /src/fuse/warp/orchestrator.ts                                       │
 │                                                                        │
-│  Client-side orchestration for background data preloading              │
-│  - Triggers fetch when user lands on dashboard after login             │
-│  - TTL revalidation (5 min) on focus/online events                     │
-│  - Non-blocking (runs in requestIdleCallback)                          │
+│  FUSE 6.0: Preload ALL domain data on mount via requestIdleCallback   │
+│  - Rank-aware: Admiral gets admin, all ranks get their domains        │
+│  - TTL revalidation (5 min) on focus/online events                    │
+│  - Non-blocking: runs during browser idle time                        │
+│  - Sequential to avoid network congestion                             │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
 
-// TTL tracker (5 minutes)
-let lastAdminFetchAt = 0;
-const FIVE_MIN = 5 * 60 * 1000;
+import { useFuse } from '@/store/fuse';
+
+// ═══════════════════════════════════════════════════════════════════════
+// TYPES
+// ═══════════════════════════════════════════════════════════════════════
 
 export type Rank = 'admiral' | 'commodore' | 'captain' | 'crew';
 
-export interface AdminBundle {
-  users: Record<string, unknown>[];
-  deletionLogs: Record<string, unknown>[];
-}
+type ADPSource = 'SSR' | 'WARP' | 'MUTATION';
+
+// ═══════════════════════════════════════════════════════════════════════
+// TTL TRACKING
+// ═══════════════════════════════════════════════════════════════════════
+
+const FIVE_MIN = 5 * 60 * 1000;
+
+// Per-domain TTL tracking
+const lastFetchAt: Record<string, number> = {
+  admin: 0,
+  clients: 0,
+  finance: 0,
+  productivity: 0,
+  projects: 0,
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+// CORE WARP FUNCTION - Preload all domains based on rank
+// ═══════════════════════════════════════════════════════════════════════
 
 /**
- * Start background WARP preload
- * Runs once per session after user rank is detected
- * Non-blocking, uses requestIdleCallback for optimal performance
- * Skips if data is fresh (loaded within 5 minutes)
+ * Run WARP preload for all domains
+ * Called once on FuseApp mount via requestIdleCallback
+ * Non-blocking, sequential to avoid network congestion
  */
-export function startBackgroundWARP(
-  rank: Rank | undefined,
-  hydrateAdmin: (bundle: AdminBundle, source?: 'SSR' | 'WARP' | 'MUTATION') => void,
-  getAdminState: () => AdminBundle & { status?: string; lastFetchedAt?: number; source?: string }
-) {
-  if (rank?.toLowerCase() !== 'admiral') return;
+export async function runWarpPreload() {
+  const state = useFuse.getState();
+  const rank = state.rank?.toLowerCase() as Rank | undefined;
 
-  const run = async () => {
-    try {
-      // Check if data is fresh (within 5 minutes)
-      const admin = getAdminState();
-      const fresh = admin.status === 'hydrated' && admin.lastFetchedAt && Date.now() - admin.lastFetchedAt < FIVE_MIN;
+  if (!rank) {
+    console.log('🔱 WARP-O: No rank detected, skipping preload');
+    return;
+  }
 
-      if (fresh) {
-        console.log(`🔄 WARP: Skipping admin preload (fresh via ${admin.source})`);
-        return;
-      }
+  console.log(`🔱 WARP-O: Starting preload for rank="${rank}"`);
+  const startTime = performance.now();
 
-      console.log('🚀 TRUE WARP: Starting background preload for Admiral');
+  // Preload based on rank
+  // All ranks get: clients, finance, productivity, projects
+  // Admiral also gets: admin
 
-      // eslint-disable-next-line no-restricted-globals
-      const res = await fetch('/api/warp/admin', {
-        credentials: 'same-origin'
-      });
+  try {
+    // 1. Clients (all ranks)
+    await preloadDomain('clients', state.hydrateClients);
 
-      if (!res.ok) {
-        console.warn('⚠️ WARP: API returned', res.status);
-        return;
-      }
-
-      const bundle = await res.json();
-      hydrateAdmin(bundle, 'WARP');
-      lastAdminFetchAt = Date.now();
-
-      console.log('✅ TRUE WARP: Admin data preloaded', {
-        users: bundle.users?.length || 0,
-        deletionLogs: bundle.deletionLogs?.length || 0,
-      });
-    } catch (error) {
-      console.error('❌ WARP: Preload failed:', error);
+    // 2. Finance (captain+)
+    if (['captain', 'commodore', 'admiral'].includes(rank)) {
+      await preloadDomain('finance', state.hydrateFinance);
     }
-  };
 
-  // Run when browser is idle to avoid jank
-  if ('requestIdleCallback' in window) {
-    requestIdleCallback(run, { timeout: 2000 });
-  } else {
-    setTimeout(run, 0);
+    // 3. Productivity (all ranks)
+    await preloadDomain('productivity', state.hydrateProductivity);
+
+    // 4. Projects (captain+)
+    if (['captain', 'commodore', 'admiral'].includes(rank)) {
+      await preloadDomain('projects', state.hydrateProjects);
+    }
+
+    // 5. Admin (admiral only)
+    if (rank === 'admiral') {
+      await preloadDomain('admin', state.hydrateAdmin);
+    }
+
+    const duration = Math.round(performance.now() - startTime);
+    console.log(`✅ WARP-O: Preload complete in ${duration}ms`);
+  } catch (error) {
+    console.error('❌ WARP-O: Preload failed:', error);
   }
 }
 
+// ═══════════════════════════════════════════════════════════════════════
+// DOMAIN PRELOAD HELPER
+// ═══════════════════════════════════════════════════════════════════════
+
+type HydrateFn = (data: Record<string, unknown>, source?: ADPSource) => void;
+
+async function preloadDomain(
+  domain: string,
+  hydrateFn: HydrateFn
+): Promise<void> {
+  // Check freshness via module-level TTL tracking
+  const lastFetch = lastFetchAt[domain] || 0;
+  if (Date.now() - lastFetch < FIVE_MIN) {
+    console.log(`🔄 WARP-O: Skipping ${domain} (fresh, ${Math.round((Date.now() - lastFetch) / 1000)}s old)`);
+    return;
+  }
+
+  try {
+    console.log(`🚀 WARP-O: Preloading ${domain}...`);
+    const start = performance.now();
+
+    // eslint-disable-next-line no-restricted-globals
+    const res = await fetch(`/api/warp/${domain}`, {
+      credentials: 'same-origin',
+    });
+
+    if (!res.ok) {
+      console.warn(`⚠️ WARP-O: ${domain} API returned ${res.status}`);
+      return;
+    }
+
+    const bundle = await res.json();
+    hydrateFn(bundle, 'WARP');
+    lastFetchAt[domain] = Date.now();
+
+    const duration = Math.round(performance.now() - start);
+    console.log(`✅ WARP-O: ${domain} preloaded in ${duration}ms`);
+  } catch (error) {
+    console.warn(`⚠️ WARP-O: ${domain} preload failed:`, error);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// TTL REVALIDATION
+// ═══════════════════════════════════════════════════════════════════════
+
 /**
  * Attach TTL revalidation listeners
- * Refreshes data on window focus/online if older than 5 minutes
+ * Refreshes stale domains on window focus/online
  * Returns cleanup function
  */
-export function attachTTLRevalidation(
-  rank: Rank | undefined,
-  hydrateAdmin: (bundle: AdminBundle, source?: 'SSR' | 'WARP' | 'MUTATION') => void
-) {
+export function attachTTLRevalidation(): () => void {
   async function maybeRevalidate() {
-    if (rank?.toLowerCase() !== 'admiral') return;
+    const state = useFuse.getState();
+    const rank = state.rank?.toLowerCase() as Rank | undefined;
 
-    const now = Date.now();
-    if (now - lastAdminFetchAt < FIVE_MIN) return;
+    if (!rank) return;
 
-    try {
-      console.log('🔄 WARP: TTL expired, revalidating...');
+    console.log('🔄 WARP-O: Checking TTL on focus/online...');
 
-      // eslint-disable-next-line no-restricted-globals
-      const res = await fetch('/api/warp/admin', {
-        credentials: 'same-origin'
-      });
+    // Check each domain's freshness and revalidate if stale
+    const domains = ['clients', 'productivity'];
 
-      if (!res.ok) return;
+    if (['captain', 'commodore', 'admiral'].includes(rank)) {
+      domains.push('finance', 'projects');
+    }
 
-      const bundle = await res.json();
-      hydrateAdmin(bundle, 'WARP');
-      lastAdminFetchAt = Date.now();
+    if (rank === 'admiral') {
+      domains.push('admin');
+    }
 
-      console.log('✅ WARP: Data revalidated');
-    } catch (error) {
-      console.warn('⚠️ WARP: Revalidation failed:', error);
+    for (const domain of domains) {
+      const lastFetch = lastFetchAt[domain] || 0;
+      if (Date.now() - lastFetch > FIVE_MIN) {
+        // Get hydrate function by domain name
+        const hydrateKey = `hydrate${domain.charAt(0).toUpperCase() + domain.slice(1)}` as keyof typeof state;
+        const hydrateFn = state[hydrateKey] as HydrateFn | undefined;
+        if (hydrateFn) {
+          await preloadDomain(domain, hydrateFn);
+        }
+      }
     }
   }
 
   window.addEventListener('focus', maybeRevalidate);
   window.addEventListener('online', maybeRevalidate);
 
-  // Return cleanup function
   return () => {
     window.removeEventListener('focus', maybeRevalidate);
     window.removeEventListener('online', maybeRevalidate);
   };
 }
 
+// ═══════════════════════════════════════════════════════════════════════
+// RESET TTL (for sign-out)
+// ═══════════════════════════════════════════════════════════════════════
+
 /**
- * Reset WARP TTL on sign-out
+ * Reset all WARP TTLs on sign-out
  * Ensures fresh fetch on next login
  */
-export function resetWarpTTL() {
-  lastAdminFetchAt = 0;
+export function resetWarpTTL(): void {
+  Object.keys(lastFetchAt).forEach((key) => {
+    lastFetchAt[key] = 0;
+  });
+  console.log('🔱 WARP-O: TTL reset');
 }
