@@ -16,23 +16,18 @@
 
 'use client';
 
-import { useEffect, useLayoutEffect, useRef, useCallback } from 'react';
+import { useLayoutEffect, useRef, useCallback } from 'react';
 import { useFuse } from '@/store/fuse';
 import { getCookie, decodeFuseCookie } from './session/cookieClient';
-import { startBackgroundWARP } from '@/fuse/warp/orchestrator';
-// import { systemTiming } from '@/features/UserSetup/FlyingButton/config'; // Unused - for future polling
+// WARP is now called from FuseApp.tsx - no longer needed here
 
 export function ClientHydrator() {
   const setUser = useFuse((state) => state.setUser);
   const hydrateThemeMode = useFuse((state) => state.hydrateThemeMode);
   const hydrateThemeName = useFuse((state) => state.hydrateThemeName);
-  const rank = useFuse((state) => state.rank);
-  const hydrateAdmin = useFuse((state) => state.hydrateAdmin);
   const hydrateDashboard = useFuse((state) => state.hydrateDashboard);
   const setAISidebarState = useFuse((state) => state.setAISidebarState);
 
-  // TRUE WARP: Track if background preload has run
-  const warpBooted = useRef(false);
   const hasHydrated = useRef(false);
 
   // 🚀 SYNCHRONOUS HYDRATION: Read cookie and hydrate store BEFORE paint
@@ -160,24 +155,8 @@ export function ClientHydrator() {
   //   return () => clearInterval(interval);
   // }, [setUser, hydrateThemeMode, hydrateThemeName, hydrateFromCookie]);
 
-  // 🚀 TRUE WARP: Background preload orchestration
-  // Non-blocking admin data preload - orchestrator handles rank filtering internally
-  // SMAC-compliant: No runtime rank checks in component (rank logic is in orchestrator)
-  useEffect(() => {
-    // Skip if already booted
-    if (warpBooted.current) return;
-
-    warpBooted.current = true;
-
-    // Create getter for admin state (for freshness check)
-    const getAdminState = () => {
-      const state = useFuse.getState();
-      return state.admin;
-    };
-
-    // Start background WARP - orchestrator will check rank internally
-    startBackgroundWARP(rank, hydrateAdmin, getAdminState);
-  }, [rank, hydrateAdmin]);
+  // 🚀 WARP is now called from FuseApp.tsx via requestIdleCallback
+  // This centralizes all preloading in one place (the Sovereign Runtime)
 
   return null;
 }

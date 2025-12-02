@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  👤 USER BUTTON - Avatar + Dropdown Menu                              │
-│  /src/components/features/UserButton.tsx                              │
+│  /src/features/UserButton/index.tsx                                   │
 │                                                                        │
 │  Complete user profile management with avatar upload/crop.             │
 │  Pure CSS styling with FUSE-STYLE architecture.                        │
@@ -21,7 +21,6 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { useMutation, useConvex } from "convex/react";
 import { useAuth } from "@clerk/nextjs";
 import Cropper from "react-easy-crop";
@@ -35,8 +34,8 @@ import ThemeToggle from '@/features/ThemeToggle';
 
 export default function UserButton() {
   const user = useFuse((s) => s.user);
+  const navigate = useFuse((s) => s.navigate);
   const { signOut } = useAuth();
-  const router = useRouter();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl.generateUploadUrl);
@@ -413,7 +412,7 @@ export default function UserButton() {
             <div className="ft-userbutton-menu-item-wrapper">
               <button
                 onClick={() => {
-                  router.push('/settings/account');
+                  navigate('settings/account');
                   closeAllModals();
                 }}
                 className="ft-userbutton-menu-item"
@@ -426,7 +425,7 @@ export default function UserButton() {
             <div className="ft-userbutton-menu-item-wrapper">
               <button
                 onClick={() => {
-                  router.push('/settings/preferences');
+                  navigate('settings/preferences');
                   closeAllModals();
                 }}
                 className="ft-userbutton-menu-item"

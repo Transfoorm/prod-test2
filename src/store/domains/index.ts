@@ -100,3 +100,17 @@ export {
   type SystemData,
   type SystemStore,
 } from './system';
+
+// 🔱 SOVEREIGN ROUTER - Navigation domain
+export {
+  createNavigationActions,
+  initialNavigationState,
+  getDomainFromRoute,
+  getPageFromRoute,
+  isRouteInDomain,
+  urlPathToRoute,
+  type NavigationSlice,
+  type NavigationActions,
+  type NavigationData,
+  type DomainRoute,
+} from './navigation';

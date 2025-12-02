@@ -14,7 +14,6 @@
 "use client";
 
 import { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import { Building2, ChevronsUpDown, Edit, PackageOpen, ImageUp } from 'lucide-react';
 import BrandLogoButton from '@/features/BrandLogoButton';
 import CountrySelector from '@/features/CountrySelector';
@@ -23,8 +22,8 @@ import { Icon } from '@/prebuilts';
 import { formatSubscriptionStatus, type SubscriptionStatus } from '@/fuse/constants/ranks';
 
 export default function CompanyButton() {
-  const router = useRouter();
   const user = useFuse((s) => s.user);
+  const navigate = useFuse((s) => s.navigate);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showCountrySelector, setShowCountrySelector] = useState(false);
   const businessLocationButtonRef = useRef<HTMLButtonElement>(null);
@@ -92,7 +91,7 @@ export default function CompanyButton() {
                 <button
                   className="ft-company-button-menu-item"
                   onClick={() => {
-                    router.push('/settings/account');
+                    navigate('settings/account');
                     closeMenu();
                   }}
                 >
@@ -141,7 +140,7 @@ export default function CompanyButton() {
                 <button
                   className="ft-company-button-menu-item"
                   onClick={() => {
-                    router.push('/settings/plan');
+                    navigate('settings/plan');
                     closeMenu();
                   }}
                 >
@@ -156,7 +155,7 @@ export default function CompanyButton() {
                 <button
                   className="ft-company-button-menu-link"
                   onClick={() => {
-                    router.push('/settings/account');
+                    navigate('settings/account');
                     closeMenu();
                   }}
                 >

@@ -80,7 +80,7 @@ export const ROUTES = {
     booking: '/productivity/booking' as const,
     calendar: '/productivity/calendar' as const,
     email: '/productivity/email' as const,
-    meeting: '/productivity/meeting' as const,
+    meetings: '/productivity/meetings' as const,
   },
 } as const;
 

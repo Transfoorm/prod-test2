@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🤖 VARIANT ROBOT - Tabs with Content                                  │
-│  /src/components/prebuilts/tabs/withContent/index.tsx                  │
+│  /src/prebuilts/tabs/WithContent.tsx                                   │
 │                                                                        │
 │  TRUE VR: Tabs that handle EVERYTHING - navigation, URL, content.      │
 │  The page just declares, the VR handles all complexity.                │
@@ -19,7 +19,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 export interface TabWithContent {
   id: string;
@@ -58,7 +58,6 @@ export default function TabsWithContent({
   contentClassName = 'tab-content'
 }: TabsWithContentProps) {
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   // Get valid tab IDs for validation
   const validTabIds = tabs.map(tab => tab.id);
@@ -99,10 +98,11 @@ export default function TabsWithContent({
     }
 
     const newUrl = newSearchParams.toString()
-      ? `?${newSearchParams.toString()}`
+      ? `${window.location.pathname}?${newSearchParams.toString()}`
       : window.location.pathname;
 
-    router.push(newUrl, { scroll: false });
+    // Use pushState directly - no App Router involvement for query param changes
+    window.history.pushState({}, '', newUrl);
   };
 
   // Find the active tab's content

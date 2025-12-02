@@ -13,6 +13,17 @@ const isPublicRoute = createRouteMatcher([
   '/api/webhooks/(.*)'
 ])
 
+// SOVEREIGN ROUTER: Domain routes that should render via FuseApp
+const isDomainRoute = createRouteMatcher([
+  '/admin(.*)',
+  '/clients(.*)',
+  '/finance(.*)',
+  '/productivity(.*)',
+  '/projects(.*)',
+  '/settings(.*)',
+  '/system(.*)'
+])
+
 // Define admin realm routes
 const isAdminRoute = createRouteMatcher([
   '/admin(.*)'
@@ -73,8 +84,13 @@ export default clerkMiddleware(async (auth, req) => {
       }
     }
 
+    // SOVEREIGN ROUTER: Rewrite domain routes to root (/) so FuseApp handles them
+    // URL in browser stays as /admin/users but Next.js renders /page.tsx
+    const res = isDomainRoute(req)
+      ? NextResponse.rewrite(new URL('/', req.url))
+      : NextResponse.next()
+
     // Stamp headers for RSC consumption
-    const res = NextResponse.next()
     res.headers.set('x-effective-rank', effectiveRank)
     res.headers.set('x-actual-rank', actualRank)
     res.headers.set('x-org-id', orgId)
@@ -85,7 +101,10 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   // For public routes, still set default theme headers
-  const res = NextResponse.next()
+  // SOVEREIGN ROUTER: Rewrite domain routes to root (/) so FuseApp handles them
+  const res = isDomainRoute(req)
+    ? NextResponse.rewrite(new URL('/', req.url))
+    : NextResponse.next()
   res.headers.set('x-theme-name', session?.themeName || 'transtheme')
   res.headers.set('x-theme-mode', session?.themeMode || 'light')
   res.headers.set('Vary', 'Cookie')

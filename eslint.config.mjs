@@ -2,10 +2,8 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
 import customRules from "./eslint-custom-rules/class-prefix.js";
-import smacRoutes from "./eslint-custom-rules/smac-routes.js";
 import noComponentCss from "./eslint-custom-rules/no-component-css.js";
 import noUseStateForData from "./eslint-custom-rules/no-usestate-for-data.js";
-import noRuntimeRankChecks from "./eslint-custom-rules/no-runtime-rank-checks.js";
 import noHardcodedSecrets from "./eslint-custom-rules/no-hardcoded-secrets.js";
 import tttsRules from "./eslint-custom-rules/ttts/index.js";
 
@@ -35,10 +33,8 @@ const eslintConfig = [
   {
     plugins: {
       "class-prefix": customRules,
-      "smac-routes": smacRoutes,
       "no-component-css": noComponentCss,
       "no-usestate-for-data": noUseStateForData,
-      "no-runtime-rank-checks": noRuntimeRankChecks,
       "no-hardcoded-secrets": noHardcodedSecrets,
       "ttts": tttsRules,
     },
@@ -55,10 +51,6 @@ const eslintConfig = [
       // ═══════════════════════════════════════════════════════════
       // VRP LAYER 2: SUPERIOR DOCTRINE ENFORCEMENT (from transfoormv2)
       // ═══════════════════════════════════════════════════════════
-
-      // SMAC ARCHITECTURE ENFORCEMENT
-      "smac-routes/enforce-smac-routes": "error",
-      "no-runtime-rank-checks/no-runtime-rank-checks": "error",
 
       // FUSE DOCTRINE ENFORCEMENT
       "no-usestate-for-data/no-usestate-for-data": "error",
@@ -257,86 +249,6 @@ const eslintConfig = [
     rules: {
       "react/forbid-dom-props": "off", // Allow inline styles in these exception files
     },
-  },
-  // ═══════════════════════════════════════════════════════════════════
-  // 🛡️ SMAC LAYER 2 - ARCHITECTURAL ENFORCEMENT
-  // ═══════════════════════════════════════════════════════════════════
-  // Enforce SMAC (Static Manifest Access Control) architecture
-  {
-    files: ["src/app/domain/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}"],
-    rules: {
-      // SMAC Rule 1: No rank-based branching in routes/components
-      "no-restricted-syntax": [
-        "error",
-        {
-          selector: "IfStatement > BinaryExpression[left.name='rank']",
-          message: "⛔ SMAC VIOLATION: No rank branching in routes. Edge gate handles authorization. Routes must be rank-agnostic."
-        },
-        {
-          selector: "ConditionalExpression[test.left.name='rank']",
-          message: "⛔ SMAC VIOLATION: No rank ternaries in components. Use data-driven rendering, not rank-driven logic."
-        },
-        {
-          selector: "SwitchStatement > SwitchCase[test.right.value=/captain|crew|commodore|admiral/]",
-          message: "⛔ SMAC VIOLATION: No rank switch statements. Manifests control access, not component logic."
-        }
-      ]
-    }
-  },
-  // SMAC Rule 2: No cookies() in React Server Components (RSC only)
-  {
-    files: ["src/app/**/*.{ts,tsx}", "src/domains/**/*.{ts,tsx}"],
-    ignores: ["src/app/actions/**", "src/app/api/**"], // Server actions need cookies() to write
-    rules: {
-      "no-restricted-imports": [
-        "error",
-        {
-          paths: [
-            {
-              name: "next/headers",
-              importNames: ["cookies"],
-              message: "⛔ SMAC VIOLATION: Use headers() or getSession(), not cookies() in RSC. Middleware sets x-effective-rank header."
-            }
-          ]
-        }
-      ]
-    }
-  },
-  // ═══════════════════════════════════════════════════════════════════
-  // 🛡️ SMAC PERFORMANCE - PREVENT ANTIPATTERNS
-  // ═══════════════════════════════════════════════════════════════════
-  // Enforce SMAC performance optimizations (static shells, no blocking fetches)
-  // SMAC Rule 3: No fetchUserServer in layouts (prevents 200-400ms blocking)
-  {
-    files: ["src/app/**/layout.tsx"],
-    rules: {
-      "no-restricted-imports": [
-        "error",
-        {
-          patterns: [
-            {
-              group: ["**/fetchUser*", "@/fuse/store/server/fetchUser"],
-              message: "⛔ PERFORMANCE VIOLATION: No fetchUserServer in layouts. Use <ClientHydrator /> for client-side hydration. Layouts must be static shells (SEP Sprint 1)."
-            }
-          ]
-        }
-      ]
-    }
-  },
-  // SMAC Rule 4: Warn about force-dynamic in routes with client-side data
-  // Note: Full validation requires checking both 'use client' + force-dynamic, which needs custom plugin
-  // This rule catches the export declaration itself as a warning signal
-  {
-    files: ["src/app/domain/**/*.tsx"],
-    rules: {
-      "no-restricted-syntax": [
-        "warn",
-        {
-          selector: "ExportNamedDeclaration[declaration.declarations.0.id.name='dynamic'][declaration.declarations.0.init.value='force-dynamic']",
-          message: "⚠️  PERFORMANCE WARNING: force-dynamic may be unnecessary. If page uses client-side useQuery, remove force-dynamic for static shell + client hydration (SEP Sprint 1)."
-        }
-      ]
-    }
   },
 ];
 
