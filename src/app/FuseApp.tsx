@@ -42,7 +42,7 @@ import { ProductivityProvider } from '@/providers/ProductivityProvider';
 import { ProjectsProvider } from '@/providers/ProjectsProvider';
 
 // Layout CSS
-import '@/app/(domains)/domains-layout.css';
+import '@/app/domains/domains-layout.css';
 
 // ═══════════════════════════════════════════════════════════════════════
 // CONFIGURATION

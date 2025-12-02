@@ -5,7 +5,7 @@
 
 /*  APP LAYOUT FILES (Root, Domain, Auth) */
 @import url('../src/app/root-layout.css');
-@import url('../src/app/(domains)/domains-layout.css');
+@import url('../src/app/domains/domains-layout.css');
 @import url('../src/app/(auth)/auth.css');
 
 /* ═══════════════════════════════════════════════════════════════════
