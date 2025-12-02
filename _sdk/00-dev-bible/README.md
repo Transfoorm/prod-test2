@@ -664,7 +664,7 @@ v1/                         # Project root
 ├── styles/                # Global CSS (FUSE-STYLE)
 ├── vanish/                # VANISH Protocol (deletion)
 ├── scripts/               # Build/dev scripts
-└── eslint-custom-rules/   # Custom ESLint rules
+└── eslint/                # Custom ESLint rules
 ```
 
 ---

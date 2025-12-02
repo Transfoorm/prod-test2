@@ -69,6 +69,8 @@ Total time: **0.4ms**
 
 ## Files
 
+- [BLUEPRINT.md](./BLUEPRINT.md) - Sovereign Router Blueprint (the philosophy)
+- [IMPLEMENTATION-KIT.md](./IMPLEMENTATION-KIT.md) - Step-by-step implementation guide
 - [route-state.md](./route-state.md) - The `sovereign.route` atom
 - [navigate.md](./navigate.md) - The `navigate()` function
 - [router-view.md](./router-view.md) - How Router.tsx works
