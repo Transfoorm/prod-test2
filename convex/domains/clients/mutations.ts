@@ -1,5 +1,5 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔌 CLIENT DOMAIN MUTATIONS - SMAC Layer 4                             │
+│  🔌 CLIENT DOMAIN MUTATIONS - SRS Layer 4                             │
 │  /convex/domains/clients/mutations.ts                                  │
 │                                                                        │
 │  Client CRUD operations with rank-based authorization:                 │
@@ -8,7 +8,7 @@
 │  • Delete: Captain/Commodore/Admiral only (org-scoped)                 │
 │  • Crew: Cannot create/update/delete (read-only access)                │
 │                                                                        │
-│  SMAC Commandment #4: Data scoping via Convex mutations                │
+│  SRS Commandment #4: Data scoping via Convex mutations                │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { mutation } from "@/convex/_generated/server";

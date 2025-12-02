@@ -1,17 +1,17 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  📋 SMAC MANIFEST AGGREGATOR - Master Access Control                  │
+│  📋 SRS MANIFEST AGGREGATOR - Master Access Control                  │
 │  /src/rank/manifest.ts                                                │
 │                                                                        │
 │  Central manifest registry + helper functions.                        │
 │  Single source of truth for all rank-based access control.            │
 │                                                                        │
-│  SMAC Layer 2: Compile-Time Truth                                     │
+│  SRS Layer 2: Compile-Time Truth                                     │
 │  • Aggregates all four rank manifests                                 │
 │  • Provides access validation helpers                                 │
 │  • Used by Edge Gate (middleware.ts)                                  │
 │  • Used by Navigation builders                                        │
 │                                                                        │
-│  SMAC Commandment #2: One Source of Truth                             │
+│  SRS Commandment #2: One Source of Truth                             │
 │  References: TTT~BLUEPRINT-#3-UNIFIED-MASTER.md §Manifest             │
 └────────────────────────────────────────────────────────────────────────┘ */
 

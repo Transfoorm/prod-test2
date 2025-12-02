@@ -1,11 +1,11 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔌 PROJECTS DOMAIN API - SMAC Layer 4                                 │
+│  🔌 PROJECTS DOMAIN API - SRS Layer 4                                 │
 │  /convex/domains/projects/api.ts                                       │
 │                                                                        │
 │  Central export point for project domain Convex functions.             │
 │  Aggregates queries and mutations for project management.              │
 │                                                                        │
-│  SMAC Commandment #4: Data scoping via Convex (rank-based filtering)   │
+│  SRS Commandment #4: Data scoping via Convex (rank-based filtering)   │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 // Export queries

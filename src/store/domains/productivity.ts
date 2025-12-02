@@ -4,7 +4,7 @@
  * ══════════════════════════════════════════════════════════════════════════════
  *
  * Handles: email, calendar, meetings, bookings, tasks
- * Route: /(domains)/productivity/*
+ * Route: /app/domains/productivity/*
  * Backend: /convex/domains/productivity/
  *
  * ADP/PRISM Compliant: Full coordination fields for WARP preloading

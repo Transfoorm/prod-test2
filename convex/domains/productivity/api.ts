@@ -1,11 +1,11 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔌 PRODUCTIVITY DOMAIN API - SMAC Layer 4                             │
+│  🔌 PRODUCTIVITY DOMAIN API - SRS Layer 4                             │
 │  /convex/domains/productivity/api.ts                                   │
 │                                                                        │
 │  Central export point for productivity domain Convex functions.        │
 │  Aggregates queries and mutations for productivity tools.              │
 │                                                                        │
-│  SMAC Commandment #4: Data scoping via Convex (rank-based filtering)   │
+│  SRS Commandment #4: Data scoping via Convex (rank-based filtering)   │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 // Export queries

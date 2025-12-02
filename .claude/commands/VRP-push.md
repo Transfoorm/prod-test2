@@ -130,8 +130,15 @@ With Tenacious Ten changes:
 3. Push feature branch: `git push origin feature/your-change`
 4. Create PR on GitHub (feature → main)
 5. Wait for Ken's approval
-6. Merge PR (this is how your code reaches main)
-7. Delete feature branch
+6. **Admin Override Merge** (required for protected branch):
+   ```bash
+   gh pr merge <PR#> --squash --admin
+   ```
+   - Even with approval, GitHub blocks merge to protected `main` branch
+   - The `--admin` flag allows owner to override branch protection
+   - This is intentional: ensures owner explicitly authorizes merge
+7. Pull merged changes: `git checkout main && git pull`
+8. Delete feature branch: `git branch -d feature/your-change && git push origin --delete feature/your-change`
 
 **There is NO bypass. Server-side enforcement.**
 

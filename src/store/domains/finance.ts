@@ -4,7 +4,7 @@
  * ══════════════════════════════════════════════════════════════════════════════
  *
  * Handles: banking, invoicing, expenses, payroll, accounting
- * Route: /(domains)/finance/*
+ * Route: /app/domains/finance/*
  * Backend: /convex/domains/finance/
  * Access: Captain+ (org-scoped)
  *

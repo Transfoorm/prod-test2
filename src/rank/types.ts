@@ -1,11 +1,11 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🏛️ SMAC TYPE SYSTEM                                                  │
+│  🏛️ SRS TYPE SYSTEM                                                  │
 │  /src/rank/types.ts                                                   │
 │                                                                        │
 │  Core type definitions for Static Manifest Access Control.            │
-│  These types are the foundation of the SMAC architecture.             │
+│  These types are the foundation of the SRS architecture.             │
 │                                                                        │
-│  SMAC Layer 2: Compile-Time Truth                                     │
+│  SRS Layer 2: Compile-Time Truth                                     │
 │  • UserRank: The four hierarchical levels                             │
 │  • DomainRoute: Type-safe route paths                                 │
 │  • NavItem: Navigation menu structure                                 │

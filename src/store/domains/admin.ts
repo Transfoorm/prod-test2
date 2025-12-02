@@ -4,7 +4,7 @@
  * ══════════════════════════════════════════════════════════════════════════════
  *
  * Handles: user management, deletion logs, admin operations
- * Route: /(domains)/admin/*
+ * Route: /app/domains/admin/*
  * Backend: /convex/domains/admin/
  * Access: Admiral only
  *

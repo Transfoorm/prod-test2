@@ -441,68 +441,53 @@ client_team_Members     // Clients → Teams → Members
 
 ---
 
-# PART 11: SMAC ARCHITECTURE
+# PART 11: SRS ARCHITECTURE
 
-## Static Manifest Access Control
+## Sovereign Router System
 
-Four-layer authorization system:
+Two-layer authorization for Sovereign Router:
 
-### Layer 1: Route Manifests
+### Layer 1: Rank Manifests
 
-```json
-// /src/app/(domains)/finance/manifest.json
-{
-  "domain": "finance",
-  "minRank": "captain",
-  "features": ["invoices", "transactions"]
-}
-```
-
-### Layer 2: Middleware Guards
+Compile-time allowlists per rank (not per route):
 
 ```typescript
-// middleware.ts
-export function middleware(request: NextRequest) {
-  const rank = getUserRank(request);
-  const manifest = getRouteManifest(request.pathname);
-
-  if (!hasAccess(rank, manifest.minRank)) {
-    return NextResponse.redirect('/unauthorized');
-  }
-}
+// src/rank/admiral/manifest.ts
+export const ADMIRAL_MANIFEST: RankManifest = {
+  id: 'admiral',
+  home: '/admin/users',
+  allowed: ['/admin/users', '/admin/plans', '/settings/account'],
+  nav: [{ path: '/admin/users', label: 'Users', icon: 'users' }],
+};
 ```
 
-### Layer 3: Component Guards
+**Note:** Manifests define what to SHOW (navigation), not what to PROTECT.
+With Sovereign Router, middleware only runs on initial load - `navigate()` bypasses it.
 
-```tsx
-// RankGuard.tsx
-export function RankGuard({ minRank, children }) {
-  const userRank = useFuse(state => state.session.rank);
-
-  if (!hasMinRank(userRank, minRank)) {
-    return null;
-  }
-
-  return <>{children}</>;
-}
-```
-
-### Layer 4: Query Scoping
+### Layer 2: Convex Data Scoping (THE Security Layer)
 
 ```typescript
-// Convex query
+// Convex query - THIS IS THE REAL SECURITY
 export const getClients = query({
   handler: async (ctx) => {
     const user = await getCurrentUser(ctx);
 
-    // Data automatically scoped by rank
-    return ctx.db
-      .query("clients")
-      .filter(q => q.eq(q.field("businessId"), user.businessId))
-      .collect();
+    // Rank-based scoping - can't bypass client-side
+    switch (user.rank) {
+      case 'crew':
+        return ctx.db.query("clients")
+          .filter(q => q.eq(q.field("assignedTo"), user._id));
+      case 'admiral':
+        return ctx.db.query("clients");
+      default:
+        return ctx.db.query("clients")
+          .filter(q => q.eq(q.field("orgId"), user.orgId));
+    }
   }
 });
 ```
+
+**Key insight:** Security is in Convex, not middleware. Even if someone hacks the URL, they get no data.
 
 ---
 
@@ -744,7 +729,7 @@ docs/
 ├── 06-warp-orchestrator/       # WARP preloading + PRISM synergy
 ├── 07-convex-sync/             # Convex mutations and queries
 ├── 08-architecture/            # System architecture overview
-├── 09-protocols/               # ADP, VRP, SMAC protocols
+├── 09-protocols/               # ADP, VRP, SRS protocols
 ├── 10-philosophy/              # TTT philosophy
 └── 11-conventions/             # Naming and component standards
 ```

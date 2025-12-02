@@ -72,7 +72,7 @@ if git diff --cached --name-only | grep -qE "^($PROTECTED_FILES)"; then
   fi
 fi
 
-# Run critical VRP scripts (manifest validation skipped - legacy routes not yet in SMAC manifests)
+# Run critical VRP scripts (manifest validation skipped - legacy routes not yet in SRS manifests)
 npm run vrp:isv || exit 1
 npm run vrp:naming || exit 1
 

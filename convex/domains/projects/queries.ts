@@ -1,5 +1,5 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔌 PROJECT DOMAIN QUERIES - SMAC Layer 4                              │
+│  🔌 PROJECT DOMAIN QUERIES - SRS Layer 4                              │
 │  /convex/domains/projects/queries.ts                                   │
 │                                                                        │
 │  Rank-based data scoping for project management:                       │
@@ -8,7 +8,7 @@
 │  • Commodore: Organization-scoped projects                             │
 │  • Admiral: All projects (cross-org, platform-wide)                    │
 │                                                                        │
-│  SMAC Commandment #4: Data scoping via Convex query filters            │
+│  SRS Commandment #4: Data scoping via Convex query filters            │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { query } from "@/convex/_generated/server";
@@ -35,7 +35,7 @@ async function getCurrentUserWithRank(ctx: QueryCtx) {
 /**
  * List projects with rank-based scoping
  *
- * SMAC Layer 4: Data Scoping
+ * SRS Layer 4: Data Scoping
  * - Crew: Only assigned projects
  * - Captain/Commodore: Organization-scoped
  * - Admiral: All projects (cross-org)
@@ -72,7 +72,7 @@ export const listProjects = query({
 /**
  * Get single project by ID with rank-based authorization
  *
- * SMAC Layer 4: Data Scoping
+ * SRS Layer 4: Data Scoping
  * - Validates user has access to this specific project
  */
 export const getProject = query({

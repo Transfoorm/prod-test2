@@ -1,5 +1,5 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔌 PRODUCTIVITY DOMAIN MUTATIONS - SMAC Layer 4                       │
+│  🔌 PRODUCTIVITY DOMAIN MUTATIONS - SRS Layer 4                       │
 │  /convex/domains/productivity/mutations.ts                             │
 │                                                                        │
 │  Productivity domain CRUD with rank-based authorization:               │
@@ -8,7 +8,7 @@
 │  • Delete: Captain/Commodore/Admiral only (org-scoped)                 │
 │  • Crew: Organization-scoped access (can create/update their org)      │
 │                                                                        │
-│  SMAC Commandment #4: Data scoping via Convex mutations                │
+│  SRS Commandment #4: Data scoping via Convex mutations                │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { mutation } from "@/convex/_generated/server";

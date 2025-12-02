@@ -1,5 +1,5 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔌 FINANCE DOMAIN MUTATIONS - SMAC Layer 4                            │
+│  🔌 FINANCE DOMAIN MUTATIONS - SRS Layer 4                            │
 │  /convex/domains/finance/mutations.ts                                  │
 │                                                                        │
 │  Financial transaction CRUD with rank-based authorization:             │
@@ -8,7 +8,7 @@
 │  • Delete: Captain/Commodore/Admiral only (org-scoped)                 │
 │  • Crew: Read-only access (cannot create/update/delete)                │
 │                                                                        │
-│  SMAC Commandment #4: Data scoping via Convex mutations                │
+│  SRS Commandment #4: Data scoping via Convex mutations                │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { mutation } from "@/convex/_generated/server";

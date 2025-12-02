@@ -85,7 +85,7 @@ Read and internalize ALL SDK documentation:
 ├── 10-ADVANCED-PATTERNS.md               ← Optimistic updates, error handling
 ├── 11-DEPLOYMENT-SCALING.md              ← Vercel, Convex, 100K scaling
 ├── 12-VIRGIN-REPO-PROTOCOL.md            ← VRP enforcement (7 layers), Ground Zero
-├── 13-SMAC-ARCHITECTURE.md               ← 4-layer authorization, manifests
+├── 13-SRS-ARCHITECTURE.md                ← 2-layer authorization (manifests + Convex)
 ├── 14-DATABASE-NAMING-CONVENTION.md      ← [domain]_[area]_[Entity] pattern
 └── 15-TTT-SUPPLEMENT.md                  ← TTT philosophy, 7 tests, God Protocol
 ```
@@ -182,7 +182,7 @@ Then declare:
 ═══════════════════════════════════════════════════════════
 
 Doctrine Loaded: ✅
-  - 16 SDK documents internalized (FUSE + VRP + TTT + SMAC + ADP)
+  - 16 SDK documents internalized (FUSE + VRP + TTT + SRS + ADP)
   - 7 VRP layers mapped
   - 70-point compliance tree built
   - TTT God Protocol engaged

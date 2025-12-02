@@ -300,7 +300,7 @@ When working with FUSE:
 
 ### Adding Server-Side Fetch
 1. Add function to `/src/fuse/hydration/server/fetchUser.ts`
-2. Call in layout (`app/layout.tsx`, `app/(domains)/layout.tsx`)
+2. Call in layout (`app/layout.tsx`, `app/layout.tsx`)
 3. Embed in cookie via `setCookie()`
 
 ### Adding Framework Constants

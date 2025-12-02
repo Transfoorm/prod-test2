@@ -1,16 +1,20 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  ✅ SMAC MANIFEST VALIDATOR - Build-Time Enforcement                  │
+│  ✅ SRS MANIFEST VALIDATOR - Build-Time Enforcement                   │
 │  /scripts/validateManifest.ts                                         │
 │                                                                        │
-│  Validates that every route in manifests actually exists in codebase. │
+│  Validates that every route in rank manifests exists in codebase.     │
 │  Runs during prebuild to catch manifest drift before deployment.      │
 │                                                                        │
-│  SMAC Layer 2: Compile-Time Validation                                │
-│  • Every allowed path must have a page.tsx file                       │
+│  SRS Layer 1: Compile-Time Validation                                 │
+│  • Every allowed path must have a domain view or page file            │
 │  • Every home path must be in allowed list                            │
 │  • Fails build if validation errors found                             │
 │                                                                        │
-│  References: TTT~BLUEPRINT-#3-UNIFIED-MASTER.md §Validation           │
+│  Note: With Sovereign Router, "routes" are domain VIEWS rendered      │
+│  by FuseApp, not Next.js file-based routes. Middleware only runs      │
+│  on initial load - navigate() bypasses it entirely.                   │
+│                                                                        │
+│  References: SRS-ARCHITECTURE.md                                      │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import fs from 'node:fs';
@@ -42,7 +46,7 @@ function routeExists(routePath: string): boolean {
  * Main validation
  */
 function validateManifests(): void {
-  console.log('🔍 Validating SMAC manifests...\n');
+  console.log('🔍 Validating SRS rank manifests...\n');
 
   let errors = 0;
 

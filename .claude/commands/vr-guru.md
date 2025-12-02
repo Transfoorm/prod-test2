@@ -59,7 +59,7 @@ Variables → Base Classes → Variants
 ### 7. **If You Need CSS, You're Wrong**
 Pages using VRs correctly need **ZERO CSS files.**
 
-### 8. **VRs Are Rank-Blind (SMAC Integration)**
+### 8. **VRs Are Rank-Blind (SRS Integration)**
 VRs receive data, not context. Never check rank in VRs or handlers.
 
 ```tsx
@@ -80,7 +80,7 @@ VRs receive data, not context. Never check rank in VRs or handlers.
 }
 ```
 
-**Why:** SMAC handles authorization and data scoping. VRs handle rendering. Pages wire behavior.
+**Why:** SRS handles authorization via Convex data scoping. VRs handle rendering. Pages wire behavior.
 
 ---
 
@@ -104,7 +104,7 @@ When reviewing code, **instantly spot violations:**
 
 4. **Rank Checks in Routes/Handlers**
    - Flag: `if (rank === ...)` in VR components or page handlers
-   - Fix: Remove rank branching, rely on SMAC data scoping
+   - Fix: Remove rank branching, rely on SRS data scoping (Convex queries)
 
 5. **Incomplete VRs**
    - Flag: VRs that only render without props for behavior
@@ -202,19 +202,22 @@ export default function UsersTab() {
 
 ---
 
-## 🔗 SMAC + VR INTEGRATION
+## 🔗 SRS + VR INTEGRATION
 
-**The Stack:**
+**The Stack (Sovereign Router):**
 ```
-SMAC Layer (Architecture)
-  ↓ Middleware: Edge gate checks rank + manifest
-  ↓ Routes: Domains-as-routes (rank-agnostic)
-  ↓ Data: Convex scopes by effectiveRank + orgId
+Sovereign Router (Client-Side Navigation)
+  ↓ FuseApp mounts ONCE, never unmounts
+  ↓ navigate() switches domain views
+  ↓ Middleware only runs on initial load
 
-FUSE Layer (Data Flow)
-  ↓ WARP: Server preloads domain data
-  ↓ Providers: Hydrate with initialData
-  ↓ Bridges: Hooks expose { data, computed, actions }
+SRS Layer 1 (Rank Manifests)
+  ↓ Compile-time allowlists per rank
+  ↓ Navigation shows/hides based on manifest
+
+SRS Layer 2 (Convex Data Scoping)
+  ↓ Queries filter by rank - THE security layer
+  ↓ VRs receive already-scoped data
 
 VR Layer (UI Rendering)
   ↓ VRs: Self-contained prebuilt components
@@ -222,15 +225,18 @@ VR Layer (UI Rendering)
   ↓ NO classNames, NO external styling, NO rank checks
 ```
 
-### Perfect SMAC + VR Page
+### Perfect SRS + VR Domain View
 ```tsx
-export const dynamic = 'force-dynamic';  // ← SMAC requirement
+'use client';
 
-export default async function Page() {
-  const { people } = await fetchClientsData();  // ← SMAC-scoped data
-  return <PeopleList clients={people} />;       // ← VR renders
+import { useFuse } from '@/store/fuse';
+
+export default function PeopleView() {
+  const clients = useFuse(s => s.clients);  // ← Already rank-scoped by Convex
+  return <PeopleList clients={clients} />;  // ← VR renders
 }
 // NO CSS FILE. NO classNames. 100% rank-agnostic.
+// Data scoping happened in Convex, not here.
 ```
 
 ---
@@ -250,7 +256,7 @@ export default async function Page() {
 ### Level 3: Architectural Guidance
 - Suggest new VR variants when needed
 - Guide proper prop design
-- Enforce SMAC + VR separation
+- Enforce SRS + VR separation
 
 ### Level 4: Zero Tolerance
 - **Instant pattern recognition**
@@ -267,8 +273,8 @@ export default async function Page() {
 - If adding classNames to VRs → **FAILING**
 - If VRs don't work immediately → **NOT VRs**
 - If wrapping/styling VRs to make them work → **VR is broken**
-- If checking rank in routes/VRs → **VIOLATING SMAC**
-- If handlers branch on rank → **VIOLATING SMAC**
+- If checking rank in routes/VRs → **VIOLATING SRS**
+- If handlers branch on rank → **VIOLATING SRS**
 
 **No excuses. No exceptions. No compromises.**
 

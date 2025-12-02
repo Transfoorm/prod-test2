@@ -8,8 +8,8 @@
  *   - Visible widgets
  *   - Expanded sections
  *
- * SMAC Doctrine: Dashboard is a shell, not a data domain
- * Route: /(domains)/dashboard (if applicable)
+ * SRS Doctrine: Dashboard is a shell, not a data domain
+ * Route: /app/domains/dashboard (if applicable)
  *
  * ADP/PRISM Compliant: Full coordination fields for consistency
  * ══════════════════════════════════════════════════════════════════════════════

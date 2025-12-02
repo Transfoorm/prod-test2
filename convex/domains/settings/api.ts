@@ -3,7 +3,7 @@
 │  /convex/domains/settings/api.ts                                       │
 │                                                                        │
 │  Exports all settings queries and mutations for frontend consumption   │
-│  SMAC Layer 1: Route manifest (all ranks have access to own settings)  │
+│  SRS Layer 1: Route manifest (all ranks have access to own settings)  │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 export { getUserSettings } from "./queries";

@@ -4,7 +4,7 @@
  * ══════════════════════════════════════════════════════════════════════════════
  *
  * Handles: AI configuration, user management, rank management
- * Route: /(domains)/system/*
+ * Route: /app/domains/system/*
  * Backend: /convex/domains/system/
  * Access: Admiral only
  *

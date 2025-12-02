@@ -1,11 +1,11 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🗺️ SMAC ROUTES CONSTANT - DRY Single Source of Truth                │
+│  🗺️ SRS ROUTES CONSTANT - DRY Single Source of Truth                │
 │  /src/rank/routes.ts                                                   │
 │                                                                        │
 │  Canonical route paths defined ONCE, referenced everywhere.            │
 │  Manifests, navigation, links - all derive from this constant.         │
 │                                                                        │
-│  SMAC Commandment #8: DRY Routes Constant                              │
+│  SRS Commandment #8: DRY Routes Constant                              │
 │  • Define routes once                                                  │
 │  • Manifests reference ROUTES, not string literals                     │
 │  • Navigation derives from same source                                 │

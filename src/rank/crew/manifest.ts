@@ -9,7 +9,7 @@
 │  • No financial data                                                  │
 │  • No administrative functions                                        │
 │                                                                        │
-│  SMAC Layer 2: Static allowlist + navigation                          │
+│  SRS Layer 2: Static allowlist + navigation                          │
 │  References: TTT~BLUEPRINT-#3-UNIFIED-MASTER.md §Crew                 │
 └────────────────────────────────────────────────────────────────────────┘ */
 

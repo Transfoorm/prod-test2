@@ -1,5 +1,5 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  ⚙️ SETTINGS DOMAIN MUTATIONS - SMAC Layer 3                           │
+│  ⚙️ SETTINGS DOMAIN MUTATIONS - SRS Layer 3                           │
 │  /convex/domains/settings/mutations.ts                                 │
 │                                                                        │
 │  All-rank self-scoped mutations for user settings                      │
@@ -13,7 +13,7 @@ import { v } from "convex/values";
 /**
  * Update user profile settings
  *
- * SMAC Layer 3: Self-Scoped Mutations
+ * SRS Layer 3: Self-Scoped Mutations
  * - All ranks can update their own profile
  * - Cannot update other admin_users' profiles
  */
@@ -100,7 +100,7 @@ export const updateUserSettings = mutation({
 /**
  * Update theme preferences
  *
- * SMAC Layer 3: Self-Scoped Mutations
+ * SRS Layer 3: Self-Scoped Mutations
  * - All ranks can update their own theme preferences
  */
 export const updateThemeSettings = mutation({
@@ -131,7 +131,7 @@ export const updateThemeSettings = mutation({
 /**
  * Update Miror AI preferences
  *
- * SMAC Layer 3: Self-Scoped Mutations
+ * SRS Layer 3: Self-Scoped Mutations
  * - All ranks can update their own Miror AI preferences
  */
 export const updateMirorSettings = mutation({

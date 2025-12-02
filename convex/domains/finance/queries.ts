@@ -1,5 +1,5 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔌 FINANCE DOMAIN QUERIES - SMAC Layer 4                              │
+│  🔌 FINANCE DOMAIN QUERIES - SRS Layer 4                              │
 │  /convex/domains/finance/queries.ts                                    │
 │                                                                        │
 │  Rank-based data scoping for financial management:                     │
@@ -8,7 +8,7 @@
 │  • Commodore: Full access, organization-scoped                         │
 │  • Admiral: All finance (cross-org, platform-wide)                     │
 │                                                                        │
-│  SMAC Commandment #4: Data scoping via Convex query filters            │
+│  SRS Commandment #4: Data scoping via Convex query filters            │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { query } from "@/convex/_generated/server";
@@ -35,7 +35,7 @@ async function getCurrentUserWithRank(ctx: QueryCtx) {
 /**
  * List financial transactions with rank-based scoping
  *
- * SMAC Layer 4: Data Scoping
+ * SRS Layer 4: Data Scoping
  * - Crew: Read-only, organization-scoped
  * - Captain/Commodore: Organization-scoped
  * - Admiral: All finance (cross-org)
@@ -66,7 +66,7 @@ export const listTransactions = query({
 /**
  * Get single transaction by ID with rank-based authorization
  *
- * SMAC Layer 4: Data Scoping
+ * SRS Layer 4: Data Scoping
  * - Validates user has access to this specific transaction
  */
 export const getTransaction = query({
