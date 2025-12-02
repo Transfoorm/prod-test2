@@ -146,7 +146,7 @@ jobs:
             "tsconfig.json"
             ".husky/"
             "scripts/"
-            "eslint-custom-rules/"
+            "eslint/"
             ".github/"
             "src/middleware.ts"
           )

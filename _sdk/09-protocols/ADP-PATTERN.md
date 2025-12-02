@@ -13,22 +13,36 @@
 ### WARP (Backend - The Engine)
 **W**orkflow **A**nticipatory **R**esources **P**reload
 
-The backend mechanism that:
-- Preloads resources during idle time
-- Serves WARP API endpoints
-- Runs server-side Convex queries
-- Manages background orchestration
-- Handles TTL revalidation
+> "We anticipate what you'll need based on your workflow, and preload it before you ask."
+
+**What it means:**
+- **Workflow** = Your role determines your workflow (Admiral sees admin tools, Captain sees client tools)
+- **Anticipatory** = We predict what you'll need based on your sidebar navigation
+- **Resources** = Data from Convex (users, clients, invoices, etc.)
+- **Preload** = Fetch in the background during idle time, before you click
+
+**How it works:**
+- Runs via `requestIdleCallback` (only when browser is idle)
+- Reads your rank's sidebar to determine which domains to preload
+- Fetches from `/api/warp/{domain}` endpoints
+- Hydrates FUSE store so data is ready before navigation
 
 ### PRISM (Frontend - The Experience)
 **P**redictive **R**eactions and **I**ntelligent **S**tore **M**anagement
 
-The frontend experience that:
-- Detects user intent (sidebar interactions)
-- Manages FUSE store coordination
-- Provides Golden Bridge Hooks
-- Delivers optimistic UI
-- Syncs real-time updates
+> "We predict your intent from your actions and react intelligently to keep the store fresh."
+
+**What it means:**
+- **Predictive** = Dropdown click is a signal you're about to navigate there
+- **Reactions** = We react to your intent by preloading that specific domain
+- **Intelligent** = We check TTL, skip if fresh, fetch only when needed
+- **Store Management** = Coordinates FUSE store hydration across domains
+
+**How it works:**
+- Triggers on sidebar dropdown click (intent signal)
+- Checks if domain is already hydrated with fresh data
+- If stale or missing, fetches just that domain
+- If already fresh (from WARP), logs "already hydrated, skipping"
 
 ---
 

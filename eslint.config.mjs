@@ -1,11 +1,11 @@
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
-import customRules from "./eslint-custom-rules/class-prefix.js";
-import noComponentCss from "./eslint-custom-rules/no-component-css.js";
-import noUseStateForData from "./eslint-custom-rules/no-usestate-for-data.js";
-import noHardcodedSecrets from "./eslint-custom-rules/no-hardcoded-secrets.js";
-import tttsRules from "./eslint-custom-rules/ttts/index.js";
+import customRules from "./eslint/class-prefix.js";
+import noComponentCss from "./eslint/no-component-css.js";
+import noUseStateForData from "./eslint/no-usestate-for-data.js";
+import noHardcodedSecrets from "./eslint/no-hardcoded-secrets.js";
+import tttsRules from "./eslint/ttts/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -26,7 +26,7 @@ const eslintConfig = [
       ".ops/**",
       "convex/_generated/**",
       ".archive/**",  // Archived legacy code - reference only
-      "eslint-custom-rules/**",  // ESLint plugins use CommonJS require()
+      "eslint/**",  // ESLint plugins use CommonJS require()
     ],
   },
   // Register custom VRP enforcement plugins
