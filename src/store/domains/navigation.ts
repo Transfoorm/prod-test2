@@ -173,7 +173,7 @@ export const createNavigationActions = (
     // Update browser URL (cosmetic only - not functional)
     // This keeps the URL bar in sync but navigation is FUSE-controlled
     if (typeof window !== 'undefined') {
-      const urlPath = route === 'dashboard' ? '/app' : `/app/${route}`;
+      const urlPath = route === 'dashboard' ? '/' : `/${route}`;
       window.history.pushState({ route }, '', urlPath);
     }
 
@@ -195,7 +195,7 @@ export const createNavigationActions = (
       // No history - go to dashboard
       set({ route: 'dashboard', lastNavigatedAt: performance.now() });
       if (typeof window !== 'undefined') {
-        window.history.pushState({ route: 'dashboard' }, '', '/app');
+        window.history.pushState({ route: 'dashboard' }, '', '/');
       }
       fuseTimer.end('goBack (to dashboard)', start);
       return;

@@ -137,8 +137,8 @@ export default function Dashboard() {
         />
         <Card.metric
           title="Build Milestone"
-          value="2 Dec 2024 @ 11:30pm"
-          context="🔱 FUSE 6.0 /domains/ structure"
+          value="3 Dec 2024 @ 12:45am"
+          context="🏹 SRB admin/users migrated - 0.4ms nav"
         />
       </Grid.cards>
       </div>

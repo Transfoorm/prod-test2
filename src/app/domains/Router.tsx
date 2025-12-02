@@ -25,6 +25,7 @@ import { useSetPageHeader } from '@/hooks/useSetPageHeader';
 
 // Migrated domains
 import Dashboard from './Dashboard';
+import Users from './admin/Users';
 
 // Placeholder component for views not yet migrated
 function PlaceholderView({ route }: { route: string }) {
@@ -82,7 +83,7 @@ export default function Router() {
       // ADMIN
       // ═══════════════════════════════════════════════════════════════
       case 'admin/users':
-        return <PlaceholderView route={route} />;
+        return <Users />;
       case 'admin/plans':
         return <PlaceholderView route={route} />;
       case 'admin/feature':

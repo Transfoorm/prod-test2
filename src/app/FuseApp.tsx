@@ -71,9 +71,10 @@ export default function FuseApp() {
 
     // 2. Parse initial route from URL (if user navigated directly)
     if (typeof window !== 'undefined') {
-      const initialRoute = urlPathToRoute(window.location.pathname);
+      const pathname = window.location.pathname;
+      const initialRoute = urlPathToRoute(pathname);
+      console.log(`🔱 SR: URL pathname="${pathname}" → route="${initialRoute}"`);
       navigate(initialRoute);
-      console.log(`🔱 SR: Initial route from URL: ${initialRoute}`);
     }
 
     // 3. Handle browser back/forward buttons
