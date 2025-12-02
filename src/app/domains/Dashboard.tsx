@@ -73,6 +73,7 @@ export default function Dashboard() {
         socialName: data.socialName,
         businessCountry: data.businessCountry,
         setupStatus: 'complete',
+        emailVerified: true,
       });
 
       // Call server action to persist to database and update session cookie
@@ -83,6 +84,7 @@ export default function Dashboard() {
         socialName: data.socialName,
         orgSlug: data.orgSlug,
         businessCountry: data.businessCountry,
+        emailVerified: true,
       });
 
       if (!result.success) {

@@ -60,13 +60,17 @@ export async function POST(req: Request) {
       email.verification?.status === 'verified'
     );
 
-    console.log(`[CLERK WEBHOOK] Syncing user ${id}: primary=${primaryEmail?.email_address}, secondary=${secondaryEmail?.email_address || 'none'}`);
+    // Check if primary email is verified
+    const isEmailVerified = primaryEmail?.verification?.status === 'verified';
+
+    console.log(`[CLERK WEBHOOK] Syncing user ${id}: primary=${primaryEmail?.email_address}, verified=${isEmailVerified}, secondary=${secondaryEmail?.email_address || 'none'}`);
 
     try {
       // Sync user data to Convex
       await convex.mutation(api.domains.admin.users.api.syncUserFromClerk, {
         clerkId: id,
         email: primaryEmail?.email_address,
+        emailVerified: isEmailVerified,
         secondaryEmail: secondaryEmail?.email_address || undefined,
         firstName: first_name || undefined,
         lastName: last_name || undefined,
