@@ -496,24 +496,24 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
                 {/* Setup button container */}
                 <div className="ft-setup-button-wrapper">
                   {/* Phantom button - ALWAYS present for GPS positioning */}
-                  <Button.primary
+                  <Button.fire
                     icon={<Sparkles />}
                     data-setup-source
                     className="ft-setup-phantom"
                   >
                     Complete my setup
-                  </Button.primary>
+                  </Button.fire>
 
                   {/* Real button - positioned on top */}
                   {!hideSetupButton && (
-                    <Button.primary
+                    <Button.fire
                       type="submit"
                       disabled={isSubmitting}
                       icon={<Sparkles />}
                       className="ft-setup-real-button"
                     >
                       {isSubmitting ? 'Setting up...' : 'Complete my setup'}
-                    </Button.primary>
+                    </Button.fire>
                   )}
                 </div>
 

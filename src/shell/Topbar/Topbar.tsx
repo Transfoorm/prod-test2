@@ -88,9 +88,11 @@ export default function Topbar() {
     const modalIsUnskipped = needsSetup && !modalSkipped;
 
     // GOLDEN RULE: If we're on home page with unskipped modal, hide topbar button
-    if (isOnHome && modalIsUnskipped) {
-      // If button is visible and not already fading out, fade it out smoothly
-      if (flyingButtonVisible && !isFadingOut) {
+    // BUT NOT during reverse flow (isFadingOut means reverse is in progress)
+    console.log('USEEFFECT: isOnHome=', isOnHome, 'modalIsUnskipped=', modalIsUnskipped, 'isFadingOut=', isFadingOut, 'flyingButtonVisible=', flyingButtonVisible);
+    if (isOnHome && modalIsUnskipped && !isFadingOut) {
+      console.log('USEEFFECT: HIDING BUTTON');
+      if (flyingButtonVisible) {
         setIsFadingOut(true);
         setTimeout(() => {
           setFlyingButtonVisible(false);
@@ -147,53 +149,59 @@ export default function Topbar() {
 
       <div className="ly-topbar-right-container">
         {/* Phantom button for flying button positioning */}
-        <Button.primary
-          data-setup-target
-          className={`whitespace-nowrap ly-topbar-phantom-button ${flyingButtonVisible ? 'ly-topbar-phantom-button--absolute' : 'ly-topbar-phantom-button--relative'}`}
-          icon={<Sparkles />}
-        >
-          Complete my setup
-        </Button.primary>
+        {user?.setupStatus === 'pending' && (
+          <Button.fire
+            data-setup-target
+            className={`whitespace-nowrap ly-topbar-phantom-button ${flyingButtonVisible ? 'ly-topbar-phantom-button--absolute' : 'ly-topbar-phantom-button--relative'}`}
+            icon={<Sparkles />}
+          >
+            Complete my setup
+          </Button.fire>
+        )}
 
         {/* Real flying button */}
-        {flyingButtonVisible && (
-          <Button.primary
-            className={`whitespace-nowrap animate-pulse-slow ly-topbar-setup-button ${shouldFadeIn ? 'ly-topbar-setup-button--fade-in' : ''} ${isFadingOut ? 'ly-topbar-setup-button--fade-out' : ''}`}
+        {user?.setupStatus === 'pending' && (modalSkipped || isFadingOut) && flyingButtonVisible && (
+          <Button.fire
+            className={`whitespace-nowrap animate-pulse-slow ly-topbar-setup-button ${shouldFadeIn ? 'ly-topbar-setup-button--fade-in' : ''}`}
             icon={<Sparkles />}
-            onMouseDown={() => {
+            onMouseDown={(e) => {
               const isOnHomePage = route === 'dashboard';
 
               if (isOnHomePage) {
                 // REVERSE FLOW: Bring modal back down
 
-                // Get button positions for Phoenix flight
-                const sourceButton = document.querySelector('.ly-topbar-right-container button') as HTMLElement;
+                // Get button positions for Phoenix flight - use the clicked button itself
+                const sourceButton = e.currentTarget as HTMLElement;
 
                 if (sourceButton) {
-                  // Tell dashboard to bring modal back FIRST
+                  // Capture position IMMEDIATELY before anything changes
+                  const buttonRect = sourceButton.getBoundingClientRect();
+                  console.log('REVERSE CLICK: captured position');
+
+                  // Mark as fading to keep button visible (prevents useEffect from hiding instantly)
+                  setIsFadingOut(true);
+
+                  // Hide button after delay (blink disappear, no fade/motion)
+                  setTimeout(() => {
+                    setFlyingButtonVisible(false);
+                    setIsFadingOut(false);
+                  }, reverseFlow.topbarButtonFadeStartDelay);
+
+                  // Tell dashboard to bring modal back
                   window.dispatchEvent(new CustomEvent('bringModalBack'));
 
                   // Fire Phoenix event after the ONE takeoff delay
                   console.log('Phoenix takeoff delay:', reverseFlow.phoenixTakeoffDelay);
                   setTimeout(() => {
-                    // Get fresh button rect in case it moved
-                    const freshRect = sourceButton.getBoundingClientRect();
+                    // Use captured position
                     window.dispatchEvent(new CustomEvent('phoenixReverseFlow', {
                       detail: {
-                        sourceX: freshRect.left,
-                        sourceY: freshRect.top,
-                        sourceWidth: freshRect.width
+                        sourceX: buttonRect.left,
+                        sourceY: buttonRect.top,
+                        sourceWidth: buttonRect.width
                       }
                     }));
 
-                    // Start fade-out animation immediately
-                    setIsFadingOut(true);
-
-                    // Hide button completely after fade animation completes
-                    setTimeout(() => {
-                      setFlyingButtonVisible(false);
-                      setIsFadingOut(false);
-                    }, reverseFlow.topbarButtonHideDelay);
                   }, reverseFlow.phoenixTakeoffDelay); // THE ONE CLEAR DELAY from config
                 }
               } else {
@@ -222,7 +230,7 @@ export default function Topbar() {
             }}
           >
             Complete my setup
-          </Button.primary>
+          </Button.fire>
         )}
 
         <div className="ly-topbar-logo-wrapper">

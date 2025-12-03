@@ -80,8 +80,13 @@
 
 /* Real topbar button - 80% size */
 .ly-topbar-setup-button {
-  transform: scale(0.8);
+  transform: scale(0.8) !important;
   transform-origin: center;
+}
+
+.ly-topbar-setup-button:hover {
+  box-shadow: var(--button-fire-shadow) !important;
+  opacity: 1 !important;
 }
 
 /* Fade-in animation for topbar button */

@@ -69,11 +69,12 @@
   font-weight: var(--button-font-weight);
   min-width: var(--button-min-width);
 
-  /* Variant-specific styling */
-  background: var(--button-primary-bg);
+  /* Variant-specific styling - solid brand color, muted rest state */
+  background: var(--brand-primary);
+  opacity: 0.85;
   color: #fff;
   border: 1px solid transparent;
-  transition: opacity 150ms ease;
+  transition: all 150ms ease;
 }
 
 .vr-button-primary:disabled {
@@ -84,7 +85,7 @@
 }
 
 .vr-button-primary:hover:not(:disabled) {
-  opacity: 0.85;
+  opacity: 1;
 }
 
 .vr-button-primary:active:not(:disabled) {
@@ -293,10 +294,10 @@
   /* Dual gradient: padding-box for background, border-box for border glow */
   background: var(--button-fire-bg-padding) padding-box,
               var(--button-fire-bg-border) border-box;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
   background-origin: border-box;
   background-clip: padding-box, border-box;
-  color: #fff;
+  color: var(--text-inverse);
 
   /* Dramatic shadow for depth */
   box-shadow: var(--button-fire-shadow);
@@ -309,13 +310,16 @@
 }
 
 .vr-button-fire:disabled {
-  background: var(--bg-tertiary);
-  color: var(--text-disabled);
-  cursor: not-allowed;
-  opacity: 0.6;
+  background: var(--button-fire-bg-padding) padding-box,
+              var(--button-fire-bg-border) border-box;
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  color: var(--text-inverse);
+  cursor: default;
+  opacity: 0.5;
   box-shadow: none;
   text-shadow: none;
-  border: 1px solid var(--border-color);
+  border: 2px solid transparent;
 }
 
 /* Loading spinner */

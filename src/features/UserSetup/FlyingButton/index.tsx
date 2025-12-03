@@ -167,12 +167,12 @@ export default function FlyingButton() {
         '--phoenix-flight-duration': `${isReverse ? reverseFlow.flightDuration : skipFlow.flightDuration}ms`,
       } as React.CSSProperties}
     >
-      <Button.primary
+      <Button.fire
         icon={<Sparkles />}
         style={visual.debugMode ? { background: visual.debugColor } : undefined}
       >
         Complete my setup
-      </Button.primary>
+      </Button.fire>
     </div>,
     document.body
   );

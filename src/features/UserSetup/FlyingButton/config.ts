@@ -47,6 +47,7 @@ export const PHOENIX_CONFIG = {
   // ════════════════════════════════════════════════════════════════════════
   reverseFlow: {
     // Reverse flow - Phoenix flies back from topbar to modal
+    topbarButtonFadeStartDelay: 10, // On Click: ms before topbar button starts fading (let Phoenix arrive first)
     phoenixTakeoffDelay: 0,      // ms after clicking topbar before Phoenix appears
     phoenixDepartureDelay: 0,     // ms after Phoenix appears before it takes off and flies
     modalPositionDelay: 600,     // ms to wait for modal animation before getting button position
@@ -55,7 +56,7 @@ export const PHOENIX_CONFIG = {
     topbarButtonHideDelay: 600,     // ms delay before hiding topbar button (after Phoenix appears)
     modalShowDelay: 0,                // ms before modal starts appearing (immediate)
     modalFadeInDuration: 600,       // ms for modal to fade in (MUST match CSS animation)
-    setupButtonAppearDelay: 600,    // ms before setup button reappears in modal
+    setupButtonAppearDelay: 650,    // ms before setup button reappears in modal
   },
 
   // ════════════════════════════════════════════════════════════════════════
