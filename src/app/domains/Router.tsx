@@ -46,7 +46,7 @@ import FinanceReports from './finance/Reports';
 
 // Productivity
 import Calendar from './productivity/Calendar';
-import Booking from './productivity/Booking';
+import Bookings from './productivity/Bookings';
 import Tasks from './productivity/Tasks';
 import Email from './productivity/Email';
 import Meetings from './productivity/Meetings';
@@ -93,8 +93,8 @@ export default function Router() {
       // ═══════════════════════════════════════════════════════════════
       case 'productivity/calendar':
         return <Calendar />;
-      case 'productivity/booking':
-        return <Booking />;
+      case 'productivity/bookings':
+        return <Bookings />;
       case 'productivity/tasks':
         return <Tasks />;
       case 'productivity/email':

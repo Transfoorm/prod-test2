@@ -231,6 +231,7 @@
   opacity: 1;
 }
 
+/* stylelint-disable-next-line selector-max-specificity -- Table hover requires element+class combo */
 .vr-table-sortable th.sortable:hover .vr-table-sortable-sort-indicator {
   opacity: 1;
 }
@@ -417,6 +418,7 @@
 }
 
 /* SORTABLE variant - :hover on :nth-child (highest specificity) */
+/* stylelint-disable-next-line selector-max-specificity -- Striped table hover needs pseudo-selectors */
 .vr-table-sortable.vr-table-sortable-striped tbody tr:nth-child(even):hover {
   background: var(--bg-hover);
 }

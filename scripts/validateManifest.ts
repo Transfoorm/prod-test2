@@ -25,11 +25,30 @@ const ROOT = process.cwd();
 const APP_DIR = path.join(ROOT, 'src', 'app');
 
 /**
+ * Overview routes - domain entry points that redirect to default sub-route
+ * These are logical routes handled by Sovereign Router, not physical files
+ * Example: /productivity → redirects to /productivity/tasks
+ */
+const OVERVIEW_ROUTES = [
+  '/productivity',
+  '/clients',
+  '/finance',
+  '/projects',
+  '/system',
+  '/settings',
+];
+
+/**
  * Check if a route file exists
  * Note: With Sovereign Router, routes are in /app/domains/{domain}/
  * The Router.tsx switch handles navigation, not file-based routing
  */
 function routeExists(routePath: string): boolean {
+  // Overview routes are logical entry points - no physical file needed
+  if (OVERVIEW_ROUTES.includes(routePath)) {
+    return true;
+  }
+
   const trimmed = routePath.replace(/^\/+/, '');
 
   // Patterns to check (Sovereign Router structure)

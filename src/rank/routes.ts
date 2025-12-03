@@ -77,7 +77,7 @@ export const ROUTES = {
   // Productivity domain (Captain, Commodore)
   productivity: {
     overview: '/productivity' as const,
-    booking: '/productivity/booking' as const,
+    bookings: '/productivity/bookings' as const,
     calendar: '/productivity/calendar' as const,
     email: '/productivity/email' as const,
     meetings: '/productivity/meetings' as const,

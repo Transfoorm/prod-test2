@@ -1,4 +1,4 @@
-/**──────────────────────────────────────────────────────────────────────┐
+/** ─────────────────────────────────────────────────────────────────────┐
 │  🔥 VANISH DRAWER STYLES - User Deletion Portal (WCCC ft-* Compliant) │
 │  /src/features/Vanish/vanish.css                                       │
 │                                                                         │
@@ -16,12 +16,9 @@
 
 .ft-vanish-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   z-index: 9998;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgb(0 0 0 / 60%);
   transition: opacity 300ms ease-out;
 }
 
@@ -56,7 +53,7 @@
   z-index: 9999;
   background-color: #18181b; /* Dark VANISH theme */
   border-left: 2px solid #ef4444; /* Red threshold border */
-  box-shadow: -8px 0 24px rgba(239, 68, 68, 0.3); /* Fire glow */
+  box-shadow: -8px 0 24px rgb(239 68 68 / 30%); /* Fire glow */
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -123,13 +120,13 @@
   cursor: pointer;
 }
 
-.ft-vanish-header-close:hover:not(:disabled) {
-  background-color: #fef2f2;
-}
-
 .ft-vanish-header-close:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.ft-vanish-header-close:hover:not(:disabled) {
+  background-color: #fef2f2;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -305,19 +302,19 @@
   cursor: pointer;
 }
 
-.ft-vanish-button-cancel:hover:not(:disabled) {
-  background-color: #3f3f46;
-}
-
 .ft-vanish-button-cancel:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
 
+.ft-vanish-button-cancel:hover:not(:disabled) {
+  background-color: #3f3f46;
+}
+
 .ft-vanish-button-delete {
   padding: 12px 24px;
   background-color: #ef4444;
-  color: white;
+  color: #fff;
   border: none;
   border-radius: var(--radius-sm);
   font-size: 0.875rem;
@@ -326,13 +323,13 @@
   cursor: pointer;
 }
 
-.ft-vanish-button-delete:hover:not(:disabled) {
-  background-color: #dc2626;
-}
-
 .ft-vanish-button-delete:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+.ft-vanish-button-delete:hover:not(:disabled) {
+  background-color: #dc2626;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -357,7 +354,7 @@
 }
 
 .ft-vanish-audit-list {
-  margin: 8px 0 0 0;
+  margin: 8px 0 0;
   padding-left: 20px;
 }
 

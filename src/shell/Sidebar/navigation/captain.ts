@@ -22,7 +22,7 @@ export const captainNav: NavSection[] = [
       { path: ROUTES.productivity.email, label: 'Email' },
       { path: ROUTES.productivity.calendar, label: 'Calendar' },
       { path: ROUTES.productivity.meetings, label: 'Meetings' },
-      { path: ROUTES.productivity.booking, label: 'Booking' }
+      { path: ROUTES.productivity.bookings, label: 'Bookings' }
     ]
   },
   {

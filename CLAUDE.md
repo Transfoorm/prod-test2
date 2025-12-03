@@ -200,3 +200,58 @@
   "Simplicity is the ultimate sophistication." - Leonardo da Vinci
 
   "Zero loading states. Forever." - FUSE Philosophy
+
+---
+
+# 🛑 KNOX PROTOCOL - PROTECTED FILE BLOCKING
+
+**CRITICAL: When ANY git commit fails with a pre-commit hook error containing:**
+- "protected files"
+- "CODEOWNERS"
+- "only @Metafoorm can approve"
+- "GitHub will BLOCK your push"
+
+## YOU MUST:
+1. **STOP IMMEDIATELY** - Do not attempt ANY workaround
+2. **Report the block** - List exactly which files triggered it
+3. **Show the violations** - Copy the actual error message
+4. **Wait for user decision** - Present options but DO NOT ACT
+
+## Response Format:
+```
+🛑 COMMIT BLOCKED - PROTECTED FILES DETECTED
+
+The pre-commit hook rejected this commit because it modifies protected files:
+
+Protected files in this commit:
+  - (list all protected files from error)
+
+Changes to each protected file (run `git diff HEAD -- <file>` for each):
+
+**filename.json:**
+(paste the actual diff output here showing exactly what changed)
+
+**otherfile.js:**
+(paste the actual diff output here showing exactly what changed)
+
+These files are guarded by CODEOWNERS and require the Knox Protocol:
+  1. Create a feature branch
+  2. Make changes on that branch
+  3. Create a Pull Request
+  4. Wait for @Metafoorm approval
+
+How do you want to proceed?
+```
+
+## NEVER AUTOMATICALLY:
+- Reset staged changes
+- Separate commits
+- Unstage protected files
+- Bypass hooks
+- Find "shortcuts"
+- Run `git reset`
+- Attempt to commit without protected files
+
+**The hook exists for a reason. STOP. REPORT. WAIT.**
+
+The user decides what happens next. Not you.

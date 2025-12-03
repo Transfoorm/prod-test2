@@ -398,7 +398,6 @@ The `auth.css` file demonstrates the **FUSE Consumer Doctrine** - a critical arc
 │  /fuse/style/                                               │
 │  ├── tokens.css      → --radius-xl, --font-size-base       │
 │  └── themes/                                                │
-│      ├── brandkit.css    → --brand-gradient-start/end      │
 │      └── transtheme.css  → --text-primary, --text-secondary│
 │                         (Theme switching happens here)       │
 └─────────────────────────────────────────────────────────────┘
@@ -446,8 +445,8 @@ The `auth.css` file demonstrates the **FUSE Consumer Doctrine** - a critical arc
 .auth-progress-fill {
   background: linear-gradient(
     to right,
-    var(--brand-gradient-start),        /* ← From /fuse/style/themes/brandkit.css */
-    var(--brand-gradient-end)           /* ← From /fuse/style/themes/brandkit.css */
+    var(--brand-gradient-start),        /* ← From /fuse/style/themes/transtheme.css */
+    var(--brand-gradient-end)           /* ← From /fuse/style/themes/transtheme.css */
   );
 }
 ```

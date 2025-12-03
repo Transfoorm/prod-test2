@@ -206,3 +206,56 @@ Next developer pulling this branch will receive:
 ```
 
 Remember: **No violations, no exceptions, no compromises.**
+
+---
+
+## 🛑 KNOX PROTOCOL - PROTECTED FILE BLOCKING
+
+**CRITICAL: When a pre-commit hook blocks with "protected files" or "CODEOWNERS":**
+
+### YOU MUST:
+1. **STOP IMMEDIATELY** - Do not attempt ANY workaround
+2. **Report the block** - List exactly which files triggered it
+3. **Show the violations** - Copy the actual error message
+4. **Wait for user decision** - Present options but DO NOT ACT
+
+### Response Format:
+```
+🛑 COMMIT BLOCKED - PROTECTED FILES DETECTED
+
+The pre-commit hook rejected this commit because it modifies protected files:
+
+Protected files in this commit:
+  - .stylelintrc.json
+  - package.json
+  - (list all protected files)
+
+Changes to each protected file (run `git diff HEAD -- <file>` for each):
+
+**.stylelintrc.json:**
+(paste the actual diff output here showing exactly what changed)
+
+**package.json:**
+(paste the actual diff output here showing exactly what changed)
+
+These files are guarded by CODEOWNERS and require the Knox Protocol:
+  1. Create a feature branch
+  2. Make changes on that branch
+  3. Create a Pull Request
+  4. Wait for @Metafoorm approval
+
+How do you want to proceed?
+```
+
+### NEVER AUTOMATICALLY:
+- Reset staged changes
+- Separate commits
+- Unstage protected files
+- Bypass hooks
+- Find "shortcuts"
+- Run `git reset`
+- Attempt to commit without protected files
+
+**The hook exists for a reason. STOP. REPORT. WAIT.**
+
+The user decides what happens next. Not you.

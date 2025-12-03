@@ -34,7 +34,7 @@ export type DomainRoute =
   | 'dashboard'
   // Productivity
   | 'productivity/calendar'
-  | 'productivity/booking'
+  | 'productivity/bookings'
   | 'productivity/tasks'
   | 'productivity/email'
   | 'productivity/meetings'
@@ -313,7 +313,7 @@ export function urlPathToRoute(path: string): DomainRoute {
   // Validate it's a known route
   const knownRoutes: DomainRoute[] = [
     'dashboard',
-    'productivity/calendar', 'productivity/booking', 'productivity/tasks', 'productivity/email', 'productivity/meetings',
+    'productivity/calendar', 'productivity/bookings', 'productivity/tasks', 'productivity/email', 'productivity/meetings',
     'admin/users', 'admin/plans', 'admin/feature',
     'clients/people', 'clients/teams', 'clients/sessions', 'clients/pipeline', 'clients/reports',
     'finance/overview', 'finance/transactions', 'finance/invoices', 'finance/payments', 'finance/reports',

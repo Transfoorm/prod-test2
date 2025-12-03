@@ -30,7 +30,7 @@
 │   └── Reports.tsx
 ├── productivity/
 │   ├── Calendar.tsx
-│   ├── Booking.tsx
+│   ├── Bookings.tsx
 │   ├── Tasks.tsx
 │   ├── Email.tsx
 │   └── Meetings.tsx

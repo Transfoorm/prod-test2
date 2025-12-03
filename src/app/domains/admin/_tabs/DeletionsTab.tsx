@@ -8,8 +8,7 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
-import { useMutation } from 'convex/react';
-import { api } from '@/convex/_generated/api';
+import { deleteDeletionLogAction } from '@/app/actions/admin-mutations';
 import type { Id, Doc } from '@/convex/_generated/dataModel';
 import { Table, Badge, Modal, Search, Stack } from '@/prebuilts';
 import type { RankType } from '@/prebuilts/badge/Rank';
@@ -99,8 +98,8 @@ export default function DeletionsTab() {
     alertMode: false
   });
 
-  // Mutation for deleting journal entries
-  const deleteJournalEntry = useMutation(api.domains.admin.users.api.deleteDeletionLog);
+  // Server action for deleting journal entries (SRB-4 compliant)
+  const deleteJournalEntry = deleteDeletionLogAction;
 
   // Checkbox handlers - DeletionsTab allows select-all (audit logs safe to bulk delete)
   const handleHeaderCheckbox = useCallback(() => {
@@ -133,7 +132,7 @@ export default function DeletionsTab() {
       alertMode: false,
       onConfirm: async () => {
         try {
-          const result = await deleteJournalEntry({ logId });
+          const result = await deleteJournalEntry(logId);
           if (result.success) {
             setModalState({
               isOpen: true,
@@ -169,7 +168,7 @@ export default function DeletionsTab() {
       onConfirm: async () => {
         try {
           const results = await Promise.all(
-            logIds.map(logId => deleteJournalEntry({ logId }))
+            logIds.map(logId => deleteJournalEntry(logId))
           );
 
           const successCount = results.filter((r: {success: boolean}) => r.success).length;

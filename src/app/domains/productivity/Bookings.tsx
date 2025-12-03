@@ -2,7 +2,7 @@
 
 import { useSetPageHeader } from '@/hooks/useSetPageHeader';
 
-export default function Booking() {
-  useSetPageHeader('Booking', 'Coming soon');
+export default function Bookings() {
+  useSetPageHeader('Bookings', 'Coming soon');
   return null;
 }

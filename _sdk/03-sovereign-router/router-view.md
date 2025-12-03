@@ -62,7 +62,7 @@ export default function Router() {
 | `finance/transactions` | `<Transactions />` | `/app/domains/finance/Transactions.tsx` |
 | `finance/reports` | `<FinanceReports />` | `/app/domains/finance/Reports.tsx` |
 | `productivity/calendar` | `<Calendar />` | `/app/domains/productivity/Calendar.tsx` |
-| `productivity/booking` | `<Booking />` | `/app/domains/productivity/Booking.tsx` |
+| `productivity/bookings` | `<Bookings />` | `/app/domains/productivity/Bookings.tsx` |
 | `productivity/tasks` | `<Tasks />` | `/app/domains/productivity/Tasks.tsx` |
 | `productivity/email` | `<Email />` | `/app/domains/productivity/Email.tsx` |
 | `productivity/meetings` | `<Meetings />` | `/app/domains/productivity/Meetings.tsx` |

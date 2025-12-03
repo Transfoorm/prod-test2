@@ -61,12 +61,12 @@ export default function ThemeToggle() {
           className="ft-theme-main-circle"
         ></circle>
         <g className="ft-theme-stars">
-          <circle cx="18" cy="10" r="1.5"></circle>
-          <circle cx="14" cy="16.928" r="1.5"></circle>
-          <circle cx="6" cy="16.928" r="1.5"></circle>
-          <circle cx="2" cy="10" r="1.5"></circle>
-          <circle cx="6" cy="3.1718" r="1.5"></circle>
-          <circle cx="14" cy="3.1718" r="1.5"></circle>
+          <circle cx="18" cy="10" r="1.5" className="ft-theme-star"></circle>
+          <circle cx="14" cy="16.928" r="1.5" className="ft-theme-star"></circle>
+          <circle cx="6" cy="16.928" r="1.5" className="ft-theme-star"></circle>
+          <circle cx="2" cy="10" r="1.5" className="ft-theme-star"></circle>
+          <circle cx="6" cy="3.1718" r="1.5" className="ft-theme-star"></circle>
+          <circle cx="14" cy="3.1718" r="1.5" className="ft-theme-star"></circle>
         </g>
       </svg>
     </label>

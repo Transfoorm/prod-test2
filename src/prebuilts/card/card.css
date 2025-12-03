@@ -108,24 +108,24 @@
 }
 
 /* Primary action */
-.vr-card-action .vr-card-action-button.vr-card-action-primary {
+.vr-card-action-button.vr-card-action-primary {
   background-color: var(--color-primary);
   color: #fff;
 }
 
-.vr-card-action .vr-card-action-button.vr-card-action-primary:hover:not(:disabled) {
+.vr-card-action-button.vr-card-action-primary:hover:not(:disabled) {
   background-color: var(--color-primary-dark);
   transform: translateY(-1px);
 }
 
 /* Secondary action */
-.vr-card-action .vr-card-action-button.vr-card-action-secondary {
+.vr-card-action-button.vr-card-action-secondary {
   background-color: transparent;
   color: var(--text-primary);
   border: var(--card-border-width) solid var(--border-normal);
 }
 
-.vr-card-action .vr-card-action-button.vr-card-action-secondary:hover:not(:disabled) {
+.vr-card-action-button.vr-card-action-secondary:hover:not(:disabled) {
   background-color: var(--bg-tertiary);
   border-color: var(--border-dark);
 }

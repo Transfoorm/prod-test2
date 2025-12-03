@@ -42,6 +42,7 @@
     ".next/**",
     "out/**",
     "build/**",
-    "dist/**"
+    "dist/**",
+    "public/images/_dev/**"
   ]
 }
