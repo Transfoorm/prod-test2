@@ -1,25 +1,27 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🤖 VARIANT ROBOT - Table Component Registry                           │
-│  /src/components/prebuilts/table/index.tsx                             │
+│  /src/prebuilts/table/index.tsx                                        │
 │                                                                        │
-│  Central dispatcher for all table variants.                            │
+│  Central dispatcher for all table variants + utilities.                │
 │  Each variant is a first-class, autonomous component.                  │
 │                                                                        │
 │  Usage:                                                                │
-│  import { Table } from '@/prebuilts/table';                │
+│  import { Table } from '@/prebuilts/table';                            │
 │                                                                        │
-│  <Table.standard columns={cols} data={data} />                        │
-│  <Table.sortable columns={cols} data={data} />                        │
-│  <Table.paginated columns={cols} data={data} pageSize={10} />        │
-└────────────────────────────────────────────────────────────────────────┘ */
+│  <Table.toolbar search={...} actions={...} />                          │
+│  <Table.sortable columns={cols} data={data} />                         │
+│  <Table.batchActions selectedCount={n} onDelete={fn} />                │
+└─────────────────────────────────────────────────────────────────────────┘ */
 
 
 import StandardTable from './Standard';
 import SortableTable from './Sortable';
 import PaginatedTable from './Paginated';
+import Toolbar from './Toolbar';
+import BatchActions from './BatchActions';
 
 /**
- * Table Registry - All table variants as named exports
+ * Table Registry - All table variants + utilities as named exports
  *
  * Architecture benefits:
  * ✅ Each variant evolves independently
@@ -30,22 +32,30 @@ import PaginatedTable from './Paginated';
  * ✅ AI/CLI friendly: "Give me a sortable table" → Table.sortable
  */
 export const Table = {
+  // Table variants
   standard: StandardTable,
   sortable: SortableTable,
   paginated: PaginatedTable,
+  // Layout utilities
+  toolbar: Toolbar,
+  batchActions: BatchActions,
 } as const;
 
 // Export individual components for direct import if needed
 export {
   StandardTable,
   SortableTable,
-  PaginatedTable
+  PaginatedTable,
+  Toolbar,
+  BatchActions
 };
 
 // Type exports for TypeScript users
 export type { StandardTableProps, Column } from './Standard';
 export type { SortableTableProps, SortableColumn } from './Sortable';
 export type { PaginatedTableProps, PaginatedColumn } from './Paginated';
+export type { ToolbarProps } from './Toolbar';
+export type { BatchActionsProps } from './BatchActions';
 
 // Helper type for variant names
 export type TableVariant = keyof typeof Table;

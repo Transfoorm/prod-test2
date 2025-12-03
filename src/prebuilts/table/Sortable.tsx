@@ -9,7 +9,7 @@
 "use client";
 
 import { ReactNode, useState, useMemo } from 'react';
-import { Checkbox, Tooltip, Button } from '@/prebuilts';
+import { Checkbox, Tooltip } from '@/prebuilts';
 import { Actions } from '@/prebuilts/actions';
 
 export interface SortableColumn<TData = Record<string, unknown>> {
@@ -166,30 +166,6 @@ export default function SortableTable<TData = Record<string, unknown>>({
     });
   }, [data, sortKey, sortDirection]);
 
-  // VR Auto-Detection: Find checkbox column with batch delete
-  const checkboxColumn = columns.find(col => col.variant === 'checkbox');
-  const batchActionsEnabled = checkboxColumn?.onBatchDelete !== undefined;
-  const selectedCount = checkboxColumn?.checked?.size || 0;
-  const batchLabel = checkboxColumn?.batchLabel || 'item/items';
-  const [singularLabel, pluralLabel] = batchLabel.split('/');
-
-  const handleBatchDelete = () => {
-    if (!checkboxColumn?.onBatchDelete || !checkboxColumn.checked) return;
-    const selectedIds = Array.from(checkboxColumn.checked);
-
-    // VR auto-protection: Filter out current user ID (self-protection)
-    const filteredIds = checkboxColumn.currentUserId
-      ? selectedIds.filter(id => String(id) !== String(checkboxColumn.currentUserId))
-      : selectedIds;
-
-    if (filteredIds.length === 0) {
-      console.warn('[VR] Batch delete blocked: All selected items were self-protected');
-      return;
-    }
-
-    checkboxColumn.onBatchDelete(filteredIds);
-  };
-
   return (
     <div className="vr-table-sortable-container">
       <div className="vr-table-wrapper">
@@ -197,34 +173,24 @@ export default function SortableTable<TData = Record<string, unknown>>({
           className={`vr-table-sortable ${striped ? 'vr-table-sortable-striped' : ''} ${bordered ? 'vr-table-sortable-bordered' : ''} ${className}`}
         >
         <thead>
-          {/* VR Auto-Renders: Batch actions row when checkboxes selected */}
-          {batchActionsEnabled && selectedCount > 0 && (
-            <tr className="vr-batch-actions-row">
-              <td colSpan={columns.length}>
-                <div className="vr-batch-actions">
-                  <span className="vr-selection-pill">
-                    {selectedCount} {selectedCount === 1 ? singularLabel : pluralLabel} selected
-                  </span>
-                  <Button.danger onClick={handleBatchDelete}>
-                    Delete Selected
-                  </Button.danger>
-                </div>
-              </td>
-            </tr>
-          )}
           <tr>
             {columns.map((col) => {
               // VR Convention: Checkbox variant auto-renders header checkbox
               let headerContent: ReactNode;
 
               if (col.variant === 'checkbox') {
-                headerContent = (
+                const hasSelections = !!(col.checked && col.checked.size > 0);
+                const checkbox = (
+                  <Checkbox.table
+                    checked={hasSelections}
+                    onChange={() => col.onHeaderCheck?.()}
+                    ariaLabel={hasSelections ? "Clear all selections" : "Select all"}
+                  />
+                );
+                // Only show tooltip when nothing selected (preventing "select all")
+                headerContent = hasSelections ? checkbox : (
                   <Tooltip.basic content="You can't select the entire database for deletion">
-                    <Checkbox.table
-                      checked={col.checked ? col.checked.size > 0 : false}
-                      onChange={() => col.onHeaderCheck?.()}
-                      ariaLabel="Clear all selections"
-                    />
+                    {checkbox}
                   </Tooltip.basic>
                 );
               } else if (typeof col.header === 'string') {

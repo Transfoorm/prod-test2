@@ -296,39 +296,73 @@
    TEXT TRUNCATION (Now default on all td cells - see line 49-51)
    ─────────────────────────────────────────────────────────────────── */
 
+/* ═══════════════════════════════════════════════════════════════════
+   TABLE TOOLBAR (VR - Layout Only)
+   Search left, actions right. Zero layout shift.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.vr-table-toolbar-left {
+  flex: 1;
+  min-width: 0;  /* Allow shrinking */
+}
+
+.vr-table-toolbar-center {
+  flex: 0 0 auto;
+}
+
+.vr-table-toolbar-right {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+/* Hard-wired visibility: dims when no actions */
+.vr-table-toolbar-right[data-active="false"] {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
 /* ───────────────────────────────────────────────────────────────────
-   BATCH ACTIONS (VR auto-renders when checkbox has onBatchDelete)
+   BATCH ACTIONS (VR - Hard-Wired Visibility)
+   Always rendered, opacity controlled. Zero layout shift.
    ─────────────────────────────────────────────────────────────────── */
-
-.vr-batch-actions-row {
-  background: var(--bg-secondary);
-}
-
-.vr-batch-actions-row td {
-  padding: var(--space-sm) var(--space-md);
-  border-bottom: 1px solid var(--border-normal);
-}
 
 .vr-batch-actions {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   gap: var(--space-md);
+
+  /* Inactive state: dimmed, non-interactive */
+  opacity: 0.7;
+  pointer-events: none;
+  transition: opacity var(--table-transition-duration-normal) ease;
 }
 
+/* Active state: full visibility when selections exist */
+.vr-batch-actions.vr-batch-active {
+  opacity: 1;
+  pointer-events: auto;
+}
 
-/* Selection count pill */
+/* Selection count pill - matches danger button height via same padding */
 .vr-selection-pill {
   display: inline-flex;
   align-items: center;
   background-color: var(--color-error-light);
-  padding: var(--table-batch-pill-padding-y) var(--table-batch-pill-padding-x);
+  padding: var(--button-padding-y) var(--button-padding-x);
   border: 1px solid transparent;
-  border-radius: var(--table-wrapper-radius);
-  font-size: var(--button-font-size);  /* Match button font size */
-  font-weight: normal;  /* Regular weight (not bold) */
+  border-radius: var(--button-radius);
+  font-size: var(--button-font-size);
+  font-weight: normal;
   color: var(--color-error-dark);
-  height: var(--table-batch-pill-height);  /* Match button height */
   box-sizing: border-box;
 }
 
@@ -411,10 +445,10 @@
   background: var(--bg-secondary);
 }
 
-/* SORTABLE variant - Bordered with :not() */
+/* SORTABLE variant - Bordered (uses border-right, not box-shadow which gets clipped by overflow:hidden) */
 .vr-table-sortable.vr-table-sortable-bordered th:not(:last-child),
 .vr-table-sortable.vr-table-sortable-bordered td:not(:last-child) {
-  box-shadow: 1px 0 0 var(--border-light);
+  border-right: 1px solid var(--border-light);
 }
 
 /* SORTABLE variant - :hover on :nth-child (highest specificity) */

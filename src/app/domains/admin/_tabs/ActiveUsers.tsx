@@ -94,8 +94,12 @@ export default function ActiveUsers() {
     });
   };
 
-  // Handler for batch deleting users (called by VR with selected IDs)
-  const handleBatchDeleteUsers = async (userIds: string[]) => {
+  // Handler for batch deleting users
+  const handleBatchDelete = () => {
+    // Filter out self (can't delete yourself)
+    const userIds = Array.from(checkedRows).filter(id => id !== fuseUser?.id);
+    if (userIds.length === 0) return;
+
     openVanishDrawer({ targets: userIds }, (result) => {
       if (result.success) {
         const count = result.deletedUsers?.length || userIds.length;
@@ -121,7 +125,7 @@ export default function ActiveUsers() {
   };
 
   const columns: SortableColumn<UserData>[] = [
-    { key: 'select', variant: 'checkbox', checked: checkedRows, onCheck: handleRowCheckbox, onHeaderCheck: handleHeaderCheckbox, getRowLabel: (row) => `${row.firstName}`, currentUserId: fuseUser?.id, onBatchDelete: handleBatchDeleteUsers, batchLabel: 'user/users', sortable: false },
+    { key: 'select', variant: 'checkbox', checked: checkedRows, onCheck: handleRowCheckbox, onHeaderCheck: handleHeaderCheckbox, getRowLabel: (row) => `${row.firstName}`, currentUserId: fuseUser?.id, sortable: false },
     { key: 'createdAt', header: 'Created', sortable: true, width: '11%' },
     { key: 'firstName', header: 'First', sortable: true, width: '9%' },
     { key: 'lastName', header: 'Last', sortable: true, width: '12%' },
@@ -166,15 +170,26 @@ export default function ActiveUsers() {
     );
   }, [tableData, searchTerm]);
 
-///// ↓ Stack adds vertical spacing between Search and Table //////
   return (
     <Stack>
-      <Search.bar
-        value={searchTerm}
-        onChange={setSearchTerm}
-        placeholder="Search users..."
-        resultsCount={filteredData.length}
-        totalCount={tableData.length}
+      {/* Table.toolbar: Search left, batch actions right - TTT compliant layout */}
+      <Table.toolbar
+        search={
+          <Search.bar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder="Search users..."
+            resultsCount={filteredData.length}
+            totalCount={tableData.length}
+          />
+        }
+        actions={
+          <Table.batchActions
+            selectedCount={checkedRows.size}
+            onDelete={handleBatchDelete}
+            label="user/users"
+          />
+        }
       />
 
       <Table.sortable
@@ -182,7 +197,8 @@ export default function ActiveUsers() {
         data={filteredData}
         defaultSortKey={null}
         striped
-        bordered      />
+        bordered
+      />
 
       {modalState.isOpen && (
         <Modal.alert
