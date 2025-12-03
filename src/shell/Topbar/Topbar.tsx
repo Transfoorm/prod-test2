@@ -18,7 +18,8 @@ import { useRankCheck } from '@/fuse/hydration/hooks/useRankCheck';
 import {
   skipFlow,
   reverseFlow,
-  navAwayFromUnskippedFlow
+  navAwayFromUnskippedFlow,
+  navReturnFlow
 } from '@/features/UserSetup/FlyingButton/config';
 
 
@@ -205,27 +206,46 @@ export default function Topbar() {
                   }, reverseFlow.phoenixTakeoffDelay); // THE ONE CLEAR DELAY from config
                 }
               } else {
-                // NOT on homepage - different behavior for skipped vs unskipped
-                const modalIsSkipped = modalSkipped;
+                // NOT on homepage - navigate home and trigger reverse-like flow
+                // Capture position BEFORE navigation
+                const sourceButton = e.currentTarget as HTMLElement;
+                const buttonRect = sourceButton.getBoundingClientRect();
 
-                if (modalIsSkipped) {
-                  // SKIPPED MODE: Reset skip state and bring modal back
-                  const setModalSkipped = useFuse.getState().setModalSkipped;
-                  setModalSkipped(false);
-                }
+                // Set modalReturning BEFORE navigation so Dashboard reads it on mount
+                const setModalReturning = useFuse.getState().setModalReturning;
+                setModalReturning(true);
 
-                // Navigate to home
+                // Reset modalSkipped BEFORE navigation so modal renders with page
+                const setModalSkipped = useFuse.getState().setModalSkipped;
+                setModalSkipped(false);
+
+                // Navigate to home - modal will render with button hidden (modalReturning)
                 navigate('dashboard');
 
-                // Just fade out the topbar button - NO PHOENIX
-                setTimeout(() => {
-                  setIsFadingOut(true);
+                // Mark fading out to protect from useEffect
+                setIsFadingOut(true);
 
-                  setTimeout(() => {
-                    setFlyingButtonVisible(false);
-                    setIsFadingOut(false);
-                  }, 600); // Match fade-out duration
-                }, 100); // Small delay to let navigation start
+                // Hide topbar button at configured delay
+                setTimeout(() => {
+                  setFlyingButtonVisible(false);
+                  setIsFadingOut(false);
+                }, reverseFlow.topbarButtonFadeStartDelay);
+
+                // Dispatch bringModalBack after small delay for Dashboard to mount
+                setTimeout(() => {
+                  window.dispatchEvent(new CustomEvent('bringModalBack'));
+                }, navReturnFlow.bringModalBackDelay);
+
+                // Fire Phoenix after modal has animated into position
+                setTimeout(() => {
+                  window.dispatchEvent(new CustomEvent('phoenixReverseFlow', {
+                    detail: {
+                      sourceX: buttonRect.left,
+                      sourceY: buttonRect.top,
+                      sourceWidth: buttonRect.width
+                    }
+                  }));
+                }, reverseFlow.phoenixTakeoffDelay);
               }
             }}
           >

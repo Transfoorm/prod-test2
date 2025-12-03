@@ -24,12 +24,26 @@ export default function Dashboard() {
   const updateUser = useFuse((s) => s.updateUser);
   const modalSkipped = useFuse((s) => s.modalSkipped);
   const setModalSkipped = useFuse((s) => s.setModalSkipped);
+  const modalReturning = useFuse((s) => s.modalReturning);
+  const setModalReturning = useFuse((s) => s.setModalReturning);
   const [isModalFadingOut, setIsModalFadingOut] = useState(false);
-  const [isModalFadingIn, setIsModalFadingIn] = useState(false);
+  const [isModalFadingIn, setIsModalFadingIn] = useState(modalReturning);
 
   useSetPageHeader(undefined, 'Coming soon');
 
-  // Listen for bring modal back event
+  // Handle modalReturning on mount - trigger fade-in animation
+  useEffect(() => {
+    if (modalReturning) {
+      setIsModalFadingIn(true);
+      // Clear the flag and animation after duration
+      setTimeout(() => {
+        setModalReturning(false);
+        setIsModalFadingIn(false);
+      }, reverseFlow.modalFadeInDuration);
+    }
+  }, [modalReturning, setModalReturning]);
+
+  // Listen for bring modal back event (for reverse flow on same page)
   useEffect(() => {
     const handleBringModalBack = () => {
       // Wait for modalShowDelay from config before showing modal
@@ -144,7 +158,7 @@ export default function Dashboard() {
       <FlyingButton />
 
       {/* Dashboard content with smooth transitions */}
-      <div className="dashboard-content-wrapper">
+      <div className={`dashboard-content-wrapper ${isModalFadingIn ? 'dashboard-content-wrapper--fading-in' : ''}`}>
       <Grid.cards>
         <Card.metric
           title="Your Account"

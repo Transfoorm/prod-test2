@@ -81,6 +81,14 @@ export const PHOENIX_CONFIG = {
     topbarButtonAppearDelay: 400,  // ms before topbar button appears
   },
 
+  // ════════════════════════════════════════════════════════════════════════
+  // NAV RETURN FLOW - Topbar → Modal (from another page)
+  // User clicks topbar button while NOT on homepage
+  // ════════════════════════════════════════════════════════════════════════
+  navReturnFlow: {
+    bringModalBackDelay: 50,       // ms after navigation before bringModalBack event
+  },
+
   navigateAwayFlow: {
     flyingButtonEventDelay: 600,   // ms delay for navigation events
   },
@@ -95,4 +103,4 @@ export const PHOENIX_CONFIG = {
 } as const;
 
 // Export individual sections for easy importing
-export const { skipFlow, reverseFlow, visual, navAwayFromUnskippedFlow, navigateAwayFlow, systemTiming } = PHOENIX_CONFIG;
+export const { skipFlow, reverseFlow, visual, navAwayFromUnskippedFlow, navReturnFlow, navigateAwayFlow, systemTiming } = PHOENIX_CONFIG;

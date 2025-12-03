@@ -84,6 +84,7 @@ interface FuseStore {
   navigation: NavigationState; // Legacy - being replaced by sovereign router
   aiSidebarState: AISidebarState;
   modalSkipped: boolean;
+  modalReturning: boolean;
   phoenixButtonVisible: boolean;
   phoenixNavigating: boolean;
   lastActionTiming?: number;
@@ -133,6 +134,7 @@ interface FuseStore {
   setAISidebarState: (state: AISidebarState) => void;
 
   setModalSkipped: (value: boolean) => void;
+  setModalReturning: (value: boolean) => void;
   setPhoenixButtonVisible: (value: boolean) => void;
   setPhoenixNavigating: (value: boolean) => void;
 
@@ -213,6 +215,7 @@ export const useFuse = create<FuseStore>()((set, get) => {
 
     aiSidebarState: 'closed',
     modalSkipped: false,
+    modalReturning: false,
     phoenixButtonVisible: false,
     phoenixNavigating: false,
     lastActionTiming: undefined,
@@ -909,6 +912,12 @@ export const useFuse = create<FuseStore>()((set, get) => {
       const start = fuseTimer.start('setModalSkipped');
       set({ modalSkipped: value, lastActionTiming: performance.now() });
       fuseTimer.end('setModalSkipped', start);
+    },
+
+    setModalReturning: (value: boolean) => {
+      const start = fuseTimer.start('setModalReturning');
+      set({ modalReturning: value, lastActionTiming: performance.now() });
+      fuseTimer.end('setModalReturning', start);
     },
 
     setPhoenixButtonVisible: (value: boolean) => {

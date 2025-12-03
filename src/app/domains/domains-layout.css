@@ -60,7 +60,23 @@
 
 /* Only animate when modal is actually fading in/out */
 .dashboard-content-wrapper--animating {
-  transition: transform 600ms ease-in-out, margin-top 600ms ease-in-out;
+  transition: transform 600ms ease-in-out, margin-top 600ms ease-in-out, opacity 600ms ease-in-out;
+}
+
+/* When returning from nav, content starts invisible and fades in with modal glide */
+.dashboard-content-wrapper--fading-in {
+  opacity: 0;
+  animation: dashboard-content-fade-in 600ms ease-in-out forwards;
+}
+
+@keyframes dashboard-content-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
