@@ -153,8 +153,8 @@ export default function Dashboard() {
         />
         <Card.metric
           title="Build Milestone"
-          value="3 Dec 2025"
-          context="🚀 FUSE 6.0"
+          value="3 Dec 2025 @ 3:45pm"
+          context="🔱 GURU DOCTRINE"
         />
         <Card.showcase title="Button Showcase">
           <Grid.vertical>
