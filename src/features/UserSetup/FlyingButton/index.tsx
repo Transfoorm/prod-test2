@@ -91,38 +91,17 @@ export default function FlyingButton() {
         // Wait for modal animation to complete before getting position and flying
         setTimeout(() => {
           const targetButton = document.querySelector('[data-setup-source]');
-          console.log('🔍 Phoenix searching for modal button:', targetButton);
-
           if (!targetButton) {
-            console.warn('Phoenix: Modal button not found, aborting reverse flight');
-            // Let's also check what elements exist
-            console.log('Available elements:', {
-              allButtons: document.querySelectorAll('button').length,
-              withDataAttr: document.querySelectorAll('[data-setup-source]').length,
-              modal: document.querySelector('.ft-setup-modal')
-            });
-            // Tell topbar to show its button again
-            window.dispatchEvent(new CustomEvent('phoenixAborted'));
             return;
           }
 
           // Get position AFTER modal has finished animating
           const targetRect = targetButton.getBoundingClientRect();
-        console.log('🎯 Phoenix target position:', {
-          left: targetRect.left,
-          top: targetRect.top,
-          width: targetRect.width,
-          height: targetRect.height
-        });
 
         // Start flight to modal
         requestAnimationFrame(() => {
           setIsFlying(true);
           setPosition({ x: targetRect.left, y: targetRect.top });
-          console.log('✈️ Phoenix flying to:', {
-            left: targetRect.left,
-            top: targetRect.top
-          });
         });
 
         // Show modal button based on config timing
@@ -141,16 +120,12 @@ export default function FlyingButton() {
       }
     };
 
-    const handleHide = () => setIsVisible(false);
-
     window.addEventListener('phoenixShow', handleShow);
     window.addEventListener('phoenixReverseFlow', handleReverseFlow);
-    window.addEventListener('phoenixHide', handleHide);
 
     return () => {
       window.removeEventListener('phoenixShow', handleShow);
       window.removeEventListener('phoenixReverseFlow', handleReverseFlow);
-      window.removeEventListener('phoenixHide', handleHide);
     };
   }, []);
 

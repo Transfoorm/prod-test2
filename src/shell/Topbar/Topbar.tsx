@@ -16,7 +16,6 @@ import { Button } from '@/prebuilts/button';
 import { useFuse } from '@/store/fuse';
 import { useRankCheck } from '@/fuse/hydration/hooks/useRankCheck';
 import {
-  skipFlow,
   reverseFlow,
   navAwayFromUnskippedFlow,
   navReturnFlow
@@ -48,38 +47,17 @@ export default function Topbar() {
       : '/images/brand/transfoorm.png';
   };
 
-  // Listen for flying button events (keeping technical event names)
+  // Listen for Phoenix landing event (skip flow complete)
   React.useEffect(() => {
-    const handleFlyingButtonLanded = () => {
-      setTimeout(() => setFlyingButtonVisible(true), skipFlow.topbarButtonAppearDelay);
-    };
-
     const handlePhoenixLanded = () => {
       // Phoenix has landed - show the real button immediately
       setFlyingButtonVisible(true);
     };
 
-    const handleFlyingButtonTakingOff = () => {
-      // Delay hiding the button so flying button can start from its position
-      setTimeout(() => {
-        setFlyingButtonVisible(false);
-      }, reverseFlow.topbarButtonHideDelay);
-    };
-
-    const handleHideFlyingButton = () => {
-      setFlyingButtonVisible(false);
-    };
-
-    window.addEventListener('phoenixToTopbar', handleFlyingButtonLanded);
     window.addEventListener('phoenixLanded', handlePhoenixLanded);
-    window.addEventListener('phoenixButtonClicked', handleFlyingButtonTakingOff);
-    window.addEventListener('hidePhoenixButton', handleHideFlyingButton);
 
     return () => {
-      window.removeEventListener('phoenixToTopbar', handleFlyingButtonLanded);
       window.removeEventListener('phoenixLanded', handlePhoenixLanded);
-      window.removeEventListener('phoenixButtonClicked', handleFlyingButtonTakingOff);
-      window.removeEventListener('hidePhoenixButton', handleHideFlyingButton);
     };
   }, [setFlyingButtonVisible]);
 
@@ -91,9 +69,7 @@ export default function Topbar() {
 
     // GOLDEN RULE: If we're on home page with unskipped modal, hide topbar button
     // BUT NOT during reverse flow (isFadingOut means reverse is in progress)
-    console.log('USEEFFECT: isOnHome=', isOnHome, 'modalIsUnskipped=', modalIsUnskipped, 'isFadingOut=', isFadingOut, 'flyingButtonVisible=', flyingButtonVisible);
     if (isOnHome && modalIsUnskipped && !isFadingOut) {
-      console.log('USEEFFECT: HIDING BUTTON');
       if (flyingButtonVisible) {
         setIsFadingOut(true);
         setShouldFadeOut(true);
@@ -119,30 +95,13 @@ export default function Topbar() {
         return; // Button is already there, keep it solid like skipped mode
       }
 
-      // Only trigger Phoenix and show button if it's not already visible
-      const storedPosition = sessionStorage.getItem('flyingButtonStartPosition');
-      if (storedPosition) {
-        const startPos = JSON.parse(storedPosition);
-
-        // Fire flying button event with stored position - START GUN!
-        setTimeout(() => {
-          window.dispatchEvent(new CustomEvent('phoenixFromUnskippedModal', {
-            detail: { startPosition: startPos }
-          }));
-        }, navAwayFromUnskippedFlow.flyingButtonStartDelay);
-
-        // Show button when flying button lands - same START GUN timing!
-        setTimeout(() => {
-          setShouldFadeIn(true);
-          setFlyingButtonVisible(true);
-          // Remove fade-in class after animation completes
-          setTimeout(() => setShouldFadeIn(false), 400);
-        }, navAwayFromUnskippedFlow.topbarButtonAppearDelay);
-      } else {
+      // Show button with fade-in animation
+      setTimeout(() => {
         setShouldFadeIn(true);
         setFlyingButtonVisible(true);
+        // Remove fade-in class after animation completes
         setTimeout(() => setShouldFadeIn(false), 400);
-      }
+      }, navAwayFromUnskippedFlow.topbarButtonAppearDelay);
     }
   }, [route, modalSkipped, user, flyingButtonVisible, isCaptain, setFlyingButtonVisible, setShouldFadeIn, isFadingOut]);
 
@@ -180,7 +139,6 @@ export default function Topbar() {
                 if (sourceButton) {
                   // Capture position IMMEDIATELY before anything changes
                   const buttonRect = sourceButton.getBoundingClientRect();
-                  console.log('REVERSE CLICK: captured position');
 
                   // Mark as fading to keep button visible (prevents useEffect from hiding instantly)
                   setIsFadingOut(true);
@@ -195,7 +153,6 @@ export default function Topbar() {
                   window.dispatchEvent(new CustomEvent('bringModalBack'));
 
                   // Fire Phoenix event after the ONE takeoff delay
-                  console.log('Phoenix takeoff delay:', reverseFlow.phoenixTakeoffDelay);
                   setTimeout(() => {
                     // Use captured position
                     window.dispatchEvent(new CustomEvent('phoenixReverseFlow', {

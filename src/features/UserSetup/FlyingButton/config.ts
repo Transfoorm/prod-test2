@@ -25,12 +25,10 @@ export const PHOENIX_CONFIG = {
     // Phoenix appears in its place (no delay)
 
     // Step 3: Phoenix flight
-    flightStartDelay: 50,         // ms before Phoenix starts flying (let CSS transition apply)
     flightDuration: 600,          // ms for Phoenix to fly from modal to topbar
     landingBuffer: 50,            // ms buffer after flight completes before Phoenix disappears
 
     // Step 4: Modal roll-up animation
-    modalFadeDelay: 0,            // ms before modal starts fading (immediate)
     modalFadeDuration: 600,       // ms for modal opacity to fade
     modalRollUpDuration: 600,     // ms for modal to collapse (max-height transition)
 
@@ -49,7 +47,6 @@ export const PHOENIX_CONFIG = {
     // Reverse flow - Phoenix flies back from topbar to modal
     topbarButtonFadeStartDelay: 10, // On Click: ms before topbar button starts fading (let Phoenix arrive first)
     phoenixTakeoffDelay: 0,      // ms after clicking topbar before Phoenix appears
-    phoenixDepartureDelay: 0,     // ms after Phoenix appears before it takes off and flies
     modalPositionDelay: 600,     // ms to wait for modal animation before getting button position
     flightDuration: 600,            // ms for Phoenix to fly back to modal
     landingBuffer: 50,           // ms buffer after flight completes before Phoenix disappears
@@ -70,8 +67,6 @@ export const PHOENIX_CONFIG = {
     // Debug color (blue for visibility)
     debugColor: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
 
-    // Production color (matches Button.primary)
-    productionColor: 'linear-gradient(135deg, #f97316 0%, #dc2626 100%)',
   },
   // ════════════════════════════════════════════════════════════════════════
   // NAVIGATION FLOWS - When navigating away from unskipped modal
@@ -90,18 +85,7 @@ export const PHOENIX_CONFIG = {
     bringModalBackDelay: 50,       // ms after navigation before bringModalBack event
   },
 
-  navigateAwayFlow: {
-    flyingButtonEventDelay: 600,   // ms delay for navigation events
-  },
-
-  // ════════════════════════════════════════════════════════════════════════
-  // SYSTEM TIMING - Background processes that affect the dance
-  // ════════════════════════════════════════════════════════════════════════
-  systemTiming: {
-    cookiePollingInterval: 1000,     // ms between cookie checks
-  },
-
 } as const;
 
 // Export individual sections for easy importing
-export const { skipFlow, reverseFlow, visual, navAwayFromUnskippedFlow, navReturnFlow, navigateAwayFlow, systemTiming } = PHOENIX_CONFIG;
+export const { skipFlow, reverseFlow, visual, navAwayFromUnskippedFlow, navReturnFlow } = PHOENIX_CONFIG;
