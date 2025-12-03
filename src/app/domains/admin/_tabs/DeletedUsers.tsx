@@ -1,8 +1,8 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🗑️ DELETIONS TAB - VANISH Journal (VR-Compliant)                     │
-│  /src/app/domains/admin/_tabs/DeletionsTab.tsx                         │
+│  🗑️ DELETED USERS - VANISH Journal                                    │
+│  /src/app/domains/admin/_tabs/DeletedUsers.tsx                         │
 │                                                                        │
-│  VR Gospel compliant deletion logs tab. Zero CSS files.               │
+│  Audit trail of all vanished users. Permanent record.                 │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
@@ -19,7 +19,7 @@ import { useAdminData } from '@/hooks/useAdminData';
 
 type DeletionLog = Doc<"admin_users_DeletionLogs">;
 
-export default function DeletionsTab() {
+export default function DeletedUsers() {
 
   // 🚀 WARP: Instant data access from FUSE store (server-preloaded)
   const { data } = useAdminData();

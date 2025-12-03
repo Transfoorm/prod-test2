@@ -10,14 +10,18 @@
 
 import { useSetPageHeader } from '@/hooks/useSetPageHeader';
 import { useAdminData } from '@/hooks/useAdminData';
+import { useAdminSync } from '@/hooks/useAdminSync';
 import { usePageTiming } from '@/fuse/hooks/usePageTiming';
 import { Tabs, Stack } from '@/prebuilts';
-import UsersTab from './_tabs/UsersTab';
-import DeletionsTab from './_tabs/DeletionsTab';
+import ActiveUsers from './_tabs/ActiveUsers';
+import DeletedUsers from './_tabs/DeletedUsers';
 
 export default function Users() {
-  useSetPageHeader(undefined, 'All current users who use the platform');
+  useSetPageHeader("User Management", 'View, ammend or delete active platform users');
   usePageTiming('/admin/users');
+
+  // 🔄 Real-time sync: Convex → FUSE (live subscription)
+  useAdminSync();
 
   // 🚀 WARP: Get counts from FUSE store (server-preloaded)
   const { computed } = useAdminData();
@@ -26,8 +30,8 @@ export default function Users() {
     <Stack>
       <Tabs.panels
         tabs={[
-          { id: 'users', label: 'All Users', count: computed.usersCount, content: <UsersTab /> },
-          { id: 'deletelog', label: 'Deleted Users', count: computed.deletionLogsCount, content: <DeletionsTab /> }
+          { id: 'users', label: 'Active Users', count: computed.usersCount, content: <ActiveUsers /> },
+          { id: 'deletelog', label: 'Deleted Users', count: computed.deletionLogsCount, content: <DeletedUsers /> }
         ]}
       />
     </Stack>

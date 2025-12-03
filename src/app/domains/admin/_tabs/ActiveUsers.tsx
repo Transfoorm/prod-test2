@@ -1,3 +1,10 @@
+/**──────────────────────────────────────────────────────────────────────┐
+│  👥 ACTIVE USERS - Living Users Tab                                    │
+│  /src/app/domains/admin/_tabs/ActiveUsers.tsx                          │
+│                                                                        │
+│  All current platform users. VANISH opens deletion portal.            │
+└────────────────────────────────────────────────────────────────────────┘ */
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -12,7 +19,7 @@ import { useFuse } from '@/store/fuse';
 
 type UserData = Record<string, unknown> & { id: string };
 
-export default function UsersTab() {
+export default function ActiveUsers() {
   const [searchTerm, setSearchTerm] = useState('');
   const [checkedRows, setCheckedRows] = useState<Set<string>>(new Set());
 

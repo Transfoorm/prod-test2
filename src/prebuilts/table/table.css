@@ -138,7 +138,7 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 /* Outer container - Position context for batch actions */
-.vr-table-container {
+.vr-table-sortable-container {
   width: 100%;
   overflow: visible;  /* Allow batch actions to float above */
   position: relative;  /* Position context for absolute batch actions */
@@ -283,13 +283,12 @@
   justify-content: center;
 }
 
-.vr-table-sortable .vr-table-sortable-cell-actions svg {
+.vr-table-sortable-cell-actions svg {
   color: var(--text-secondary);
-  cursor: pointer;
   transition: opacity var(--table-transition-duration-normal) ease;
 }
 
-.vr-table-sortable .vr-table-sortable-cell-actions svg:hover {
+.vr-table-sortable-cell-actions .vr-tooltip-trigger:hover svg {
   opacity: 0.7;
 }
 
@@ -301,21 +300,22 @@
    BATCH ACTIONS (VR auto-renders when checkbox has onBatchDelete)
    ─────────────────────────────────────────────────────────────────── */
 
+.vr-batch-actions-row {
+  background: var(--bg-secondary);
+}
+
+.vr-batch-actions-row td {
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--border-normal);
+}
+
 .vr-batch-actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: var(--space-md);
-  position: absolute;
-  top: -65px;  /* 🟨 BATCH ACTIONS FLOAT POSITION calc(-1 * var(--stack-gap, 32px) - 40px) */
-  right: 0;
-  z-index: 10;
-  pointer-events: none;  /* Allow clicks through empty space */
 }
 
-.vr-batch-actions > * {
-  pointer-events: auto;  /* Re-enable clicks on pill and button */
-}
 
 /* Selection count pill */
 .vr-selection-pill {

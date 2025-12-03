@@ -60,16 +60,43 @@ export function VanishQuarantine() {
   const [confirmText, setConfirmText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Build target array from config (supports both Convex IDs and Clerk IDs)
+  const targetIds: string[] = [];
+  if (config?.target) {
+    targetIds.push(config.target);
+  }
+  if (config?.targets) {
+    targetIds.push(...config.targets);
+  }
+
+  // Resolve user data for targets (check both _id and clerkId for compatibility)
+  const targets: DeletionTarget[] = allUsers
+    ? allUsers
+        .filter((u) => targetIds.includes(u._id) || targetIds.includes(u.clerkId))
+        .map((u) => ({
+          clerkId: u.clerkId,
+          name: `${u.firstName || ''} ${u.lastName || ''}`.trim() || 'Unknown',
+          email: u.email,
+          rank: (u.rank || 'crew') as 'admiral' | 'commodore' | 'captain' | 'crew',
+          setupStatus: (u.setupStatus || 'unknown') as string
+        }))
+    : [];
+
+  const isBatch = targets.length > 1;
+  const hasTargets = targets.length > 0;
+
   // Trigger entrance animation with requestAnimationFrame
-  // Component mounts with isVisible=false, then transitions to true
+  // Only triggers when we actually have targets to display
   useEffect(() => {
+    if (!hasTargets) return;
+
     // Double rAF ensures browser paint happens before animation
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         setIsVisible(true);
       });
     });
-  }, []);
+  }, [hasTargets]);
 
   // Reset form state when drawer closes
   useEffect(() => {
@@ -194,36 +221,10 @@ export function VanishQuarantine() {
     }
   };
 
-  // Resolve targets from config
-  if (!config || !allUsers) {
+  // Don't render until we have targets resolved
+  if (!hasTargets) {
     return null;
   }
-
-  // Build target array from config (supports both Convex IDs and Clerk IDs)
-  const targetIds: string[] = [];
-  if (config.target) {
-    targetIds.push(config.target);
-  }
-  if (config.targets) {
-    targetIds.push(...config.targets);
-  }
-
-  // Resolve user data for targets (check both _id and clerkId for compatibility)
-  const targets: DeletionTarget[] = allUsers
-    .filter((u) => targetIds.includes(u._id) || targetIds.includes(u.clerkId))
-    .map((u) => ({
-      clerkId: u.clerkId,
-      name: `${u.firstName || ''} ${u.lastName || ''}`.trim() || 'Unknown',
-      email: u.email,
-      rank: (u.rank || 'crew') as 'admiral' | 'commodore' | 'captain' | 'crew',
-      setupStatus: (u.setupStatus || 'unknown') as string
-    }));
-
-  if (targets.length === 0) {
-    return null;
-  }
-
-  const isBatch = targets.length > 1;
 
   // Get portal target element
   const portalTarget = document.getElementById('vanish-drawer-portal');

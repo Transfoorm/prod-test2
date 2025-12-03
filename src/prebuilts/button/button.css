@@ -69,11 +69,12 @@
   font-weight: var(--button-font-weight);
   min-width: var(--button-min-width);
 
-  /* Variant-specific styling - solid brand color, muted rest state */
-  background: var(--brand-primary);
+  /* Variant-specific styling - subtle diagonal warmth gradient */
+  background: var(--button-primary-bg);
   opacity: 0.85;
   color: #fff;
-  border: 1px solid transparent;
+  border: none;
+  box-shadow: none;
   transition: all 150ms ease;
 }
 
@@ -86,6 +87,7 @@
 
 .vr-button-primary:hover:not(:disabled) {
   opacity: 1;
+  transform: translateY(-1px);
 }
 
 .vr-button-primary:active:not(:disabled) {
@@ -239,6 +241,104 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   BLUE BUTTON VARIANT - Classic website blue for info actions
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-button-blue {
+  /* Base structure */
+  padding: var(--button-padding-y) var(--button-padding-x);
+  border: none;
+  border-radius: var(--button-radius);
+  font-size: var(--button-font-size);
+  font-weight: var(--button-font-weight);
+  min-width: var(--button-min-width);
+  box-sizing: border-box;
+
+  /* Variant-specific styling - Classic website blue */
+  background-color: #2563eb;
+  color: #fff;
+  box-shadow: 0 2px 4px rgb(37 99 235 / 20%);
+  transition: all 150ms ease;
+}
+
+.vr-button-blue:disabled {
+  background-color: var(--bg-tertiary);
+  color: var(--text-disabled);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Loading spinner */
+.vr-button-blue .vr-button-spinner {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.vr-button-blue:hover:not(:disabled) {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.vr-button-blue:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgb(37 99 235 / 20%);
+}
+
+/* Full width variant */
+.vr-button-blue.vr-button-full-width {
+  width: 100%;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   GREEN BUTTON VARIANT - Classic website green for success actions
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-button-green {
+  /* Base structure */
+  padding: var(--button-padding-y) var(--button-padding-x);
+  border: none;
+  border-radius: var(--button-radius);
+  font-size: var(--button-font-size);
+  font-weight: var(--button-font-weight);
+  min-width: var(--button-min-width);
+  box-sizing: border-box;
+
+  /* Variant-specific styling - Classic website green */
+  background-color: #16a34a;
+  color: #fff;
+  box-shadow: 0 2px 4px rgb(22 163 74 / 20%);
+  transition: all 150ms ease;
+}
+
+.vr-button-green:disabled {
+  background-color: var(--bg-tertiary);
+  color: var(--text-disabled);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Loading spinner */
+.vr-button-green .vr-button-spinner {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.vr-button-green:hover:not(:disabled) {
+  background-color: #15803d;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.vr-button-green:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgb(22 163 74 / 20%);
+}
+
+/* Full width variant */
+.vr-button-green.vr-button-full-width {
+  width: 100%;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    LINK BUTTON VARIANT - Text-only link style
    ═══════════════════════════════════════════════════════════════════ */
 
@@ -297,7 +397,7 @@
   border: 2px solid transparent;
   background-origin: border-box;
   background-clip: padding-box, border-box;
-  color: var(--text-inverse);
+  color: #fff;
 
   /* Dramatic shadow for depth */
   box-shadow: var(--button-fire-shadow);
@@ -314,7 +414,7 @@
               var(--button-fire-bg-border) border-box;
   background-origin: border-box;
   background-clip: padding-box, border-box;
-  color: var(--text-inverse);
+  color: #fff;
   cursor: default;
   opacity: 0.5;
   box-shadow: none;
@@ -381,6 +481,7 @@
   background: transparent;
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
+  box-shadow: var(--button-outline-glow);
   transition: all 200ms ease;
 }
 

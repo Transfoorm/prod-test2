@@ -171,8 +171,9 @@
      BUTTON COLORS - Token-based button variant backgrounds
      ═══════════════════════════════════════════════════════════════════ */
 
-  /* Primary - Brand Orange Gradient (using logo-gradient) */
-  --button-primary-bg: var(--logo-gradient);
+  /* Primary - Brand Orange Gradient */
+  --button-primary-gradient: radial-gradient(ellipse at center, #fb8840 0%, #ff5020 100%);
+  --button-primary-bg: var(--button-primary-gradient);
   --button-primary-text: #fff;
   --button-primary-shadow: 0 2px 4px rgb(255 80 32 / 20%);
   --button-primary-hover-shadow: 0 3px 6px rgb(255 80 32 / 25%);
@@ -203,6 +204,9 @@
   --button-link-text: var(--brand-primary);
   --button-link-hover-text: var(--brand-primary-dark);
 
+  /* Outline - Border only */
+  --button-outline-glow: 0 0 8px 0 rgb(0 0 0 / 5%);
+
 
   /* ═══════════════════════════════════════════════════════════════════
      BRAND LOGO - Transfoorm Identity
@@ -211,7 +215,6 @@
   --logo-text-color: #1e1b4b;                                    /* Dark navy - Transfoorm wordmark */
   --logo-accent-start: #ff5020;                                  /* Transfoorm orange - dot gradient start */
   --logo-accent-end: #fbbf24;                                    /* Golden yellow - dot gradient end */
-  --logo-gradient: linear-gradient(135deg, #ff5020 0%, #fbbf24 100%);
 
 
   /* ═══════════════════════════════════════════════════════════════════
@@ -411,8 +414,9 @@
      BUTTON COLORS - Token-based button variant backgrounds (matches light mode)
      ═══════════════════════════════════════════════════════════════════ */
 
-  /* Primary - Brand Orange Gradient (using logo-gradient) */
-  --button-primary-bg: var(--logo-gradient);
+  /* Primary - Brand Orange Gradient */
+  --button-primary-gradient: radial-gradient(ellipse at center, #fb8840 0%, #ff5020 100%);
+  --button-primary-bg: var(--button-primary-gradient);
   --button-primary-text: #fff;
   --button-primary-shadow: 0 2px 4px rgb(255 80 32 / 20%);
   --button-primary-hover-shadow: 0 3px 6px rgb(255 80 32 / 25%);
@@ -442,6 +446,9 @@
   /* Link - Text-only */
   --button-link-text: var(--brand-primary);
   --button-link-hover-text: var(--brand-primary-dark);
+
+  /* Outline - Border only */
+  --button-outline-glow: 0 0 8px 0 rgb(255 255 255 / 5%);
 
 
   /* ═══════════════════════════════════════════════════════════════════

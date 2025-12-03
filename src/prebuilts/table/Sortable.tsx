@@ -192,23 +192,26 @@ export default function SortableTable<TData = Record<string, unknown>>({
 
   return (
     <div className="vr-table-sortable-container">
-      {/* VR Auto-Renders: Batch actions float above table, aligned with Search.bar */}
-      {batchActionsEnabled && selectedCount > 0 && (
-        <div className="vr-batch-actions">
-          <span className="vr-selection-pill">
-            {selectedCount} {selectedCount === 1 ? singularLabel : pluralLabel} selected
-          </span>
-          <Button.danger onClick={handleBatchDelete}>
-            Delete Selected
-          </Button.danger>
-        </div>
-      )}
-
       <div className="vr-table-wrapper">
         <table
           className={`vr-table-sortable ${striped ? 'vr-table-sortable-striped' : ''} ${bordered ? 'vr-table-sortable-bordered' : ''} ${className}`}
         >
         <thead>
+          {/* VR Auto-Renders: Batch actions row when checkboxes selected */}
+          {batchActionsEnabled && selectedCount > 0 && (
+            <tr className="vr-batch-actions-row">
+              <td colSpan={columns.length}>
+                <div className="vr-batch-actions">
+                  <span className="vr-selection-pill">
+                    {selectedCount} {selectedCount === 1 ? singularLabel : pluralLabel} selected
+                  </span>
+                  <Button.danger onClick={handleBatchDelete}>
+                    Delete Selected
+                  </Button.danger>
+                </div>
+              </td>
+            </tr>
+          )}
           <tr>
             {columns.map((col) => {
               // VR Convention: Checkbox variant auto-renders header checkbox

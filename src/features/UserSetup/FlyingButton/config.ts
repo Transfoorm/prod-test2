@@ -57,7 +57,7 @@ export const PHOENIX_CONFIG = {
     └─────────────────────────────────────────────────────────────────────────*/
   navAwayFlow: {
     topbarButtonAppearDelay:     200,   // Delay before topbar button fades in
-    topbarButtonFadeOutDuration: 200,   // Fade-out duration on return home
+    topbarButtonFadeOutDuration: 500,   // Fade-out duration on return home
   },
 
   /*┌─────────────────────────────────────────────────────────────────────────┐

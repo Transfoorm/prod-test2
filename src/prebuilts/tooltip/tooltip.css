@@ -29,6 +29,7 @@
 /* Trigger wrapper */
 .vr-tooltip-trigger {
   display: inline-block;
+  cursor: pointer;
 }
 
 /* Tooltip content */

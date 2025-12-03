@@ -179,6 +179,8 @@ export default function Dashboard() {
             <Button.link>Link</Button.link>
             <Button.fire>Fire</Button.fire>
             <Button.outline>Outline</Button.outline>
+            <Button.blue>Blue</Button.blue>
+            <Button.green>Green</Button.green>
           </Grid.vertical>
         </Card.showcase>
       </Grid.cards>
