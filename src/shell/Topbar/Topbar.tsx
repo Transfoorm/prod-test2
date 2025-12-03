@@ -17,7 +17,7 @@ import { useFuse } from '@/store/fuse';
 import { useRankCheck } from '@/fuse/hydration/hooks/useRankCheck';
 import {
   reverseFlow,
-  navAwayFromUnskippedFlow,
+  navAwayFlow,
   navReturnFlow
 } from '@/features/UserSetup/FlyingButton/config';
 
@@ -77,7 +77,7 @@ export default function Topbar() {
           setFlyingButtonVisible(false);
           setIsFadingOut(false);
           setShouldFadeOut(false);
-        }, navAwayFromUnskippedFlow.topbarButtonFadeOutDuration);
+        }, navAwayFlow.topbarButtonFadeOutDuration);
       }
       return;
     }
@@ -101,7 +101,7 @@ export default function Topbar() {
         setFlyingButtonVisible(true);
         // Remove fade-in class after animation completes
         setTimeout(() => setShouldFadeIn(false), 400);
-      }, navAwayFromUnskippedFlow.topbarButtonAppearDelay);
+      }, navAwayFlow.topbarButtonAppearDelay);
     }
   }, [route, modalSkipped, user, flyingButtonVisible, isCaptain, setFlyingButtonVisible, setShouldFadeIn, isFadingOut]);
 

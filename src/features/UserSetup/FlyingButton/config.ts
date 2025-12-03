@@ -1,91 +1,85 @@
-/**──────────────────────────────────────────────────────────────────────────┐
- │  ⏱️ PHOENIX TIMING CONFIG - Single Source of Truth                        │
- │  /src/features/UserSetup/FlyingButton/config.ts                           │
- │                                                                           │
- │  All timing values for the Phoenix (Flying Button) animation system.      │
- │  Every delay, duration, and offset lives here for easy orchestration.     │
- │                                                                           │
- │  The Phoenix flows:                                                       │
- │  • Skip Flow: Modal → Topbar (when "Skip for now" clicked)                │
- │  • Reverse Flow: Topbar → Modal (future - when topbar button clicked)     │
- │                                                                           │
- │  ⚠️  MODIFY WITH CARE: These values are carefully tuned for the           │
- │  Houdini illusion. Change one, test the entire flow.                      │
- └───────────────────────────────────────────────────────────────────────────*/
+/**═══════════════════════════════════════════════════════════════════════════╗
+ ║  🔥 PHOENIX BUTTON - Animation Timing Config                               ║
+ ║  /src/features/UserSetup/FlyingButton/config.ts                            ║
+ ╠════════════════════════════════════════════════════════════════════════════╣
+ ║                                                                            ║
+ ║  The "Complete my setup" button that flies between Modal and Topbar.       ║
+ ║  Three buttons choreographed as one - the Houdini illusion.                ║
+ ║                                                                            ║
+ ║  ┌─────────────────────────────────────────────────────────────────────┐   ║
+ ║  │  FLOWS:                                                             │   ║
+ ║  │                                                                     │   ║
+ ║  │  1. SKIP        User clicks "Skip for now"    Modal → Topbar        │   ║
+ ║  │  2. REVERSE     User clicks topbar button     Topbar → Modal        │   ║
+ ║  │  3. NAV AWAY    User navigates from home      Topbar fades in       │   ║
+ ║  │  4. NAV RETURN  User returns to home          Topbar fades out      │   ║
+ ║  └─────────────────────────────────────────────────────────────────────┘   ║
+ ║                                                                            ║
+ ║  ⚠️  MODIFY WITH CARE - These timings are precisely choreographed.         ║
+ ║      Change one value, test ALL flows.                                     ║
+ ║                                                                            ║
+ ╚═══════════════════════════════════════════════════════════════════════════*/
 
 export const PHOENIX_CONFIG = {
-  // ════════════════════════════════════════════════════════════════════════
-  // SKIP FLOW - Modal → Topbar
-  // User clicks "Skip for now" button
-  // ════════════════════════════════════════════════════════════════════════
+
+  /*┌─────────────────────────────────────────────────────────────────────────┐
+    │  FLOW 1: SKIP                                                           │
+    │  Modal → Topbar (user clicks "Skip for now")                            │
+    └─────────────────────────────────────────────────────────────────────────*/
   skipFlow: {
-    // Step 1: User clicks "Skip for now" (START GUN at 0ms)
+    flightDuration:          600,   // Phoenix flight time (modal → topbar)
+    landingBuffer:            50,   // Buffer before Phoenix disappears
+    modalFadeDuration:       600,   // Modal opacity fade
+    modalRollUpDuration:     600,   // Modal collapse animation
+    modalUnmountDelay:       600,   // Delay before DOM removal
+    topbarButtonAppearDelay: 300,   // Delay before topbar button shows
+  },
 
-    // Step 2: Houdini switch - modal button disappears IMMEDIATELY
-    // Phoenix appears in its place (no delay)
-
-    // Step 3: Phoenix flight
-    flightDuration: 600,          // ms for Phoenix to fly from modal to topbar
-    landingBuffer: 50,            // ms buffer after flight completes before Phoenix disappears
-
-    // Step 4: Modal roll-up animation
-    modalFadeDuration: 600,       // ms for modal opacity to fade
-    modalRollUpDuration: 600,     // ms for modal to collapse (max-height transition)
-
-    // Step 5: Dashboard unmount
-    modalUnmountDelay: 600,       // ms before modal is removed from DOM (must be > longest animation)
-
-    // Step 6: Topbar button appearance
-    topbarButtonAppearDelay: 300, // ms after Phoenix lands before topbar button appears
-     },
-
-  // ════════════════════════════════════════════════════════════════════════
-  // REVERSE FLOW - Topbar → Modal 
-  // User clicks topbar button to bring modal back
-  // ════════════════════════════════════════════════════════════════════════
+  /*┌─────────────────────────────────────────────────────────────────────────┐
+    │  FLOW 2: REVERSE                                                        │
+    │  Topbar → Modal (user clicks topbar button while on home)               │
+    └─────────────────────────────────────────────────────────────────────────*/
   reverseFlow: {
-    // Reverse flow - Phoenix flies back from topbar to modal
-    topbarButtonFadeStartDelay: 10, // On Click: ms before topbar button starts fading (let Phoenix arrive first)
-    phoenixTakeoffDelay: 0,      // ms after clicking topbar before Phoenix appears
-    modalPositionDelay: 600,     // ms to wait for modal animation before getting button position
-    flightDuration: 600,            // ms for Phoenix to fly back to modal
-    landingBuffer: 50,           // ms buffer after flight completes before Phoenix disappears
-    topbarButtonHideDelay: 600,     // ms delay before hiding topbar button (after Phoenix appears)
-    modalShowDelay: 0,                // ms before modal starts appearing (immediate)
-    modalFadeInDuration: 600,       // ms for modal to fade in (MUST match CSS animation)
-    setupButtonAppearDelay: 650,    // ms before setup button reappears in modal
+    topbarButtonFadeStartDelay:  10,   // Blink delay before button hides
+    phoenixTakeoffDelay:          0,   // Delay before Phoenix appears
+    modalPositionDelay:         600,   // Wait for modal to animate in
+    flightDuration:             600,   // Phoenix flight time (topbar → modal)
+    landingBuffer:               50,   // Buffer before Phoenix disappears
+    topbarButtonHideDelay:      600,   // Delay before topbar button hides
+    modalShowDelay:               0,   // Delay before modal appears
+    modalFadeInDuration:        600,   // Modal fade-in animation
+    setupButtonAppearDelay:     650,   // Delay before modal button shows
   },
 
-  // ════════════════════════════════════════════════════════════════════════
-  // VISUAL SETTINGS
-  // Colors, sizes, and visual properties
-  // ════════════════════════════════════════════════════════════════════════
-  visual: {
-    // Debug mode - set to true to see Phoenix in different color
-    debugMode: false,
-
-    // Debug color (blue for visibility)
-    debugColor: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-
-  },
-  // ════════════════════════════════════════════════════════════════════════
-  // NAVIGATION FLOWS - When navigating away from unskipped modal
-  // ════════════════════════════════════════════════════════════════════════
-  navAwayFromUnskippedFlow: {
-    flyingButtonStartDelay: 100,   // ms before Phoenix starts when navigating away
-    topbarButtonAppearDelay: 200,  // ms before topbar button appears
-    topbarButtonFadeOutDuration: 200, // ms for topbar button fade-out animation on return home
+  /*┌─────────────────────────────────────────────────────────────────────────┐
+    │  FLOW 3: NAV AWAY                                                       │
+    │  User navigates away from home (unskipped modal)                        │
+    └─────────────────────────────────────────────────────────────────────────*/
+  navAwayFlow: {
+    topbarButtonAppearDelay:     200,   // Delay before topbar button fades in
+    topbarButtonFadeOutDuration: 200,   // Fade-out duration on return home
   },
 
-  // ════════════════════════════════════════════════════════════════════════
-  // NAV RETURN FLOW - Topbar → Modal (from another page)
-  // User clicks topbar button while NOT on homepage
-  // ════════════════════════════════════════════════════════════════════════
+  /*┌─────────────────────────────────────────────────────────────────────────┐
+    │  FLOW 4: NAV RETURN                                                     │
+    │  User clicks topbar button while NOT on home                            │
+    └─────────────────────────────────────────────────────────────────────────*/
   navReturnFlow: {
-    bringModalBackDelay: 50,       // ms after navigation before bringModalBack event
+    bringModalBackDelay:          50,   // Delay after navigation starts
+  },
+
+  /*┌─────────────────────────────────────────────────────────────────────────┐
+    │  DEBUG                                                                  │
+    │  Visual debugging tools                                                 │
+    └─────────────────────────────────────────────────────────────────────────*/
+  debug: {
+    enabled:  false,
+    color:    'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
   },
 
 } as const;
 
-// Export individual sections for easy importing
-export const { skipFlow, reverseFlow, visual, navAwayFromUnskippedFlow, navReturnFlow } = PHOENIX_CONFIG;
+// ═══════════════════════════════════════════════════════════════════════════
+// EXPORTS
+// ═══════════════════════════════════════════════════════════════════════════
+export const { skipFlow, reverseFlow, navAwayFlow, navReturnFlow, debug } = PHOENIX_CONFIG;

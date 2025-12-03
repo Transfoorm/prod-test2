@@ -15,7 +15,7 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Sparkles } from 'lucide-react';
 import { Button } from '@/prebuilts/button';
-import { skipFlow, reverseFlow, visual } from './config';
+import { skipFlow, reverseFlow, debug } from './config';
 
 interface Position {
   x: number;
@@ -144,7 +144,7 @@ export default function FlyingButton() {
     >
       <Button.fire
         icon={<Sparkles />}
-        style={visual.debugMode ? { background: visual.debugColor } : undefined}
+        style={debug.enabled ? { background: debug.color } : undefined}
       >
         Complete my setup
       </Button.fire>
