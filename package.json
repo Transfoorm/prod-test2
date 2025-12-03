@@ -1,7 +1,6 @@
 {
-  
-  "name": "knox-test",
-  "version": "6.0",
+  "name": "fuse",
+  "version": "6.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
