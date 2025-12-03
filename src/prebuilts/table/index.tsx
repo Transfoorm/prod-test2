@@ -19,6 +19,7 @@ import SortableTable from './Sortable';
 import PaginatedTable from './Paginated';
 import Toolbar from './Toolbar';
 import BatchActions from './BatchActions';
+import { useTableSearch } from './useTableSearch';
 
 /**
  * Table Registry - All table variants + utilities as named exports
@@ -47,7 +48,8 @@ export {
   SortableTable,
   PaginatedTable,
   Toolbar,
-  BatchActions
+  BatchActions,
+  useTableSearch
 };
 
 // Type exports for TypeScript users

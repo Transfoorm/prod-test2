@@ -10,6 +10,7 @@
 import { useState, useMemo } from 'react';
 import { Search, Table, Badge, Modal, Stack } from '@/prebuilts';
 import { useSideDrawer } from '@/prebuilts/modal';
+import { useTableSearch } from '@/prebuilts/table';
 import type { SortableColumn } from '@/prebuilts/table/Sortable';
 import type { RankType } from '@/prebuilts/badge/Rank';
 import type { SetupStatusType } from '@/prebuilts/badge/Setup';
@@ -20,7 +21,6 @@ import { useFuse } from '@/store/fuse';
 type UserData = Record<string, unknown> & { id: string };
 
 export default function ActiveUsers() {
-  const [searchTerm, setSearchTerm] = useState('');
   const [checkedRows, setCheckedRows] = useState<Set<string>>(new Set());
 
   // 🚀 WARP: Instant data access from FUSE store (server-preloaded)
@@ -124,28 +124,24 @@ export default function ActiveUsers() {
     });
   };
 
+  // Column definitions (needed before useTableSearch)
   const columns: SortableColumn<UserData>[] = [
     { key: 'select', variant: 'checkbox', checked: checkedRows, onCheck: handleRowCheckbox, onHeaderCheck: handleHeaderCheckbox, getRowLabel: (row) => `${row.firstName}`, currentUserId: fuseUser?.id, sortable: false },
     { key: 'createdAt', header: 'Created', sortable: true, width: '11%' },
     { key: 'firstName', header: 'First', sortable: true, width: '9%' },
     { key: 'lastName', header: 'Last', sortable: true, width: '12%' },
     { key: 'email', header: 'Email', sortable: true, width: '17%' },
-    { key: 'setupStatus', header: 'Setup', sortable: true, width: '10%', render: (_value, row) =>                                    <Badge.setup status={row.setupStatus as SetupStatusType} /> },
+    { key: 'setupStatus', header: 'Setup', sortable: true, width: '10%', render: (_value, row) => <Badge.setup status={row.setupStatus as SetupStatusType} /> },
     { key: 'entityName', header: 'Entity', sortable: true, width: '12%' },
     { key: 'socialName', header: 'Social', sortable: true, width: '12%' },
-    { key: 'rank', header: 'Rank', sortable: true, width: '10%', render: (_value, row) =>
-    <Badge.rank rank={row.rank as RankType} /> },
-    { key: 'actions', header: 'Actions', sortable: false, variant: 'view', currentUserId: fuseUser?.id,  // VR auto-handles SP (Convex id)
-      onView: handleViewUser, onDelete: handleDeleteUser
-    },  ];
+    { key: 'rank', header: 'Rank', sortable: true, width: '10%', render: (_value, row) => <Badge.rank rank={row.rank as RankType} /> },
+    { key: 'actions', header: 'Actions', sortable: false, variant: 'view', currentUserId: fuseUser?.id, onView: handleViewUser, onDelete: handleDeleteUser },
+  ];
 
+  // Transform raw user data for table display
   const tableData = useMemo(() => users?.map(user => ({
-    id: String(user._id),  // ✅ doctrinal: row.id is Convex _id
-    createdAt: user.createdAt ? new Date(user.createdAt as number).toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    }) : '—',
+    id: String(user._id),
+    createdAt: user.createdAt ? new Date(user.createdAt as number).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—',
     firstName: user.firstName as string,
     lastName: user.lastName as string,
     email: user.email as string,
@@ -155,20 +151,11 @@ export default function ActiveUsers() {
     rank: user.rank as RankType
   })) || [], [users]);
 
-// Filter tableData based on searchTerm - Search filters table by firstName, lastName, email, entity, social, and date. Shows "X of Y"
-  const filteredData = useMemo(() => {
-    if (!searchTerm.trim()) return tableData;
-
-    const term = searchTerm.toLowerCase();
-    return tableData.filter(row =>
-      row.firstName?.toString().toLowerCase().includes(term) ||
-      row.lastName?.toString().toLowerCase().includes(term) ||
-      row.email?.toString().toLowerCase().includes(term) ||
-      row.entityName?.toString().toLowerCase().includes(term) ||
-      row.socialName?.toString().toLowerCase().includes(term) ||
-      row.createdAt?.toString().toLowerCase().includes(term)
-    );
-  }, [tableData, searchTerm]);
+  // 🔍 Auto-search: filters all columns except checkbox & actions
+  const { searchTerm, setSearchTerm, filteredData, totalCount, resultsCount } = useTableSearch({
+    data: tableData,
+    columns,
+  });
 
   return (
     <Stack>
@@ -179,8 +166,8 @@ export default function ActiveUsers() {
             value={searchTerm}
             onChange={setSearchTerm}
             placeholder="Search users..."
-            resultsCount={filteredData.length}
-            totalCount={tableData.length}
+            resultsCount={resultsCount}
+            totalCount={totalCount}
           />
         }
         actions={
