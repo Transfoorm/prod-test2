@@ -17,6 +17,7 @@ import { skipFlow, reverseFlow } from '@/features/UserSetup/FlyingButton/config'
 import { completeSetupAction } from '@/app/actions/user-mutations';
 import { Card } from '@/prebuilts/card';
 import { Grid } from '@/prebuilts/grid';
+import { Button } from '@/prebuilts/button';
 
 export default function Dashboard() {
   const user = useFuse((s) => s.user);
@@ -152,9 +153,20 @@ export default function Dashboard() {
         />
         <Card.metric
           title="Build Milestone"
-          value="3 Dec 2024"
-          context="🔱 TTTS-5 FUSE Virus quarantine"
+          value="3 Dec 2025"
+          context="🚀 FUSE 6.0"
         />
+        <Card.showcase title="Button Showcase">
+          <Grid.vertical>
+            <Button.primary>Primary</Button.primary>
+            <Button.secondary>Secondary</Button.secondary>
+            <Button.ghost>Ghost</Button.ghost>
+            <Button.danger>Danger</Button.danger>
+            <Button.link>Link</Button.link>
+            <Button.fire>Fire</Button.fire>
+            <Button.outline>Outline</Button.outline>
+          </Grid.vertical>
+        </Card.showcase>
       </Grid.cards>
       </div>
     </Grid.verticalBig>

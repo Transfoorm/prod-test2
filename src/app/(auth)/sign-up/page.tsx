@@ -141,16 +141,15 @@ export default function SignUpPage() {
         )}
 
         {/* Submit Button */}
-        <Button.primary
+        <Button.fire
           type="submit"
           disabled={isSubmitting}
-          className="auth-submit-gradient"
           icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
           iconPosition="left"
           fullWidth
         >
           {isSubmitting ? "Creating account..." : "Create account"}
-        </Button.primary>
+        </Button.fire>
 
         {/* Terms */}
         <p className="auth-terms">

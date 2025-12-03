@@ -19,6 +19,7 @@ import StandardCard from './Standard';
 import MetricCard from './Metric';
 import ActivityCard from './Activity';
 import ActionCard from './Action';
+import ShowcaseCard from './Showcase';
 
 /**
  * Card Registry - All card variants as named exports
@@ -35,6 +36,7 @@ export const Card = {
   metric: MetricCard,
   activity: ActivityCard,
   action: ActionCard,
+  showcase: ShowcaseCard,
 } as const;
 
 // Export individual components for direct import if needed
@@ -42,7 +44,8 @@ export {
   StandardCard,
   MetricCard,
   ActivityCard,
-  ActionCard
+  ActionCard,
+  ShowcaseCard,
 };
 
 // Type exports for TypeScript users
@@ -50,6 +53,7 @@ export type { StandardCardProps } from './Standard';
 export type { MetricCardProps } from './Metric';
 export type { ActivityCardProps, ActivityItem } from './Activity';
 export type { ActionCardProps, ActionItem } from './Action';
+export type { ShowcaseCardProps } from './Showcase';
 
 // Helper type for variant names
 export type CardVariant = keyof typeof Card;

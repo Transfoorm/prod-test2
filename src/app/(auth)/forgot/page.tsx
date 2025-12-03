@@ -246,16 +246,15 @@ export default function ForgotPasswordPage() {
             </div>
           )}
 
-          <Button.primary
+          <Button.fire
             type="submit"
             disabled={isSubmitting}
-            className="auth-submit-gradient"
             icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
             iconPosition="left"
             fullWidth
           >
             {isSubmitting ? "Sending code..." : "Send Reset Code"}
-          </Button.primary>
+          </Button.fire>
         </form>
       )}
 
@@ -321,16 +320,15 @@ export default function ForgotPasswordPage() {
             </div>
           )}
 
-          <Button.primary
+          <Button.fire
             type="submit"
             disabled={isSubmitting || code.length !== 6}
-            className="auth-submit-gradient"
             icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
             iconPosition="left"
             fullWidth
           >
             {isSubmitting ? "Verifying..." : "Verify Code"}
-          </Button.primary>
+          </Button.fire>
 
           <button
             type="button"
@@ -385,16 +383,15 @@ export default function ForgotPasswordPage() {
             </div>
           )}
 
-          <Button.primary
+          <Button.fire
             type="submit"
             disabled={isSubmitting}
-            className="auth-submit-gradient"
             icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
             iconPosition="left"
             fullWidth
           >
             {isSubmitting ? "Resetting..." : "Reset Password"}
-          </Button.primary>
+          </Button.fire>
         </form>
       )}
 

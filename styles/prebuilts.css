@@ -96,7 +96,7 @@
   /* ═══════════════════════════════════════════════════════════════════
    BUTTON VARIANT VARIABLES - Shared infrastructure for ButtonVC
    ═══════════════════════════════════════════════════════════════════ */
-  --button-padding-y: var(--space-sm);    /* ✅ Vertical button padding */
+  --button-padding-y: 0.75rem;            /* ✅ Vertical button padding (12px - in-betweenie) */
   --button-padding-x: var(--space-lg);    /* ✅ Horizontal button padding */
   --button-radius: var(--radius-md);      /* ✅ Button border radius */
   --button-font-size: var(--font-size-md); /* ✅ Button text size */
