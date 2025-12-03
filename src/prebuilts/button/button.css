@@ -62,17 +62,17 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 .vr-button-primary {
-  /* Base structure */
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  font-weight: var(--font-weight-semibold);
+  /* Base structure - uses shared button variables */
+  padding: var(--button-padding-y) var(--button-padding-x);
+  border-radius: var(--button-radius);
+  font-size: var(--button-font-size);
+  font-weight: var(--button-font-weight);
   min-width: var(--button-min-width);
 
-  /* Variant-specific styling - matches Modal Custom Button */
+  /* Variant-specific styling */
   background: var(--button-primary-bg);
-  color: var(--text-inverse);
-  border: none;
+  color: #fff;
+  border: 1px solid transparent;
   transition: opacity 150ms ease;
 }
 
@@ -200,7 +200,6 @@
   border-radius: var(--button-radius);
   font-size: var(--button-font-size);
   font-weight: var(--button-font-weight);
-  line-height: 1.5;
   min-width: var(--button-min-width);
   box-sizing: border-box;
 
@@ -294,10 +293,10 @@
   /* Dual gradient: padding-box for background, border-box for border glow */
   background: var(--button-fire-bg-padding) padding-box,
               var(--button-fire-bg-border) border-box;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   background-origin: border-box;
   background-clip: padding-box, border-box;
-  color: var(--text-inverse);
+  color: #fff;
 
   /* Dramatic shadow for depth */
   box-shadow: var(--button-fire-shadow);
@@ -316,7 +315,7 @@
   opacity: 0.6;
   box-shadow: none;
   text-shadow: none;
-  border: 2px solid var(--border-color);
+  border: 1px solid var(--border-color);
 }
 
 /* Loading spinner */

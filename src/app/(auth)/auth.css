@@ -63,12 +63,6 @@
   --auth-code-input-hover-bg: #fff;
   --auth-code-help-color: #6b7280;
 
-  /* Auth Submit Button (Fire variant) */
-  --auth-submit-bg-padding: linear-gradient(140.14deg, #ec540e 15.05%, #d6361f 114.99%);
-  --auth-submit-bg-border: linear-gradient(142.51deg, #ff9465 8.65%, #f63 88.82%);
-  --auth-submit-text: #fff;
-  --auth-submit-text-shadow: 1px 1px 1px rgb(0 0 0 / 25%);
-  --auth-submit-shadow: 8px 8px 20px 0 rgb(69 9 0 / 35%);
 
   /* Auth Spinner */
   --auth-spinner-border: rgb(255 255 255 / 30%);
@@ -493,56 +487,7 @@
   color: var(--auth-text-primary);
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   FIRE BUTTON (for auth submit)
-   Based on T2 FIRE variant with shadow and border glow
-   ═══════════════════════════════════════════════════════════════════════ */
-
-/* Increased specificity to override Button.primary base styles */
-.vr-button-primary.auth-submit-gradient {
-  width: 100%;
-  padding: 0.9rem 1rem;    /* BUTTON HEIGHT */
-  background: var(--auth-submit-bg-padding) padding-box,
-              var(--auth-submit-bg-border) border-box;
-  border: 2px solid transparent;
-  color: var(--auth-submit-text);
-  font-weight: var(--font-weight-medium);
-  border-radius: var(--radius-xl);
-  text-shadow: var(--auth-submit-text-shadow);
-  box-shadow: var(--auth-submit-shadow);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-base);
-  min-width: auto; /* Override button min-width */
-}
-
-.vr-button-primary.auth-submit-gradient:hover {
-  opacity: 0.8;
-  box-shadow: none;
-  transform: translateY(-2px);
-}
-
-.vr-button-primary.auth-submit-gradient:focus {
-  outline: none;
-  opacity: 0.9;
-}
-
-.vr-button-primary.auth-submit-gradient:disabled {
-  opacity: 0.5;
-  cursor: pointer;
-}
-
-/* Loading state with spinner */
-.auth-submit-loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
+/* Auth spinner for loading states */
 .auth-spinner {
   width: 16px;
   height: 16px;

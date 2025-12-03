@@ -295,3 +295,30 @@
   text-align: center;
   color: var(--text-tertiary);
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SHOWCASE CARD VARIANT - Component Demo Display
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-card-showcase {
+  background-color: var(--page-arch-color);
+  border: var(--card-border-width) solid var(--border-medium);
+}
+
+.vr-card-showcase .vr-card-showcase-header {
+  padding: var(--card-header-padding);
+  border-bottom: var(--card-border-width) solid var(--border-medium);
+  background-color: var(--page-arch-color);
+}
+
+.vr-card-showcase .vr-card-showcase-title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.vr-card-showcase .vr-card-showcase-content {
+  padding: var(--card-content-padding);
+  background-color: var(--page-arch-color);
+}
