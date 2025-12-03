@@ -33,6 +33,7 @@ export default function Topbar() {
   const setFlyingButtonVisible = useFuse((s) => s.setPhoenixButtonVisible);
   const themeMode = useFuse((s) => s.themeMode);
   const [shouldFadeIn, setShouldFadeIn] = React.useState(false);
+  const [shouldFadeOut, setShouldFadeOut] = React.useState(false);
   const [isFadingOut, setIsFadingOut] = React.useState(false);
 
   // Determine logo based on rank
@@ -95,10 +96,12 @@ export default function Topbar() {
       console.log('USEEFFECT: HIDING BUTTON');
       if (flyingButtonVisible) {
         setIsFadingOut(true);
+        setShouldFadeOut(true);
         setTimeout(() => {
           setFlyingButtonVisible(false);
           setIsFadingOut(false);
-        }, 600); // Match fade-out animation duration
+          setShouldFadeOut(false);
+        }, navAwayFromUnskippedFlow.topbarButtonFadeOutDuration);
       }
       return;
     }
@@ -160,10 +163,10 @@ export default function Topbar() {
           </Button.fire>
         )}
 
-        {/* Real flying button */}
-        {user?.setupStatus === 'pending' && (modalSkipped || isFadingOut) && flyingButtonVisible && (
+        {/* Real flying button - show when: skipped, fading out, OR nav-away from unskipped */}
+        {user?.setupStatus === 'pending' && (modalSkipped || isFadingOut || route !== 'dashboard') && flyingButtonVisible && (
           <Button.fire
-            className={`whitespace-nowrap animate-pulse-slow ly-topbar-setup-button ${shouldFadeIn ? 'ly-topbar-setup-button--fade-in' : ''}`}
+            className={`whitespace-nowrap animate-pulse-slow ly-topbar-setup-button ${shouldFadeIn ? 'ly-topbar-setup-button--fade-in' : ''} ${shouldFadeOut ? 'ly-topbar-setup-button--fade-out' : ''}`}
             icon={<Sparkles />}
             onMouseDown={(e) => {
               const isOnHomePage = route === 'dashboard';

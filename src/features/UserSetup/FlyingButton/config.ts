@@ -1,17 +1,17 @@
 /**──────────────────────────────────────────────────────────────────────────┐
  │  ⏱️ PHOENIX TIMING CONFIG - Single Source of Truth                        │
  │  /src/features/UserSetup/FlyingButton/config.ts                           │
- │                                                                            │
+ │                                                                           │
  │  All timing values for the Phoenix (Flying Button) animation system.      │
  │  Every delay, duration, and offset lives here for easy orchestration.     │
- │                                                                            │
- │  The Phoenix flows:                                                        │
+ │                                                                           │
+ │  The Phoenix flows:                                                       │
  │  • Skip Flow: Modal → Topbar (when "Skip for now" clicked)                │
  │  • Reverse Flow: Topbar → Modal (future - when topbar button clicked)     │
- │                                                                            │
+ │                                                                           │
  │  ⚠️  MODIFY WITH CARE: These values are carefully tuned for the           │
  │  Houdini illusion. Change one, test the entire flow.                      │
- └────────────────────────────────────────────────────────────────────────────*/
+ └───────────────────────────────────────────────────────────────────────────*/
 
 export const PHOENIX_CONFIG = {
   // ════════════════════════════════════════════════════════════════════════
@@ -78,7 +78,8 @@ export const PHOENIX_CONFIG = {
   // ════════════════════════════════════════════════════════════════════════
   navAwayFromUnskippedFlow: {
     flyingButtonStartDelay: 100,   // ms before Phoenix starts when navigating away
-    topbarButtonAppearDelay: 400,  // ms before topbar button appears
+    topbarButtonAppearDelay: 200,  // ms before topbar button appears
+    topbarButtonFadeOutDuration: 200, // ms for topbar button fade-out animation on return home
   },
 
   // ════════════════════════════════════════════════════════════════════════
