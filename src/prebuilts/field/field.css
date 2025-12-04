@@ -1,0 +1,236 @@
+/* ═══════════════════════════════════════════════════════════════════
+   🤖 FIELD VR - Complete Field Styles
+   /src/prebuilts/field/field.css
+
+   ALL field-related styles in ONE file:
+   - Field.live (auto-save with states)
+   - Field.display (read-only)
+   - Field.row (horizontal layout)
+   - Field.wrapper (label + messages)
+
+   TTT Gap Model: NO external margins - container controls spacing
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   FIELD.LIVE - Complete auto-save field
+   States: idle | focused | dirty | saving | saved | error
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-field-live {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  position: relative;
+}
+
+.vr-field-live__label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.vr-field-live__required {
+  color: var(--error-600);
+  margin-left: 2px;
+}
+
+.vr-field-live__input {
+  width: 100%;
+  padding: var(--space-md);
+  font-size: var(--font-size-md);
+  font-family: inherit;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  line-height: normal;
+  min-height: 48px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.vr-field-live__input:focus {
+  outline: none;
+}
+
+.vr-field-live__input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Focused - brand orange ring */
+.vr-field-live--focused .vr-field-live__input {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px var(--brand-light);
+}
+
+/* Dirty - yellow background while typing */
+.vr-field-live--dirty .vr-field-live__input {
+  background-color: var(--warning-50, #fffbeb);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px var(--brand-light);
+}
+
+/* Saving - yellow pulse */
+.vr-field-live--saving .vr-field-live__input {
+  border-color: var(--warning-500);
+  box-shadow: 0 0 0 3px var(--warning-200);
+  animation: vr-field-live-pulse 120ms ease-out;
+}
+
+@keyframes vr-field-live-pulse {
+  0% { box-shadow: 0 0 0 0 var(--warning-200); }
+  100% { box-shadow: 0 0 0 4px transparent; }
+}
+
+/* Saved - green ring */
+.vr-field-live--saved .vr-field-live__input {
+  border-color: var(--success-500);
+  box-shadow: 0 0 0 3px var(--success-100);
+}
+
+/* Error - red ring */
+.vr-field-live--error .vr-field-live__input {
+  border-color: var(--error-600);
+  box-shadow: 0 0 0 3px var(--error-100);
+}
+
+/* Hover - subtle border highlight */
+.vr-field-live .vr-field-live__input:hover {
+  border-color: var(--brand-primary);
+}
+
+/* Status chip */
+.vr-field-live__chip {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  pointer-events: none;
+}
+
+.vr-field-live__chip--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.vr-field-live__chip--saving {
+  background-color: var(--warning-100);
+  color: var(--warning-700);
+}
+
+.vr-field-live__chip--saved {
+  background-color: var(--success-100);
+  color: var(--success-700);
+}
+
+.vr-field-live__chip--error {
+  background-color: var(--error-100);
+  color: var(--error-700);
+}
+
+/* Helper/error text */
+.vr-field-live__helper {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.vr-field-live__error {
+  font-size: var(--font-size-xs);
+  color: var(--error-600);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FIELD.DISPLAY - Read-only display
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-field-display {
+  width: 100%;
+  padding: var(--space-md);
+  font-size: var(--font-size-md);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  line-height: normal;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+
+.vr-field-display--filled {
+  color: var(--text-primary);
+  font-style: normal;
+}
+
+.vr-field-display--empty {
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.vr-field-display--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FIELD.ROW - Horizontal layout
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-field-row {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-md);
+  width: 100%;
+}
+
+.vr-field-row > * {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FIELD.WRAPPER - Label + field + messages
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-field-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  position: relative;
+}
+
+.vr-field-wrapper__label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.vr-field-wrapper__required {
+  color: var(--error-600);
+  margin-left: 2px;
+}
+
+.vr-field-wrapper__helper {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.vr-field-wrapper__error {
+  font-size: var(--font-size-xs);
+  color: var(--error-600);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FIELD SPACING - Vertical spacing utility
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-field-spacing {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
