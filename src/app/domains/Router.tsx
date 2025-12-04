@@ -109,7 +109,7 @@ export default function Router() {
         return <Users />;
       case 'admin/plans':
         return <Plans />;
-      case 'admin/feature':
+      case 'admin/features':
         return <Feature />;
 
       // ═══════════════════════════════════════════════════════════════

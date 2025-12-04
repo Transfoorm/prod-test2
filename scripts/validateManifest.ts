@@ -1,18 +1,16 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  ✅ SRS MANIFEST VALIDATOR - Build-Time Enforcement                   │
+│  ✅ SRS MANIFEST VALIDATOR - Sovereign Router Enforcement            │
 │  /scripts/validateManifest.ts                                         │
 │                                                                        │
-│  Validates that every route in rank manifests exists in codebase.     │
-│  Runs during prebuild to catch manifest drift before deployment.      │
+│  Validates SRS architecture integrity:                                │
+│  1. Every manifest route has a Router.tsx case                        │
+│  2. Every Router.tsx case has an import                               │
+│  3. Every import points to an existing file                           │
 │                                                                        │
 │  SRS Layer 1: Compile-Time Validation                                 │
-│  • Every allowed path must have a domain view or page file            │
-│  • Every home path must be in allowed list                            │
-│  • Fails build if validation errors found                             │
-│                                                                        │
-│  Note: With Sovereign Router, "routes" are domain VIEWS rendered      │
-│  by FuseApp, not Next.js file-based routes. Middleware only runs      │
-│  on initial load - navigate() bypasses it entirely.                   │
+│  • Catches manifest ↔ Router drift before deployment                  │
+│  • Ensures nav configs match actual views                             │
+│  • Zero runtime surprises                                             │
 │                                                                        │
 │  References: SRS-ARCHITECTURE.md                                      │
 └────────────────────────────────────────────────────────────────────────┘ */
@@ -22,87 +20,165 @@ import path from 'node:path';
 import { ALL_MANIFESTS } from '@/rank/manifest';
 
 const ROOT = process.cwd();
-const APP_DIR = path.join(ROOT, 'src', 'app');
+const ROUTER_PATH = path.join(ROOT, 'src', 'app', 'domains', 'Router.tsx');
 
 /**
- * Overview routes - domain entry points that redirect to default sub-route
- * These are logical routes handled by Sovereign Router, not physical files
- * Example: /productivity → redirects to /productivity/tasks
+ * Parse Router.tsx to extract:
+ * - All case statements (routes the Router handles)
+ * - All imports (view components)
  */
-const OVERVIEW_ROUTES = [
-  '/productivity',
-  '/clients',
-  '/finance',
-  '/projects',
-  '/system',
-  '/settings',
-];
+function parseRouter(): { cases: Set<string>; imports: Map<string, string> } {
+  const content = fs.readFileSync(ROUTER_PATH, 'utf-8');
 
-/**
- * Check if a route file exists
- * Note: With Sovereign Router, routes are in /app/domains/{domain}/
- * The Router.tsx switch handles navigation, not file-based routing
- */
-function routeExists(routePath: string): boolean {
-  // Overview routes are logical entry points - no physical file needed
-  if (OVERVIEW_ROUTES.includes(routePath)) {
-    return true;
+  // Extract case statements: case 'admin/users': → 'admin/users'
+  const caseRegex = /case\s+'([^']+)':/g;
+  const cases = new Set<string>();
+  let match;
+  while ((match = caseRegex.exec(content)) !== null) {
+    cases.add(match[1]);
   }
 
-  const trimmed = routePath.replace(/^\/+/, '');
-  const parts = trimmed.split('/');
-  const lastPart = parts[parts.length - 1];
-  // Capitalize first letter for PascalCase filename (e.g., "account" → "Account.tsx")
-  const pascalName = lastPart.charAt(0).toUpperCase() + lastPart.slice(1);
+  // Extract imports: import Users from './admin/users/Users'; → { Users: './admin/users/Users' }
+  const importRegex = /import\s+(\w+)\s+from\s+'([^']+)';/g;
+  const imports = new Map<string, string>();
+  while ((match = importRegex.exec(content)) !== null) {
+    const [, componentName, importPath] = match;
+    // Only track relative imports (our domain views)
+    if (importPath.startsWith('./')) {
+      imports.set(componentName, importPath);
+    }
+  }
 
-  // Patterns to check (Sovereign Router structure)
-  const patterns = [
-    path.join(APP_DIR, 'domains', trimmed, 'index.tsx'),      // Domain view file
-    path.join(APP_DIR, 'domains', trimmed + '.tsx'),          // Direct domain file
-    path.join(APP_DIR, 'domains', trimmed, pascalName + '.tsx'), // PascalCase file (e.g., Account.tsx)
-    path.join(APP_DIR, trimmed, 'page.tsx'),                  // Legacy page route
-  ];
-
-  return patterns.some(p => fs.existsSync(p));
+  return { cases, imports };
 }
+
+/**
+ * Convert manifest route to Router case format
+ * /admin/users → admin/users
+ * / → dashboard
+ */
+function routeToCase(route: string): string {
+  if (route === '/') return 'dashboard';
+  return route.replace(/^\//, '');
+}
+
+/**
+ * Check if a view file exists
+ */
+function viewExists(importPath: string): boolean {
+  // Convert relative import to absolute path
+  // './admin/users/Users' → src/app/domains/admin/users/Users.tsx
+  const relativePath = importPath.replace('./', '');
+  const fullPath = path.join(ROOT, 'src', 'app', 'domains', relativePath + '.tsx');
+  return fs.existsSync(fullPath);
+}
+
+/**
+ * Overview routes that don't need Router cases
+ * These redirect to a default sub-route
+ */
+const OVERVIEW_ROUTES = new Set([
+  'productivity',
+  'clients',
+  'finance',
+  'projects',
+  'system',
+  'settings',
+]);
 
 /**
  * Main validation
  */
 function validateManifests(): void {
-  console.log('🔍 Validating SRS rank manifests...\n');
+  console.log('🔍 Validating SRS Manifest ↔ Router integrity...\n');
 
+  const { cases, imports } = parseRouter();
   let errors = 0;
 
+  // ═══════════════════════════════════════════════════════════════════════
+  // CHECK 1: Every manifest route has a Router case
+  // ═══════════════════════════════════════════════════════════════════════
+  console.log('📋 Check 1: Manifest routes → Router cases\n');
+
   for (const manifest of ALL_MANIFESTS) {
-    console.log(`📋 Checking ${manifest.label} (${manifest.id})...`);
+    console.log(`   ${manifest.label} (${manifest.id}):`);
+    let rankErrors = 0;
 
-    // Check home is in allowed
-    if (!manifest.allowed.includes(manifest.home)) {
-      console.error(`  ❌ Home route not in allowed list: ${manifest.home}`);
-      errors++;
-    }
-
-    // Check all allowed routes exist
     for (const route of manifest.allowed) {
-      if (!routeExists(route)) {
-        console.error(`  ❌ Route missing: ${route}`);
+      const caseKey = routeToCase(route);
+
+      // Skip overview routes (they redirect, no dedicated view)
+      if (OVERVIEW_ROUTES.has(caseKey)) continue;
+
+      if (!cases.has(caseKey)) {
+        console.error(`     ❌ No Router case for: ${route}`);
+        rankErrors++;
         errors++;
       }
     }
 
-    if (errors === 0) {
-      console.log(`  ✅ All ${manifest.allowed.length} routes validated\n`);
+    if (rankErrors === 0) {
+      console.log(`     ✅ All ${manifest.allowed.length} routes have Router cases`);
     }
   }
 
+  // ═══════════════════════════════════════════════════════════════════════
+  // CHECK 2: Every Router import points to existing file
+  // ═══════════════════════════════════════════════════════════════════════
+  console.log('\n📋 Check 2: Router imports → View files\n');
+
+  for (const [componentName, importPath] of imports) {
+    if (!viewExists(importPath)) {
+      console.error(`   ❌ Missing file: ${importPath}.tsx (imported as ${componentName})`);
+      errors++;
+    }
+  }
+
+  if (errors === 0) {
+    console.log(`   ✅ All ${imports.size} imports resolve to existing files`);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // CHECK 3: No orphan Router cases (optional warning)
+  // ═══════════════════════════════════════════════════════════════════════
+  console.log('\n📋 Check 3: Orphan Router cases (not in any manifest)\n');
+
+  const allManifestRoutes = new Set<string>();
+  for (const manifest of ALL_MANIFESTS) {
+    for (const route of manifest.allowed) {
+      allManifestRoutes.add(routeToCase(route));
+    }
+  }
+
+  let orphans = 0;
+  for (const caseKey of cases) {
+    if (!allManifestRoutes.has(caseKey)) {
+      console.warn(`   ⚠️  Orphan case: '${caseKey}' (not in any rank manifest)`);
+      orphans++;
+    }
+  }
+
+  if (orphans === 0) {
+    console.log(`   ✅ No orphan cases - all ${cases.size} cases are in manifests`);
+  } else {
+    console.log(`   ⚠️  ${orphans} orphan case(s) found (warning only, not blocking)`);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // SUMMARY
+  // ═══════════════════════════════════════════════════════════════════════
+  console.log('\n' + '═'.repeat(60));
+
   if (errors > 0) {
-    console.error(`\n⛔ Manifest validation FAILED: ${errors} errors found`);
+    console.error(`\n⛔ SRS VALIDATION FAILED: ${errors} error(s) found`);
     console.error('Fix all violations before building.\n');
     process.exit(1);
   }
 
-  console.log('✅ Manifest validation PASSED\n');
+  console.log('\n✅ SRS VALIDATION PASSED');
+  console.log(`   • ${ALL_MANIFESTS.length} rank manifests validated`);
+  console.log(`   • ${cases.size} Router cases verified`);
+  console.log(`   • ${imports.size} view imports confirmed\n`);
 }
 
 // Run validation

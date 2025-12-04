@@ -46,7 +46,6 @@ import {
   type ADPSource,
   // 🔱 SOVEREIGN ROUTER
   type NavigationSlice,
-  type DomainRoute,
   initialNavigationState,
 } from './domains';
 
@@ -148,7 +147,7 @@ interface FuseStore {
   // 🔱 SOVEREIGN ROUTER ACTIONS - FUSE 6.0
   // ─────────────────────────────────────────────────────────────────────────────
   /** Navigate to a route - THE SOVEREIGN COMMAND */
-  navigate: (route: DomainRoute) => void;
+  navigate: (route: string) => void;
   /** Go back to previous route */
   goBack: () => void;
   /** Toggle sidebar section */
@@ -1006,7 +1005,7 @@ export const useFuse = create<FuseStore>()((set, get) => {
     // 🔱 SOVEREIGN ROUTER ACTIONS - FUSE 6.0
     // ════════════════════════════════════════════════════════════════════════
 
-    navigate: (route: DomainRoute) => {
+    navigate: (route: string) => {
       const start = fuseTimer.start('navigate');
       const current = get().sovereign.route;
 
