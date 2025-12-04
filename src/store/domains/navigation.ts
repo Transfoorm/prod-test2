@@ -74,10 +74,10 @@ export type DomainRoute =
 
 /** Navigation data - sovereign routing state */
 export interface NavigationData {
-  /** Current active route */
-  route: DomainRoute;
+  /** Current active route (internal format without leading /) */
+  route: string;
   /** Navigation history stack (for goBack) */
-  history: DomainRoute[];
+  history: string[];
   /** Timestamp of last navigation (for timing) */
   lastNavigatedAt: number;
   /** Sidebar expanded sections (preserved) */
@@ -95,8 +95,9 @@ export interface NavigationActions {
    * Navigate to a route - THE SOVEREIGN COMMAND
    * This is the ONLY way to change routes in FUSE 6.0
    * Zero server. Zero middleware. Instant.
+   * @param route - Internal format without leading / (e.g., 'admin/users')
    */
-  navigate: (route: DomainRoute) => void;
+  navigate: (route: string) => void;
 
   /**
    * Go back to previous route
@@ -152,7 +153,7 @@ export const createNavigationActions = (
   set: SetState,
   get: GetState
 ): NavigationActions => ({
-  navigate: (route: DomainRoute) => {
+  navigate: (route: string) => {
     const start = fuseTimer.start('navigate');
     const current = get().route;
 

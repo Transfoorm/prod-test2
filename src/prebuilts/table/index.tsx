@@ -19,6 +19,7 @@ import SortableTable from './Sortable';
 import PaginatedTable from './Paginated';
 import Toolbar from './Toolbar';
 import BatchActions from './BatchActions';
+import TableCheckbox from './Checkbox';
 import { useTableSearch } from './useTableSearch';
 
 /**
@@ -40,6 +41,7 @@ export const Table = {
   // Layout utilities
   toolbar: Toolbar,
   batchActions: BatchActions,
+  checkbox: TableCheckbox,
 } as const;
 
 // Export individual components for direct import if needed
@@ -49,6 +51,7 @@ export {
   PaginatedTable,
   Toolbar,
   BatchActions,
+  TableCheckbox,
   useTableSearch
 };
 
@@ -58,6 +61,7 @@ export type { SortableTableProps, SortableColumn } from './Sortable';
 export type { PaginatedTableProps, PaginatedColumn } from './Paginated';
 export type { ToolbarProps } from './Toolbar';
 export type { BatchActionsProps } from './BatchActions';
+export type { TableCheckboxProps } from './Checkbox';
 
 // Helper type for variant names
 export type TableVariant = keyof typeof Table;

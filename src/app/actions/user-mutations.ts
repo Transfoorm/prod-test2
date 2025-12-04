@@ -70,7 +70,7 @@ export async function updateBusinessCountryAction(businessCountry: string) {
     const cookieStore = await cookies();
     const isProd = process.env.NODE_ENV === 'production';
     cookieStore.set('FUSE_5.0', token, {
-      httpOnly: true,
+      httpOnly: false, // Must be false for client-side hydration
       secure: isProd,
       sameSite: 'lax',
       path: '/',
@@ -142,7 +142,7 @@ export async function completeSetupAction(data: {
     const cookieStore = await cookies();
     const isProd = process.env.NODE_ENV === 'production';
     cookieStore.set('FUSE_5.0', token, {
-      httpOnly: true,
+      httpOnly: false, // Must be false for client-side hydration
       secure: isProd,
       sameSite: 'lax',
       path: '/',
@@ -206,7 +206,7 @@ export async function updateThemeAction(themeDark: boolean) {
     const cookieStore = await cookies();
     const isProd = process.env.NODE_ENV === 'production';
     cookieStore.set('FUSE_5.0', token, {
-      httpOnly: true,
+      httpOnly: false, // Must be false for client-side hydration
       secure: isProd,
       sameSite: 'lax',
       path: '/',
@@ -216,6 +216,79 @@ export async function updateThemeAction(themeDark: boolean) {
     return { success: true };
   } catch (error) {
     console.error('updateThemeAction error:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+}
+
+/**
+ * Update user profile settings and auto-update session cookie
+ * TTT-LiveField pattern: Called from FUSE store action on field blur
+ */
+export async function updateProfileAction(data: {
+  firstName?: string;
+  lastName?: string;
+  entityName?: string;
+  socialName?: string;
+  phoneNumber?: string;
+  businessCountry?: string;
+}) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error('Unauthorized');
+
+    // Call Convex mutation
+    await convex.mutation(api.domains.admin.users.api.updateProfile, {
+      clerkId: userId,
+      ...data,
+    });
+
+    // Fetch fresh user data (getCurrentUser resolves storage IDs to URLs)
+    const freshUser = await convex.query(api.domains.admin.users.api.getCurrentUser, {
+      clerkId: userId,
+    });
+
+    if (!freshUser) throw new Error('User not found');
+
+    // Read current session
+    const session = await readSessionCookie();
+
+    // Mint new session with updated data
+    const token = await mintSession({
+      _id: String(freshUser._id),
+      clerkId: freshUser.clerkId,
+      email: freshUser.email || session?.email || '',
+      emailVerified: freshUser.emailVerified,
+      firstName: freshUser.firstName || session?.firstName,
+      lastName: freshUser.lastName || session?.lastName,
+      avatarUrl: freshUser.avatarUrl || undefined,
+      brandLogoUrl: freshUser.brandLogoUrl || undefined,
+      rank: freshUser.rank as string,
+      setupStatus: freshUser.setupStatus as string,
+      businessCountry: freshUser.businessCountry as string,
+      entityName: freshUser.entityName as string,
+      socialName: freshUser.socialName as string,
+      phoneNumber: freshUser.phoneNumber as string,
+      themeName: (freshUser.themeName as string) || session?.themeName,
+      themeMode: session?.themeMode || 'light',
+      mirorAvatarProfile: freshUser.mirorAvatarProfile as 'male' | 'female' | 'inclusive' | undefined,
+      mirorEnchantmentEnabled: freshUser.mirorEnchantmentEnabled,
+      mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
+    });
+
+    // Update cookie (Server Action context - set directly on cookies store)
+    const cookieStore = await cookies();
+    const isProd = process.env.NODE_ENV === 'production';
+    cookieStore.set('FUSE_5.0', token, {
+      httpOnly: false, // Must be false for client-side hydration
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('updateProfileAction error:', error);
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 }

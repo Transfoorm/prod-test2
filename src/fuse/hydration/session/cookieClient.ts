@@ -49,6 +49,7 @@ export interface FuseCookiePayload {
   businessCountry?: string;
   entityName?: string;
   socialName?: string;
+  phoneNumber?: string;
   mirorAvatarProfile?: 'male' | 'female' | 'inclusive';
   mirorEnchantmentEnabled?: boolean;
   mirorEnchantmentTiming?: 'subtle' | 'magical' | 'playful';

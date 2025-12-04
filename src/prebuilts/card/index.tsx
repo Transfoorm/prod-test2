@@ -20,6 +20,7 @@ import MetricCard from './Metric';
 import ActivityCard from './Activity';
 import ActionCard from './Action';
 import ShowcaseCard from './Showcase';
+import InputShowcase from './InputShowcase';
 
 /**
  * Card Registry - All card variants as named exports
@@ -37,6 +38,7 @@ export const Card = {
   activity: ActivityCard,
   action: ActionCard,
   showcase: ShowcaseCard,
+  inputShowcase: InputShowcase,
 } as const;
 
 // Export individual components for direct import if needed
@@ -46,6 +48,7 @@ export {
   ActivityCard,
   ActionCard,
   ShowcaseCard,
+  InputShowcase,
 };
 
 // Type exports for TypeScript users

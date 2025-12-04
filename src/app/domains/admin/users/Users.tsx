@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🔱 USERS - Sovereign Domain                                           │
-│  /src/app/domains/admin/Users.tsx                                       │
+│  /src/app/domains/admin/users/Users.tsx                                │
 │                                                                        │
 │  FUSE 6.0: Pure client view that reads from FUSE store.                │
 │  No server fetch. No RSC. Instant render.                              │

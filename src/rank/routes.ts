@@ -26,7 +26,7 @@ export const ROUTES = {
 
   // Admin domain (Admiral only)
   admin: {
-    feature: '/admin/feature' as const,
+    features: '/admin/features' as const,
     plans: '/admin/plans' as const,
     users: '/admin/users' as const,
   },

@@ -76,6 +76,12 @@ export default function CountrySelector({ align = 'right', onClose, triggerRef }
     // Close dropdown when clicking outside
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
+
+      // Ignore clicks on the trigger button (let toggle handle it)
+      if (triggerRef?.current?.contains(target)) {
+        return;
+      }
+
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(target) &&
@@ -87,7 +93,7 @@ export default function CountrySelector({ align = 'right', onClose, triggerRef }
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [onClose]);
+  }, [onClose, triggerRef]);
 
   const handleCountrySelect = async (country: Country) => {
     setSelectedCountry(country);
@@ -139,9 +145,6 @@ export default function CountrySelector({ align = 'right', onClose, triggerRef }
             <div className="ft-country-option-content">
               <div className="ft-country-option-name">
                 {country.name}
-              </div>
-              <div className="ft-country-option-code">
-                {country.code}
               </div>
             </div>
             {selectedCountry.code === country.code && (

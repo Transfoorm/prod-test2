@@ -32,6 +32,7 @@ type SessionPayload = {
   businessCountry?: string;
   entityName?: string;
   socialName?: string;
+  phoneNumber?: string;
   // Theme preferences for zero-FOUC rendering
   themeName?: string;
   themeMode?: string;
@@ -64,6 +65,7 @@ export async function mintSession(payload: Omit<SessionPayload, 'iat'>) {
     businessCountry: payload.businessCountry,
     entityName: payload.entityName,
     socialName: payload.socialName,
+    phoneNumber: payload.phoneNumber,
     themeName: payload.themeName,
     themeMode: payload.themeMode,
     mirorAvatarProfile: payload.mirorAvatarProfile,
@@ -138,6 +140,7 @@ export async function readSessionCookie(): Promise<SessionPayload | null> {
       businessCountry: payload.businessCountry as string | undefined,
       entityName: payload.entityName as string | undefined,
       socialName: payload.socialName as string | undefined,
+      phoneNumber: payload.phoneNumber as string | undefined,
       themeName: payload.themeName as string | undefined,
       themeMode: payload.themeMode as string | undefined,
       mirorAvatarProfile: payload.mirorAvatarProfile as 'male' | 'female' | 'inclusive' | undefined,
@@ -203,6 +206,7 @@ export function getSessionFromCookie(cookieStore: { get: (name: string) => { val
       businessCountry: payload.businessCountry,
       entityName: payload.entityName,
       socialName: payload.socialName,
+      phoneNumber: payload.phoneNumber,
       themeName: payload.themeName,
       themeMode: payload.themeMode,
       mirorAvatarProfile: payload.mirorAvatarProfile,

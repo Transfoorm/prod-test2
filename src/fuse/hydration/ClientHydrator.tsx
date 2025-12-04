@@ -38,10 +38,18 @@ export function ClientHydrator() {
     hasHydrated.current = true;
 
     const cookieValue = getCookie('FUSE_5.0');
-    if (!cookieValue) return;
+    if (!cookieValue) {
+      console.warn('⚠️ FUSE Hydrator: No FUSE_5.0 cookie found');
+      return;
+    }
 
     const decoded = decodeFuseCookie(cookieValue);
-    if (!decoded) return;
+    if (!decoded) {
+      console.error('❌ FUSE Hydrator: Failed to decode cookie');
+      return;
+    }
+
+    console.log('🔍 FUSE Hydrator: Cookie decoded, rank=', decoded.rank, 'phoneNumber=', decoded.phoneNumber);
 
     // Populate store BEFORE paint - still instant to user
     setUser({
@@ -59,6 +67,7 @@ export function ClientHydrator() {
       businessCountry: decoded.businessCountry,
       entityName: decoded.entityName,
       socialName: decoded.socialName,
+      phoneNumber: decoded.phoneNumber,
       mirorAvatarProfile: decoded.mirorAvatarProfile,
       mirorEnchantmentEnabled: decoded.mirorEnchantmentEnabled,
       mirorEnchantmentTiming: decoded.mirorEnchantmentTiming
@@ -106,6 +115,7 @@ export function ClientHydrator() {
       businessCountry: decoded.businessCountry,
       entityName: decoded.entityName,
       socialName: decoded.socialName,
+      phoneNumber: decoded.phoneNumber,
       mirorAvatarProfile: decoded.mirorAvatarProfile,
       mirorEnchantmentEnabled: decoded.mirorEnchantmentEnabled,
       mirorEnchantmentTiming: decoded.mirorEnchantmentTiming

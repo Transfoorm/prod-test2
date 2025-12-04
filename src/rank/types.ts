@@ -31,9 +31,16 @@ export const RANK_HIERARCHY = {
 } as const;
 
 /**
- * Type-safe route path (always starts with /)
+ * Type-safe route path (manifest format, always starts with /)
+ * Used in rank manifests: '/admin/users', '/settings/account'
  */
 export type DomainRoute = `/${string}`;
+
+/**
+ * Internal route format (without leading /)
+ * Used in sovereign router: 'admin/users', 'dashboard'
+ */
+export type InternalRoute = string;
 
 /**
  * Navigation menu item

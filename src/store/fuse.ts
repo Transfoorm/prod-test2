@@ -46,7 +46,6 @@ import {
   type ADPSource,
   // 🔱 SOVEREIGN ROUTER
   type NavigationSlice,
-  type DomainRoute,
   initialNavigationState,
 } from './domains';
 
@@ -113,6 +112,8 @@ interface FuseStore {
   setUser: (user: FuseUser | null) => void;
   clearUser: () => void;
   updateUser: (updates: Partial<NonNullable<FuseUser>>) => void;
+  /** Update user profile with optimistic UI + Server Action sync (TTT-LiveField pattern) */
+  updateUserLocal: (updates: Partial<NonNullable<FuseUser>>) => Promise<void>;
 
   hydrateThemeMode: (mode: ThemeMode) => void;
   hydrateThemeName: (name: ThemeName) => void;
@@ -146,7 +147,7 @@ interface FuseStore {
   // 🔱 SOVEREIGN ROUTER ACTIONS - FUSE 6.0
   // ─────────────────────────────────────────────────────────────────────────────
   /** Navigate to a route - THE SOVEREIGN COMMAND */
-  navigate: (route: DomainRoute) => void;
+  navigate: (route: string) => void;
   /** Go back to previous route */
   goBack: () => void;
   /** Toggle sidebar section */
@@ -648,6 +649,66 @@ export const useFuse = create<FuseStore>()((set, get) => {
       fuseTimer.end('updateUser', start);
     },
 
+    /**
+     * Update user profile settings with optimistic UI + Server Action sync
+     *
+     * TTT-LiveField Pattern: onBlur → this action → optimistic update → Server Action
+     * Server Action handles: auth, Convex mutation, cookie refresh
+     *
+     * Flow: Component onBlur → FUSE action → optimistic update + Server Action
+     */
+    updateUserLocal: async (updates: Partial<NonNullable<FuseUser>>) => {
+      const start = fuseTimer.start('updateUserLocal');
+
+      // 1. Optimistic update (instant UI feedback)
+      set((state) => {
+        const updatedUser = state.user ? { ...state.user, ...updates } : null;
+        const rank = updatedUser?.rank as UserRank | undefined;
+        return { user: updatedUser, rank, lastActionTiming: performance.now() };
+      });
+
+      // 2. Persist via Server Action (handles auth + cookie refresh)
+      // Filter to only profile fields and convert null to undefined
+      const profileUpdates: {
+        firstName?: string;
+        lastName?: string;
+        entityName?: string;
+        socialName?: string;
+        phoneNumber?: string;
+        businessCountry?: string;
+      } = {};
+
+      if ('firstName' in updates && updates.firstName !== null) {
+        profileUpdates.firstName = updates.firstName ?? undefined;
+      }
+      if ('lastName' in updates && updates.lastName !== null) {
+        profileUpdates.lastName = updates.lastName ?? undefined;
+      }
+      if ('entityName' in updates && updates.entityName !== null) {
+        profileUpdates.entityName = updates.entityName ?? undefined;
+      }
+      if ('socialName' in updates && updates.socialName !== null) {
+        profileUpdates.socialName = updates.socialName ?? undefined;
+      }
+      if ('phoneNumber' in updates && updates.phoneNumber !== null) {
+        profileUpdates.phoneNumber = updates.phoneNumber ?? undefined;
+      }
+      if ('businessCountry' in updates && updates.businessCountry !== null) {
+        profileUpdates.businessCountry = updates.businessCountry ?? undefined;
+      }
+
+      if (Object.keys(profileUpdates).length > 0) {
+        try {
+          const { updateProfileAction } = await import('@/app/actions/user-mutations');
+          await updateProfileAction(profileUpdates);
+        } catch (error) {
+          console.error('Failed to save profile settings:', error);
+        }
+      }
+
+      fuseTimer.end('updateUserLocal', start);
+    },
+
     hydrateThemeMode: (mode) => {
       const start = fuseTimer.start('hydrateThemeMode');
       set({ themeMode: mode, lastActionTiming: performance.now() });
@@ -944,7 +1005,7 @@ export const useFuse = create<FuseStore>()((set, get) => {
     // 🔱 SOVEREIGN ROUTER ACTIONS - FUSE 6.0
     // ════════════════════════════════════════════════════════════════════════
 
-    navigate: (route: DomainRoute) => {
+    navigate: (route: string) => {
       const start = fuseTimer.start('navigate');
       const current = get().sovereign.route;
 

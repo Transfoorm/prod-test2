@@ -9,7 +9,8 @@
 "use client";
 
 import { ReactNode, useState, useMemo } from 'react';
-import { Checkbox, Tooltip } from '@/prebuilts';
+import { Tooltip } from '@/prebuilts';
+import TableCheckbox from './Checkbox';
 import { Actions } from '@/prebuilts/actions';
 
 export interface SortableColumn<TData = Record<string, unknown>> {
@@ -181,7 +182,7 @@ export default function SortableTable<TData = Record<string, unknown>>({
               if (col.variant === 'checkbox') {
                 const hasSelections = !!(col.checked && col.checked.size > 0);
                 const checkbox = (
-                  <Checkbox.table
+                  <TableCheckbox
                     checked={hasSelections}
                     onChange={() => col.onHeaderCheck?.()}
                     ariaLabel={hasSelections ? "Clear all selections" : "Select all"}
@@ -266,7 +267,7 @@ export default function SortableTable<TData = Record<string, unknown>>({
                     : (col.checkboxTooltip ? col.checkboxTooltip(row) : undefined);
 
                   const checkbox = (
-                    <Checkbox.table
+                    <TableCheckbox
                       checked={col.checked ? col.checked.has(rowId) : false}
                       onChange={() => col.onCheck?.(rowId)}
                       disabled={isDisabled}

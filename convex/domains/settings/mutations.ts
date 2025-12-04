@@ -16,6 +16,7 @@ import { v } from "convex/values";
  * SRS Layer 3: Self-Scoped Mutations
  * - All ranks can update their own profile
  * - Cannot update other admin_users' profiles
+ * - Uses auth context (NO clerkId in args - security compliant)
  */
 export const updateUserSettings = mutation({
   args: {
@@ -77,6 +78,7 @@ export const updateUserSettings = mutation({
     successMetric: v.optional(v.string()),
   },
   handler: async (ctx: MutationCtx, args) => {
+    // Get authenticated user from auth context (SRB-4 compliant)
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Not authenticated");
 
