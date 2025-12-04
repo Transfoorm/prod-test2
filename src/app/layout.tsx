@@ -12,6 +12,7 @@
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
 import { ClerkProvider } from '@clerk/nextjs';
 import { ConvexClientProvider } from '@/providers/ConvexClientProvider';
 import { SideDrawerProvider, SideDrawerPortal } from '@/prebuilts/modal';
@@ -73,6 +74,19 @@ export default async function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" data-theme={themeName} data-theme-mode={themeMode} data-page-align="right">
+        <head>
+          {/* 🔱 FUSE FOUC Prevention: Capture URL before React hydrates */}
+          <Script
+            id="fuse-initial-route"
+            strategy="beforeInteractive"
+          >{`
+            (function() {
+              var path = window.location.pathname;
+              var route = path === '/' ? 'dashboard' : path.replace(/^\\//, '');
+              localStorage.setItem('fuse-initial-route', route);
+            })();
+          `}</Script>
+        </head>
         <body className="root-layout-body">
           <ConvexClientProvider>
             <SideDrawerProvider>

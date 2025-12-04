@@ -129,11 +129,52 @@ export interface NavigationActions {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Known Routes (for validation)
+// ─────────────────────────────────────────────────────────────────────────────
+
+const KNOWN_ROUTES: DomainRoute[] = [
+  'dashboard',
+  'productivity/calendar', 'productivity/bookings', 'productivity/tasks', 'productivity/email', 'productivity/meetings',
+  'admin/users', 'admin/plans', 'admin/feature',
+  'clients/people', 'clients/teams', 'clients/sessions', 'clients/pipeline', 'clients/reports',
+  'finance/overview', 'finance/transactions', 'finance/invoices', 'finance/payments', 'finance/reports',
+  'projects/charts', 'projects/locations', 'projects/tracking',
+  'system/ai', 'system/ranks',
+  'settings/account', 'settings/preferences', 'settings/security', 'settings/billing', 'settings/plan',
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// URL → Route Conversion (must be defined before initial state)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Convert URL path to DomainRoute (for initial load) */
+export function urlPathToRoute(path: string): DomainRoute {
+  // Remove leading slash: '/admin/users' → 'admin/users'
+  const cleaned = path.replace(/^\//, '');
+
+  // Root path is dashboard
+  if (!cleaned || cleaned === '') return 'dashboard';
+
+  // Validate it's a known route
+  if (KNOWN_ROUTES.includes(cleaned as DomainRoute)) {
+    return cleaned as DomainRoute;
+  }
+
+  // Unknown route - default to dashboard
+  console.warn(`🔱 SR: Unknown route "${cleaned}", defaulting to dashboard`);
+  return 'dashboard';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Initial State
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Note: The actual initial route is set in fuse.ts using localStorage
+// which is populated by an inline script in layout.tsx before React hydrates.
+// This ensures zero FOUC - the store has the correct route from the start.
+
 export const initialNavigationState: NavigationSlice = {
-  route: 'dashboard',
+  route: 'dashboard', // Default for SSR, overridden on client via localStorage
   history: [],
   lastNavigatedAt: 0,
   expandedSections: [],
@@ -301,33 +342,4 @@ export function getPageFromRoute(route: DomainRoute): string {
 export function isRouteInDomain(route: DomainRoute, domain: string): boolean {
   if (domain === 'dashboard') return route === 'dashboard';
   return route.startsWith(`${domain}/`);
-}
-
-/** Convert URL path to DomainRoute (for initial load) */
-export function urlPathToRoute(path: string): DomainRoute {
-  // Remove leading slash: '/admin/users' → 'admin/users'
-  const cleaned = path.replace(/^\//, '');
-
-  // Root path is dashboard
-  if (!cleaned || cleaned === '') return 'dashboard';
-
-  // Validate it's a known route
-  const knownRoutes: DomainRoute[] = [
-    'dashboard',
-    'productivity/calendar', 'productivity/bookings', 'productivity/tasks', 'productivity/email', 'productivity/meetings',
-    'admin/users', 'admin/plans', 'admin/feature',
-    'clients/people', 'clients/teams', 'clients/sessions', 'clients/pipeline', 'clients/reports',
-    'finance/overview', 'finance/transactions', 'finance/invoices', 'finance/payments', 'finance/reports',
-    'projects/charts', 'projects/locations', 'projects/tracking',
-    'system/ai', 'system/ranks',
-    'settings/account', 'settings/preferences', 'settings/security', 'settings/billing', 'settings/plan',
-  ];
-
-  if (knownRoutes.includes(cleaned as DomainRoute)) {
-    return cleaned as DomainRoute;
-  }
-
-  // Unknown route - default to dashboard
-  console.warn(`🔱 SR: Unknown route "${cleaned}", defaulting to dashboard`);
-  return 'dashboard';
 }

@@ -32,8 +32,9 @@ import PageArch from '@/shell/PageArch';
 import PageHeader from '@/shell/PageHeader/PageHeader';
 import Footer from '@/shell/Footer';
 
-// Sovereign Router
-import Router from './domains/Router';
+// Sovereign Router - dynamically imported to prevent SSR (FOUC prevention)
+import dynamic from 'next/dynamic';
+const Router = dynamic(() => import('./domains/Router'), { ssr: false });
 
 // WARP Orchestrator
 import { runWarpPreload, attachTTLRevalidation } from '@/fuse/warp/orchestrator';
@@ -67,21 +68,15 @@ export default function FuseApp() {
   // ─────────────────────────────────────────────────────────────────────
   // INITIAL MOUNT - Happens ONCE, then FUSE takes over
   // ─────────────────────────────────────────────────────────────────────
+  // Note: FOUC prevention now happens at store initialization time.
+  // The store reads the URL and sets the correct route BEFORE React renders.
   useEffect(() => {
     console.log('🔱 FUSE 6.0: Sovereign runtime mounted');
 
     // 1. Hydrate sidebar sections from localStorage
     sovereignHydrateSections();
 
-    // 2. Parse initial route from URL (if user navigated directly)
-    if (typeof window !== 'undefined') {
-      const pathname = window.location.pathname;
-      const initialRoute = urlPathToRoute(pathname);
-      console.log(`🔱 SR: URL pathname="${pathname}" → route="${initialRoute}"`);
-      navigate(initialRoute);
-    }
-
-    // 3. Handle browser back/forward buttons
+    // 2. Handle browser back/forward buttons
     const handlePopState = (event: PopStateEvent) => {
       if (event.state?.route) {
         navigate(event.state.route);
@@ -94,7 +89,7 @@ export default function FuseApp() {
 
     window.addEventListener('popstate', handlePopState);
 
-    // 4. WARP Orchestrator - Preload all domain data during idle time
+    // 3. WARP Orchestrator - Preload all domain data during idle time
     // This is the FUSE resurrection moment
     if ('requestIdleCallback' in window) {
       requestIdleCallback(() => {
@@ -105,7 +100,7 @@ export default function FuseApp() {
       setTimeout(runWarpPreload, 100);
     }
 
-    // 5. TTL Revalidation - Refresh stale data on focus/online
+    // 4. TTL Revalidation - Refresh stale data on focus/online
     const cleanupTTL = attachTTLRevalidation();
 
     return () => {

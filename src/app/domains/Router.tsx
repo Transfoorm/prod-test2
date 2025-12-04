@@ -16,6 +16,7 @@
 
 'use client';
 
+import { useEffect } from 'react';
 import { useFuse } from '@/store/fuse';
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -71,8 +72,34 @@ import Ranks from './system/Ranks';
 // ROUTER VIEW - THE SOVEREIGN SWITCH
 // ═══════════════════════════════════════════════════════════════════════
 
+// Get route from URL
+function getRouteFromURL(): string {
+  const path = window.location.pathname;
+  return path === '/' ? 'dashboard' : path.replace(/^\//, '');
+}
+
 export default function Router() {
-  const route = useFuse((s) => s.sovereign.route);
+  const storeRoute = useFuse((s) => s.sovereign.route);
+  const navigate = useFuse((s) => s.navigate);
+
+  // 🔱 FOUC Prevention: Router is client-only (ssr: false in FuseApp)
+  // On mount, sync store to URL. This handles direct navigation/refresh.
+  useEffect(
+    () => {
+      const urlRoute = getRouteFromURL();
+      if (storeRoute !== urlRoute) {
+        navigate(urlRoute);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [] // Intentionally empty - only sync on mount
+  );
+
+  // Use URL directly on first render, then store takes over after sync
+  // Since this component is client-only, window is always available
+  const route = storeRoute === 'dashboard' && getRouteFromURL() !== 'dashboard'
+    ? getRouteFromURL()
+    : storeRoute;
 
   // Performance measurement
   const startRender = performance.now();

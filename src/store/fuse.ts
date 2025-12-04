@@ -46,7 +46,6 @@ import {
   type ADPSource,
   // 🔱 SOVEREIGN ROUTER
   type NavigationSlice,
-  initialNavigationState,
 } from './domains';
 
 // Core types
@@ -224,8 +223,16 @@ export const useFuse = create<FuseStore>()((set, get) => {
 
     // ════════════════════════════════════════════════════════════════════════
     // 🔱 SOVEREIGN ROUTER STATE - FUSE 6.0
+    // Note: Route is set to 'dashboard' here for SSR. On client, the store
+    // is patched immediately below (after create) with the correct route.
     // ════════════════════════════════════════════════════════════════════════
-    sovereign: initialNavigationState,
+    sovereign: {
+      route: 'dashboard',
+      history: [],
+      lastNavigatedAt: 0,
+      expandedSections: [],
+      sidebarCollapsed: false,
+    },
 
     // ════════════════════════════════════════════════════════════════════════
     // DOMAIN SLICES (state only - actions are spread below)
@@ -1161,6 +1168,27 @@ export const useFuse = create<FuseStore>()((set, get) => {
     },
   };
 });
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 🔱 FOUC Prevention: Patch initial route on client immediately after store creation
+// ══════════════════════════════════════════════════════════════════════════════
+// This runs ONCE when the module is imported on the CLIENT.
+// The inline script in layout.tsx has already saved the URL to localStorage.
+// We read it here and patch the store BEFORE any component renders.
+
+if (typeof window !== 'undefined') {
+  const initialRoute = localStorage.getItem('fuse-initial-route');
+  if (initialRoute && initialRoute !== 'dashboard') {
+    // Patch the store synchronously before any React render
+    useFuse.setState((state) => ({
+      sovereign: {
+        ...state.sovereign,
+        route: initialRoute,
+      },
+    }));
+    console.log(`🔱 FUSE: Initial route patched to "${initialRoute}" from localStorage`);
+  }
+}
 
 // ══════════════════════════════════════════════════════════════════════════════
 // Type Export for consumers
