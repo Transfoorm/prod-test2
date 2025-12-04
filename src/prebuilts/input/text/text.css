@@ -23,6 +23,12 @@
   box-shadow: 0 0 0 3px var(--shadow-focus);
 }
 
+/* LiveField override - parent state controls focus styling */
+.vr-fieldbox-live .vr-input-text:focus {
+  border-color: var(--border-light);
+  box-shadow: none;
+}
+
 .vr-input-text::placeholder {
   color: var(--text-tertiary);
 }

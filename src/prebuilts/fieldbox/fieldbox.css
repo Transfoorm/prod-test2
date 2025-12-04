@@ -124,3 +124,125 @@
   color: var(--success-600);
   margin-top: var(--space-xs);
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   FIELDBOX LIVE VARIANT - State-Aware Live Edit Field
+   Premium UX for inline editing with visual feedback.
+
+   States: idle | focused | dirty | saving | saved | error
+   ═══════════════════════════════════════════════════════════════════ */
+
+.vr-fieldbox-live {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  position: relative;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   DIRTY STATE - Light yellow background while typing
+   ───────────────────────────────────────────────────────────────────── */
+
+.vr-fieldbox-live--dirty .vr-input-text,
+.vr-fieldbox-live--dirty .vr-input-textarea,
+.vr-fieldbox-live--dirty .vr-input-select {
+  background-color: var(--warning-50, #fffbeb) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   FOCUSED STATE - Brand orange focus ring
+   ───────────────────────────────────────────────────────────────────── */
+
+.vr-fieldbox-live--focused .vr-input-text,
+.vr-fieldbox-live--focused .vr-input-textarea,
+.vr-fieldbox-live--focused .vr-input-select {
+  border-color: var(--brand-primary) !important;
+  box-shadow: 0 0 0 3px var(--brand-light) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   SAVING STATE - Yellow pulse animation
+   ───────────────────────────────────────────────────────────────────── */
+
+.vr-fieldbox-live--saving .vr-input-text,
+.vr-fieldbox-live--saving .vr-input-textarea,
+.vr-fieldbox-live--saving .vr-input-select {
+  border-color: var(--warning-500) !important;
+  box-shadow: 0 0 0 3px var(--warning-200) !important;
+  animation: vr-live-field-pulse 120ms ease-out;
+}
+
+@keyframes vr-live-field-pulse {
+  0% { box-shadow: 0 0 0 0 var(--warning-200); }
+  100% { box-shadow: 0 0 0 4px transparent; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   SAVED STATE - Green success accent
+   ───────────────────────────────────────────────────────────────────── */
+
+.vr-fieldbox-live--saved .vr-input-text,
+.vr-fieldbox-live--saved .vr-input-textarea,
+.vr-fieldbox-live--saved .vr-input-select {
+  border-color: var(--success-500) !important;
+  box-shadow: 0 0 0 3px var(--success-100) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   ERROR STATE - Red error accent
+   ───────────────────────────────────────────────────────────────────── */
+
+.vr-fieldbox-live--error .vr-input-text,
+.vr-fieldbox-live--error .vr-input-textarea,
+.vr-fieldbox-live--error .vr-input-select {
+  border-color: var(--error-600) !important;
+  box-shadow: 0 0 0 3px var(--error-100) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   HOVER STATE - Subtle border highlight
+   ───────────────────────────────────────────────────────────────────── */
+
+.vr-fieldbox-live .vr-input-text:hover,
+.vr-fieldbox-live .vr-input-textarea:hover,
+.vr-fieldbox-live .vr-input-select:hover {
+  border-color: var(--brand-primary) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   STATUS CHIP - Saving/Saved indicator
+   ───────────────────────────────────────────────────────────────────── */
+
+.vr-fieldbox-live__chip {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  pointer-events: none;
+}
+
+.vr-fieldbox-live__chip--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.vr-fieldbox-live__chip--saving {
+  background-color: var(--warning-100);
+  color: var(--warning-700);
+}
+
+.vr-fieldbox-live__chip--saved {
+  background-color: var(--success-100);
+  color: var(--success-700);
+}
+
+.vr-fieldbox-live__chip--error {
+  background-color: var(--error-100);
+  color: var(--error-700);
+}

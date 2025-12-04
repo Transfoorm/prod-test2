@@ -24,6 +24,7 @@ import { Checkbox } from '@/prebuilts/input/checkbox';
 import RadioInput from '@/prebuilts/input/radio';
 import ToggleInput from '@/prebuilts/input/toggle';
 import RangeInput from '@/prebuilts/input/range';
+import LiveInput from '@/prebuilts/input/live';
 
 export const Input = {
   text: TextInput,
@@ -34,6 +35,7 @@ export const Input = {
   radio: RadioInput,
   toggle: ToggleInput,
   range: RangeInput,
+  live: LiveInput,
 };
 
 export default Input;

@@ -16,11 +16,16 @@
 import DisplayFieldbox from './Display';
 import RowFieldbox from './Row';
 import WrapperFieldbox from './Wrapper';
+import LiveFieldbox from './Live';
 
 export const Fieldbox = {
   display: DisplayFieldbox,
   row: RowFieldbox,
   wrapper: WrapperFieldbox,
+  live: LiveFieldbox,
 };
+
+// Re-export types for consumers
+export type { LiveFieldState } from './Live';
 
 export default Fieldbox;

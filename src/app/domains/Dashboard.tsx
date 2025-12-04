@@ -183,6 +183,7 @@ export default function Dashboard() {
             <Button.green>Green</Button.green>
           </Grid.vertical>
         </Card.showcase>
+        <Card.inputShowcase />
       </Grid.cards>
       </div>
     </Grid.verticalBig>
