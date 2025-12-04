@@ -70,7 +70,7 @@ export async function updateBusinessCountryAction(businessCountry: string) {
     const cookieStore = await cookies();
     const isProd = process.env.NODE_ENV === 'production';
     cookieStore.set('FUSE_5.0', token, {
-      httpOnly: true,
+      httpOnly: false, // Must be false for client-side hydration
       secure: isProd,
       sameSite: 'lax',
       path: '/',
@@ -142,7 +142,7 @@ export async function completeSetupAction(data: {
     const cookieStore = await cookies();
     const isProd = process.env.NODE_ENV === 'production';
     cookieStore.set('FUSE_5.0', token, {
-      httpOnly: true,
+      httpOnly: false, // Must be false for client-side hydration
       secure: isProd,
       sameSite: 'lax',
       path: '/',
@@ -206,7 +206,7 @@ export async function updateThemeAction(themeDark: boolean) {
     const cookieStore = await cookies();
     const isProd = process.env.NODE_ENV === 'production';
     cookieStore.set('FUSE_5.0', token, {
-      httpOnly: true,
+      httpOnly: false, // Must be false for client-side hydration
       secure: isProd,
       sameSite: 'lax',
       path: '/',
@@ -279,7 +279,7 @@ export async function updateProfileAction(data: {
     const cookieStore = await cookies();
     const isProd = process.env.NODE_ENV === 'production';
     cookieStore.set('FUSE_5.0', token, {
-      httpOnly: true,
+      httpOnly: false, // Must be false for client-side hydration
       secure: isProd,
       sameSite: 'lax',
       path: '/',

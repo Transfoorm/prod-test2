@@ -78,7 +78,7 @@ export default function Profile() {
           <div className="vr-field-live__input-wrapper">
             <button
               ref={flagRef}
-              onClick={() => setShowCountry(true)}
+              onClick={() => setShowCountry(!showCountry)}
               className="vr-field-live__input ft-profile-country"
             >
               <span className="ft-profile-country__flag">{country?.flag}</span>
