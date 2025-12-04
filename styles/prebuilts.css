@@ -120,7 +120,7 @@
   --form-input-padding: var(--space-sm);  /* ✅ Input field padding */
   --form-input-radius: var(--radius-md);  /* ✅ Input field border radius */
   --form-input-border-width: 1px;         /* ✅ Input border thickness */
-  --form-input-height: 40px;              /* ✅ Input field height */
+  --form-input-height: var(--space-2xl);  /* ✅ Input field height (48px) */
   --form-label-font-size: var(--font-size-sm); /* ✅ Label text size */
   --form-label-font-weight: var(--font-weight-medium); /* ✅ Label text weight */
   --form-error-font-size: var(--font-size-xs); /* ✅ Error text size */

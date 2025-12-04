@@ -39,16 +39,19 @@
   padding: var(--space-md);
   font-size: var(--font-size-md);
   font-family: inherit;
-  background-color: var(--bg-input);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
+  color: var(--text-primary, #1f2937);
+  background-color: var(--bg-input, #fff);
+  border: 1px solid var(--border-light, #eee8e7);
+  border-radius: var(--radius-md, 8px);
   line-height: normal;
-  min-height: 48px;
+  height: var(--form-input-height);
+  box-sizing: border-box;
   transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
 .vr-field-live__input:focus {
   outline: none;
+  border-color: var(--brand-primary, #f97316);
 }
 
 .vr-field-live__input::placeholder {
@@ -57,79 +60,80 @@
 
 /* Focused - brand orange ring */
 .vr-field-live--focused .vr-field-live__input {
-  border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px var(--brand-light);
+  border-color: var(--brand-primary, #f97316);
+  box-shadow: 0 0 0 3px var(--brand-light, #fed7aa);
 }
 
 /* Dirty - yellow background while typing */
 .vr-field-live--dirty .vr-field-live__input {
   background-color: var(--warning-50, #fffbeb);
-  border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px var(--brand-light);
+  border-color: var(--brand-primary, #f97316);
+  box-shadow: 0 0 0 3px var(--brand-light, #fed7aa);
 }
 
-/* Saving - yellow pulse */
+/* Saving - orange glow + yellow bg */
 .vr-field-live--saving .vr-field-live__input {
-  border-color: var(--warning-500);
-  box-shadow: 0 0 0 3px var(--warning-200);
-  animation: vr-field-live-pulse 120ms ease-out;
+  background-color: var(--warning-50, #fffbeb);
+  border-color: var(--brand-primary, #f97316);
+  box-shadow: 0 0 0 3px var(--brand-light, #fed7aa);
 }
 
-@keyframes vr-field-live-pulse {
-  0% { box-shadow: 0 0 0 0 var(--warning-200); }
-  100% { box-shadow: 0 0 0 4px transparent; }
-}
-
-/* Saved - green ring */
+/* Saved - just show chip, no special styling */
 .vr-field-live--saved .vr-field-live__input {
-  border-color: var(--success-500);
-  box-shadow: 0 0 0 3px var(--success-100);
+  border-color: var(--border-light, #eee8e7);
+  box-shadow: none;
 }
 
 /* Error - red ring */
 .vr-field-live--error .vr-field-live__input {
-  border-color: var(--error-600);
-  box-shadow: 0 0 0 3px var(--error-100);
+  border-color: var(--error-600, #dc2626);
+  box-shadow: 0 0 0 3px var(--error-100, #fee2e2);
 }
 
 /* Hover - subtle border highlight */
 .vr-field-live .vr-field-live__input:hover {
-  border-color: var(--brand-primary);
+  border-color: var(--brand-primary, #f97316);
 }
 
-/* Status chip */
+/* Input wrapper for chip positioning */
+.vr-field-live__input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Status chip - inside input on the right */
 .vr-field-live__chip {
   position: absolute;
-  top: 0;
-  right: 0;
-  font-size: var(--font-size-xs);
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  font-size: var(--font-size-xs, 12px);
   font-weight: 500;
   padding: 2px 8px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-sm, 4px);
   opacity: 0;
-  transform: translateY(-2px);
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition: opacity 0.15s ease;
   pointer-events: none;
 }
 
 .vr-field-live__chip--visible {
   opacity: 1;
-  transform: translateY(0);
+  transition: opacity 0.3s ease;
 }
 
 .vr-field-live__chip--saving {
-  background-color: var(--warning-100);
-  color: var(--warning-700);
+  background-color: var(--warning-100, #fef3c7);
+  color: var(--warning-700, #a16207);
 }
 
 .vr-field-live__chip--saved {
-  background-color: var(--success-100);
-  color: var(--success-700);
+  background-color: var(--success-100, #dcfce7);
+  color: var(--success-700, #15803d);
 }
 
 .vr-field-live__chip--error {
-  background-color: var(--error-100);
-  color: var(--error-700);
+  background-color: var(--error-100, #fee2e2);
+  color: var(--error-700, #b91c1c);
 }
 
 /* Helper/error text */
@@ -233,4 +237,24 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PROFILE COUNTRY - Country selector button (uses Field.live classes)
+   ═══════════════════════════════════════════════════════════════════ */
+
+button.ft-profile-country {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm, 8px);
+  text-align: left;
+  cursor: pointer;
+}
+
+.ft-profile-country__flag {
+  font-size: 1.25rem;
+}
+
+.ft-profile-country__text {
+  flex: 1;
 }

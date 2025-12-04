@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔱 USERS - Sovereign Domain                                           │
-│  /src/app/domains/admin/users/Users.tsx                                │
+│  🔱 ACCOUNT - Sovereign Domain                                        │
+│  /src/app/domains/settings/account/Account.tsx                        │
 │                                                                        │
 │  FUSE 6.0: Pure client view that reads from FUSE store.                │
 │  No server fetch. No RSC. Instant render.                              │
@@ -9,29 +9,25 @@
 'use client';
 
 import { useSetPageHeader } from '@/hooks/useSetPageHeader';
-import { useAdminData } from '@/hooks/useAdminData';
-import { useAdminSync } from '@/hooks/useAdminSync';
 import { usePageTiming } from '@/fuse/hooks/usePageTiming';
 import { Tabs, Stack } from '@/prebuilts';
-import ActiveUsers from './_tabs/ActiveUsers';
-import DeletedUsers from './_tabs/DeletedUsers';
+import Profile from './_tabs/Profile';
+import Email from './_tabs/Email';
+import Security from './_tabs/Security';
+import Genome from './_tabs/Genome';
 
-export default function Users() {
-  useSetPageHeader("User Management", 'View, ammend or delete active platform users');
-  usePageTiming('/admin/users');
-
-  // 🔄 Real-time sync: Convex → FUSE (live subscription)
-  useAdminSync();
-
-  // 🚀 WARP: Get counts from FUSE store (server-preloaded)
-  const { computed } = useAdminData();
+export default function Account() {
+  useSetPageHeader('My Account', 'Manage your account details and preferences');
+  usePageTiming('/settings/account');
 
   return (
     <Stack>
       <Tabs.panels
         tabs={[
-          { id: 'users', label: 'Active Users', count: computed.usersCount, content: <ActiveUsers /> },
-          { id: 'deletelog', label: 'Deleted Users', count: computed.deletionLogsCount, content: <DeletedUsers /> }
+          { id: 'profile', label: 'Profile', content: <Profile /> },
+          { id: 'email', label: 'Email', content: <Email /> },
+          { id: 'security', label: 'Security', content: <Security /> },
+          { id: 'genome', label: 'Genome', content: <Genome /> },
         ]}
       />
     </Stack>

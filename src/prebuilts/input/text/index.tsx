@@ -10,6 +10,10 @@ export interface InputTextProps {
   value: string;
   /** Change handler */
   onChange: (value: string) => void;
+  /** Focus handler - TTT-LiveField pattern: signals field entered */
+  onFocus?: () => void;
+  /** Blur handler - TTT-LiveField pattern: triggers save on field exit */
+  onBlur?: () => void;
   /** Placeholder text */
   placeholder?: string;
   /** Input type */
@@ -29,6 +33,8 @@ export interface InputTextProps {
 export default function InputText({
   value,
   onChange,
+  onFocus,
+  onBlur,
   placeholder = '',
   type = 'text',
   autoFocus = false,
@@ -46,6 +52,11 @@ export default function InputText({
       type={type}
       value={value}
       onChange={(e) => onChange(e.target.value)}
+      onFocus={(e) => {
+        e.target.select();
+        onFocus?.();
+      }}
+      onBlur={onBlur}
       placeholder={placeholder}
       autoFocus={autoFocus}
       disabled={disabled}

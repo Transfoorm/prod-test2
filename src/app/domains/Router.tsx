@@ -26,9 +26,9 @@ import { useFuse } from '@/store/fuse';
 import Dashboard from './Dashboard';
 
 // Admin
-import Users from './admin/Users';
-import Plans from './admin/Plans';
-import Feature from './admin/Feature';
+import Users from './admin/users/Users';
+import Plans from './admin/plans/Plans';
+import Feature from './admin/features/Features';
 
 // Clients
 import People from './clients/People';
@@ -57,7 +57,7 @@ import Locations from './projects/Locations';
 import Tracking from './projects/Tracking';
 
 // Settings
-import Account from './settings/Account';
+import Account from './settings/account/Account';
 import Preferences from './settings/Preferences';
 import Security from './settings/Security';
 import Billing from './settings/Billing';

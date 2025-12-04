@@ -455,7 +455,7 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
                   spellCheck={false}
                   autoComplete="off"
                   autoCorrect="off"
-                  autoCapitalize="off"
+                  autoCapitalize="none"
                   className={`ft-setup-input ${
                     errors.socialName ? 'ft-setup-input-error' : ''
                   }`}

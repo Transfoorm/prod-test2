@@ -228,6 +228,8 @@ export type FuseState = {
   setUser: (user: FuseUser | null) => void;
   clearUser: () => void;
   updateUser: (updates: Partial<NonNullable<FuseUser>>) => void;
+  /** Update user profile with optimistic UI + Server Action sync (TTT-LiveField pattern) */
+  updateUserLocal: (updates: Partial<NonNullable<FuseUser>>) => Promise<void>;
 
   // Theme methods - instant theme switching with DB sync
   hydrateThemeMode: (mode: ThemeMode) => void; // For hydration (no DB sync)
