@@ -50,12 +50,17 @@ function routeExists(routePath: string): boolean {
   }
 
   const trimmed = routePath.replace(/^\/+/, '');
+  const parts = trimmed.split('/');
+  const lastPart = parts[parts.length - 1];
+  // Capitalize first letter for PascalCase filename (e.g., "account" → "Account.tsx")
+  const pascalName = lastPart.charAt(0).toUpperCase() + lastPart.slice(1);
 
   // Patterns to check (Sovereign Router structure)
   const patterns = [
-    path.join(APP_DIR, 'domains', trimmed, 'index.tsx'),  // Domain view file
-    path.join(APP_DIR, 'domains', trimmed + '.tsx'),       // Direct domain file
-    path.join(APP_DIR, trimmed, 'page.tsx'),               // Legacy page route
+    path.join(APP_DIR, 'domains', trimmed, 'index.tsx'),      // Domain view file
+    path.join(APP_DIR, 'domains', trimmed + '.tsx'),          // Direct domain file
+    path.join(APP_DIR, 'domains', trimmed, pascalName + '.tsx'), // PascalCase file (e.g., Account.tsx)
+    path.join(APP_DIR, trimmed, 'page.tsx'),                  // Legacy page route
   ];
 
   return patterns.some(p => fs.existsSync(p));
