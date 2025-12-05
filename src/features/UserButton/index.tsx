@@ -22,8 +22,14 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useMutation, useConvex } from "convex/react";
-import { useAuth } from "@clerk/nextjs";
-import Cropper from "react-easy-crop";
+import { signOutAction } from '@/app/(auth)/actions/signOut';
+import dynamic from 'next/dynamic';
+
+// Lazy load Cropper to prevent main thread blocking when opening photo modal
+const Cropper = dynamic(() => import('react-easy-crop'), {
+  ssr: false,
+  loading: () => <div className="ft-userbutton-cropper-loading">Loading editor...</div>
+});
 import { api } from '@/convex/_generated/api';
 import { refreshSessionAfterUpload } from '@/app/actions/user-mutations';
 import { Id } from "@/convex/_generated/dataModel";
@@ -35,7 +41,6 @@ import ThemeToggle from '@/features/ThemeToggle';
 export default function UserButton() {
   const user = useFuse((s) => s.user);
   const navigate = useFuse((s) => s.navigate);
-  const { signOut } = useAuth();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl.generateUploadUrl);
@@ -267,28 +272,15 @@ export default function UserButton() {
   };
 
   const handleSignOut = async () => {
-    // Show loading overlay immediately
+    // Show loading overlay while server action executes
     setIsSigningOut(true);
 
-    // FUSE 4.0 Logout Flow:
-    // 1. Clear session cookie (FUSE sovereignty)
-    // 2. Sign out from Clerk (auth provider cleanup)
-    // 3. Clear all client state (FUSE store, session storage)
-    // Note: We don't rely on Clerk events (Clerk is banished after login per FUSE Doctrine)
+    // FUSE 6.0 Logout Flow - Sovereign Auth Boundary:
+    // Server Action handles: Clerk session revoke + cookie delete
+    await signOutAction();
 
-    // eslint-disable-next-line no-restricted-globals -- Session deletion API call required for sign-out flow
-    await fetch('/api/session', { method: 'DELETE' });
-
-    // Sign out from Clerk and redirect to sign-in
-    await signOut({ redirectUrl: '/sign-in' });
-
-    // Clear all client state immediately (don't wait for Clerk events)
-    sessionStorage.clear();
-    const { collapseAllSections, clearUser, setAISidebarState, setModalSkipped } = useFuse.getState();
-    collapseAllSections();
-    clearUser();
-    setAISidebarState('closed');
-    setModalSkipped(false);  // Reset setup modal state for fresh login
+    // Client-side redirect (server can't delete httpOnly cookies properly)
+    window.location.href = '/sign-in';
   };
 
   const avatarSrc = optimisticUrl || committedUrl || user?.avatarUrl || "/images/sitewide/avatar.png";
@@ -425,19 +417,6 @@ export default function UserButton() {
             <div className="ft-userbutton-menu-item-wrapper">
               <button
                 onClick={() => {
-                  navigate('settings/preferences');
-                  closeAllModals();
-                }}
-                className="ft-userbutton-menu-item"
-              >
-                <Icon variant="sparkles" size="xs" />
-                Preferences
-              </button>
-            </div>
-
-            <div className="ft-userbutton-menu-item-wrapper">
-              <button
-                onClick={() => {
                   setErrorMessage(null);
                   setIsFilePickerOpen(true);
                   // Open file picker immediately - don't wait for React re-renders
@@ -447,6 +426,19 @@ export default function UserButton() {
               >
                 <Icon variant="camera" size="xs" />
                 {hasCustomAvatar ? 'Change Photo' : 'Add Photo'}
+              </button>
+            </div>
+
+            <div className="ft-userbutton-menu-item-wrapper">
+              <button
+                onClick={() => {
+                  navigate('settings/preferences');
+                  closeAllModals();
+                }}
+                className="ft-userbutton-menu-item"
+              >
+                <Icon variant="sparkles" size="xs" />
+                Preferences
               </button>
             </div>
 
@@ -504,10 +496,18 @@ export default function UserButton() {
                   image={previewUrl}
                   crop={crop}
                   zoom={zoom}
+                  rotation={0}
                   aspect={1}
                   minZoom={0.5}
                   maxZoom={3}
+                  cropShape="round"
+                  zoomSpeed={1}
                   restrictPosition={false}
+                  style={{}}
+                  classes={{}}
+                  mediaProps={{}}
+                  cropperProps={{}}
+                  keyboardStep={1}
                   onCropChange={setCrop}
                   onZoomChange={setZoom}
                   onCropComplete={onCropComplete}

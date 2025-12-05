@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔱 ACCOUNT - Sovereign Domain                                        │
-│  /src/app/domains/settings/account/Account.tsx                        │
+│  🔱 ACCOUNT - Sovereign Domain                                         │
+│  /src/app/domains/settings/account/Account.tsx                         │
 │                                                                        │
 │  FUSE 6.0: Pure client view that reads from FUSE store.                │
 │  No server fetch. No RSC. Instant render.                              │
@@ -17,7 +17,7 @@ import Security from './_tabs/Security';
 import Genome from './_tabs/Genome';
 
 export default function Account() {
-  useSetPageHeader('My Account', 'Manage your account details and preferences');
+  useSetPageHeader('Manage Account', 'These are your account details and settings');
   usePageTiming('/settings/account');
 
   return (

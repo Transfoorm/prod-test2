@@ -36,6 +36,9 @@ const EXCEPTION_FILES = new Set([
 
   // Test/dev pages (temporary inline styles for quick testing)
   'src/app/domain/admin/tenant/page.tsx',     // VANISH 2 test page
+
+  // UserButton (Dynamic import Cropper requires empty style/classes props)
+  'src/features/UserButton/index.tsx',
 ]);
 
 interface Violation {

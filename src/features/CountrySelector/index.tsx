@@ -37,10 +37,11 @@ interface CountrySelectorProps {
   align?: 'left' | 'right';
   size?: 'normal' | 'large';
   onClose?: () => void;
+  onSelect?: (code: string) => void;
   triggerRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
-export default function CountrySelector({ align = 'right', onClose, triggerRef }: CountrySelectorProps) {
+export default function CountrySelector({ align = 'right', onClose, onSelect, triggerRef }: CountrySelectorProps) {
   const user = useFuse((s) => s.user);
   const updateUser = useFuse((s) => s.updateUser);
   const updateBusinessCountry = useMutation(api.domains.admin.users.api.updateBusinessCountry);
@@ -95,28 +96,30 @@ export default function CountrySelector({ align = 'right', onClose, triggerRef }
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose, triggerRef]);
 
-  const handleCountrySelect = async (country: Country) => {
+  const handleCountrySelect = (country: Country) => {
     setSelectedCountry(country);
+
+    // Call onSelect callback FIRST (optimistic - show badge immediately)
+    if (onSelect) {
+      onSelect(country.code);
+    }
+
+    // Call onClose callback
+    if (onClose) {
+      onClose();
+    }
 
     // Update user's business country in the store
     if (user) {
       updateUser({ businessCountry: country.code });
 
-      // Sync to Convex database
-      try {
-        await updateBusinessCountry({
-          clerkId: user.clerkId,
-          businessCountry: country.code,
-        });
-        console.log(`Country updated to ${country.name} (${country.code})`);
-      } catch (error) {
+      // Sync to Convex database (fire and forget - badge already shown)
+      updateBusinessCountry({
+        clerkId: user.clerkId,
+        businessCountry: country.code,
+      }).catch((error) => {
         console.error("Failed to update business country:", error);
-      }
-    }
-
-    // Call onClose callback if provided
-    if (onClose) {
-      onClose();
+      });
     }
   };
 

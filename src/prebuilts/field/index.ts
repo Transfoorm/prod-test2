@@ -3,28 +3,29 @@
 │  /src/prebuilts/field/index.ts                                        │
 │                                                                        │
 │  Usage: import { Field } from '@/prebuilts';                          │
-│  Then:  Field.live, Field.display, Field.row, Field.wrapper           │
+│  Then:  Field.live, Field.verify, Field.display, Field.readonly       │
 │                                                                        │
 │  These are COMPLETE behavioral units:                                 │
 │  - Field.live = auto-save with all states handled                     │
-│  - Field.display = read-only display                                  │
-│  - Field.row = horizontal layout                                      │
-│  - Field.wrapper = label + content + messages                         │
+│  - Field.verify = editable, triggers verification on change           │
+│  - Field.display = read-only value display                            │
+│  - Field.readonly = label + content + messages (not editable)         │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import FieldLive from './Live';
+import FieldVerify from './Verify';
 import FieldDisplay from './Display';
-import FieldRow from './Row';
-import FieldWrapper from './Wrapper';
+import FieldReadonly from './Readonly';
 
 export const Field = {
   live: FieldLive,
+  verify: FieldVerify,
   display: FieldDisplay,
-  row: FieldRow,
-  wrapper: FieldWrapper,
+  readonly: FieldReadonly,
 };
 
 // Type exports for consumers
 export type { FieldLiveProps } from './Live';
+export type { FieldVerifyProps } from './Verify';
 export type { FieldDisplayProps } from './Display';
-export type { FieldWrapperProps } from './Wrapper';
+export type { FieldReadonlyProps } from './Readonly';

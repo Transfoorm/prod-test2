@@ -1,11 +1,12 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🤖 VARIANT ROBOT - Field.wrapper                                     │
-│  /src/prebuilts/field/Wrapper.tsx                                     │
+│  🤖 VARIANT ROBOT - Field.readonly                                    │
+│  /src/prebuilts/field/Readonly.tsx                                    │
 │                                                                        │
-│  Label + field + messages container.                                  │
+│  Read-only field with label + content + messages.                     │
+│  Use Field.live for editable, Field.verify for verification-required. │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-export interface FieldWrapperProps {
+export interface FieldReadonlyProps {
   /** Field content */
   children: React.ReactNode;
   /** Field label */
@@ -18,31 +19,31 @@ export interface FieldWrapperProps {
   error?: string;
 }
 
-export default function FieldWrapper({
+export default function FieldReadonly({
   children,
   label,
   required = false,
   helper,
   error,
-}: FieldWrapperProps) {
+}: FieldReadonlyProps) {
   const classes = [
-    'vr-field-wrapper',
-    error && 'vr-field-wrapper--error',
+    'vr-field-readonly',
+    error && 'vr-field-readonly--error',
   ].filter(Boolean).join(' ');
 
   return (
     <div className={classes}>
       {label && (
-        <label className="vr-field-wrapper__label">
+        <label className="vr-field-readonly__label">
           {label}
-          {required && <span className="vr-field-wrapper__required">*</span>}
+          {required && <span className="vr-field-readonly__required">*</span>}
         </label>
       )}
       {children}
       {helper && !error && (
-        <div className="vr-field-wrapper__helper">{helper}</div>
+        <div className="vr-field-readonly__helper">{helper}</div>
       )}
-      {error && <div className="vr-field-wrapper__error">{error}</div>}
+      {error && <div className="vr-field-readonly__error">{error}</div>}
     </div>
   );
 }

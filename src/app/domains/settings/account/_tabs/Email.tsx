@@ -41,8 +41,8 @@ export default function Email() {
   return (
     <div className="vr-field-spacing">
       {/* Row 1: Primary Email + Secondary Email */}
-      <Field.row>
-        <Field.wrapper label="Primary Email">
+      <div className="ft-field-row">
+        <Field.readonly label="Primary Email">
           <div className="ft-email-display">
             <Field.display value={user?.email ?? ''} />
             <div className="ft-email-badges">
@@ -52,18 +52,18 @@ export default function Email() {
               <Badge.status variant="info">Primary</Badge.status>
             </div>
           </div>
-        </Field.wrapper>
+        </Field.readonly>
 
-        <Field.wrapper label="Secondary Email (Optional)">
+        <Field.readonly label="Secondary Email (Optional)">
           <Field.display
             value={user?.secondaryEmail ?? undefined}
             emptyText="Not set"
           />
-        </Field.wrapper>
-      </Field.row>
+        </Field.readonly>
+      </div>
 
       {/* Row 2: Action Buttons */}
-      <Field.row>
+      <div className="ft-field-row">
         <div>
           <Button.secondary onClick={handleChangePrimary}>
             Change Primary
@@ -81,7 +81,7 @@ export default function Email() {
             Delete Secondary
           </Button.ghost>
         </div>
-      </Field.row>
+      </div>
     </div>
   );
 }
