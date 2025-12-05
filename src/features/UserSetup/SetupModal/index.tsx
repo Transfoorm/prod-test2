@@ -194,6 +194,16 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
 
     setIsSubmitting(true);
 
+    // Trim all text fields (socialName already has no spaces due to input restriction)
+    const trimmedData: SetupData = {
+      ...formData,
+      firstName: formData.firstName.trim(),
+      lastName: formData.lastName.trim(),
+      entityName: formData.entityName.trim(),
+      socialName: formData.socialName.trim(),
+      orgSlug: formData.orgSlug.trim(),
+    };
+
     try {
       if (!isLoaded || !clerkUser) {
         throw new Error('Clerk user not loaded');
@@ -203,7 +213,7 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
 
       if (primaryEmail?.verification?.status === 'verified') {
         // Email already verified - proceed directly
-        await onComplete(formData);
+        await onComplete(trimmedData);
         setIsSubmitting(false);
       } else if (primaryEmail) {
         // Email exists but not verified - send verification code
@@ -238,9 +248,19 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
     // Update store immediately
     updateUser({ emailVerified: true, setupStatus: 'complete' });
 
-    // Call onComplete with form data
+    // Trim all text fields before saving
+    const trimmedData: SetupData = {
+      ...formData,
+      firstName: formData.firstName.trim(),
+      lastName: formData.lastName.trim(),
+      entityName: formData.entityName.trim(),
+      socialName: formData.socialName.trim(),
+      orgSlug: formData.orgSlug.trim(),
+    };
+
+    // Call onComplete with trimmed data
     try {
-      await onComplete(formData);
+      await onComplete(trimmedData);
     } catch {
       // Silent fail - user already sees success
     }

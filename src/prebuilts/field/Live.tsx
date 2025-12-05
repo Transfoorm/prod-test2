@@ -112,7 +112,9 @@ export default function FieldLive({
 
     // If there's a pending save, hit the DB now (silently)
     if (pendingSave.current !== null && pendingSave.current !== originalValue.current) {
-      const valueToSave = pendingSave.current;
+      // Trim leading/trailing spaces but keep spaces between words
+      const valueToSave = pendingSave.current.trim();
+      setLocalValue(valueToSave); // Update display to show trimmed value
       pendingSave.current = null;
 
       // Show saved briefly, fade after 400ms - DB saves in background

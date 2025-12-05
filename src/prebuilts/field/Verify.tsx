@@ -1,92 +1,109 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🤖 VARIANT ROBOT - Field.verify                                      │
-│  /src/prebuilts/field/Verify.tsx                                      │
+│  🤖 VARIANT ROBOT - Field.verify                                       │
+│  /src/prebuilts/field/Verify.tsx                                       │
 │                                                                        │
-│  Editable field that triggers verification flow on change.            │
-│  Used for sensitive fields like email that require confirmation.      │
+│  Identity-grade field with Reveal choreography.                        │
+│  Used for sensitive fields requiring explicit confirmation.            │
 │                                                                        │
-│  States:                                                               │
-│  - idle: default display                                               │
-│  - focused: editing with brand ring                                   │
-│  - dirty: value changed (yellow bg)                                   │
-│  - verifying: verification in progress                                │
-│  - sent: "Verification sent" badge                                    │
-│  - error: verification failed                                         │
+│  The Reveal Pattern:                                                   │
+│  - idle: Display mode (no border, quiet)                              │
+│  - focused: Awakens (border materializes, yellow breathes in)         │
+│  - dirty: Pill slides in showing → newValue                           │
+│  - committing: Pill becomes spinner, amber pulse                       │
+│  - success: Green ring, checkmark, fades to idle                      │
+│  - error: Red ring, error message, stays focused                      │
+│                                                                        │
+│  Blur without clicking pill = revert (safe escape)                    │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 
-type VerifyState = 'idle' | 'focused' | 'dirty' | 'verifying' | 'sent' | 'error';
+type VerifyState = 'idle' | 'focused' | 'dirty' | 'committing' | 'success' | 'error';
 
 export interface FieldVerifyProps {
   /** Field label */
   label: string;
   /** Current value (from FUSE) */
   value: string;
-  /** Verification handler - called on blur if value changed */
-  onVerify: (value: string) => Promise<void>;
-  /** Placeholder text */
-  placeholder?: string;
+  /** Called when user clicks the commit pill */
+  onCommit: (newValue: string) => Promise<void>;
   /** Input type */
-  type?: 'text' | 'email';
+  type?: 'text' | 'email' | 'tel';
+  /** Placeholder when empty */
+  placeholder?: string;
   /** Required indicator */
   required?: boolean;
-  /** Helper text */
+  /** Helper text (shown in idle/focused) */
   helper?: string;
+  /** Format the pill text (default: "→ {value}") */
+  pillText?: (newValue: string) => string;
 }
-
-const CHIP_TEXT: Record<VerifyState, string | null> = {
-  idle: null,
-  focused: null,
-  dirty: null,
-  verifying: 'Verifying...',
-  sent: 'Verification sent',
-  error: 'Error',
-};
 
 export default function FieldVerify({
   label,
   value,
-  onVerify,
+  onCommit,
+  type = 'text',
   placeholder = '',
-  type = 'email',
   required = false,
   helper,
+  pillText = (v) => `→ ${v || '(empty)'}`,
 }: FieldVerifyProps) {
   const [state, setState] = useState<VerifyState>('idle');
   const [localValue, setLocalValue] = useState(value);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const originalValue = useRef(value);
+  const isCommitting = useRef(false);
 
-  // Sync local value when external value changes
+  // Sync local value when external value changes (FUSE update)
   useEffect(() => {
-    setLocalValue(value);
-    originalValue.current = value;
-  }, [value]);
+    if (state === 'idle' || state === 'success') {
+      setLocalValue(value);
+      originalValue.current = value;
+    }
+  }, [value, state]);
 
-  const handleFocus = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
-    e.target.select();
-    setState('focused');
-    setErrorMessage(null);
-  }, []);
+  // ─────────────────────────────────────────────────────────────────────
+  // Handlers
+  // ─────────────────────────────────────────────────────────────────────
+
+  const handleFocus = useCallback(() => {
+    if (state === 'idle') {
+      setState('focused');
+      setErrorMessage(null);
+    }
+  }, [state]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setLocalValue(newValue);
-    setState('dirty');
+
+    // Only go dirty if value actually changed from original
+    if (newValue !== originalValue.current) {
+      setState('dirty');
+    } else {
+      setState('focused');
+    }
   }, []);
 
-  const handleBlur = useCallback(async () => {
-    // If no change, just go idle
-    if (localValue === originalValue.current) {
-      setState('idle');
-      return;
-    }
+  const handleBlur = useCallback(() => {
+    // Don't revert if we're in the middle of committing
+    if (isCommitting.current) return;
 
-    // Validate email format
+    // Revert to original and go idle
+    setLocalValue(originalValue.current);
+    setState('idle');
+    setErrorMessage(null);
+  }, []);
+
+  const handlePillClick = useCallback(async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Validate email format if type is email
     if (type === 'email') {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(localValue)) {
@@ -96,38 +113,84 @@ export default function FieldVerify({
       }
     }
 
-    // Trigger verification
-    setState('verifying');
+    // Prevent blur from reverting
+    isCommitting.current = true;
+    setState('committing');
+
     try {
-      await onVerify(localValue);
-      setState('sent');
-      // Reset to original value - actual change happens after verification
-      setLocalValue(originalValue.current);
-      // Clear sent state after 3s
-      setTimeout(() => setState('idle'), 3000);
+      await onCommit(localValue);
+      setState('success');
+      originalValue.current = localValue;
+
+      // Return to idle after success lingers
+      setTimeout(() => {
+        setState('idle');
+        isCommitting.current = false;
+      }, 1500);
     } catch (err) {
       setState('error');
-      setErrorMessage(err instanceof Error ? err.message : 'Verification failed');
-      // Reset to original value on error
-      setLocalValue(originalValue.current);
+      setErrorMessage(err instanceof Error ? err.message : 'Failed to save');
+      isCommitting.current = false;
+      // Stay focused so user can retry or blur to revert
     }
-  }, [localValue, onVerify, type]);
+  }, [localValue, onCommit, type]);
 
-  const showChip = state === 'verifying' || state === 'sent' || state === 'error';
-  const chipText = CHIP_TEXT[state];
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      // Revert and blur
+      setLocalValue(originalValue.current);
+      setState('idle');
+      inputRef.current?.blur();
+    } else if (e.key === 'Enter' && state === 'dirty') {
+      // Commit on Enter when dirty
+      handlePillClick(e as unknown as React.MouseEvent);
+    }
+  }, [state, handlePillClick]);
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Derived state
+  // ─────────────────────────────────────────────────────────────────────
+
+  const showPill = state === 'dirty' || state === 'committing' || state === 'success' || state === 'error';
+  const isDirty = localValue !== originalValue.current;
+
+  // Pill content based on state
+  const getPillContent = () => {
+    switch (state) {
+      case 'dirty':
+        return pillText(localValue);
+      case 'committing':
+        return <span className="vr-field-verify__spinner" />;
+      case 'success':
+        return '✓';
+      case 'error':
+        return '✗';
+      default:
+        return null;
+    }
+  };
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Classes
+  // ─────────────────────────────────────────────────────────────────────
 
   const wrapperClasses = [
     'vr-field-verify',
-    state !== 'idle' && `vr-field-verify--${state}`,
+    `vr-field-verify--${state}`,
+  ].join(' ');
+
+  const pillClasses = [
+    'vr-field-verify__pill',
+    showPill && 'vr-field-verify__pill--visible',
+    state === 'dirty' && isDirty && 'vr-field-verify__pill--active',
+    state === 'committing' && 'vr-field-verify__pill--committing',
+    state === 'success' && 'vr-field-verify__pill--success',
+    state === 'error' && 'vr-field-verify__pill--error',
   ].filter(Boolean).join(' ');
 
-  const chipClasses = [
-    'vr-field-verify__chip',
-    showChip && 'vr-field-verify__chip--visible',
-    state === 'verifying' && 'vr-field-verify__chip--verifying',
-    state === 'sent' && 'vr-field-verify__chip--sent',
-    state === 'error' && 'vr-field-verify__chip--error',
-  ].filter(Boolean).join(' ');
+  // ─────────────────────────────────────────────────────────────────────
+  // Render
+  // ─────────────────────────────────────────────────────────────────────
 
   return (
     <div className={wrapperClasses}>
@@ -135,6 +198,7 @@ export default function FieldVerify({
         {label}
         {required && <span className="vr-field-verify__required">*</span>}
       </label>
+
       <div className="vr-field-verify__input-wrapper">
         <input
           ref={inputRef}
@@ -143,16 +207,33 @@ export default function FieldVerify({
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
           placeholder={placeholder}
           className="vr-field-verify__input"
+          aria-describedby={errorMessage ? 'verify-error' : undefined}
         />
-        <div className={chipClasses}>{chipText}</div>
+
+        <button
+          type="button"
+          className={pillClasses}
+          onClick={handlePillClick}
+          onMouseDown={(e) => e.preventDefault()} // Prevent blur before click
+          disabled={state === 'committing' || state === 'success'}
+          tabIndex={showPill ? 0 : -1}
+          aria-label={state === 'dirty' ? `Confirm change to ${localValue}` : undefined}
+        >
+          {getPillContent()}
+        </button>
       </div>
+
       {helper && state !== 'error' && (
         <div className="vr-field-verify__helper">{helper}</div>
       )}
+
       {errorMessage && state === 'error' && (
-        <div className="vr-field-verify__error">{errorMessage}</div>
+        <div id="verify-error" className="vr-field-verify__error" role="alert">
+          {errorMessage}
+        </div>
       )}
     </div>
   );

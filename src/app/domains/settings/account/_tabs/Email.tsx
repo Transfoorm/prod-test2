@@ -2,14 +2,14 @@
 │  🔱 EMAIL TAB - Account Email Management                              │
 │  /src/app/domains/settings/account/_tabs/Email.tsx                    │
 │                                                                        │
-│  Displays primary and secondary email with verification status.       │
-│  Email changes require verification - handled via Clerk.              │
+│  Primary email uses Field.verify with Reveal choreography.            │
+│  Email changes trigger verification flow via Server Action.           │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
 
 import { useFuse } from '@/store/fuse';
-import { Field, Button, Badge } from '@/prebuilts';
+import { Field, Badge } from '@/prebuilts';
 
 export default function Email() {
   // ─────────────────────────────────────────────────────────────────────
@@ -18,21 +18,26 @@ export default function Email() {
   const user = useFuse((s) => s.user);
 
   // ─────────────────────────────────────────────────────────────────────
-  // Handlers (placeholder - email changes require Clerk verification flow)
+  // Handlers
   // ─────────────────────────────────────────────────────────────────────
-  const handleChangePrimary = () => {
-    // TODO: Open Clerk email change flow
-    console.log('Change primary email - Clerk flow');
-  };
 
-  const handleAddSecondary = () => {
-    // TODO: Open secondary email add flow
-    console.log('Add secondary email');
-  };
+  const handlePrimaryEmailChange = async (newEmail: string) => {
+    // TODO: Server Action to trigger Clerk email verification
+    // For now, simulate the flow
+    console.log('Sending verification to:', newEmail);
 
-  const handleDeleteSecondary = () => {
-    // TODO: Delete secondary email
-    console.log('Delete secondary email');
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    // In production, this would:
+    // 1. Call Server Action that triggers Clerk verification
+    // 2. Clerk sends email to new address
+    // 3. User clicks link in email
+    // 4. Clerk updates primary email
+    // 5. Cookie refreshes, FUSE hydrates new email
+
+    // For demo: throw to show error state, or resolve to show success
+    // throw new Error('Email verification not yet implemented');
   };
 
   // ─────────────────────────────────────────────────────────────────────
@@ -40,48 +45,29 @@ export default function Email() {
   // ─────────────────────────────────────────────────────────────────────
   return (
     <div className="vr-field-spacing">
-      {/* Row 1: Primary Email + Secondary Email */}
-      <div className="ft-field-row">
-        <Field.readonly label="Primary Email">
-          <div className="ft-email-display">
-            <Field.display value={user?.email ?? ''} />
-            <div className="ft-email-badges">
-              {user?.emailVerified && (
-                <Badge.status variant="success">Verified</Badge.status>
-              )}
-              <Badge.status variant="info">Primary</Badge.status>
-            </div>
-          </div>
-        </Field.readonly>
+      {/* Primary Email - Field.verify with Reveal choreography */}
+      <Field.verify
+        label="Primary Email"
+        value={user?.email ?? ''}
+        onCommit={handlePrimaryEmailChange}
+        type="email"
+        helper="Changes require email verification"
+      />
 
-        <Field.readonly label="Secondary Email (Optional)">
-          <Field.display
-            value={user?.secondaryEmail ?? undefined}
-            emptyText="Not set"
-          />
-        </Field.readonly>
-      </div>
-
-      {/* Row 2: Action Buttons */}
-      <div className="ft-field-row">
-        <div>
-          <Button.secondary onClick={handleChangePrimary}>
-            Change Primary
-          </Button.secondary>
+      {/* Verification status badge */}
+      {user?.emailVerified && (
+        <div className="ft-email-status">
+          <Badge.status variant="success">Email Verified</Badge.status>
         </div>
+      )}
 
-        <div className="ft-email-actions">
-          <Button.secondary onClick={handleAddSecondary}>
-            + Add Secondary
-          </Button.secondary>
-          <Button.ghost
-            onClick={handleDeleteSecondary}
-            disabled={!user?.secondaryEmail}
-          >
-            Delete Secondary
-          </Button.ghost>
-        </div>
-      </div>
+      {/* Secondary email section - future enhancement */}
+      <Field.readonly label="Secondary Email (Optional)">
+        <Field.display
+          value={user?.secondaryEmail ?? undefined}
+          emptyText="Not configured"
+        />
+      </Field.readonly>
     </div>
   );
 }
