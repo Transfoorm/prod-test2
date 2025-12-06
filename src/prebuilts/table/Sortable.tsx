@@ -64,6 +64,8 @@ export interface SortableTableProps<TData = Record<string, unknown>> {
   // Auto-sort overrides (VR auto-detects date columns if not provided)
   defaultSortKey?: string | null;
   defaultSortDirection?: 'asc' | 'desc';
+  // When true, allows "select all" (data is filtered, not entire database)
+  isFiltered?: boolean;
 }
 
 type SortDirection = 'asc' | 'desc' | null;
@@ -113,6 +115,7 @@ export default function SortableTable<TData = Record<string, unknown>>({
   className = '',
   defaultSortKey,
   defaultSortDirection = 'desc',
+  isFiltered = false,
 }: SortableTableProps<TData>) {
   // VR Auto-Detection: Use explicit prop, or auto-detect date column, or null
   const initialSortKey = defaultSortKey !== undefined
@@ -188,9 +191,10 @@ export default function SortableTable<TData = Record<string, unknown>>({
                     ariaLabel={hasSelections ? "Clear all selections" : "Select all"}
                   />
                 );
-                // Only show tooltip when nothing selected (preventing "select all")
-                headerContent = hasSelections ? checkbox : (
-                  <Tooltip.basic content="You can't select the entire database for deletion">
+                // Allow select all when filtered (user is selecting filtered results, not entire DB)
+                // Only show warning tooltip when nothing selected AND not filtered
+                headerContent = (hasSelections || isFiltered) ? checkbox : (
+                  <Tooltip.basic content="*DO NOT select the entire database for deletion">
                     {checkbox}
                   </Tooltip.basic>
                 );

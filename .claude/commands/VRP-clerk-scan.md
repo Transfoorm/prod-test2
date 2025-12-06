@@ -3,6 +3,29 @@ description: Clerk Virus Scanner - Detect and block Clerk infections in sovereig
 tags: [vrp, clerk, security, virus, sovereignty]
 ---
 
+# 🛡️ CLERK KNOX SOVEREIGN DOCTRINE — TOTAL LOCKDOWN
+
+Clerk is permitted **ONLY** in:
+  • `/app/(auth)/**`
+  • `/app/(vanish)/**`
+  • `middleware.ts` (SSR boundary only)
+
+Everywhere else:
+  ❌ ZERO Clerk imports
+  ❌ ZERO auth() calls
+  ❌ ZERO getToken()
+  ❌ ZERO clerkClient()
+  ❌ ZERO Clerk UI components
+  ❌ ZERO Clerk identity entering Golden Bridge
+  ❌ ZERO Clerk tokens passed to Convex
+  ❌ ZERO dual-identity models
+
+FUSE is the ONE TRUE IDENTITY SOURCE.
+Golden Bridge must remain IDENTITY-STERILE.
+Convex must ONLY receive FUSE-derived identity.
+
+Any deviation MUST be treated as a CRITICAL SOVEREIGN BREACH.
+
 # 🦠 CLERK VIRUS SCANNER: SOVEREIGNTY PROTECTION
 
 You are the **Clerk Virus Hunter**. Your mission: find and expose ANY Clerk contamination in sovereign territory.
@@ -167,6 +190,63 @@ Pattern: clerkUser|user\.id.*clerk|clerk.*user.*id
 Location: src/**
 ```
 
+### 🟪 CATEGORY K - GOLDEN BRIDGE IDENTITY BREACHES
+
+Search for:
+```
+Pattern: getToken\(|setAuth|sessions\.revokeSession|clerkClient.*session
+Location: src/app/actions/**
+```
+
+Description:
+```
+These patterns indicate Clerk identity crossing into the Golden Bridge layer. 
+Only /app/(auth)/actions/** may call Clerk identity APIs. 
+Any Server Action outside the Auth Boundary must NOT generate Clerk tokens, 
+set Convex auth directly, or perform identity translation.
+```
+
+---
+### 🟥 CATEGORY L — SSR AUTH BREACHES
+
+Search for:
+```
+Pattern: auth\(|clerkClient\(
+Location: src/app/actions/**
+```
+
+These indicate SSR identity entering business logic:
+  • Server Actions acting as identity brokers
+  • Unauthorized Clerk identity retrieval
+  • Leakage of Clerk user fields into runtime
+
+---
+### 🟦 CATEGORY M — HYDRATION & PRELOAD CONTAMINATION
+
+Search for timing-based identity issues:
+```
+Pattern: FuseApp|hydrate|requestIdleCallback|PRISM|WARP
+Location: src/**
+```
+
+These suggest:
+  • Hydrating FuseApp before FUSE_5.0 cookie is read  
+  • WARP/PRISM preloading before identity is stable  
+  • Router rendering while identity is undefined  
+
+---
+### 🟪 CATEGORY N — RUNTIME ELEVATION VIRUSES
+
+Search for UI elevation leaks:
+```
+Pattern: router|navigate|setCookie|sessionStorage|localStorage
+Location: src/**
+```
+
+These reveal:
+  • Any UI element influencing identity state  
+  • Clerk-dependent logic indirectly altering router/session  
+  • Dual identity systems forming inside components  
 ---
 
 ## PHASE 2: RESULTS REPORT
@@ -241,6 +321,27 @@ The runtime remains sovereign.
 
 ═══════════════════════════════════════════════════════════
 ```
+
+---
+
+## 🚨 NEVER AGAIN FALSE NEGATIVES — SCANNER REQUIREMENTS
+
+A scan MUST FAIL if ANY of the following are detected:
+
+• Clerk identity inside ANY Server Action outside /app/(auth)
+• getToken(), auth(), or clerkClient() used for business logic
+• Convex receiving Clerk-derived identity or tokens
+• Identity translation happening inside Golden Bridge
+• Hydration BEFORE FUSE cookie lock
+• Any Clerk reference in FuseApp, Shell, Domains, Features, or Convex
+• Domain logic referencing Clerk metadata or Clerk user shapes
+• Dual identity detected in params, cookies, or store
+
+If the scanner passes while any of these exist,
+**then the scanner is invalid and MUST be updated immediately.**
+
+All Sovereign Documents — 99 Ways, High Alert, VRP Scanner —
+must remain in PERFECT doctrinal alignment.
 
 ---
 

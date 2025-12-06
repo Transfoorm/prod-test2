@@ -227,6 +227,52 @@
   --scrollbar-thumb-hover: #8f9093;                              /* Scrollbar thumb on hover */
   --scrollbar-thumb-border: #d3cfce;                             /* Scrollbar thumb border */
 
+
+  /* ═══════════════════════════════════════════════════════════════════
+     BADGE COLORS - RANK
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* Admiral - Deep red/crimson */
+  --badge-rank-admiral-bg: #FEE2E2;
+  --badge-rank-admiral-text: #991B1B;
+
+  /* Commodore - Amber/gold */
+  --badge-rank-commodore-bg: #FEF3C7;
+  --badge-rank-commodore-text: #92400E;
+
+  /* Captain - Teal/cyan */
+  --badge-rank-captain-bg: #CCFBF1;
+  --badge-rank-captain-text: #115E59;
+
+  /* Crew - Purple/violet */
+  --badge-rank-crew-bg: #EDE9FE;
+  --badge-rank-crew-text: #5B21B6;
+
+
+  /* ═══════════════════════════════════════════════════════════════════
+     BADGE COLORS - SETUP
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* Complete - Green/success */
+  --badge-setup-complete-bg: #D1FAE5;
+  --badge-setup-complete-text: #065F46;
+
+  /* Pending - Amber/warning */
+  --badge-setup-pending-bg: #FEF3C7;
+  --badge-setup-pending-text: #92400E;
+
+  /* Invited - Blue/info */
+  --badge-setup-invited-bg: #DBEAFE;
+  --badge-setup-invited-text: #1E40AF;
+
+  /* Abandon - Orange/warning-dark */
+  --badge-setup-abandon-bg: #FFEDD5;
+  --badge-setup-abandon-text: #C2410C;
+
+  /* Revoked - Gray/neutral */
+  --badge-setup-revoked-bg: #ecd6d6;
+  --badge-setup-revoked-text: #634b4b;
+
 }
 
 
@@ -471,5 +517,51 @@
   --scrollbar-thumb: #4b5563;                                    /* Scrollbar thumb (draggable part) */
   --scrollbar-thumb-hover: #6b7280;                              /* Scrollbar thumb on hover - lighter */
   --scrollbar-thumb-border: #374151;                             /* Scrollbar thumb border */
+
+
+  /* ═══════════════════════════════════════════════════════════════════
+     BADGE COLORS - RANK (Dark Mode)
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* Admiral - Deep red/crimson (dark mode - richer bg, lighter text) */
+  --badge-rank-admiral-bg: #7F1D1D;
+  --badge-rank-admiral-text: #FECACA;
+
+  /* Commodore - Amber/gold (dark mode) */
+  --badge-rank-commodore-bg: #78350F;
+  --badge-rank-commodore-text: #FDE68A;
+
+  /* Captain - Teal/cyan (dark mode) */
+  --badge-rank-captain-bg: #134E4A;
+  --badge-rank-captain-text: #99F6E4;
+
+  /* Crew - Purple/violet (dark mode) */
+  --badge-rank-crew-bg: #4C1D95;
+  --badge-rank-crew-text: #DDD6FE;
+
+
+  /* ═══════════════════════════════════════════════════════════════════
+     BADGE COLORS - SETUP (Dark Mode)
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* Complete - Green/success (dark mode) */
+  --badge-setup-complete-bg: #064E3B;
+  --badge-setup-complete-text: #A7F3D0;
+
+  /* Pending - Amber/warning (dark mode) */
+  --badge-setup-pending-bg: #78350F;
+  --badge-setup-pending-text: #FDE68A;
+
+  /* Invited - Blue/info (dark mode) */
+  --badge-setup-invited-bg: #1E3A8A;
+  --badge-setup-invited-text: #BFDBFE;
+
+  /* Abandon - Orange/warning-dark (dark mode) */
+  --badge-setup-abandon-bg: #7C2D12;
+  --badge-setup-abandon-text: #FED7AA;
+
+  /* Revoked - Gray/neutral (dark mode) */
+  --badge-setup-revoked-bg: #374151;
+  --badge-setup-revoked-text: #D1D5DB;
 
 }

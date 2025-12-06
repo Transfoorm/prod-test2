@@ -7,7 +7,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { Search, Table, Badge, Modal, Stack } from '@/prebuilts';
 import { useSideDrawer } from '@/prebuilts/modal';
 import { useTableSearch } from '@/prebuilts/table';
@@ -44,8 +44,24 @@ export default function ActiveUsers() {
     variant: 'info'
   });
 
+  // Ref to hold filtered data for header checkbox (avoids circular dependency)
+  const filteredDataRef = useRef<UserData[]>([]);
+  const isFilteredRef = useRef(false);
+
+  // Toggle select all filtered rows / clear selections
+  // Only allows select-all when search is active (prevents bulk deletion of entire database)
   const handleHeaderCheckbox = () => {
-    setCheckedRows(new Set());
+    if (checkedRows.size > 0) {
+      // Clear all selections
+      setCheckedRows(new Set());
+    } else if (isFilteredRef.current) {
+      // Select all filtered rows (excluding self - can't delete yourself)
+      const allIds = filteredDataRef.current
+        .map(row => row.id)
+        .filter(id => id !== fuseUser?.id);
+      setCheckedRows(new Set(allIds));
+    }
+    // If not filtered, do nothing - prevents selecting entire database
   };
 
   const handleRowCheckbox = (id: string) => {
@@ -152,10 +168,14 @@ export default function ActiveUsers() {
   })) || [], [users]);
 
   // 🔍 Auto-search: filters all columns except checkbox & actions
-  const { searchTerm, setSearchTerm, filteredData, totalCount, resultsCount } = useTableSearch({
+  const { searchTerm, setSearchTerm, filteredData, totalCount, resultsCount, isFiltered } = useTableSearch({
     data: tableData,
     columns,
   });
+
+  // Keep refs in sync with filteredData for handleHeaderCheckbox
+  filteredDataRef.current = filteredData;
+  isFilteredRef.current = isFiltered;
 
   return (
     <Stack>
@@ -185,6 +205,7 @@ export default function ActiveUsers() {
         defaultSortKey={null}
         striped
         bordered
+        isFiltered={isFiltered}
       />
 
       {modalState.isOpen && (

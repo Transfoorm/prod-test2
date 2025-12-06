@@ -11,6 +11,7 @@
  *   - no-lazy-domains: Blocks dynamic()/React.lazy() in domain views (TTTS-6)
  *   - no-runtime-debt: Blocks useEffect fetch chains and async hooks (TTTS-7)
  *   - no-clerk-in-domains: Enforces Clerk relegation / Golden Bridge (SRB-7)
+ *   - no-clerk-identity-in-actions: Blocks Clerk identity APIs in Server Actions (Category K)
  *
  * When these rules pass:
  *   - No one can bypass Golden Bridge
@@ -18,8 +19,9 @@
  *   - No slice can drift from ADP contract
  *   - Strategy 1 (full domain preload) becomes impossible to break
  *   - Clerk stays relegated to auth only
+ *   - Server Actions use FUSE cookie identity, not Clerk tokens
  *
- * Ref: TTTS-ENFORCEMENT-PACK-(v1.0).md
+ * Ref: TTTS-ENFORCEMENT-PACK-(v1.0).md, Clerk Knox
  *
  * ██████████████████████████████████████████████
  * ⚠️  TTTS GOD IS WATCHING
@@ -34,6 +36,7 @@ const enforceSliceShape = require('./enforce-slice-shape.js');
 const noLazyDomains = require('./no-lazy-domains.js');
 const noRuntimeDebt = require('./no-runtime-debt.js');
 const noClerkInDomains = require('./no-clerk-in-domains.js');
+const noClerkIdentityInActions = require('./no-clerk-identity-in-actions.js');
 
 module.exports = {
   rules: {
@@ -43,5 +46,6 @@ module.exports = {
     'no-lazy-domains': noLazyDomains.rules['no-lazy-domains'],
     'no-runtime-debt': noRuntimeDebt.rules['no-runtime-debt'],
     'no-clerk-in-domains': noClerkInDomains.rules['no-clerk-in-domains'],
+    'no-clerk-identity-in-actions': noClerkIdentityInActions.rules['no-clerk-identity-in-actions'],
   },
 };

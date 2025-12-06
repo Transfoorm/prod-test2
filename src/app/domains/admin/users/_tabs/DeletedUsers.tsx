@@ -7,10 +7,11 @@
 
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import { deleteDeletionLogAction } from '@/app/actions/admin-mutations';
 import type { Id, Doc } from '@/convex/_generated/dataModel';
 import { Table, Badge, Modal, Search, Stack } from '@/prebuilts';
+import { useTableSearch } from '@/prebuilts/table';
 import type { RankType } from '@/prebuilts/badge/Rank';
 import type { SetupStatusType } from '@/prebuilts/badge/Setup';
 import type { CascadeStatusType } from '@/prebuilts/badge/Cascade';
@@ -24,9 +25,6 @@ export default function DeletedUsers() {
   // 🚀 WARP: Instant data access from FUSE store (server-preloaded)
   const { data } = useAdminData();
   const deletionLogsRaw = data.deletionLogs;
-
-  // Search state
-  const [searchTerm, setSearchTerm] = useState('');
 
   // Pre-format table data (like UsersTab pattern)
   const tableData = useMemo(() => {
@@ -60,24 +58,13 @@ export default function DeletedUsers() {
     });
   }, [deletionLogsRaw]);
 
-  // Filter formatted data
-  const filteredData = useMemo(() => {
-    if (!searchTerm.trim()) return tableData;
-
-    const term = searchTerm.toLowerCase();
-    return tableData.filter((log) => {
-      return (
-        log.nameDisplay.toLowerCase().includes(term) ||
-        log.emailDisplay.toLowerCase().includes(term) ||
-        log.rank?.toLowerCase().includes(term) ||
-        log.status?.toLowerCase().includes(term) ||
-        log.dateDisplay.includes(term)
-      );
-    });
-  }, [tableData, searchTerm]);
-
   // Selection state for deletion logs
   const [selectedLogs, setSelectedLogs] = useState<Set<Id<"admin_users_DeletionLogs">>>(new Set());
+
+  // Ref to hold filtered data for header checkbox (avoids circular dependency)
+  type FormattedLog = (typeof tableData)[number];
+  const filteredDataRef = useRef<FormattedLog[]>([]);
+  const isFilteredRef = useRef(false);
 
   // Modal state for viewing log details
   const [selectedLog, setSelectedLog] = useState<DeletionLog | null>(null);
@@ -101,14 +88,16 @@ export default function DeletedUsers() {
   // Server action for deleting journal entries (SRB-4 compliant)
   const deleteJournalEntry = deleteDeletionLogAction;
 
-  // Checkbox handlers - DeletionsTab allows select-all (audit logs safe to bulk delete)
+  // Checkbox handlers - only allow select-all when search is active (prevents bulk deletion of entire journal)
   const handleHeaderCheckbox = useCallback(() => {
-    if (selectedLogs.size === filteredData.length) {
+    if (selectedLogs.size > 0) {
+      // Clear all selections
       setSelectedLogs(new Set());
-    } else {
-      setSelectedLogs(new Set(filteredData.map(log => log._id)));
+    } else if (isFilteredRef.current) {
+      // Select all filtered rows (only when search is active)
+      setSelectedLogs(new Set(filteredDataRef.current.map(log => log._id)));
     }
-  }, [selectedLogs.size, filteredData]);
+  }, [selectedLogs.size]);
 
   const handleRowCheckbox = useCallback((logId: Id<"admin_users_DeletionLogs">) => {
     setSelectedLogs(prev => {
@@ -142,6 +131,15 @@ export default function DeletedUsers() {
               alertMode: true
             });
             setSelectedLog(null);
+          } else {
+            // Handle failure (no exception thrown but success: false)
+            setModalState({
+              isOpen: true,
+              title: 'Error',
+              message: `Failed to delete journal entry:\n${'error' in result ? result.error : 'Unknown error'}`,
+              variant: 'error',
+              alertMode: true
+            });
           }
         } catch (error) {
           setModalState({
@@ -205,8 +203,6 @@ export default function DeletedUsers() {
     });
   }, [deleteJournalEntry]);
 
-  type FormattedLog = (typeof tableData)[number];
-
   const deletionColumns: SortableColumn<FormattedLog>[] = useMemo(() => [
     { key: 'select', variant: 'checkbox', checked: selectedLogs, onCheck: handleRowCheckbox, onHeaderCheck: handleHeaderCheckbox, getRowId: (log) => log._id, getRowLabel: (log) => log.emailDisplay, onBatchDelete: handleBulkDeleteLogs, batchLabel: 'entry/entries', sortable: false },
     { key: 'dateDisplay', header: 'Date', sortable: true, width: '16%' },
@@ -218,29 +214,67 @@ export default function DeletedUsers() {
       key: 'status',
       header: 'Cascade',
       sortable: true,
-      render: (_value, row) => <Badge.cascade status={row.status as CascadeStatusType} />
+      render: (_value, row) => {
+        // Map DB values to badge values
+        const statusMap: Record<string, CascadeStatusType> = {
+          'completed': 'success',
+          'in_progress': 'running',
+          'failed': 'failed'
+        };
+        return <Badge.cascade status={statusMap[row.status as string] || null} />;
+      }
     },
     { key: 'recordsDisplay', header: 'Records', sortable: true, width: '8%', cellAlign: 'center' },
     { key: 'actions', header: 'Actions', sortable: false, variant: 'view', onView: (log) => setSelectedLog(log), onDelete: (log) => handleDeleteJournalEntry(log._id) }
   ], [selectedLogs, handleRowCheckbox, handleHeaderCheckbox, handleBulkDeleteLogs, handleDeleteJournalEntry]);
 
+  // 🔍 Auto-search: filters all columns except checkbox & actions
+  const { searchTerm, setSearchTerm, filteredData, totalCount, resultsCount, isFiltered } = useTableSearch({
+    data: tableData,
+    columns: deletionColumns,
+  });
+
+  // Keep refs in sync with filteredData for handleHeaderCheckbox
+  filteredDataRef.current = filteredData;
+  isFilteredRef.current = isFiltered;
+
+  // Handler for batch delete button click
+  const handleBatchDelete = () => {
+    const ids = Array.from(selectedLogs);
+    if (ids.length > 0) {
+      handleBulkDeleteLogs(ids);
+    }
+  };
+
   return (
     <Stack>
-      <Search.bar
-        value={searchTerm}
-        onChange={setSearchTerm}
-        placeholder="Search deletion logs..."
-        resultsCount={filteredData.length}
-        totalCount={tableData.length}
+      {/* Table.toolbar: Search left, batch actions right - TTT compliant layout */}
+      <Table.toolbar
+        search={
+          <Search.bar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder="Search deletion logs..."
+            resultsCount={resultsCount}
+            totalCount={totalCount}
+          />
+        }
+        actions={
+          <Table.batchActions
+            selectedCount={selectedLogs.size}
+            onDelete={handleBatchDelete}
+            label="entry/entries"
+          />
+        }
       />
 
-      {/* VR auto-renders batch actions when checkbox selected */}
       <Table.sortable
         columns={deletionColumns}
         data={filteredData}
         defaultSortKey={null}
         striped
         bordered
+        isFiltered={isFiltered}
       />
 
       {/* VANISH Journal Detail Modal */}
@@ -290,7 +324,7 @@ export default function DeletedUsers() {
               if (modalState.onConfirm) {
                 modalState.onConfirm();
               }
-              setModalState({ ...modalState, isOpen: false });
+              // Don't close here - onConfirm sets the next modal state (success/error)
             }}
             title={modalState.title}
             message={modalState.message}

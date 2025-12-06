@@ -29,19 +29,18 @@ import { v } from "convex/values";
 export const deleteDeletionLog = mutation({
   args: {
     logId: v.id("admin_users_DeletionLogs"),
+    callerClerkId: v.string(),  // 🔱 SOVEREIGN: Identity from FUSE session cookie
   },
 
   handler: async (ctx, args) => {
     // ═══════════════════════════════════════════════════════════════
-    // 1. AUTHENTICATE CALLER
+    // 1. VALIDATE CALLER IDENTITY (from FUSE session cookie)
     // ═══════════════════════════════════════════════════════════════
 
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("[VANISH JOURNAL] Unauthenticated: Must be logged in as Admiral");
+    const callerClerkId = args.callerClerkId;
+    if (!callerClerkId) {
+      throw new Error("[VANISH JOURNAL] Unauthenticated: No caller identity provided");
     }
-
-    const callerClerkId = identity.subject;
 
     // ═══════════════════════════════════════════════════════════════
     // 2. VERIFY ADMIRAL RANK

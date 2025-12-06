@@ -16,6 +16,30 @@ import { useFuse } from '@/store/fuse';
 import { Field } from '@/prebuilts';
 import { CountrySelectorLive } from '@/behaviors/live-fields/country/CountrySelectorLive';
 
+// Username transform - only allow letters, numbers, and ONE dot (space converts to dot)
+const usernameTransform = (value: string, currentValue: string): string => {
+  // Check if there's already a dot in the current value
+  const currentHasDot = currentValue.includes('.');
+
+  // If no dot yet and user types space, convert it to dot
+  if (!currentHasDot && value.includes(' ')) {
+    value = value.replace(' ', '.');
+  }
+
+  // Remove any character that isn't a-z, A-Z, 0-9, or dot
+  value = value.replace(/[^a-zA-Z0-9.]/g, '');
+
+  // If there's more than one dot, keep only the first one
+  const dotIndex = value.indexOf('.');
+  if (dotIndex !== -1) {
+    const beforeDot = value.substring(0, dotIndex + 1);
+    const afterDot = value.substring(dotIndex + 1).replace(/\./g, '');
+    value = beforeDot + afterDot;
+  }
+
+  return value;
+};
+
 export default function Profile() {
   const user = useFuse((s) => s.user);
   const updateUserLocal = useFuse((s) => s.updateUserLocal);
@@ -51,6 +75,8 @@ export default function Profile() {
           value={user?.socialName ?? ''}
           onSave={(v) => updateUserLocal({ socialName: v || undefined })}
           placeholder="Your 'handle'"
+          transform={usernameTransform}
+          helper="Letters, numbers, and one dot only"
         />
       </div>
 

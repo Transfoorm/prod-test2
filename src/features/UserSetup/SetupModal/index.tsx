@@ -65,6 +65,8 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
   const [showEmailVerification, setShowEmailVerification] = useState(false);
   // Hide button initially if we're fading in (reverse flow from topbar)
   const [hideSetupButton, setHideSetupButton] = useState(isFadingIn);
+  // Track which placeholders are hidden (during error display)
+  const [hiddenPlaceholders, setHiddenPlaceholders] = useState<Set<string>>(new Set());
 
   // Update button visibility when fading in (reverse flow)
   useEffect(() => {
@@ -115,6 +117,23 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
     }
   }, [user?.businessCountry, formData.businessCountry]);
 
+  // Hide placeholders when errors appear, restore them as errors fade out
+  useEffect(() => {
+    const errorFields = Object.keys(errors).filter(key => errors[key as keyof SetupErrors]);
+
+    if (errorFields.length > 0) {
+      // Hide placeholders immediately
+      setHiddenPlaceholders(new Set(errorFields));
+
+      // Restore placeholders after 3.3s (500ms after error starts fading)
+      const timer = setTimeout(() => {
+        setHiddenPlaceholders(new Set());
+      }, 3500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [errors]);
+
   const handleInputChange = (field: keyof SetupData, value: string) => {
     // Special handling for socialName - only allow letters, numbers and ONE dot
     if (field === 'socialName') {
@@ -157,7 +176,22 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
 
     // Clear error for this field when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors(prev => ({ ...prev, [field]: undefined }));
+      // Restore placeholder immediately
+      setHiddenPlaceholders(prev => {
+        const next = new Set(prev);
+        next.delete(field);
+        return next;
+      });
+    }
+  };
+
+  const handleFieldFocus = () => {
+    // User clicked a field - clear ALL errors and restore ALL placeholders
+    const hasErrors = Object.values(errors).some(e => e);
+    if (hasErrors) {
+      setErrors({});
+      setHiddenPlaceholders(new Set());
     }
   };
 
@@ -400,7 +434,7 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
             {/* Welcome message */}
             <div className="ft-setup-welcome">
               <p className="ft-setup-welcome-text">
-                *Complete your setup and enhance the user experience with personalised features and smarter AI assistance. Go to the <i>Account</i> page to change at any time.
+                *Complete your setup and enhance user experience with personalised features and smarter AI assistance. Go to the <i>Account</i> page and change your details at any time.
               </p>
             </div>
 
@@ -423,8 +457,9 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
                     onFocus={() => {
                       // Hide arrow when field is focused
                       if (showRedArrow) setShowRedArrow(false);
+                      handleFieldFocus();
                     }}
-                    placeholder="Ace"
+                    placeholder={hiddenPlaceholders.has('firstName') ? '' : 'Ace'}
                     className={`ft-setup-input ${
                       errors.firstName ? 'ft-setup-input-error' : ''
                     }`}
@@ -452,7 +487,8 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
                   type="text"
                   value={formData.lastName}
                   onChange={(e) => handleInputChange('lastName', e.target.value)}
-                  placeholder="Ventura"
+                  onFocus={handleFieldFocus}
+                  placeholder={hiddenPlaceholders.has('lastName') ? '' : 'Ventura'}
                   className={`ft-setup-input ${
                     errors.lastName ? 'ft-setup-input-error' : ''
                   }`}
@@ -465,13 +501,14 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
               {/* Entity Name */}
               <div className="ft-setup-field">
                 <label className="ft-setup-label">
-                  Entity <span className="ft-setup-required">*</span>
+                  Entity / Organisation <span className="ft-setup-required">*</span>
                 </label>
                 <input
                   type="text"
                   value={formData.entityName}
                   onChange={(e) => handleInputChange('entityName', e.target.value)}
-                  placeholder="Ventura Coaching Academy"
+                  onFocus={handleFieldFocus}
+                  placeholder={hiddenPlaceholders.has('entityName') ? '' : 'Ventura Coaching Academy'}
                   className={`ft-setup-input ${
                     errors.entityName ? 'ft-setup-input-error' : ''
                   }`}
@@ -490,7 +527,8 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
                   type="text"
                   value={formData.socialName}
                   onChange={(e) => handleInputChange('socialName', e.target.value)}
-                  placeholder="Ace.Ventura5"
+                  onFocus={handleFieldFocus}
+                  placeholder={hiddenPlaceholders.has('socialName') ? '' : 'Ace.Ventura5'}
                   spellCheck={false}
                   autoComplete="off"
                   autoCorrect="off"

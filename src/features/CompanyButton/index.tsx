@@ -29,10 +29,6 @@ import { formatSubscriptionStatus, type SubscriptionStatus } from '@/fuse/consta
 export default function CompanyButton() {
   const user = useFuse((s) => s.user);
   const navigate = useFuse((s) => s.navigate);
-  const setShadowKingActive = useFuse((s) => s.setShadowKingActive);
-  const setShowRedArrow = useFuse((s) => s.setShowRedArrow);
-  const modalSkipped = useFuse((s) => s.modalSkipped);
-  const route = useFuse((s) => s.sovereign.route);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showCountrySelector, setShowCountrySelector] = useState(false);
   const businessLocationButtonRef = useRef<HTMLButtonElement>(null);
@@ -337,25 +333,15 @@ export default function CompanyButton() {
                   className="ft-company-button-menu-item"
                   onClick={() => {
                     closeMenu();
-                    // If setup pending, check if modal already visible on dashboard
-                    if (user?.setupStatus === 'pending') {
-                      if (route === 'dashboard' && !modalSkipped) {
-                        // Modal already showing - show red arrow instead
-                        setShowRedArrow(true);
-                      } else {
-                        setShadowKingActive(true);
-                      }
-                    } else {
-                      navigate('settings/account');
-                      // Set hash to profile tab, then focus First Name field
+                    navigate('settings/account');
+                    // Set hash to profile tab, then focus First Name field
+                    setTimeout(() => {
+                      window.location.hash = 'profile';
                       setTimeout(() => {
-                        window.location.hash = 'profile';
-                        setTimeout(() => {
-                          const input = document.querySelector('[data-field="first-name"]') as HTMLInputElement;
-                          input?.focus();
-                        }, 50);
+                        const input = document.querySelector('[data-field="first-name"]') as HTMLInputElement;
+                        input?.focus();
                       }, 50);
-                    }
+                    }, 50);
                   }}
                 >
                   <Icon variant="user-pen" size="sm" className="ft-company-button-menu-icon" />
@@ -370,21 +356,11 @@ export default function CompanyButton() {
                   className="ft-company-button-menu-item"
                   onClick={() => {
                     closeMenu();
-                    // If setup pending, check if modal already visible on dashboard
-                    if (user?.setupStatus === 'pending') {
-                      if (route === 'dashboard' && !modalSkipped) {
-                        // Modal already showing - show red arrow instead
-                        setShowRedArrow(true);
-                      } else {
-                        setShadowKingActive(true);
-                      }
-                    } else {
-                      navigate('settings/account');
-                      // Set hash after navigate so Tabs.panels can read it
-                      setTimeout(() => {
-                        window.location.hash = 'genome';
-                      }, 50);
-                    }
+                    navigate('settings/account');
+                    // Set hash after navigate so Tabs.panels can read it
+                    setTimeout(() => {
+                      window.location.hash = 'genome';
+                    }, 50);
                   }}
                 >
                   <Icon variant="dna" size="sm" className="ft-company-button-menu-icon" />
@@ -431,17 +407,11 @@ export default function CompanyButton() {
                   className="ft-company-button-menu-link"
                   onClick={() => {
                     closeMenu();
-                    // If setup pending, check if modal already visible on dashboard
-                    if (user?.setupStatus === 'pending') {
-                      if (route === 'dashboard' && !modalSkipped) {
-                        // Modal already showing - show red arrow instead
-                        setShowRedArrow(true);
-                      } else {
-                        setShadowKingActive(true);
-                      }
-                    } else {
-                      navigate('settings/account');
-                    }
+                    navigate('settings/account');
+                    // Set hash to profile tab
+                    setTimeout(() => {
+                      window.location.hash = 'profile';
+                    }, 50);
                   }}
                 >
                   <Edit className="ft-company-button-menu-link-icon" />

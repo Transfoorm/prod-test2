@@ -18,8 +18,8 @@
   border: 1px solid;
 }
 
-/* Completed - Green border */
-.vr-badge-cascade.vr-badge-cascade-completed {
+/* Success - Green border */
+.vr-badge-cascade.vr-badge-cascade-success {
   border-color: var(--color-success);
   color: var(--color-success);
 }
@@ -30,14 +30,15 @@
   color: var(--color-error);
 }
 
-/* Pending - Orange border */
-.vr-badge-cascade.vr-badge-cascade-pending {
+/* Running - Orange border */
+.vr-badge-cascade.vr-badge-cascade-running {
   border-color: var(--color-warning);
   color: var(--color-warning);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
    RANK BADGE VARIANT - Colored rank indicators
+   Colors defined in transtheme.css for light/dark mode support
    ═══════════════════════════════════════════════════════════════════ */
 
 .vr-badge-rank {
@@ -50,32 +51,33 @@
   text-align: center;
 }
 
-/* Admiral - Red (lighter shade) */
+/* Admiral - Deep red/crimson */
 .vr-badge-rank.vr-badge-rank-admiral {
-  background-color: var(--color-error-light);
-  color: var(--rank-admiral);
+  background-color: var(--badge-rank-admiral-bg);
+  color: var(--badge-rank-admiral-text);
 }
 
-/* Commodore - Darker brown with dark brown font */
+/* Commodore - Amber/gold */
 .vr-badge-rank.vr-badge-rank-commodore {
-  background-color: var(--color-warning-light);
-  color: var(--rank-commodore);
+  background-color: var(--badge-rank-commodore-bg);
+  color: var(--badge-rank-commodore-text);
 }
 
-/* Captain - Blue (lighter shade) */
+/* Captain - Teal/cyan */
 .vr-badge-rank.vr-badge-rank-captain {
-  background-color: var(--color-success-light);
-  color: var(--rank-captain);
+  background-color: var(--badge-rank-captain-bg);
+  color: var(--badge-rank-captain-text);
 }
 
-/* Crew - Mauve with purple font */
+/* Crew - Purple/violet */
 .vr-badge-rank.vr-badge-rank-crew {
-  background-color: var(--color-primary-faint);
-  color: var(--rank-crew);
+  background-color: var(--badge-rank-crew-bg);
+  color: var(--badge-rank-crew-text);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
    SETUP BADGE VARIANT - Colored setup status indicators
+   Colors defined in transtheme.css for light/dark mode support
    ═══════════════════════════════════════════════════════════════════ */
 
 .vr-badge-setup {
@@ -88,34 +90,34 @@
   text-align: center;
 }
 
-/* Complete - Green (lighter shade) */
+/* Complete - Green/success */
 .vr-badge-setup.vr-badge-setup-complete {
-  background-color: var(--color-success-light);
-  color: var(--color-success);
+  background-color: var(--badge-setup-complete-bg);
+  color: var(--badge-setup-complete-text);
 }
 
-/* Pending - Amber (lighter shade) */
+/* Pending - Amber/warning */
 .vr-badge-setup.vr-badge-setup-pending {
-  background-color: var(--color-warning-light);
-  color: var(--color-warning);
+  background-color: var(--badge-setup-pending-bg);
+  color: var(--badge-setup-pending-text);
 }
 
-/* Invited - Blue (lighter shade) */
+/* Invited - Blue/info */
 .vr-badge-setup.vr-badge-setup-invited {
-  background-color: var(--color-primary-light);
-  color: var(--color-primary);
+  background-color: var(--badge-setup-invited-bg);
+  color: var(--badge-setup-invited-text);
 }
 
-/* Abandon - Gray (lighter shade) */
+/* Abandon - Orange/warning-dark */
 .vr-badge-setup.vr-badge-setup-abandon {
-  background-color: var(--color-error-light);
-  color: var(--color-error);
+  background-color: var(--badge-setup-abandon-bg);
+  color: var(--badge-setup-abandon-text);
 }
 
-/* Revoked - Red (lighter shade) */
+/* Revoked - Gray/neutral */
 .vr-badge-setup.vr-badge-setup-revoked {
-  background-color: var(--bg-secondary);
-  color: var(--text-secondary);
+  background-color: var(--badge-setup-revoked-bg);
+  color: var(--badge-setup-revoked-text);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
