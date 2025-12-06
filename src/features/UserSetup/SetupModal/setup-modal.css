@@ -75,20 +75,6 @@
   /* NO transitions by default - unskipped modal just appears */
 }
 
-/* Smaller screens - MacBook Air and similar */
-@media (max-height: 800px) {
-  .ft-setup-modal {
-    transform: scale(0.9);
-  }
-}
-
-/* Very small screens */
-@media (max-height: 700px) {
-  .ft-setup-modal {
-    transform: scale(0.8);
-  }
-}
-
 /* Hidden state - keeps modal in DOM AND layout (prevents re-animation) */
 .ft-setup-modal--hidden {
   visibility: hidden;
