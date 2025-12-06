@@ -3,15 +3,14 @@
    /src/prebuilts/backdrop/backdrop.css
 
    Site-wide consistent backdrop for attention-capture overlays.
-   ONE opacity. ONE blur. Used everywhere.
+   40% opacity. No blur. ONE dim. Used everywhere.
    ═══════════════════════════════════════════════════════════════════ */
 
 .vr-backdrop {
   position: fixed;
   inset: 0;
   z-index: var(--z-backdrop, 900);
-  background-color: var(--vr-backdrop-color, rgb(0 0 0 / 55%));
-  backdrop-filter: blur(var(--vr-backdrop-blur, 6px));
+  background-color: rgb(0 0 0 / 40%);
   animation: vr-backdrop-fade-in 200ms ease-out;
 }
 

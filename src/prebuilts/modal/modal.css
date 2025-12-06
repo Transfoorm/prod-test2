@@ -15,11 +15,10 @@
    MODAL VARIABLES - Component-Scoped Dimensions
    ═══════════════════════════════════════════════════════════════════ */
 :root {
-  /* Backdrop */
-  --modal-backdrop-bg: rgb(0 0 0 / 60%);
-  --modal-backdrop-bg-dialogue: rgb(0 0 0 / 50%);
-  --modal-backdrop-opacity: 0.6;
-  --modal-backdrop-blur: 8px;
+  /* Backdrop - unified 40% across site */
+  --modal-backdrop-bg: rgb(0 0 0 / 40%);
+  --modal-backdrop-bg-dialogue: rgb(0 0 0 / 40%);
+  --modal-backdrop-opacity: 0.4;
   --modal-backdrop-transition: 500ms;
 
   /* Alert Modal - Base Colors */
@@ -184,7 +183,6 @@
   align-items: center;
   justify-content: center;
   background-color: var(--modal-backdrop-bg);
-  backdrop-filter: blur(var(--modal-backdrop-blur));
 }
 
 /* Alert modal container */
@@ -487,7 +485,6 @@
   position: fixed;
   inset: 0;
   background-color: var(--modal-backdrop-bg-dialogue);
-  backdrop-filter: blur(var(--modal-backdrop-blur));
   display: flex;
   align-items: center;
   justify-content: center;

@@ -3,9 +3,7 @@
 │  /src/prebuilts/backdrop/index.tsx                                    │
 │                                                                        │
 │  Unified dim layer for attention-capture overlays.                    │
-│  Used by: Drawer, SetupModal, VerifyModal, any modal/overlay.         │
-│                                                                        │
-│  ONE backdrop. ONE opacity. ONE blur. Site-wide consistency.          │
+│  40% opacity. No blur. Site-wide consistency.                         │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';

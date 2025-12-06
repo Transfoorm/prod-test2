@@ -62,7 +62,7 @@
 
 .ft-company-button {
   width: 100%;
-  padding: var(--space-sm) var(--space-md) var(--space-sm) var(--space-xs);
+  padding: var(--space-sm) var(--space-xs);
   background-color: var(--sidebar-button-rest);  /* 🟨 BUTTON REST COLOR */
   color: var(--sidebar-button-text);
   border: none;
@@ -71,7 +71,7 @@
   transition: all var(--company-button-transition-duration);
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
   margin-top: var(--space-xs);
   margin-bottom: var(--space-lg);
 }
@@ -85,19 +85,22 @@
   background-color: var(--sidebar-button-active);  /* 🟨 BUTTON ACTIVE COLOR */
 }
 
-/* Company logo icon - larger with rounded corners */
-.ft-company-button .ft-companylogo-cropper-image {
+/* Company logo - larger with rounded corners */
+.ft-company-button-logo {
   width: var(--company-button-logo-size);
   height: var(--company-button-logo-size);
   border-radius: var(--radius-md);
   background-color: var(--white);
+  object-fit: cover;
+}
+
+/* Hidden file input */
+.ft-company-button-file-input {
+  display: none;
 }
 
 .ft-company-button-chevron {
-  width: var(--company-button-chevron-size);
-  height: var(--company-button-chevron-size);
-  flex-shrink: 0;
-  margin-left: auto;
+  display: none;  /* Hidden to maximize space for company name */
 }
 
 .ft-company-button-text {
@@ -112,6 +115,13 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   line-height: 1.2;
+  word-break: break-word;
+}
+
+.ft-company-button-title--placeholder {
+  font-style: italic;
+  font-weight: var(--font-weight-normal);
+  color: var(--text-tertiary);
 }
 
 .ft-company-button-subtitle {
@@ -183,9 +193,18 @@
 }
 
 .ft-company-button-menu-header-text {
+  display: flex;
+  flex-direction: column;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-normal);
   color: var(--text-secondary);
+}
+
+.ft-company-button-menu-header-status {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  line-height: 1;
+  margin-top: 1px;
 }
 
 
@@ -252,6 +271,11 @@
   font-size: var(--font-size-sm);
   color: var(--text-primary);
   font-weight: var(--font-weight-normal);
+}
+
+.ft-company-button-menu-value--placeholder {
+  font-style: italic;
+  color: var(--text-tertiary);
 }
 
 /* Error message */
@@ -353,4 +377,85 @@
   position: fixed;
   top: 200px;  /* 🟨 MODAL UP/DOWN POSITION */
   left: calc(var(--sidebar-width) + 0px);  /* 🟨 MODAL LEFT/RIGHT POSITION */
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   8. LOGO CROPPER MODAL
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.ft-company-button-cropper-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 901;
+  background-color: var(--bg-primary);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  width: 320px;
+}
+
+.ft-company-button-cropper-header {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-lg);
+  display: flex;
+  align-items: flex-start;
+}
+
+.ft-company-button-cropper-header-icon {
+  margin-left: var(--space-sm);
+  width: 16px;
+  height: 16px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+}
+
+.ft-company-button-cropper-container {
+  position: relative;
+  width: 100%;
+  height: 192px;
+  margin-bottom: var(--space-lg);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.ft-company-button-cropper-actions {
+  margin-top: var(--space-lg);
+}
+
+.ft-company-button-cropper-save {
+  width: 100%;
+  color: var(--text-inverse);
+  font-size: var(--font-size-sm);
+  padding: var(--space-sm) 0;
+  border-radius: var(--radius-lg);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  background-color: var(--brand-primary);
+  opacity: 1;
+  border: none;
+}
+
+.ft-company-button-cropper-save:hover {
+  background-color: var(--brand-hover);
+}
+
+.ft-company-button-cropper-save--uploading {
+  cursor: default;
+  background-color: var(--bg-tertiary);
+  opacity: 0.7;
+}
+
+.ft-company-button-cropper-save--uploading:hover {
+  background-color: var(--bg-tertiary);
+}
+
+/* Crop area mask - rounded corners matching logo display (25% ratio) */
+.ft-company-button-crop-area {
+  border-radius: 25% !important;
 }

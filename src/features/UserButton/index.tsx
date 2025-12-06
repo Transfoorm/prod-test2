@@ -34,7 +34,7 @@ import { api } from '@/convex/_generated/api';
 import { refreshSessionAfterUpload } from '@/app/actions/user-mutations';
 import { Id } from "@/convex/_generated/dataModel";
 import { useFuse } from "@/store/fuse";
-import { Icon, Tooltip } from "@/prebuilts";
+import { Icon, Tooltip, Backdrop } from "@/prebuilts";
 import { Button } from "@/prebuilts/button";
 import ThemeToggle from '@/features/ThemeToggle';
 
@@ -360,7 +360,11 @@ export default function UserButton() {
                 <p className={`ft-userbutton-menu-email ${!user.emailVerified ? 'ft-userbutton-menu-email--unverified' : ''}`}>
                   {user.email}
                 </p>
-                {!user.emailVerified && (
+                {user.emailVerified ? (
+                  <p className="ft-userbutton-menu-email-status">
+                    Verified ✓
+                  </p>
+                ) : (
                   <p className="ft-userbutton-menu-email-status">
                     Unverified - Setup incomplete
                   </p>
@@ -417,21 +421,6 @@ export default function UserButton() {
             <div className="ft-userbutton-menu-item-wrapper">
               <button
                 onClick={() => {
-                  setErrorMessage(null);
-                  setIsFilePickerOpen(true);
-                  // Open file picker immediately - don't wait for React re-renders
-                  fileInputRef.current?.click();
-                }}
-                className="ft-userbutton-menu-item"
-              >
-                <Icon variant="camera" size="xs" />
-                {hasCustomAvatar ? 'Change Your Photo' : 'Add Photo'}
-              </button>
-            </div>
-
-            <div className="ft-userbutton-menu-item-wrapper">
-              <button
-                onClick={() => {
                   navigate('settings/preferences');
                   closeAllModals();
                 }}
@@ -467,6 +456,20 @@ export default function UserButton() {
                 Manage Subscription
               </button>
             </div>
+
+            <div className="ft-userbutton-menu-item-wrapper">
+              <button
+                onClick={() => {
+                  setErrorMessage(null);
+                  setIsFilePickerOpen(true);
+                  fileInputRef.current?.click();
+                }}
+                className="ft-userbutton-menu-item"
+              >
+                <Icon variant="camera" size="xs" />
+                {hasCustomAvatar ? 'Change Your Photo' : 'Add Photo'}
+              </button>
+            </div>
           </div>
 
           <div className="ft-userbutton-menu-divider">
@@ -488,6 +491,7 @@ export default function UserButton() {
 
       {showProfileModal && (
         <>
+          <Backdrop onClick={closeAllModals} />
           <div className={`ft-userbutton-modal ${isModalClosing ? 'ft-userbutton-modal--closing' : ''}`}>
             <button
               className="ft-userbutton-close-button"
@@ -543,10 +547,6 @@ export default function UserButton() {
             </div>
           </div>
 
-          <div
-            className="ft-userbutton-backdrop ft-userbutton-cropper-backdrop--dimmed"
-            onClick={closeAllModals}
-          />
         </>
       )}
 

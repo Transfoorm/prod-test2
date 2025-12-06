@@ -1,24 +1,29 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🏢 COMPANY BUTTON - Entity Details + Dropdown Menu                   │
-│  /src/features/CompanyButton/index.tsx                                │
+│  🏢 COMPANY BUTTON - Entity Details + Logo Cropper + Dropdown Menu  │
+│  /src/features/CompanyButton/index.tsx                               │
 │                                                                        │
-│  Company/Entity selector with brand logo, subscription status,        │
-│  and quick access to entity settings.                                 │
+│  Company/Entity selector with brand logo upload/crop, subscription   │
+│  status, and quick access to entity settings.                        │
 │                                                                        │
-│  ISVEA COMPLIANCE: ✅ 100% GOLD STANDARD                               │
-│  - 0 ISV violations                                                    │
-│  - 0 inline styles                                                     │
-│  - 100% compliance (TRUE ZERO inline styles)                          │
+│  ARCHITECTURE: Logo cropper built-in (same pattern as UserButton)    │
+│  - Optimistic UI updates                                              │
+│  - Three-tier persistent state                                        │
+│  - No flash on refresh                                                │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 "use client";
 
-import { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronsUpDown, Edit } from 'lucide-react';
-import CompanyLogoCropper from '@/features/CompanyLogoCropper';
+import { useMutation, useConvex } from 'convex/react';
+import Cropper from 'react-easy-crop';
+import { api } from '@/convex/_generated/api';
+import { refreshSessionAfterUpload } from '@/app/actions/user-mutations';
+import { Id } from '@/convex/_generated/dataModel';
 import CountrySelector from '@/features/CountrySelector';
 import { useFuse } from '@/store/fuse';
-import { Icon } from '@/prebuilts';
+import { Icon, Tooltip, Backdrop } from '@/prebuilts';
 import { formatSubscriptionStatus, type SubscriptionStatus } from '@/fuse/constants/ranks';
 
 export default function CompanyButton() {
@@ -28,14 +33,230 @@ export default function CompanyButton() {
   const [showCountrySelector, setShowCountrySelector] = useState(false);
   const businessLocationButtonRef = useRef<HTMLButtonElement>(null);
 
+  // ─────────────────────────────────────────────────────────────────────
+  // LOGO CROPPER STATE (merged from CompanyLogoCropper)
+  // ─────────────────────────────────────────────────────────────────────
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const generateUploadUrl = useMutation(api.storage.generateUploadUrl.generateUploadUrl);
+  const uploadBrandLogo = useMutation(api.domains.admin.users.api.uploadBrandLogo);
+  const convex = useConvex();
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [showCropperModal, setShowCropperModal] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
+  const [isCropping, setIsCropping] = useState(false);
+
+  // Three-tier persistent state (exact same pattern as UserButton)
+  const [committedUrl, setCommittedUrl] = useState<string | null>(null);
+  const [optimisticUrl, setOptimisticUrl] = useState<string | null>(null);
+  const [previousUrl, setPreviousUrl] = useState<string | null>(null);
+
+  // ─────────────────────────────────────────────────────────────────────
+  // LOGO CROPPER FUNCTIONS
+  // ─────────────────────────────────────────────────────────────────────
+  const waitForImageUrl = async (storageId: Id<"_storage">) => {
+    for (let i = 0; i < 10; i++) {
+      const url = await convex.query(api.storage.getImageUrl.getImageUrl, { storageId });
+      if (url) return url;
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    throw new Error("Image URL did not hydrate in time");
+  };
+
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreviewUrl(null);
+      return;
+    }
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreviewUrl(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [selectedFile]);
+
+  const onCropComplete = useCallback((_: { x: number; y: number; width: number; height: number }, croppedPixels: { x: number; y: number; width: number; height: number }) => {
+    setCroppedAreaPixels(croppedPixels);
+  }, []);
+
+  const createImage = (url: string) =>
+    new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = new Image();
+      img.addEventListener("load", () => resolve(img));
+      img.addEventListener("error", error => reject(error));
+      img.src = url;
+    });
+
+  const getCroppedImg = async (imageSrc: string, pixelCrop: { x: number; y: number; width: number; height: number }) => {
+    const image = await createImage(imageSrc);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d")!;
+
+    const maxSize = 400;
+    let targetWidth = pixelCrop.width;
+    let targetHeight = pixelCrop.height;
+
+    if (targetWidth > maxSize || targetHeight > maxSize) {
+      const scale = Math.min(maxSize / targetWidth, maxSize / targetHeight);
+      targetWidth = Math.round(targetWidth * scale);
+      targetHeight = Math.round(targetHeight * scale);
+    }
+
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
+    ctx.drawImage(
+      image,
+      pixelCrop.x,
+      pixelCrop.y,
+      pixelCrop.width,
+      pixelCrop.height,
+      0,
+      0,
+      targetWidth,
+      targetHeight
+    );
+    return new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(blob => {
+        if (blob) resolve(blob);
+        else reject(new Error("Canvas export failed"));
+      }, "image/png");
+    });
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      console.error("Only image files are allowed");
+      return;
+    }
+
+    setSelectedFile(file);
+    setShowCropperModal(true);
+    setIsCropping(true);
+  };
+
+  const handleUpload = async () => {
+    if (!previewUrl && !selectedFile) {
+      console.error("Please select an image first");
+      return;
+    }
+
+    try {
+      let fileToUpload: File | null = selectedFile;
+      let optimisticBlobUrl: string | null = null;
+
+      if (previewUrl && isCropping && croppedAreaPixels) {
+        const croppedBlob = await getCroppedImg(previewUrl, croppedAreaPixels);
+        fileToUpload = new File([croppedBlob], "companylogo.png", { type: "image/png" });
+        optimisticBlobUrl = URL.createObjectURL(croppedBlob);
+      }
+
+      if (!fileToUpload) {
+        throw new Error("No image to upload");
+      }
+
+      const currentLogo = optimisticUrl || committedUrl || user?.brandLogoUrl || "/images/sitewide/enterprise.png";
+      setPreviousUrl(currentLogo);
+      if (optimisticBlobUrl) {
+        setOptimisticUrl(optimisticBlobUrl);
+      }
+
+      setIsCropping(false);
+      setSelectedFile(null);
+      setShowCropperModal(false);
+      setIsUploading(true);
+
+      const url = await generateUploadUrl({ clerkId: user!.clerkId });
+      // eslint-disable-next-line no-restricted-globals -- Convex-generated upload URL for file storage
+      const uploadRes = await fetch(url, {
+        method: "POST",
+        body: fileToUpload,
+      });
+
+      if (!uploadRes.ok) throw new Error("Upload failed");
+
+      const { storageId } = await uploadRes.json();
+      await uploadBrandLogo({ fileId: storageId, clerkId: user!.clerkId });
+      const newLogoUrl = await waitForImageUrl(storageId);
+
+      setCommittedUrl(newLogoUrl);
+      setOptimisticUrl(null);
+      setPreviousUrl(null);
+
+      if (optimisticBlobUrl) {
+        URL.revokeObjectURL(optimisticBlobUrl);
+      }
+
+      // Refresh FUSE store
+      const freshUser = await convex.query(api.domains.admin.users.api.getCurrentUser, {
+        clerkId: user!.clerkId,
+      });
+      if (freshUser) {
+        const { setUser } = useFuse.getState();
+        setUser({
+          id: String(freshUser._id),
+          convexId: String(freshUser._id),
+          clerkId: freshUser.clerkId,
+          email: freshUser.email || '',
+          emailVerified: freshUser.emailVerified,
+          firstName: freshUser.firstName,
+          lastName: freshUser.lastName,
+          avatarUrl: freshUser.avatarUrl,
+          brandLogoUrl: freshUser.brandLogoUrl,
+          rank: freshUser.rank as 'crew' | 'captain' | 'commodore' | 'admiral' | null | undefined,
+          setupStatus: freshUser.setupStatus as 'pending' | 'complete' | null | undefined,
+          businessCountry: freshUser.businessCountry,
+          entityName: freshUser.entityName,
+          socialName: freshUser.socialName,
+          mirorAvatarProfile: freshUser.mirorAvatarProfile,
+          mirorEnchantmentEnabled: freshUser.mirorEnchantmentEnabled,
+          mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming
+        });
+        console.log('✅ FUSE store updated with new company logo:', freshUser.brandLogoUrl?.substring(0, 50));
+      }
+
+      // Refresh session cookie with new logo
+      console.log('🔄 Refreshing session cookie...');
+      const refreshResult = await refreshSessionAfterUpload();
+      console.log('🔄 Session refresh result:', refreshResult);
+    } catch (err) {
+      console.error("Upload failed:", err);
+      if (previousUrl) {
+        setOptimisticUrl(null);
+        if (optimisticUrl) {
+          URL.revokeObjectURL(optimisticUrl);
+        }
+      }
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const closeCropperModal = () => {
+    setShowCropperModal(false);
+    setSelectedFile(null);
+  };
+
+  // Compute logo source with fallback chain
+  const logoSrc = optimisticUrl || committedUrl || user?.brandLogoUrl || "/images/sitewide/enterprise.png";
+
+  // ─────────────────────────────────────────────────────────────────────
+  // MENU FUNCTIONS
+  // ─────────────────────────────────────────────────────────────────────
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
 
   const handleButtonClick = () => {
-    // Ignore clicks if CompanyLogoCropper modal is open
-    const companyLogoModal = document.querySelector('.ft-companylogo-cropper-modal');
-    if (companyLogoModal) {
+    // Ignore clicks if cropper modal is open
+    if (showCropperModal) {
       return;
     }
 
@@ -57,17 +278,34 @@ export default function CompanyButton() {
         className={`ft-company-button ${isMenuOpen ? 'ft-company-button--active' : ''}`}
         onMouseDown={handleButtonClick}
       >
-        <CompanyLogoCropper />
+        {/* Logo Display */}
+        <img
+          src={logoSrc}
+          alt="Company Logo"
+          width={32}
+          height={32}
+          className="ft-company-button-logo"
+          onClick={(e) => e.stopPropagation()}
+        />
         <div className="ft-company-button-text">
-          <div className="ft-company-button-title">
-            {(user as Record<string, unknown>)?.entityName as string || 'Your Company'}
+          <div className={`ft-company-button-title ${!user?.entityName ? 'ft-company-button-title--placeholder' : ''}`}>
+            {user?.entityName || '*Company Name'}
           </div>
           <div className="ft-company-button-subtitle">
-            {user?.subscriptionStatus ? formatSubscriptionStatus(user.subscriptionStatus as SubscriptionStatus) : 'Trial'}
+            {user?.subscriptionStatus ? formatSubscriptionStatus(user.subscriptionStatus as SubscriptionStatus) : 'Trial Period'}
           </div>
         </div>
         <ChevronsUpDown className="ft-company-button-chevron" />
       </button>
+
+      {/* Hidden file input for logo upload */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="ft-company-button-file-input"
+        onChange={handleFileChange}
+      />
 
       {isMenuOpen && (
         <>
@@ -82,8 +320,10 @@ export default function CompanyButton() {
             <div className="ft-company-button-menu-header">
               <Icon variant="briefcase-business" size="sm" className="ft-company-button-menu-header-icon" />
               <div className="ft-company-button-menu-header-text">
-              Your Business Info
-                
+                Your Business Info
+                {user?.setupStatus !== 'complete' && (
+                  <span className="ft-company-button-menu-header-status">Setup incomplete</span>
+                )}
               </div>
             </div>
 
@@ -94,16 +334,20 @@ export default function CompanyButton() {
                   onClick={() => {
                     navigate('settings/account');
                     closeMenu();
-                    // Focus First Name field after navigation renders
+                    // Set hash to profile tab, then focus First Name field
                     setTimeout(() => {
-                      const input = document.querySelector('[data-field="first-name"]') as HTMLInputElement;
-                      input?.focus();
-                    }, 100);
+                      window.location.hash = 'profile';
+                      // Focus after hash change triggers tab render
+                      setTimeout(() => {
+                        const input = document.querySelector('[data-field="first-name"]') as HTMLInputElement;
+                        input?.focus();
+                      }, 50);
+                    }, 50);
                   }}
                 >
                   <Icon variant="user-pen" size="sm" className="ft-company-button-menu-icon" />
-                  <div className="ft-company-button-menu-value">
-                    {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : '*Complete Your Setup'}
+                  <div className={`ft-company-button-menu-value ${!user?.firstName || !user?.lastName ? 'ft-company-button-menu-value--placeholder' : ''}`}>
+                    {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : '*Enter Your Name'}
                   </div>
                 </button>
               </div>
@@ -121,7 +365,9 @@ export default function CompanyButton() {
                   }}
                 >
                   <Icon variant="dna" size="sm" className="ft-company-button-menu-icon" />
-                  <div className="ft-company-button-menu-value">Professional Genome</div>
+                  <div className={`ft-company-button-menu-value ${user?.setupStatus !== 'complete' ? 'ft-company-button-menu-value--placeholder' : ''}`}>
+                    {user?.setupStatus !== 'complete' ? '*Professional Genome' : 'Professional Genome'}
+                  </div>
                 </button>
               </div>
 
@@ -144,11 +390,7 @@ export default function CompanyButton() {
                 <button
                   className="ft-company-button-menu-item"
                   onClick={() => {
-                    // Trigger CompanyLogoCropper file picker
-                    const fileInput = document.querySelector('.ft-companylogo-cropper-file-input') as HTMLInputElement;
-                    if (fileInput) {
-                      fileInput.click();
-                    }
+                    fileInputRef.current?.click();
                     closeMenu();
                   }}
                 >
@@ -196,6 +438,62 @@ export default function CompanyButton() {
           triggerRef={businessLocationButtonRef}
           onClose={() => setShowCountrySelector(false)}
         />
+      )}
+
+      {/* Logo Cropper Modal */}
+      {showCropperModal && typeof document !== 'undefined' && createPortal(
+        <>
+          <Backdrop onClick={closeCropperModal} />
+          <div
+            className="ft-company-button-cropper-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="ft-company-button-cropper-header">
+              Resize and crop logo
+              <Tooltip.basic content="Use your mouse scroll wheel to zoom and adjust image" side="top">
+                <Icon variant="info" size="sm" className="ft-company-button-cropper-header-icon" />
+              </Tooltip.basic>
+            </div>
+
+            {previewUrl && isCropping && (
+              <div
+                className="ft-company-button-cropper-container"
+                onMouseDown={(e) => e.stopPropagation()}
+              >
+                <Cropper
+                  image={previewUrl}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={1}
+                  minZoom={0.5}
+                  maxZoom={3}
+                  restrictPosition={false}
+                  onCropChange={setCrop}
+                  onZoomChange={setZoom}
+                  onCropComplete={onCropComplete}
+                  classes={{
+                    cropAreaClassName: 'ft-company-button-crop-area'
+                  }}
+                />
+              </div>
+            )}
+
+            <div className="ft-company-button-cropper-actions">
+              {previewUrl && (
+                <button
+                  className={`ft-company-button-cropper-save ${isUploading ? 'ft-company-button-cropper-save--uploading' : ''}`}
+                  onClick={() => {
+                    if (isUploading) return;
+                    handleUpload();
+                  }}
+                >
+                  {isUploading ? "Uploading..." : "Save cropped image"}
+                </button>
+              )}
+            </div>
+          </div>
+        </>,
+        document.body
       )}
     </div>
   );
