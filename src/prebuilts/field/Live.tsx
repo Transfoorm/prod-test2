@@ -39,6 +39,8 @@ export interface FieldLiveProps {
   required?: boolean;
   /** Helper text */
   helper?: string;
+  /** Transform input as user types (e.g., filter characters) */
+  transform?: (value: string, currentValue: string) => string;
 }
 
 const CHIP_TEXT: Record<LiveState, string | null> = {
@@ -57,6 +59,7 @@ export default function FieldLive({
   type = 'text',
   required = false,
   helper,
+  transform,
 }: FieldLiveProps) {
   const [state, setState] = useState<LiveState>('idle');
   const [localValue, setLocalValue] = useState(value);
@@ -141,7 +144,13 @@ export default function FieldLive({
   }, []);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
+    let newValue = e.target.value;
+
+    // Apply transform if provided (e.g., username character filtering)
+    if (transform) {
+      newValue = transform(newValue, localValue);
+    }
+
     setLocalValue(newValue);
     setState('dirty');
 
@@ -155,7 +164,7 @@ export default function FieldLive({
     saveTimeoutRef.current = setTimeout(() => {
       doSave(newValue);
     }, SAVE_DELAY_MS);
-  }, [doSave]);
+  }, [doSave, transform, localValue]);
 
   const handleBlur = useCallback(() => {
     isFocused.current = false;

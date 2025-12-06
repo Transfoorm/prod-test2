@@ -15,6 +15,7 @@
  │  - No "Skip for now" - user must complete to proceed                     │
  └────────────────────────────────────────────────────────────────────────────*/
 
+import { useEffect } from 'react';
 import { useFuse } from '@/store/fuse';
 import { completeSetupAction } from '@/app/actions/user-mutations';
 import SetupModal from '@/features/UserSetup/SetupModal';
@@ -24,11 +25,23 @@ export default function ShadowKing() {
   const shadowKingActive = useFuse((s) => s.shadowKingActive);
   const setShadowKingActive = useFuse((s) => s.setShadowKingActive);
   const setModalSkipped = useFuse((s) => s.setModalSkipped);
+  const setShowRedArrow = useFuse((s) => s.setShowRedArrow);
   const user = useFuse((s) => s.user);
   const updateUser = useFuse((s) => s.updateUser);
 
   // Only show if Shadow King is active AND setup is actually pending
   const shouldShow = shadowKingActive && user?.setupStatus === 'pending';
+
+  // Show red arrow when Shadow King activates
+  useEffect(() => {
+    if (shouldShow) {
+      // Small delay so arrow appears after modal animation
+      const timer = setTimeout(() => {
+        setShowRedArrow(true);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [shouldShow, setShowRedArrow]);
 
   if (!shouldShow) return null;
 
@@ -82,6 +95,7 @@ export default function ShadowKing() {
 
       // Deactivate Shadow King - setup is complete
       setShadowKingActive(false);
+      setShowRedArrow(false);  // Hide arrow when complete
 
       console.log('👑 Shadow King: Setup completed, returning to app');
     } catch (error) {
@@ -96,12 +110,14 @@ export default function ShadowKing() {
   const handleSkip = () => {
     setShadowKingActive(false);
     setModalSkipped(true);  // Sync with Dashboard modal skip state
+    setShowRedArrow(false);  // Hide arrow when closing
   };
 
   const handleBackdropClick = () => {
-    // Outside click = same as skip
+    // Outside click = just close, NOT skip
     setShadowKingActive(false);
-    setModalSkipped(true);  // Sync with Dashboard modal skip state
+    setShowRedArrow(false);  // Hide arrow when closing
+    // Note: Do NOT set modalSkipped - user didn't explicitly skip
   };
 
   return (
