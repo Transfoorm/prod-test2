@@ -47,10 +47,10 @@ export default function Profile() {
           placeholder="Your company name"
         />
         <Field.live
-          label="User Name"
+          label="Username"
           value={user?.socialName ?? ''}
           onSave={(v) => updateUserLocal({ socialName: v || undefined })}
-          placeholder="How you prefer to be called"
+          placeholder="Your 'handle'"
         />
       </div>
 

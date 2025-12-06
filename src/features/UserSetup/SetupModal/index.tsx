@@ -178,9 +178,9 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
       newErrors.entityName = 'Entity name is required';
     }
     if (!formData.socialName.trim()) {
-      newErrors.socialName = 'Social name is required';
+      newErrors.socialName = 'Username is required';
     } else if (formData.socialName.length < 3) {
-      newErrors.socialName = 'Social name must be at least 3 characters';
+      newErrors.socialName = 'Username must be at least 3 characters';
     }
 
     setErrors(newErrors);
@@ -465,7 +465,7 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
               {/* Social Name */}
               <div className="ft-setup-field">
                 <label className="ft-setup-label">
-                  Social <span className="ft-setup-required">*</span>
+                  Username <span className="ft-setup-required">*</span>
                 </label>
                 <input
                   type="text"

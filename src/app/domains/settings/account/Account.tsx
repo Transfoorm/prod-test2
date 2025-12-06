@@ -28,16 +28,27 @@ export default function Account() {
   const user = useFuse((s) => s.user);
   const setShadowKingActive = useFuse((s) => s.setShadowKingActive);
 
-  // If setup pending, any click activates Shadow King
-  const handleInteraction = () => {
-    if (user?.setupStatus === 'pending') {
+  const freeze = user?.setupStatus === 'pending';
+
+  // If frozen, intercept ALL clicks and focus - block interaction, show modal
+  const handleInteraction = (e: React.MouseEvent | React.FocusEvent) => {
+    if (freeze) {
+      e.preventDefault();
+      e.stopPropagation();
+      // Blur any focused element
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
       setShadowKingActive(true);
     }
   };
 
   return (
     <Stack>
-      <div onClick={handleInteraction}>
+      <div
+        onClickCapture={handleInteraction}
+        onFocusCapture={handleInteraction}
+      >
         <Tabs.panels
           tabs={[
             { id: 'profile', label: 'Profile', content: <Profile /> },
