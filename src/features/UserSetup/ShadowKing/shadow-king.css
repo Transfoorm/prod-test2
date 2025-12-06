@@ -32,7 +32,24 @@
   position: relative;
   margin: auto;
   max-width: 1200px;
-  max-height: 90vh;
+  max-height: 80vh;
   overflow-y: auto;
   pointer-events: auto;  /* Re-enable clicks on modal itself */
+}
+
+/* Smaller screens - MacBook Air and similar */
+@media (max-height: 800px) {
+  .ft-shadow-king .ft-setup-modal {
+    max-height: 85vh;
+    transform: scale(0.9);
+    transform-origin: center center;
+  }
+}
+
+/* Very small screens */
+@media (max-height: 700px) {
+  .ft-shadow-king .ft-setup-modal {
+    max-height: 90vh;
+    transform: scale(0.8);
+  }
 }
