@@ -30,6 +30,9 @@ export default function CompanyButton() {
   const user = useFuse((s) => s.user);
   const navigate = useFuse((s) => s.navigate);
   const setShadowKingActive = useFuse((s) => s.setShadowKingActive);
+  const setShowRedArrow = useFuse((s) => s.setShowRedArrow);
+  const modalSkipped = useFuse((s) => s.modalSkipped);
+  const route = useFuse((s) => s.sovereign.route);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showCountrySelector, setShowCountrySelector] = useState(false);
   const businessLocationButtonRef = useRef<HTMLButtonElement>(null);
@@ -334,9 +337,14 @@ export default function CompanyButton() {
                   className="ft-company-button-menu-item"
                   onClick={() => {
                     closeMenu();
-                    // If setup pending, activate Shadow King instead of navigating
+                    // If setup pending, check if modal already visible on dashboard
                     if (user?.setupStatus === 'pending') {
-                      setShadowKingActive(true);
+                      if (route === 'dashboard' && !modalSkipped) {
+                        // Modal already showing - show red arrow instead
+                        setShowRedArrow(true);
+                      } else {
+                        setShadowKingActive(true);
+                      }
                     } else {
                       navigate('settings/account');
                       // Set hash to profile tab, then focus First Name field
@@ -362,9 +370,14 @@ export default function CompanyButton() {
                   className="ft-company-button-menu-item"
                   onClick={() => {
                     closeMenu();
-                    // If setup pending, activate Shadow King instead of navigating
+                    // If setup pending, check if modal already visible on dashboard
                     if (user?.setupStatus === 'pending') {
-                      setShadowKingActive(true);
+                      if (route === 'dashboard' && !modalSkipped) {
+                        // Modal already showing - show red arrow instead
+                        setShowRedArrow(true);
+                      } else {
+                        setShadowKingActive(true);
+                      }
                     } else {
                       navigate('settings/account');
                       // Set hash after navigate so Tabs.panels can read it
@@ -418,9 +431,14 @@ export default function CompanyButton() {
                   className="ft-company-button-menu-link"
                   onClick={() => {
                     closeMenu();
-                    // If setup pending, activate Shadow King instead of navigating
+                    // If setup pending, check if modal already visible on dashboard
                     if (user?.setupStatus === 'pending') {
-                      setShadowKingActive(true);
+                      if (route === 'dashboard' && !modalSkipped) {
+                        // Modal already showing - show red arrow instead
+                        setShowRedArrow(true);
+                      } else {
+                        setShadowKingActive(true);
+                      }
                     } else {
                       navigate('settings/account');
                     }

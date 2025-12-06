@@ -209,6 +209,7 @@ export type FuseState = {
 
   // Shadow King - sovereign setup modal enforcement
   shadowKingActive: boolean;
+  showRedArrow: boolean;
 
   // Performance tracking
   lastActionTiming?: number;
@@ -263,6 +264,7 @@ export type FuseState = {
 
   // Shadow King methods - sovereign setup enforcement
   setShadowKingActive: (value: boolean) => void;
+  setShowRedArrow: (value: boolean) => void;
 
   // Navigation timing - click-to-render measurement
   setNavClickTime: () => void; // Sets timestamp when nav link clicked

@@ -42,6 +42,9 @@ export default function UserButton() {
   const user = useFuse((s) => s.user);
   const navigate = useFuse((s) => s.navigate);
   const setShadowKingActive = useFuse((s) => s.setShadowKingActive);
+  const setShowRedArrow = useFuse((s) => s.setShowRedArrow);
+  const modalSkipped = useFuse((s) => s.modalSkipped);
+  const route = useFuse((s) => s.sovereign.route);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl.generateUploadUrl);
@@ -410,9 +413,14 @@ export default function UserButton() {
               <button
                 onClick={() => {
                   closeAllModals();
-                  // If setup pending, activate Shadow King instead of navigating
+                  // If setup pending, check if modal already visible on dashboard
                   if (user?.setupStatus === 'pending') {
-                    setShadowKingActive(true);
+                    if (route === 'dashboard' && !modalSkipped) {
+                      // Modal already showing - show red arrow instead
+                      setShowRedArrow(true);
+                    } else {
+                      setShadowKingActive(true);
+                    }
                   } else {
                     navigate('settings/account');
                   }

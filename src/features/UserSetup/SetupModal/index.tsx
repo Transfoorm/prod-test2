@@ -47,6 +47,8 @@ interface SetupModalProps {
 export default function SetupModal({ onComplete, onSkip, isFadingOut = false, isFadingIn = false, isHidden = false }: SetupModalProps) {
   const user = useFuse((s) => s.user);
   const updateUser = useFuse((s) => s.updateUser);
+  const showRedArrow = useFuse((s) => s.showRedArrow);
+  const setShowRedArrow = useFuse((s) => s.setShowRedArrow);
   const { user: clerkUser, isLoaded } = useUser();
 
   const [formData, setFormData] = useState<SetupData>({
@@ -398,27 +400,44 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
             {/* Welcome message */}
             <div className="ft-setup-welcome">
               <p className="ft-setup-welcome-text">
-                *Completing your setup will enhance your experience with personalised features and smarter AI assistance.
-                You can change your details via settings at any time.
+                *Complete your setup and enhance the user experience with personalised features and smarter AI assistance. Go to the <i>Account</i> page and change any time.
               </p>
             </div>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="ft-setup-form">
               {/* First Name */}
-              <div className="ft-setup-field">
+              <div className="ft-setup-field ft-setup-field--first-name">
                 <label className="ft-setup-label">
                   First Name <span className="ft-setup-required">*</span>
                 </label>
-                <input
-                  type="text"
-                  value={formData.firstName}
-                  onChange={(e) => handleInputChange('firstName', e.target.value)}
-                  placeholder="Ace"
-                  className={`ft-setup-input ${
-                    errors.firstName ? 'ft-setup-input-error' : ''
-                  }`}
-                />
+                <div className="ft-setup-input-wrapper">
+                  <input
+                    type="text"
+                    value={formData.firstName}
+                    onChange={(e) => {
+                      handleInputChange('firstName', e.target.value);
+                      // Hide arrow when user starts typing
+                      if (showRedArrow) setShowRedArrow(false);
+                    }}
+                    onFocus={() => {
+                      // Hide arrow when field is focused
+                      if (showRedArrow) setShowRedArrow(false);
+                    }}
+                    placeholder="Ace"
+                    className={`ft-setup-input ${
+                      errors.firstName ? 'ft-setup-input-error' : ''
+                    }`}
+                  />
+                  {/* Red pulsating arrow - points to First Name field */}
+                  {showRedArrow && (
+                    <img
+                      src="/images/sitewide/pulsing_red_arrow.gif"
+                      alt="Fill this in"
+                      className="ft-setup-red-arrow"
+                    />
+                  )}
+                </div>
                 {errors.firstName && (
                   <p className="ft-setup-error-text">{errors.firstName}</p>
                 )}
@@ -540,30 +559,36 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
                 <Button.ghost
                   type="button"
                   onClick={() => {
-                    // Get BOTH positions BEFORE anything changes
-                    const sourceButton = document.querySelector('[data-setup-source]') as HTMLElement;
-                    const targetButton = document.querySelector('[data-setup-target]') as HTMLElement;
+                    // Only trigger Phoenix if NOT in Shadow King mode
+                    // Shadow King is detected by checking if shadowKingActive is true
+                    const { shadowKingActive } = useFuse.getState();
 
-                    if (sourceButton && targetButton) {
-                      const sourceRect = sourceButton.getBoundingClientRect();
-                      const targetRect = targetButton.getBoundingClientRect();
+                    if (!shadowKingActive) {
+                      // Get BOTH positions BEFORE anything changes
+                      const sourceButton = document.querySelector('[data-setup-source]') as HTMLElement;
+                      const targetButton = document.querySelector('[data-setup-target]') as HTMLElement;
 
-                      // HOUDINI SWITCH: Hide modal button IMMEDIATELY
-                      setHideSetupButton(true);
+                      if (sourceButton && targetButton) {
+                        const sourceRect = sourceButton.getBoundingClientRect();
+                        const targetRect = targetButton.getBoundingClientRect();
 
-                      // Trigger phoenix with positions AND dimensions
-                      window.dispatchEvent(new CustomEvent('phoenixShow', {
-                        detail: {
-                          sourceX: sourceRect.left,
-                          sourceY: sourceRect.top,
-                          sourceWidth: sourceRect.width,
-                          targetX: targetRect.left,
-                          targetY: targetRect.top,
-                        }
-                      }));
+                        // HOUDINI SWITCH: Hide modal button IMMEDIATELY
+                        setHideSetupButton(true);
+
+                        // Trigger phoenix with positions AND dimensions
+                        window.dispatchEvent(new CustomEvent('phoenixShow', {
+                          detail: {
+                            sourceX: sourceRect.left,
+                            sourceY: sourceRect.top,
+                            sourceWidth: sourceRect.width,
+                            targetX: targetRect.left,
+                            targetY: targetRect.top,
+                          }
+                        }));
+                      }
                     }
 
-                    // Let dashboard handle the fade-out timing
+                    // Let parent handle the skip (Dashboard or Shadow King)
                     onSkip();
                   }}
                   disabled={isSubmitting}

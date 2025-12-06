@@ -86,6 +86,7 @@ interface FuseStore {
   phoenixButtonVisible: boolean;
   phoenixNavigating: boolean;
   shadowKingActive: boolean;
+  showRedArrow: boolean;
   lastActionTiming?: number;
   navClickTime?: number;
 
@@ -139,6 +140,7 @@ interface FuseStore {
   setPhoenixButtonVisible: (value: boolean) => void;
   setPhoenixNavigating: (value: boolean) => void;
   setShadowKingActive: (value: boolean) => void;
+  setShowRedArrow: (value: boolean) => void;
 
   // Navigation timing - click-to-render measurement
   setNavClickTime: () => void;
@@ -221,6 +223,7 @@ export const useFuse = create<FuseStore>()((set, get) => {
     phoenixButtonVisible: false,
     phoenixNavigating: false,
     shadowKingActive: false,
+    showRedArrow: false,
     lastActionTiming: undefined,
     navClickTime: undefined,
 
@@ -1006,6 +1009,13 @@ export const useFuse = create<FuseStore>()((set, get) => {
       const start = fuseTimer.start('setShadowKingActive');
       set({ shadowKingActive: value, lastActionTiming: performance.now() });
       fuseTimer.end('setShadowKingActive', start);
+    },
+
+    // Red arrow - points to First Name field when modal already visible
+    setShowRedArrow: (value: boolean) => {
+      const start = fuseTimer.start('setShowRedArrow');
+      set({ showRedArrow: value, lastActionTiming: performance.now() });
+      fuseTimer.end('setShowRedArrow', start);
     },
 
     // Navigation timing - click-to-render measurement

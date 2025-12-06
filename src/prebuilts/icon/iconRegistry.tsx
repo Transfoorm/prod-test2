@@ -39,6 +39,7 @@ import {
   EyeOff,
   Home,
   LayoutDashboard,
+  LayoutGrid,
   Users,
   User,
   UserCog,
@@ -130,6 +131,7 @@ const iconRegistry = {
   // Navigation icons
   'home': Home,
   'layout-dashboard': LayoutDashboard,
+  'layout-grid': LayoutGrid,
   'users': Users,
   'user': User,
   'user-star': UserCog,

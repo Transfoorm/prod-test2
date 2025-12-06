@@ -26,6 +26,7 @@ export default function Dashboard() {
   const setModalSkipped = useFuse((s) => s.setModalSkipped);
   const modalReturning = useFuse((s) => s.modalReturning);
   const setModalReturning = useFuse((s) => s.setModalReturning);
+  const setShowRedArrow = useFuse((s) => s.setShowRedArrow);
   const [isModalFadingOut, setIsModalFadingOut] = useState(false);
   const [isModalFadingIn, setIsModalFadingIn] = useState(modalReturning);
 
@@ -64,6 +65,13 @@ export default function Dashboard() {
       window.removeEventListener('bringModalBack', handleBringModalBack);
     };
   }, [setModalSkipped]);
+
+  // Reset red arrow when leaving dashboard
+  useEffect(() => {
+    return () => {
+      setShowRedArrow(false);
+    };
+  }, [setShowRedArrow]);
 
   // Show setup modal for Captain/Pending users (only if not in skip mode)
   const shouldShowSetup = user?.rank === 'captain' && user?.setupStatus === 'pending' && !modalSkipped;
@@ -131,6 +139,9 @@ export default function Dashboard() {
   const handleSetupSkip = () => {
     // Set skip state in FUSE store to persist across navigation
     setModalSkipped(true);
+
+    // Hide red arrow if visible
+    setShowRedArrow(false);
 
     // Start the fade-out animation
     setIsModalFadingOut(true);
