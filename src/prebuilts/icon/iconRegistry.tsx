@@ -93,6 +93,7 @@ import {
   Flag,
   Gem,
   PackageOpen,
+  Send,
 } from 'lucide-react';
 
 // Icon registry - maps string variants to Lucide components
@@ -190,6 +191,7 @@ const iconRegistry = {
   'flag': Flag,
   'gem': Gem,
   'package': PackageOpen,
+  'send': Send,
 } as const;
 
 export type IconVariant = keyof typeof iconRegistry;

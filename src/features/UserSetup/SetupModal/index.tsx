@@ -400,7 +400,7 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
             {/* Welcome message */}
             <div className="ft-setup-welcome">
               <p className="ft-setup-welcome-text">
-                *Complete your setup and enhance the user experience with personalised features and smarter AI assistance. Go to the <i>Account</i> page and change any time.
+                *Complete your setup and enhance the user experience with personalised features and smarter AI assistance. Go to the <i>Account</i> page to change at any time.
               </p>
             </div>
 
@@ -429,10 +429,10 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
                       errors.firstName ? 'ft-setup-input-error' : ''
                     }`}
                   />
-                  {/* Red pulsating arrow - points to First Name field */}
+                  {/* Red arrow - points to First Name field */}
                   {showRedArrow && (
                     <img
-                      src="/images/sitewide/pulsing_red_arrow.gif"
+                      src="/images/sitewide/brand_arrow.png"
                       alt="Fill this in"
                       className="ft-setup-red-arrow"
                     />
