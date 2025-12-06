@@ -3,7 +3,7 @@ description: Clerk Virus Scanner - Detect and block Clerk infections in sovereig
 tags: [vrp, clerk, security, virus, sovereignty]
 ---
 
-# 🛡️ FORT KNOX SOVEREIGN DOCTRINE — TOTAL LOCKDOWN
+# 🛡️ CLERK KNOX SOVEREIGN DOCTRINE — TOTAL LOCKDOWN
 
 Clerk is permitted **ONLY** in:
   • `/app/(auth)/**`

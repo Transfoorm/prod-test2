@@ -83,6 +83,9 @@ const eslintConfig = [
       // SRB-7: No Clerk in Domains - Enforces Golden Bridge (Clerk relegated to auth only)
       "ttts/no-clerk-in-domains": "error",
 
+      // Category K: No Clerk Identity in Server Actions - Blocks getToken/setAuth outside auth boundary
+      "ttts/no-clerk-identity-in-actions": "error",
+
       // NOTE: class-prefix and no-component-css DISABLED for now
       // Legacy uses VR architecture, not 5-file system yet
       // "class-prefix/enforce-class-prefix": "error",  // DISABLED

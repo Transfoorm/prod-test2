@@ -1,4 +1,4 @@
-# 🛡️ FORT KNOX SOVEREIGN DOCTRINE — NON‑NEGOTIABLE
+# 🛡️ CLERK KNOX SOVEREIGN DOCTRINE — NON‑NEGOTIABLE
 
 Clerk is permitted **ONLY** inside:
   • `/app/(auth)/**`
