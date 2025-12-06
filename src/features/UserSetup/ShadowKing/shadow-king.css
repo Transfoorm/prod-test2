@@ -1,0 +1,38 @@
+/* ═══════════════════════════════════════════════════════════════════
+   👑 SHADOW KING - Sovereign Setup Enforcement
+   /src/features/UserSetup/ShadowKing/shadow-king.css
+
+   Positioned above backdrop (z-index 900), below nothing.
+   This is the sovereign layer - nothing escapes.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.ft-shadow-king {
+  position: fixed;
+  inset: 0;
+  z-index: 901;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ft-shadow-king-fade-in 200ms ease-out;
+  pointer-events: none;  /* Let clicks pass through to backdrop */
+}
+
+@keyframes ft-shadow-king-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Override SetupModal positioning when inside Shadow King */
+.ft-shadow-king .ft-setup-modal {
+  position: relative;
+  margin: auto;
+  max-width: 1200px;
+  max-height: 90vh;
+  overflow-y: auto;
+  pointer-events: auto;  /* Re-enable clicks on modal itself */
+}

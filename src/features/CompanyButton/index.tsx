@@ -29,6 +29,7 @@ import { formatSubscriptionStatus, type SubscriptionStatus } from '@/fuse/consta
 export default function CompanyButton() {
   const user = useFuse((s) => s.user);
   const navigate = useFuse((s) => s.navigate);
+  const setShadowKingActive = useFuse((s) => s.setShadowKingActive);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showCountrySelector, setShowCountrySelector] = useState(false);
   const businessLocationButtonRef = useRef<HTMLButtonElement>(null);
@@ -332,17 +333,21 @@ export default function CompanyButton() {
                 <button
                   className="ft-company-button-menu-item"
                   onClick={() => {
-                    navigate('settings/account');
                     closeMenu();
-                    // Set hash to profile tab, then focus First Name field
-                    setTimeout(() => {
-                      window.location.hash = 'profile';
-                      // Focus after hash change triggers tab render
+                    // If setup pending, activate Shadow King instead of navigating
+                    if (user?.setupStatus === 'pending') {
+                      setShadowKingActive(true);
+                    } else {
+                      navigate('settings/account');
+                      // Set hash to profile tab, then focus First Name field
                       setTimeout(() => {
-                        const input = document.querySelector('[data-field="first-name"]') as HTMLInputElement;
-                        input?.focus();
+                        window.location.hash = 'profile';
+                        setTimeout(() => {
+                          const input = document.querySelector('[data-field="first-name"]') as HTMLInputElement;
+                          input?.focus();
+                        }, 50);
                       }, 50);
-                    }, 50);
+                    }
                   }}
                 >
                   <Icon variant="user-pen" size="sm" className="ft-company-button-menu-icon" />
@@ -356,12 +361,17 @@ export default function CompanyButton() {
                 <button
                   className="ft-company-button-menu-item"
                   onClick={() => {
-                    navigate('settings/account');
                     closeMenu();
-                    // Set hash after navigate so Tabs.panels can read it
-                    setTimeout(() => {
-                      window.location.hash = 'genome';
-                    }, 50);
+                    // If setup pending, activate Shadow King instead of navigating
+                    if (user?.setupStatus === 'pending') {
+                      setShadowKingActive(true);
+                    } else {
+                      navigate('settings/account');
+                      // Set hash after navigate so Tabs.panels can read it
+                      setTimeout(() => {
+                        window.location.hash = 'genome';
+                      }, 50);
+                    }
                   }}
                 >
                   <Icon variant="dna" size="sm" className="ft-company-button-menu-icon" />
@@ -407,8 +417,13 @@ export default function CompanyButton() {
                 <button
                   className="ft-company-button-menu-link"
                   onClick={() => {
-                    navigate('settings/account');
                     closeMenu();
+                    // If setup pending, activate Shadow King instead of navigating
+                    if (user?.setupStatus === 'pending') {
+                      setShadowKingActive(true);
+                    } else {
+                      navigate('settings/account');
+                    }
                   }}
                 >
                   <Edit className="ft-company-button-menu-link-icon" />

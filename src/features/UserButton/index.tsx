@@ -41,6 +41,7 @@ import ThemeToggle from '@/features/ThemeToggle';
 export default function UserButton() {
   const user = useFuse((s) => s.user);
   const navigate = useFuse((s) => s.navigate);
+  const setShadowKingActive = useFuse((s) => s.setShadowKingActive);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl.generateUploadUrl);
@@ -408,8 +409,13 @@ export default function UserButton() {
             <div className="ft-userbutton-menu-item-wrapper">
               <button
                 onClick={() => {
-                  navigate('settings/account');
                   closeAllModals();
+                  // If setup pending, activate Shadow King instead of navigating
+                  if (user?.setupStatus === 'pending') {
+                    setShadowKingActive(true);
+                  } else {
+                    navigate('settings/account');
+                  }
                 }}
                 className="ft-userbutton-menu-item"
               >

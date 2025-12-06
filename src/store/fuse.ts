@@ -85,6 +85,7 @@ interface FuseStore {
   modalReturning: boolean;
   phoenixButtonVisible: boolean;
   phoenixNavigating: boolean;
+  shadowKingActive: boolean;
   lastActionTiming?: number;
   navClickTime?: number;
 
@@ -137,6 +138,7 @@ interface FuseStore {
   setModalReturning: (value: boolean) => void;
   setPhoenixButtonVisible: (value: boolean) => void;
   setPhoenixNavigating: (value: boolean) => void;
+  setShadowKingActive: (value: boolean) => void;
 
   // Navigation timing - click-to-render measurement
   setNavClickTime: () => void;
@@ -218,6 +220,7 @@ export const useFuse = create<FuseStore>()((set, get) => {
     modalReturning: false,
     phoenixButtonVisible: false,
     phoenixNavigating: false,
+    shadowKingActive: false,
     lastActionTiming: undefined,
     navClickTime: undefined,
 
@@ -996,6 +999,13 @@ export const useFuse = create<FuseStore>()((set, get) => {
       const start = fuseTimer.start('setPhoenixNavigating');
       set({ phoenixNavigating: value, lastActionTiming: performance.now() });
       fuseTimer.end('setPhoenixNavigating', start);
+    },
+
+    // Shadow King - sovereign setup enforcement
+    setShadowKingActive: (value: boolean) => {
+      const start = fuseTimer.start('setShadowKingActive');
+      set({ shadowKingActive: value, lastActionTiming: performance.now() });
+      fuseTimer.end('setShadowKingActive', start);
     },
 
     // Navigation timing - click-to-render measurement

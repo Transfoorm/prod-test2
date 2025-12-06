@@ -207,6 +207,9 @@ export type FuseState = {
   phoenixButtonVisible: boolean;
   phoenixNavigating: boolean;
 
+  // Shadow King - sovereign setup modal enforcement
+  shadowKingActive: boolean;
+
   // Performance tracking
   lastActionTiming?: number;
   navClickTime?: number; // Timestamp when sidebar nav click occurs (for click-to-render timing)
@@ -257,6 +260,9 @@ export type FuseState = {
   setModalSkipped: (value: boolean) => void;
   setPhoenixButtonVisible: (value: boolean) => void;
   setPhoenixNavigating: (value: boolean) => void;
+
+  // Shadow King methods - sovereign setup enforcement
+  setShadowKingActive: (value: boolean) => void;
 
   // Navigation timing - click-to-render measurement
   setNavClickTime: () => void; // Sets timestamp when nav link clicked

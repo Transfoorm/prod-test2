@@ -21,6 +21,9 @@
 /* Flying Button (Phoenix) */
 @import url('../src/features/UserSetup/FlyingButton/flying-button.css');
 
+/* Shadow King (Sovereign Setup Enforcement) */
+@import url('../src/features/UserSetup/ShadowKing/shadow-king.css');
+
 /* ☢️ Vanish Protocol - QUARANTINED (WCCC ft-* Compliant)
    Lives at PROJECT ROOT /vanish/ to signal architectural boundary
    This is the ONLY feature that breaks Clerk Exclusion (user deletion requires Clerk API)

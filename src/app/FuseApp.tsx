@@ -36,6 +36,9 @@ import Footer from '@/shell/Footer';
 import dynamic from 'next/dynamic';
 const Router = dynamic(() => import('./domains/Router'), { ssr: false });
 
+// Shadow King - Sovereign Setup Enforcement (shell-level)
+import ShadowKing from '@/features/UserSetup/ShadowKing';
+
 // WARP Orchestrator
 import { runWarpPreload, attachTTLRevalidation } from '@/fuse/warp/orchestrator';
 
@@ -152,6 +155,9 @@ export default function FuseApp() {
           </ProductivityProvider>
         </ClientsProvider>
       </FinanceProvider>
+
+      {/* 👑 SHADOW KING - Sovereign Setup Enforcement (above everything) */}
+      <ShadowKing />
     </>
   );
 }
