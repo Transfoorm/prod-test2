@@ -157,60 +157,21 @@ export async function completeSetupAction(data: {
 }
 
 /**
- * Update theme preferences and auto-update session cookie
+ * Update theme preferences in database only (no cookie refresh)
+ *
+ * FUSE Pattern: UI updates via store + localStorage (instant)
+ * DB sync is fire-and-forget for persistence across devices/sessions
+ * Cookie will sync on next login - no need to refresh mid-session
  */
 export async function updateThemeAction(themeDark: boolean) {
   try {
     const { userId } = await auth();
     if (!userId) throw new Error('Unauthorized');
 
-    // Call Convex mutation
+    // Just update DB - store + localStorage already have the right value
     await convex.mutation(api.domains.admin.users.api.updateThemePreferences, {
       clerkId: userId,
       themeDark,
-    });
-
-    // Fetch fresh user data (getCurrentUser resolves storage IDs to URLs)
-    const freshUser = await convex.query(api.domains.admin.users.api.getCurrentUser, {
-      clerkId: userId,
-    });
-
-    if (!freshUser) throw new Error('User not found');
-
-    // Read current session
-    const session = await readSessionCookie();
-
-    // Mint new session with updated data (preserve client-only themeMode)
-    const token = await mintSession({
-      _id: String(freshUser._id),
-      clerkId: freshUser.clerkId,
-      email: freshUser.email || session?.email || '',
-      emailVerified: freshUser.emailVerified,
-      firstName: freshUser.firstName || session?.firstName,
-      lastName: freshUser.lastName || session?.lastName,
-      avatarUrl: freshUser.avatarUrl || undefined,
-      brandLogoUrl: freshUser.brandLogoUrl || undefined,
-      rank: freshUser.rank as string,
-      setupStatus: freshUser.setupStatus as string,
-      businessCountry: freshUser.businessCountry as string,
-      entityName: freshUser.entityName as string,
-      socialName: freshUser.socialName as string,
-      themeName: (freshUser.themeName as string) || session?.themeName,
-      themeMode: themeDark ? 'dark' : 'light',
-      mirorAvatarProfile: freshUser.mirorAvatarProfile as 'male' | 'female' | 'inclusive' | undefined,
-      mirorEnchantmentEnabled: freshUser.mirorEnchantmentEnabled,
-      mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
-    });
-
-    // Update cookie (Server Action context - set directly on cookies store)
-    const cookieStore = await cookies();
-    const isProd = process.env.NODE_ENV === 'production';
-    cookieStore.set('FUSE_5.0', token, {
-      httpOnly: false, // Must be false for client-side hydration
-      secure: isProd,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30, // 30 days
     });
 
     return { success: true };

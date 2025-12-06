@@ -118,7 +118,7 @@ interface FuseStore {
   hydrateThemeName: (name: ThemeName) => void;
   setThemeMode: (mode: ThemeMode) => Promise<void>;
   setThemeName: (name: ThemeName) => Promise<void>;
-  toggleThemeMode: () => Promise<void>;
+  toggleThemeMode: () => void;
   syncThemeFromDB: (clerkId: string) => Promise<void>;
 
   setCurrentRoute: (route: string) => void;
@@ -705,11 +705,10 @@ export const useFuse = create<FuseStore>()((set, get) => {
       }
 
       if (Object.keys(profileUpdates).length > 0) {
-        try {
-          const { updateProfileAction } = await import('@/app/actions/user-mutations');
-          await updateProfileAction(profileUpdates);
-        } catch (error) {
-          console.error('Failed to save profile settings:', error);
+        const { updateProfileAction } = await import('@/app/actions/user-mutations');
+        const result = await updateProfileAction(profileUpdates);
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to save');
         }
       }
 
@@ -822,30 +821,29 @@ export const useFuse = create<FuseStore>()((set, get) => {
       fuseTimer.end('syncThemeFromDB', start);
     },
 
-    toggleThemeMode: async () => {
+    toggleThemeMode: () => {
       const start = fuseTimer.start('toggleThemeMode');
       const currentMode = get().themeMode;
       const newMode = currentMode === 'light' ? 'dark' : 'light';
 
+      // 1. Update store immediately (optimistic)
       set({ themeMode: newMode, lastActionTiming: performance.now() });
 
+      // 2. Update DOM + localStorage immediately
       if (typeof window !== 'undefined') {
         document.documentElement.setAttribute(DOM_ATTRIBUTES.THEME_MODE, newMode);
         document.documentElement.setAttribute(DOM_ATTRIBUTES.THEME_NAME, 'transtheme');
         localStorage.setItem(STORAGE_KEYS.THEME_MODE, newMode);
       }
 
+      // 3. Fire-and-forget: sync to DB in background (don't await)
       const { user } = get();
       if (user?.clerkId) {
-        try {
-          const { updateThemeAction } = await import('@/app/actions/user-mutations');
-          await updateThemeAction(newMode === 'dark');
-          if (process.env.NODE_ENV === 'development') {
-            console.log('FUSE: Theme synced to database with cookie update');
-          }
-        } catch (error) {
-          console.error('Failed to sync theme to database:', error);
-        }
+        import('@/app/actions/user-mutations').then(({ updateThemeAction }) => {
+          updateThemeAction(newMode === 'dark').catch((error) => {
+            console.error('Failed to sync theme to database:', error);
+          });
+        });
       }
 
       fuseTimer.end('toggleThemeMode', start);

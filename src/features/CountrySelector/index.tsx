@@ -135,7 +135,7 @@ export default function CountrySelector({ align = 'right', onClose, onSelect, tr
         className={`ft-country-dropdown ${align === 'left' ? 'ft-country-dropdown--left' : 'ft-country-dropdown--right'}`}
       >
         <div className="ft-country-header">
-          <Icon variant="locate-fixed" size="sm" className="ft-country-header-icon" />
+          <Icon variant="globe" size="sm" className="ft-country-header-icon" />
           Choose Location
         </div>
         {countries.map((country) => (

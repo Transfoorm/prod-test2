@@ -73,8 +73,8 @@ export function ClientHydrator() {
       mirorEnchantmentTiming: decoded.mirorEnchantmentTiming
     });
 
-    if (decoded.themeDark !== undefined) {
-      hydrateThemeMode(decoded.themeDark ? 'dark' : 'light');
+    if (decoded.themeMode) {
+      hydrateThemeMode(decoded.themeMode as 'light' | 'dark');
     }
     if (decoded.themeName) {
       hydrateThemeName(decoded.themeName);
@@ -126,9 +126,8 @@ export function ClientHydrator() {
     console.log('🛡️ FUSE Sovereignty: user.id=Convex(_id), clerkId retained for auth');
 
     // Hydrate theme
-    if (decoded.themeDark !== undefined) {
-      const themeMode = decoded.themeDark ? 'dark' : 'light';
-      hydrateThemeMode(themeMode);
+    if (decoded.themeMode) {
+      hydrateThemeMode(decoded.themeMode as 'light' | 'dark');
     }
     if (decoded.themeName) {
       hydrateThemeName(decoded.themeName);

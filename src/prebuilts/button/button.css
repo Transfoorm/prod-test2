@@ -27,6 +27,7 @@
   white-space: nowrap;
   flex-shrink: 0; /* Prevent button from shrinking */
   box-sizing: border-box; /* Include padding in width calculation */
+  min-height: var(--size-2xl); /* 🟡 48px - prevents height jump when icon/spinner appears */
 }
 
 .vr-button:disabled {
@@ -388,8 +389,6 @@
   font-size: var(--button-font-size);
   font-weight: var(--font-weight-medium); /* Fire-specific medium weight */
   min-width: var(--button-min-width);
-
-  /* Fire gradient - from T2 Phoenix Flow */
 
   /* Dual gradient: padding-box for background, border-box for border glow */
   background: var(--button-fire-bg-padding) padding-box,

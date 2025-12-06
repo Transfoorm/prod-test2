@@ -1,35 +1,35 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🤖 VARIANT ROBOT - Field.live                                        │
-│  /src/prebuilts/field/Live.tsx                                        │
+│  🤖 VARIANT ROBOT - Field.live                                         │
+│  /src/prebuilts/field/Live.tsx                                         │
 │                                                                        │
-│  COMPLETE BEHAVIORAL UNIT - World-class inline editing UX.            │
+│  TRULY LIVE auto-save field.                                           │
 │                                                                        │
-│  The VR handles ALL behavior:                                         │
-│  - Hover → subtle border highlight                                    │
-│  - Focus → brand orange ring + select all text                        │
-│  - Typing → yellow dirty background                                   │
-│  - Stop typing 500ms → "Saved ✓" + green bg (instant, state only)    │
-│  - Blur → THEN hits the DB (silent, user doesn't wait)               │
-│  - Error → red ring + error message                                   │
+│  Flow:                                                                 │
+│  1. Focus → faint yellow                                               │
+│  2. Type → brighter yellow (dirty)                                     │
+│  3. Pause 1000ms → fire DB (silent)                                    │
+│  4. DB returns → "Saved ✓" appears (in or out of field)                │
+│  5. 1.5s → badge fades → faint yellow if focused, idle if blurred      │
+│  6. Blur while dirty → save immediately (speedster catch)              │
 │                                                                        │
-│  Domain view ONLY provides: label, value, onSave                      │
-│  ZERO behavior in the page. ZERO wiring. ZERO state machines.         │
+│  Domain view ONLY provides: label, value, onSave                       │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 
-const DEBOUNCE_MS = 500;
+// 🟨 DELAY FROM TYPING STOPPED TO DB SAVE
+const SAVE_DELAY_MS = 500;
 
-type LiveState = 'idle' | 'focused' | 'dirty' | 'saving' | 'saved' | 'error';
+type LiveState = 'idle' | 'focused' | 'dirty' | 'saved' | 'error';
 
 export interface FieldLiveProps {
   /** Field label */
   label: string;
   /** Current value (from FUSE) */
   value: string;
-  /** Save handler - called on blur if value changed. VR handles the rest. */
+  /** Save handler - called after typing stops. */
   onSave: (value: string) => Promise<void>;
   /** Placeholder text */
   placeholder?: string;
@@ -45,7 +45,6 @@ const CHIP_TEXT: Record<LiveState, string | null> = {
   idle: null,
   focused: null,
   dirty: null,
-  saving: null,
   saved: 'Saved ✓',
   error: 'Error',
 };
@@ -59,31 +58,84 @@ export default function FieldLive({
   required = false,
   helper,
 }: FieldLiveProps) {
-  // Internal state machine - OWNED BY THE VR
   const [state, setState] = useState<LiveState>('idle');
   const [localValue, setLocalValue] = useState(value);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const originalValue = useRef(value);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
-  const pendingSave = useRef<string | null>(null);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const badgeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isFocused = useRef(false);
+  const isSaving = useRef(false);
 
-  // Sync local value when external value changes
+  // Sync local value when external value changes (FUSE update)
   useEffect(() => {
     setLocalValue(value);
     originalValue.current = value;
   }, [value]);
 
-  // Cleanup timers on unmount
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+      if (badgeTimeoutRef.current) clearTimeout(badgeTimeoutRef.current);
     };
   }, []);
 
-  // Event handlers - ALL BEHAVIOR LIVES HERE
+  // ─────────────────────────────────────────────────────────────────────
+  // Save function - fires after pause OR on blur (speedster)
+  // ─────────────────────────────────────────────────────────────────────
+  const doSave = useCallback(async (valueToSave: string) => {
+    // If already saving, skip (will be caught by next idle period)
+    if (isSaving.current) return;
+
+    const trimmed = valueToSave.trim();
+
+    // No change? Just go back to focused
+    if (trimmed === originalValue.current) {
+      if (isFocused.current) {
+        setState('focused');
+      } else {
+        setState('idle');
+      }
+      return;
+    }
+
+    setLocalValue(trimmed);
+    isSaving.current = true;
+
+    try {
+      await onSave(trimmed);
+      originalValue.current = trimmed;
+
+      // Show "Saved ✓" badge
+      setState('saved');
+
+      // Clear any existing badge timeout
+      if (badgeTimeoutRef.current) clearTimeout(badgeTimeoutRef.current);
+
+      // // 🟨 After 1s, fade badge → faint yellow if focused, idle if not
+      badgeTimeoutRef.current = setTimeout(() => {
+        if (isFocused.current) {
+          setState('focused');
+        } else {
+          setState('idle');
+        }
+      }, 1000);
+    } catch (err) {
+      setState('error');
+      setErrorMessage(err instanceof Error ? err.message : 'Save failed');
+    } finally {
+      isSaving.current = false;
+    }
+  }, [onSave]);
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Event handlers
+  // ─────────────────────────────────────────────────────────────────────
   const handleFocus = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
     e.target.select();
+    isFocused.current = true;
     setState('focused');
     setErrorMessage(null);
   }, []);
@@ -92,52 +144,69 @@ export default function FieldLive({
     const newValue = e.target.value;
     setLocalValue(newValue);
     setState('dirty');
-    pendingSave.current = newValue;
 
-    // Clear existing debounce
-    if (debounceRef.current) clearTimeout(debounceRef.current);
+    // Clear any pending save timeout
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
 
-    // After 500ms of no typing → back to focused (clear bg)
-    debounceRef.current = setTimeout(() => {
-      setState('focused');
-    }, DEBOUNCE_MS);
-  }, []);
+    // Clear any badge fade timeout (user is typing again)
+    if (badgeTimeoutRef.current) clearTimeout(badgeTimeoutRef.current);
 
-  const handleBlur = useCallback(async () => {
-    // Clear any pending debounce
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-      debounceRef.current = null;
+    // After SAVE_DELAY_MS of no typing → fire DB save
+    saveTimeoutRef.current = setTimeout(() => {
+      doSave(newValue);
+    }, SAVE_DELAY_MS);
+  }, [doSave]);
+
+  const handleBlur = useCallback(() => {
+    isFocused.current = false;
+
+    // Clear pending save timeout
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = null;
     }
 
-    // If there's a pending save, hit the DB now (silently)
-    if (pendingSave.current !== null && pendingSave.current !== originalValue.current) {
-      // Trim leading/trailing spaces but keep spaces between words
-      const valueToSave = pendingSave.current.trim();
-      setLocalValue(valueToSave); // Update display to show trimmed value
-      pendingSave.current = null;
+    // If dirty (speedster), show badge immediately + fire DB in background
+    // Skip if doSave is already in flight - let it finish naturally
+    if (state === 'dirty' && !isSaving.current) {
+      const trimmed = localValue.trim();
 
-      // Show saved briefly, fade after 400ms - DB saves in background
-      setState('saved');
-      setTimeout(() => setState('idle'), 1500);
-
-      // DB save happens silently - if it fails, error will override idle
-      try {
-        await onSave(valueToSave);
-        originalValue.current = valueToSave;
-      } catch (err) {
-        setState('error');
-        setErrorMessage(err instanceof Error ? err.message : 'Save failed');
+      // No change? Just go idle
+      if (trimmed === originalValue.current) {
+        setState('idle');
+        return;
       }
-    } else {
-      // No changes, just go idle
-      pendingSave.current = null;
+
+      setLocalValue(trimmed);
+
+      // Optimistic: show badge immediately
+      setState('saved');
+
+      // Clear any existing badge timeout
+      if (badgeTimeoutRef.current) clearTimeout(badgeTimeoutRef.current);
+
+      // Badge fades after 1s → idle (already blurred)
+      badgeTimeoutRef.current = setTimeout(() => {
+        setState('idle');
+      }, 1000);
+
+      // Fire DB in background - error will override badge if it fails
+      onSave(trimmed)
+        .then(() => {
+          originalValue.current = trimmed;
+        })
+        .catch((err) => {
+          setState('error');
+          setErrorMessage(err instanceof Error ? err.message : 'Save failed');
+        });
+    } else if (state === 'focused') {
       setState('idle');
     }
-  }, [onSave]);
+    // If saved/error, let it finish naturally (badge stays visible)
+  }, [state, localValue, onSave]);
 
   // CSS classes
-  const showChip = state === 'saving' || state === 'saved' || state === 'error';
+  const showChip = state === 'saved' || state === 'error';
   const chipText = CHIP_TEXT[state];
 
   const wrapperClasses = [
@@ -148,7 +217,6 @@ export default function FieldLive({
   const chipClasses = [
     'vr-field-live__chip',
     showChip && 'vr-field-live__chip--visible',
-    state === 'saving' && 'vr-field-live__chip--saving',
     state === 'saved' && 'vr-field-live__chip--saved',
     state === 'error' && 'vr-field-live__chip--error',
   ].filter(Boolean).join(' ');
@@ -168,6 +236,7 @@ export default function FieldLive({
           onFocus={handleFocus}
           onBlur={handleBlur}
           placeholder={placeholder}
+          data-field={label.toLowerCase().replace(/\s+/g, '-')}
           className="vr-field-live__input"
         />
         <div className={chipClasses}>{chipText}</div>

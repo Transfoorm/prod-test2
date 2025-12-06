@@ -104,6 +104,9 @@ export async function GET(request: Request) {
         socialName: existingUser?.socialName,
         avatarUrl: existingUser?.avatarUrl ?? undefined,
         brandLogoUrl: existingUser?.brandLogoUrl ?? undefined,
+        // 🌓 Theme preferences from DB (convert themeDark boolean to themeMode string)
+        themeMode: existingUser?.themeDark ? 'dark' : 'light',
+        themeName: existingUser?.themeName ?? 'transtheme',
         mirorAvatarProfile: existingUser?.mirorAvatarProfile,
         mirorEnchantmentEnabled: existingUser?.mirorEnchantmentEnabled,
         mirorEnchantmentTiming: existingUser?.mirorEnchantmentTiming,
@@ -132,6 +135,9 @@ export async function GET(request: Request) {
         socialName: undefined,
         avatarUrl: undefined,
         brandLogoUrl: undefined,
+        // 🌓 Theme defaults for new/fallback users
+        themeMode: 'light',
+        themeName: 'transtheme',
         mirorAvatarProfile: undefined,
         mirorEnchantmentEnabled: undefined,
         mirorEnchantmentTiming: undefined,

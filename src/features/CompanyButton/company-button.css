@@ -184,7 +184,7 @@
 
 .ft-company-button-menu-header-text {
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-normal);
   color: var(--text-secondary);
 }
 

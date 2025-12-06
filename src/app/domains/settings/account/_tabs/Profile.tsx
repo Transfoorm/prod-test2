@@ -7,45 +7,18 @@
 │  - ZERO state machines                                                 │
 │  - ZERO lifecycle wiring                                               │
 │  - Field.live handles everything                                       │
+│  - CountrySelectorLive behavior capsule handles country field          │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
 import { useFuse } from '@/store/fuse';
 import { Field } from '@/prebuilts';
-import CountrySelector from '@/features/CountrySelector';
-
-const COUNTRIES: Record<string, { flag: string; name: string }> = {
-  AU: { flag: '🇦🇺', name: 'Australia' },
-  US: { flag: '🇺🇸', name: 'United States' },
-  GB: { flag: '🇬🇧', name: 'United Kingdom' },
-};
-
-type SaveState = 'idle' | 'saved';
+import { CountrySelectorLive } from '@/behaviors/live-fields/country/CountrySelectorLive';
 
 export default function Profile() {
   const user = useFuse((s) => s.user);
   const updateUserLocal = useFuse((s) => s.updateUserLocal);
-  const [showCountry, setShowCountry] = useState(false);
-  const [countrySaveState, setCountrySaveState] = useState<SaveState>('idle');
-  const flagRef = useRef<HTMLButtonElement>(null);
-
-  const country = user?.businessCountry ? COUNTRIES[user.businessCountry] : null;
-
-  // Clear saved state after 1.5s
-  useEffect(() => {
-    if (countrySaveState === 'saved') {
-      const timer = setTimeout(() => setCountrySaveState('idle'), 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [countrySaveState]);
-
-  const handleCountryChange = () => {
-    setCountrySaveState('saved');
-    setShowCountry(false);
-    // DB save happens in CountrySelector (fire and forget)
-  };
 
   return (
     <div className="vr-field-spacing">
@@ -55,13 +28,13 @@ export default function Profile() {
           label="First Name"
           value={user?.firstName ?? ''}
           onSave={(v) => updateUserLocal({ firstName: v })}
-          placeholder="Kenneth"
+          placeholder="First name"
         />
         <Field.live
           label="Last Name"
           value={user?.lastName ?? ''}
           onSave={(v) => updateUserLocal({ lastName: v })}
-          placeholder="Roberts"
+          placeholder="Last name"
         />
       </div>
 
@@ -74,7 +47,7 @@ export default function Profile() {
           placeholder="Your company name"
         />
         <Field.live
-          label="Social Name"
+          label="User Name"
           value={user?.socialName ?? ''}
           onSave={(v) => updateUserLocal({ socialName: v || undefined })}
           placeholder="How you prefer to be called"
@@ -90,29 +63,10 @@ export default function Profile() {
           type="tel"
           placeholder="Not set"
         />
-        <div className={`vr-field-live${countrySaveState === 'saved' ? ' vr-field-live--saved' : ''}`}>
-          <label className="vr-field-live__label">Business Location</label>
-          <div className="vr-field-live__input-wrapper">
-            <button
-              ref={flagRef}
-              onClick={() => setShowCountry(!showCountry)}
-              className="vr-field-live__input ft-profile-country"
-            >
-              <span className="ft-profile-country__flag">{country?.flag}</span>
-              <span className="ft-profile-country__text">{country?.name}</span>
-            </button>
-            <div className={`vr-field-live__chip${countrySaveState === 'saved' ? ' vr-field-live__chip--visible vr-field-live__chip--saved' : ''}`}>
-              {countrySaveState === 'saved' ? 'Saved ✓' : null}
-            </div>
-          </div>
-          {showCountry && (
-            <CountrySelector
-              triggerRef={flagRef}
-              onClose={() => setShowCountry(false)}
-              onSelect={handleCountryChange}
-            />
-          )}
-        </div>
+        <CountrySelectorLive
+          label="Business Location"
+          onSave={(country) => updateUserLocal({ businessCountry: country })}
+        />
       </div>
     </div>
   );

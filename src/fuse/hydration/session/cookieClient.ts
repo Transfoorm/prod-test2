@@ -53,7 +53,7 @@ export interface FuseCookiePayload {
   mirorAvatarProfile?: 'male' | 'female' | 'inclusive';
   mirorEnchantmentEnabled?: boolean;
   mirorEnchantmentTiming?: 'subtle' | 'magical' | 'playful';
-  themeDark?: boolean;
+  themeMode?: 'light' | 'dark';
   themeName?: 'transtheme';
   // Dashboard preferences (WARP'd during login)
   dashboardLayout?: 'classic' | 'focus' | 'metrics';

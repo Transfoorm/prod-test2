@@ -65,9 +65,9 @@
   background-color: #fffef5;
 }
 
-/* ⌨🟡 - brighter yellow while typing */
+/* ⌨🟡 Dirty - brighter yellow while typing */
 .vr-field-live--dirty .vr-field-live__input {
-  background-color: #fefed0;
+  background-color: #ffffd8;
   border-color: var(--brand-primary, #f97316);
   box-shadow: 0 0 0 3px var(--brand-light, #fed7aa);
 }
@@ -79,10 +79,11 @@
   box-shadow: 0 0 0 3px var(--brand-light, #fed7aa);
 }
 
-/* Saved - just show chip, no special styling */
+/* Saved - keep dirty yellow while badge shows */
 .vr-field-live--saved .vr-field-live__input {
-  border-color: var(--border-light, #eee8e7);
-  box-shadow: none;
+  background-color: #fefed0;
+  border-color: var(--brand-primary, #f97316);
+  box-shadow: 0 0 0 3px var(--brand-light, #fed7aa);
 }
 
 /* Error - red ring */

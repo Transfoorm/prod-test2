@@ -410,7 +410,7 @@ export default function UserButton() {
                 className="ft-userbutton-menu-item"
               >
                 <Icon variant="user" size="xs" />
-                Manage Account
+                Your Account Details
               </button>
             </div>
 
@@ -425,7 +425,7 @@ export default function UserButton() {
                 className="ft-userbutton-menu-item"
               >
                 <Icon variant="camera" size="xs" />
-                {hasCustomAvatar ? 'Change Photo' : 'Add Photo'}
+                {hasCustomAvatar ? 'Change Your Photo' : 'Add Photo'}
               </button>
             </div>
 
@@ -438,7 +438,7 @@ export default function UserButton() {
                 className="ft-userbutton-menu-item"
               >
                 <Icon variant="sparkles" size="xs" />
-                Preferences
+                Site Preferences
               </button>
             </div>
 
@@ -448,10 +448,23 @@ export default function UserButton() {
                   const { toggleThemeMode } = useFuse.getState();
                   toggleThemeMode();
                 }}
-                className="ft-userbutton-menu-item"
+                className="ft-userbutton-menu-item ft-userbutton-menu-item--theme"
               >
                 <ThemeToggle />
                 <span className="ft-userbutton-theme-text">Light / Dark Mode</span>
+              </button>
+            </div>
+
+            <div className="ft-userbutton-menu-item-wrapper">
+              <button
+                onClick={() => {
+                  navigate('settings/plan');
+                  closeAllModals();
+                }}
+                className="ft-userbutton-menu-item"
+              >
+                <Icon variant="gem" size="xs" />
+                Manage Subscription
               </button>
             </div>
           </div>

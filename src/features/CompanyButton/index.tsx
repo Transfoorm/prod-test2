@@ -14,7 +14,7 @@
 "use client";
 
 import { useState, useRef } from 'react';
-import { Building2, ChevronsUpDown, Edit, PackageOpen, ImageUp } from 'lucide-react';
+import { ChevronsUpDown, Edit } from 'lucide-react';
 import BrandLogoButton from '@/features/BrandLogoButton';
 import CountrySelector from '@/features/CountrySelector';
 import { useFuse } from '@/store/fuse';
@@ -80,9 +80,10 @@ export default function CompanyButton() {
             </button>
 
             <div className="ft-company-button-menu-header">
-              <PackageOpen className="ft-company-button-menu-header-icon" />
+              <Icon variant="briefcase-business" size="sm" className="ft-company-button-menu-header-icon" />
               <div className="ft-company-button-menu-header-text">
-                Your Entity Details
+              Your Business Info
+                
               </div>
             </div>
 
@@ -93,11 +94,16 @@ export default function CompanyButton() {
                   onClick={() => {
                     navigate('settings/account');
                     closeMenu();
+                    // Focus First Name field after navigation renders
+                    setTimeout(() => {
+                      const input = document.querySelector('[data-field="first-name"]') as HTMLInputElement;
+                      input?.focus();
+                    }, 100);
                   }}
                 >
-                  <Building2 className="ft-company-button-menu-icon" />
+                  <Icon variant="user-pen" size="sm" className="ft-company-button-menu-icon" />
                   <div className="ft-company-button-menu-value">
-                    {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : '*Setup Is Incomplete'}
+                    {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : '*Complete Your Setup'}
                   </div>
                 </button>
               </div>
@@ -106,18 +112,16 @@ export default function CompanyButton() {
                 <button
                   className="ft-company-button-menu-item"
                   onClick={() => {
-                    // Trigger BrandLogoButton file picker
-                    const fileInput = document.querySelector('.ft-brandlogo-button-file-input') as HTMLInputElement;
-                    if (fileInput) {
-                      fileInput.click();
-                    }
+                    navigate('settings/account');
                     closeMenu();
+                    // Set hash after navigate so Tabs.panels can read it
+                    setTimeout(() => {
+                      window.location.hash = 'genome';
+                    }, 50);
                   }}
                 >
-                  <ImageUp className="ft-company-button-menu-icon" />
-                  <div className="ft-company-button-menu-value">
-                    {user?.brandLogoUrl ? 'Change Brand Logo' : 'Add Brand Logo'}
-                  </div>
+                  <Icon variant="dna" size="sm" className="ft-company-button-menu-icon" />
+                  <div className="ft-company-button-menu-value">Professional Genome</div>
                 </button>
               </div>
 
@@ -140,12 +144,18 @@ export default function CompanyButton() {
                 <button
                   className="ft-company-button-menu-item"
                   onClick={() => {
-                    navigate('settings/plan');
+                    // Trigger BrandLogoButton file picker
+                    const fileInput = document.querySelector('.ft-brandlogo-button-file-input') as HTMLInputElement;
+                    if (fileInput) {
+                      fileInput.click();
+                    }
                     closeMenu();
                   }}
                 >
-                  <Icon variant="gem" size="sm" className="ft-company-button-menu-icon" />
-                  <div className="ft-company-button-menu-value">Upgrade Plan</div>
+                  <Icon variant="image-plus" size="sm" className="ft-company-button-menu-icon" />
+                  <div className="ft-company-button-menu-value">
+                    {user?.brandLogoUrl ? 'Change Your Logo' : 'Add Your Logo'}
+                  </div>
                 </button>
               </div>
             </div>

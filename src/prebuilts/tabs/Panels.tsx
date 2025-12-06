@@ -23,7 +23,7 @@
 
 'use client';
 
-import { useState, ReactNode } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 
 export interface PanelTabItem {
   id: string;
@@ -74,6 +74,27 @@ export default function PanelTabs({
   // Auto-managed mode: VR manages state when content is provided
   const hasContent = tabs.some(tab => tab.content);
   const [internalActiveTab, setInternalActiveTab] = useState(tabs[0]?.id || '');
+
+  // Read tab from URL hash (e.g., #genome) - on mount AND hash changes
+  useEffect(() => {
+    if (typeof window === 'undefined' || controlledActiveTab) return;
+
+    const readHash = () => {
+      const hash = window.location.hash.slice(1); // Remove #
+      if (hash && tabs.some(tab => tab.id === hash)) {
+        setInternalActiveTab(hash);
+        // Clear hash after reading to keep URL clean
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+    };
+
+    // Read on mount
+    readHash();
+
+    // Listen for hash changes (for in-app navigation)
+    window.addEventListener('hashchange', readHash);
+    return () => window.removeEventListener('hashchange', readHash);
+  }, [tabs, controlledActiveTab]);
 
   // Use controlled state if provided, otherwise use internal state
   const activeTab = controlledActiveTab || internalActiveTab;

@@ -27,7 +27,7 @@ export default function Account() {
           { id: 'profile', label: 'Profile', content: <Profile /> },
           { id: 'email', label: 'Email', content: <Email /> },
           { id: 'security', label: 'Security', content: <Security /> },
-          { id: 'genome', label: 'Genome', content: <Genome /> },
+          { id: 'genome', label: 'Professional Genome', content: <Genome /> },
         ]}
       />
     </Stack>
