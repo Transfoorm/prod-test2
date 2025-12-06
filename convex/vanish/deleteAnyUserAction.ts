@@ -116,7 +116,7 @@ export const deleteAnyUserWithClerk = action({
         throw new Error('CLERK_SECRET_KEY not found in environment');
       }
 
-      const response = await fetch(`https://api.clerk.com/v1/admin_users/${args.targetClerkId}`, {
+      const response = await fetch(`https://api.clerk.com/v1/users/${args.targetClerkId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${clerkSecretKey}`,

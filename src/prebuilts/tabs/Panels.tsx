@@ -75,7 +75,7 @@ export default function PanelTabs({
   const hasContent = tabs.some(tab => tab.content);
   const [internalActiveTab, setInternalActiveTab] = useState(tabs[0]?.id || '');
 
-  // Read tab from URL hash (e.g., #genome) - on mount AND hash changes
+  // Read tab from URL hash (e.g., #deletelog) - on mount AND hash changes
   useEffect(() => {
     if (typeof window === 'undefined' || controlledActiveTab) return;
 
@@ -83,8 +83,6 @@ export default function PanelTabs({
       const hash = window.location.hash.slice(1); // Remove #
       if (hash && tabs.some(tab => tab.id === hash)) {
         setInternalActiveTab(hash);
-        // Clear hash after reading to keep URL clean
-        window.history.replaceState(null, '', window.location.pathname);
       }
     };
 
@@ -103,6 +101,10 @@ export default function PanelTabs({
   const handleTabClick = (tab: PanelTabItem) => {
     if (!tab.disabled) {
       onTabChange(tab.id);
+      // Persist tab selection in URL hash for refresh persistence
+      if (typeof window !== 'undefined' && !controlledActiveTab) {
+        window.history.replaceState(null, '', `${window.location.pathname}#${tab.id}`);
+      }
     }
   };
 

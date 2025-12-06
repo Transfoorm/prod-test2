@@ -30,9 +30,24 @@ export default function Account() {
 
   const freeze = user?.setupStatus === 'pending';
 
-  // If frozen, intercept ALL clicks and focus - block interaction, show modal
+  // If frozen, intercept field interactions only - tabs are allowed
   const handleInteraction = (e: React.MouseEvent | React.FocusEvent) => {
-    if (freeze) {
+    if (!freeze) return;
+
+    const target = e.target as HTMLElement;
+
+    // Allow tab clicks - only block input/field interactions
+    const isTabClick = target.closest('[role="tab"]') || target.closest('.vr-tabs-tab');
+    if (isTabClick) return;
+
+    // Block field interactions and show Shadow King
+    const isFieldInteraction = target.closest('.vr-field') ||
+                               target.closest('input') ||
+                               target.closest('textarea') ||
+                               target.closest('select') ||
+                               target.closest('.ft-country-selector');
+
+    if (isFieldInteraction) {
       e.preventDefault();
       e.stopPropagation();
       // Blur any focused element

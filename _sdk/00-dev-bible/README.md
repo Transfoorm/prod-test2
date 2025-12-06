@@ -547,7 +547,7 @@ const result = value as User;
 A **virgin repository** has **zero violations** across all layers.
 
 **The Golden Rule:**
-> Git hooks enforce VRP automatically. Protected files require PR approval via Knox Protocol.
+> Git hooks enforce VRP automatically. Protected files require PR approval via Commit Knox Protocol.
 
 ---
 

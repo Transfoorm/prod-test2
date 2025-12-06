@@ -238,7 +238,7 @@ Changes to each protected file (run `git diff HEAD -- <file>` for each):
 **package.json:**
 (paste the actual diff output here showing exactly what changed)
 
-These files are guarded by CODEOWNERS and require the Knox Protocol:
+These files are guarded by CODEOWNERS and require the Commit Knox Protocol:
   1. Create a feature branch
   2. Make changes on that branch
   3. Create a Pull Request

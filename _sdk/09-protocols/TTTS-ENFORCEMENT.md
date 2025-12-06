@@ -7,7 +7,7 @@
 
 ---
 
-## Part 1: Knox Protocol (Protected Files - "The Tenacious Ten")
+## Part 1: Commit Knox Protocol (Protected Files - "The Tenacious Ten")
 
 You can commit and push freely to main for **any file** - **except these 10 protected items:**
 
@@ -367,7 +367,7 @@ Everything else is detail.
 
 | Rule | Type | Status | Enforcement |
 |------|------|--------|-------------|
-| Knox Protocol | Files | DONE | CODEOWNERS + pre-commit hook |
+| Commit Knox Protocol | Files | DONE | CODEOWNERS + pre-commit hook |
 | TTTS-1 | Slice | DONE | ESLint |
 | TTTS-2 | Golden Bridge | DONE | ESLint |
 | TTTS-3 | PRISM | DONE | VRP script |
