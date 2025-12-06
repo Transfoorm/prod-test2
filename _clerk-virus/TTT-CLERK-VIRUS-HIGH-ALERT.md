@@ -1,3 +1,27 @@
+# 🛡️ FORT KNOX SOVEREIGN DOCTRINE — NON‑NEGOTIABLE
+
+Clerk is permitted **ONLY** inside:
+  • `/app/(auth)/**`
+  • `/app/(vanish)/**`
+  • `middleware.ts` (SSR boundary)
+
+Everywhere else:
+  ❌ ZERO Clerk imports  
+  ❌ ZERO auth() calls  
+  ❌ ZERO getToken()  
+  ❌ ZERO clerkClient()  
+  ❌ ZERO Clerk UI  
+  ❌ ZERO Clerk identity entering Golden Bridge  
+  ❌ ZERO Clerk tokens passed to Convex  
+  ❌ ZERO Clerk-driven navigation  
+  ❌ ZERO dual-identity models  
+
+**Transfoorm is a Sovereign Runtime.  
+FUSE is the One True Identity Source.  
+Any Clerk influence beyond the auth boundary is a virus.**
+
+ANY deviation MUST be treated as a CRITICAL BREACH.
+
 # 🟩 CATEGORY D — CONVEX LAYER VIRUSES
 
 🟦 SCOPE CLARIFICATION — FEATURE ROOT EXEMPTION
@@ -154,6 +178,82 @@ Golden Bridge bypass → sovereignty breach.
 
 ⸻
 
+# 🟪 CATEGORY K — GOLDEN BRIDGE IDENTITY BREACHES
+
+❌ K1. Using getToken({ template: 'convex' }) outside the Auth Boundary
+
+Clerk identity enters Golden Bridge → Convex receives Clerk-based identity instead of FUSE.
+Identity Ceiling shattered.
+
+❌ K2. Calling clerkClient.sessions.revokeSession() from business-logic Server Actions
+
+Server Actions become mini-auth layers.
+Golden Bridge becomes Clerk → Convex instead of FUSE → Convex.
+
+❌ K3. Passing Clerk tokens into convex.setAuth(token)
+
+Convex authorization becomes Clerk-centric.
+Rank checks drift from FUSE identity.
+
+❌ K4. Doing identity translation inside Golden Bridge
+
+auth() → getToken() → setAuth() → mutation()
+This creates a hidden identity pipeline inside your mutation path.
+
+❌ K5. Server Actions acting as identity brokers
+
+Domain logic becomes dependent on Clerk.
+Two-truth system forms (FUSE vs Clerk).
+Sovereign Runtime collapses.
+
+⸻
+
+# 🟥 CATEGORY L — SSR AUTH BREACHES
+
+❌ L1. Using auth() inside ANY Server Action outside /app/(auth)/actions/**
+This silently pulls Clerk identity into business logic.
+
+❌ L2. Using clerkClient() within non‑auth actions
+Server Actions become unauthorized identity brokers.
+
+❌ L3. Returning Clerk user fields from any Server Action
+Leaking Clerk identity into runtime pipelines.
+
+❌ L4. Allowing Clerk to set or mutate cookies outside login flows
+Cookie sovereignty collapse.
+
+⸻
+
+# 🟦 CATEGORY M — HYDRATION & PRELOAD CONTAMINATION
+
+❌ M1. Hydration of FuseApp before FUSE cookie is read
+Results in ghost identity or half-hydrated state.
+
+❌ M2. WARP/PRISM preloading before identity is stabilized
+Loads domains the user has no right to access.
+
+❌ M3. Router rendering while identity = undefined
+Navigation sovereignty breach.
+
+❌ M4. Client hydration picking up stale Clerk session data
+Clerk reintroduces itself invisibly.
+
+⸻
+
+# 🟪 CATEGORY N — RUNTIME ELEVATION VIRUSES
+
+❌ N1. Any UI allowing Clerk to influence cookies, router, or session
+Even indirectly — instant sovereignty loss.
+
+❌ N2. Mutations whose success paths depend on Clerk’s identity state
+Hidden K‑class virus.
+
+❌ N3. Storing authorization logic in components derived from Clerk values
+TTT Identity Ceiling violation.
+
+❌ N4. Allowing devs to use “just for now” Clerk checks in runtime UI
+These metastasize into permanent contamination.
+
 🧨 THE SINGLE MOST DANGEROUS VIRUS OF ALL
 
 “It works fine locally.”
@@ -210,6 +310,24 @@ ANY deviation → Clerk Virus.
 🔒 8. FuseApp must remain sovereign (mount once)
 
 ⸻
+
+# 🚨 NEVER AGAIN FALSE NEGATIVES — SCANNER REQUIREMENTS
+
+A scan MUST FAIL if ANY of the following are present:
+
+• Clerk identity enters Server Actions outside /app/(auth)
+• Clerk tokens sent to Convex
+• Convex identity derived from Clerk instead of FUSE
+• Any identity translation inside Golden Bridge
+• Any hydration occurring before cookie identity lock
+• Any Clerk reference inside features, domains, shell, or FuseApp
+• Any implicit dependency on Clerk error shapes
+• Any dual-identity model detected in code or parameters
+
+If a scan passes while ANY violation exists,  
+**the scanner is invalid and MUST be updated immediately.**
+
+The scanner, High Alert, and 99 Ways docs must always stay in PERFECT ALIGNMENT.
 
 📝 FINAL NOTE
 

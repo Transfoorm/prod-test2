@@ -6,28 +6,36 @@
  *
  * ARCHITECTURE:
  * Component → Server Action → Convex Mutation → FUSE re-hydrates via WARP
+ *
+ * 🔱 SOVEREIGN IDENTITY:
+ * Identity flows from FUSE session cookie, NOT from Clerk getToken().
+ * Clerk is quarantined at the /auth/** boundary only.
  */
 
 'use server';
 
-import { auth } from '@clerk/nextjs/server';
 import { ConvexHttpClient } from 'convex/browser';
 import { api } from '@/convex/_generated/api';
 import type { Id } from '@/convex/_generated/dataModel';
+import { readSessionCookie } from '@/fuse/hydration/session/cookie';
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 /**
  * Delete a deletion log entry (VANISH journal cleanup)
+ *
+ * 🔱 SOVEREIGN: Identity from FUSE session cookie, not Clerk token
  */
 export async function deleteDeletionLogAction(logId: Id<"admin_users_DeletionLogs">) {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error('Unauthorized');
+    // 🔱 SOVEREIGN: Read identity from FUSE session cookie
+    const session = await readSessionCookie();
+    if (!session?.clerkId) throw new Error('Unauthorized: No valid session');
 
-    // Call Convex mutation
+    // Call Convex mutation with clerkId from session cookie
     const result = await convex.mutation(api.domains.admin.users.api.deleteDeletionLog, {
       logId,
+      callerClerkId: session.clerkId,
     });
 
     return result;

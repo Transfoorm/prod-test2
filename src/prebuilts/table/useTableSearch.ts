@@ -33,6 +33,8 @@ interface UseTableSearchReturn<TData> {
   totalCount: number;
   /** Results count (after filter) */
   resultsCount: number;
+  /** True when search is active (allows select all on filtered results) */
+  isFiltered: boolean;
 }
 
 /**
@@ -77,12 +79,16 @@ export function useTableSearch<TData extends Record<string, unknown>>({
     );
   }, [data, searchTerm, searchableKeys]);
 
+  // Search is active when there's a search term AND it actually filters results
+  const isFiltered = searchTerm.trim().length > 0 && filteredData.length < data.length;
+
   return {
     searchTerm,
     setSearchTerm,
     filteredData,
     totalCount: data.length,
     resultsCount: filteredData.length,
+    isFiltered,
   };
 }
 

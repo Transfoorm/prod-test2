@@ -11,7 +11,7 @@
 
 'use client';
 
-export type CascadeStatusType = 'completed' | 'failed' | 'pending' | null | undefined;
+export type CascadeStatusType = 'success' | 'failed' | 'running' | null | undefined;
 
 export interface CascadeBadgeProps {
   status: CascadeStatusType;
@@ -25,9 +25,9 @@ export interface CascadeBadgeProps {
  * Border styling with no background - just border and text color.
  *
  * Statuses:
- * - completed: Green border
+ * - success: Green border
  * - failed: Red border
- * - pending: Orange border
+ * - running: Orange border
  *
  * Perfect for:
  * - Deletion status tracking
@@ -36,7 +36,7 @@ export interface CascadeBadgeProps {
  */
 export default function CascadeBadge({ status, className = '' }: CascadeBadgeProps) {
   const statusText = status || '—';
-  const statusClass = status ? `cascade-${status}` : '';
+  const statusClass = status ? `vr-badge-cascade-${status}` : '';
 
   return (
     <span className={`vr-badge-cascade ${statusClass} ${className}`}>
