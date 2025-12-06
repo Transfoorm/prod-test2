@@ -1,7 +1,7 @@
 /* Feature Components - Application-Level Reusable Features */
 
-/* Brand Logo Button */
-@import url('../src/features/BrandLogoButton/brand-logo-button.css');
+/* Company Logo Cropper */
+@import url('../src/features/CompanyLogoCropper/company-logo-cropper.css');
 
 /* Company Button */
 @import url('../src/features/CompanyButton/company-button.css');

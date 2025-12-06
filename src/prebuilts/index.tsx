@@ -26,6 +26,7 @@ export { Badge } from '@/prebuilts/badge';
 export { Tooltip } from '@/prebuilts/tooltip';
 export { Actions } from '@/prebuilts/actions';
 export { Stack } from '@/prebuilts/stack';
+export { default as Backdrop } from '@/prebuilts/backdrop';
 
 // TTT God Architecture v2
 export { Field } from '@/prebuilts/field';

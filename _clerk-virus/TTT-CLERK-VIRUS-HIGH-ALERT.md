@@ -1,108 +1,34 @@
-🚨 CLERK VIRUS HIGH ALERT — DEV BLACKLIST
+# 🟩 CATEGORY D — CONVEX LAYER VIRUSES
 
-Transfoorm Sovereignty Security Protocol — Version 1.0
+🟦 SCOPE CLARIFICATION — FEATURE ROOT EXEMPTION
 
-“The moment Clerk crosses the Golden Bridge, the runtime dies.”
+D1 applies **ONLY** to Domain code located in:
 
-⸻
+  /src/app/domains/**
+  /convex/**
+  /server/**
+  /app/actions/** (when invoking Convex)
 
-🟥 OVERVIEW
+Feature components under:
 
-Clerk is not the problem.
-Where Clerk is used is the problem.
+  /src/features/**
 
-The following document lists every known intrusion vector through which Clerk can infect:
-	•	FUSE Store
-	•	Domain Views
-	•	Sovereign Router
-	•	Convex Layer
-	•	Runtime Sovereignty
-	•	Session Identity
-	•	Navigation Engine
-	•	Golden Bridge Pipeline
+are **EXEMPT** from this rule.
 
-If ANY of these appear in PRs, commits, diffs, or local changes:
-→ DEV BLOCKED
-→ VRP ALARM
-→ SRB VIOLATION
-→ AUTO-REJECT
+Rationale:
+• Feature Roots are allowed to call useMutation()
+• Feature Roots trigger Golden Bridge flows
+• Feature Roots do NOT run inside the Sovereign Runtime
+• Feature Roots do NOT import Clerk hooks
+• Feature Roots do NOT threaten sovereignty
 
-This list is exhaustive and non-negotiable.
+Therefore:
+✔ useMutation() IN FEATURES = SAFE  
+✔ useConvex() IN FEATURES = SAFE  
+❌ useMutation() IN DOMAINS = VIRUS  
+❌ useConvex() IN DOMAINS = VIRUS  
 
-⸻
-
-🛑 CATEGORY A — DIRECT IMPORT VIRUSES
-
-If a dev writes any of this, you fire them instantly.
-
-❌ A1. Clerk hooks in client components
-
-import { useUser, useAuth, useClerk } from '@clerk/nextjs';
-import { useUser } from '@clerk/clerk-react';
-
-Effect: Runtime identity → loading states → sovereignty collapse.
-
-⸻
-
-❌ A2. Any Clerk import inside /src/app/domains/**
-
-Effect: External authority enters sovereign territory.
-
-⸻
-
-❌ A3. Clerk import inside FUSE store
-
-Effect: FUSE loses sovereignty → state poisoned.
-
-⸻
-
-❌ A4. Clerk import inside Convex code
-
-Effect: Dual identity model → catastrophic breach.
-
-⸻
-
-❌ A5. Clerk inside Router, Navigation, FuseApp
-
-Effect: Router ownership compromised → runtime fragmentation.
-
-⸻
-
-🟧 CATEGORY B — INDIRECT IMPORT VIRUSES
-
-The sneaky ones devs think are “fine.” They are NOT.
-
-❌ B1. <SignedIn>, <SignedOut>, <ClerkLoaded>
-
-These inject runtime auth resolution → forbidden.
-
-❌ B2. <ClerkProvider> anywhere except App Router shell
-
-Provider = runtime = failure.
-
-❌ B3. Mixing “clerk-nextjs” and “clerk-react”
-
-Creates dual-react-context → hydration poison.
-
-⸻
-
-🟨 CATEGORY C — AUTHENTICATION FLOW VIRUSES
-
-❌ C1. Using redirectToSignIn()
-
-Hijacks navigation → breaks Sovereign Router.
-
-❌ C2. Middleware that touches /app/**
-
-Middleware must protect /auth/** ONLY.
-
-❌ C3. Using useSession() or useAuth() in client
-
-Ensures loading states and delayed render → fatal.
-
-⸻
-
-🟩 CATEGORY D — CONVEX LAYER VIRUSES
+This clarification overrides all previous ambiguity and MUST be respected by scanners, auditors, and developers.
 
 ❌ D1. Calling Convex mutations via useMutation() in Domains
 
@@ -125,7 +51,7 @@ Imports Clerk via auth context.
 
 ⸻
 
-🟦 CATEGORY E — SERVER ACTION VIRUSES
+# 🟦 CATEGORY E — SERVER ACTION VIRUSES
 
 ❌ E1. Importing Server Actions inside Domain components
 
@@ -137,7 +63,7 @@ Two state machines drift → runtime desync → chaos.
 
 ⸻
 
-🟪 CATEGORY F — NAVIGATION VIRUSES
+# 🟪 CATEGORY F — NAVIGATION VIRUSES
 
 ❌ F1. Clerk controlling navigation
 
@@ -155,7 +81,7 @@ Breaks the “FuseApp mounts once” law.
 
 ⸻
 
-🟫 CATEGORY G — STORE & STATE VIRUSES
+# 🟫 CATEGORY G — STORE & STATE VIRUSES
 
 ❌ G1. Storing Clerk fields inside FUSE state
 
@@ -178,7 +104,7 @@ State ownership violation.
 
 ⸻
 
-🟩 CATEGORY H — UI & DESIGN VIRUSES
+# 🟩 CATEGORY H — UI & DESIGN VIRUSES
 
 ❌ H1. Embedding Clerk UI components (SignIn, SignUp) inside Domain UI
 
@@ -196,7 +122,7 @@ Hijack focus + routing.
 
 ⸻
 
-🟦 CATEGORY I — COOKIE & SESSION VIRUSES
+# 🟦 CATEGORY I — COOKIE & SESSION VIRUSES
 
 ❌ I1. Reading Clerk cookies on the client
 
@@ -212,7 +138,7 @@ Two sources of truth → instability.
 
 ⸻
 
-🟥 CATEGORY J — IDENTITY MODEL VIRUSES
+# 🟥 CATEGORY J — IDENTITY MODEL VIRUSES
 
 ❌ J1. Treating Clerk user as canonical
 

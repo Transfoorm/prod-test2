@@ -82,11 +82,18 @@
   --card-icon-size: 24px;                 /* ✅ Icon size in cards */
 
   /* ═══════════════════════════════════════════════════════════════════
+   BACKDROP VARIANT VARIABLES - Unified dim layer for overlays
+   ═══════════════════════════════════════════════════════════════════ */
+  --vr-backdrop-color: rgb(0 0 0 / 55%);  /* ✅ Backdrop dim color */
+  --vr-backdrop-blur: 6px;                /* ✅ Backdrop blur amount */
+  --z-backdrop: 900;                      /* ✅ Backdrop z-index */
+
+  /* ═══════════════════════════════════════════════════════════════════
    MODAL VARIANT VARIABLES - Shared infrastructure for ModalVC
    ═══════════════════════════════════════════════════════════════════ */
   --modal-max-width: 480px;               /* ✅ Maximum modal width */
   --modal-radius: var(--radius-xl);       /* ✅ Modal border radius */
-  --modal-backdrop-blur: 6px;             /* ✅ Backdrop blur amount */
+  --modal-backdrop-blur: var(--vr-backdrop-blur); /* ✅ Uses unified backdrop blur */
   --modal-shadow: var(--shadow-lg);       /* ✅ Modal elevation */
   --modal-padding: var(--space-xl);       /* ✅ Modal content padding */
   --modal-header-gap: var(--space-md);    /* ✅ Gap between header elements */

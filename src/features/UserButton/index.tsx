@@ -544,7 +544,7 @@ export default function UserButton() {
           </div>
 
           <div
-            className="ft-userbutton-backdrop ft-userbutton-backdrop--dimmed"
+            className="ft-userbutton-backdrop ft-userbutton-cropper-backdrop--dimmed"
             onClick={closeAllModals}
           />
         </>

@@ -15,7 +15,7 @@
 
 import { useState, useRef } from 'react';
 import { ChevronsUpDown, Edit } from 'lucide-react';
-import BrandLogoButton from '@/features/BrandLogoButton';
+import CompanyLogoCropper from '@/features/CompanyLogoCropper';
 import CountrySelector from '@/features/CountrySelector';
 import { useFuse } from '@/store/fuse';
 import { Icon } from '@/prebuilts';
@@ -33,9 +33,9 @@ export default function CompanyButton() {
   };
 
   const handleButtonClick = () => {
-    // Ignore clicks if BrandLogoButton modal is open
-    const brandLogoModal = document.querySelector('.ft-brandlogo-button-modal');
-    if (brandLogoModal) {
+    // Ignore clicks if CompanyLogoCropper modal is open
+    const companyLogoModal = document.querySelector('.ft-companylogo-cropper-modal');
+    if (companyLogoModal) {
       return;
     }
 
@@ -57,7 +57,7 @@ export default function CompanyButton() {
         className={`ft-company-button ${isMenuOpen ? 'ft-company-button--active' : ''}`}
         onMouseDown={handleButtonClick}
       >
-        <BrandLogoButton />
+        <CompanyLogoCropper />
         <div className="ft-company-button-text">
           <div className="ft-company-button-title">
             {(user as Record<string, unknown>)?.entityName as string || 'Your Company'}
@@ -144,8 +144,8 @@ export default function CompanyButton() {
                 <button
                   className="ft-company-button-menu-item"
                   onClick={() => {
-                    // Trigger BrandLogoButton file picker
-                    const fileInput = document.querySelector('.ft-brandlogo-button-file-input') as HTMLInputElement;
+                    // Trigger CompanyLogoCropper file picker
+                    const fileInput = document.querySelector('.ft-companylogo-cropper-file-input') as HTMLInputElement;
                     if (fileInput) {
                       fileInput.click();
                     }

@@ -498,7 +498,7 @@
   z-index: 40;
 }
 
-.ft-userbutton-backdrop--dimmed {
+.ft-userbutton-cropper-backdrop--dimmed {
   background-color: var(--userbutton-backdrop-light);
 }
 

@@ -85,8 +85,8 @@
   background-color: var(--sidebar-button-active);  /* 🟨 BUTTON ACTIVE COLOR */
 }
 
-/* Brand logo icon - larger with rounded corners */
-.ft-company-button .ft-brandlogo-button-logo {
+/* Company logo icon - larger with rounded corners */
+.ft-company-button .ft-companylogo-cropper-image {
   width: var(--company-button-logo-size);
   height: var(--company-button-logo-size);
   border-radius: var(--radius-md);

@@ -1,8 +1,8 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🏢 BRAND LOGO BUTTON - Complete Logo Component                       │
-│  /src/features/BrandLogoButton/index.tsx                              │
+│  🏢 COMPANY LOGO CROPPER - Complete Logo Component                    │
+│  /src/features/CompanyLogoCropper/index.tsx                           │
 │                                                                        │
-│  Complete brand logo management with upload/crop - exact clone of     │
+│  Complete company logo management with upload/crop - exact clone of   │
 │  UserButton architecture for instant optimistic UI updates.           │
 │                                                                        │
 │  FEATURES:                                                             │
@@ -23,7 +23,9 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useFuse } from "@/store/fuse";
 import { Icon, Tooltip } from "@/prebuilts";
 
-export default function BrandLogoButton() {
+import './company-logo-cropper.css';
+
+export default function CompanyLogoCropper() {
   const user = useFuse((s) => s.user);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -141,7 +143,7 @@ export default function BrandLogoButton() {
 
       if (previewUrl && isCropping && croppedAreaPixels) {
         const croppedBlob = await getCroppedImg(previewUrl, croppedAreaPixels);
-        fileToUpload = new File([croppedBlob], "brandlogo.png", { type: "image/png" });
+        fileToUpload = new File([croppedBlob], "companylogo.png", { type: "image/png" });
         optimisticBlobUrl = URL.createObjectURL(croppedBlob);
       }
 
@@ -206,7 +208,7 @@ export default function BrandLogoButton() {
           mirorEnchantmentEnabled: freshUser.mirorEnchantmentEnabled,
           mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming
         });
-        console.log('✅ FUSE store updated with new brand logo:', freshUser.brandLogoUrl?.substring(0, 50));
+        console.log('✅ FUSE store updated with new company logo:', freshUser.brandLogoUrl?.substring(0, 50));
       }
 
       // Refresh session cookie with new logo
@@ -235,7 +237,7 @@ export default function BrandLogoButton() {
   const logoSrc = optimisticUrl || committedUrl || user?.brandLogoUrl || "/images/sitewide/enterprise.png";
 
   if (!user) {
-    return <div className="ft-brandlogo-button-loading" />;
+    return <div className="ft-companylogo-cropper-loading" />;
   }
 
   return (
@@ -245,7 +247,7 @@ export default function BrandLogoButton() {
         alt="Company Logo"
         width={32}
         height={32}
-        className="ft-brandlogo-button-image"
+        className="ft-companylogo-cropper-image"
         onClick={(e) => e.stopPropagation()}
       />
 
@@ -253,26 +255,26 @@ export default function BrandLogoButton() {
         ref={fileInputRef}
         type="file"
         accept="image/*"
-        className="ft-brandlogo-button-file-input"
+        className="ft-companylogo-cropper-file-input"
         onChange={handleFileChange}
       />
 
       {showModal && typeof document !== 'undefined' && createPortal(
         <>
           <div
-            className="ft-brandlogo-button-modal"
+            className="ft-companylogo-cropper-modal"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="ft-brandlogo-button-modal-header">
-              Resize and crop brand logo
+            <div className="ft-companylogo-cropper-modal-header">
+              Resize and crop company logo
               <Tooltip.basic content="Use your mouse scroll wheel to zoom and adjust image" side="top">
-                <Icon variant="info" size="sm" className="ft-brandlogo-button-modal-header-icon" />
+                <Icon variant="info" size="sm" className="ft-companylogo-cropper-modal-header-icon" />
               </Tooltip.basic>
             </div>
 
             {previewUrl && isCropping && (
               <div
-                className="ft-brandlogo-button-cropper-container"
+                className="ft-companylogo-cropper-container"
                 onMouseDown={(e) => e.stopPropagation()}
               >
                 <Cropper
@@ -290,10 +292,10 @@ export default function BrandLogoButton() {
               </div>
             )}
 
-            <div className="ft-brandlogo-button-upload-actions">
+            <div className="ft-companylogo-cropper-upload-actions">
               {previewUrl && (
                 <button
-                  className={`ft-brandlogo-button-upload-button ${isUploading ? 'ft-brandlogo-button-upload-button--uploading' : ''}`}
+                  className={`ft-companylogo-cropper-upload-button ${isUploading ? 'ft-companylogo-cropper-upload-button--uploading' : ''}`}
                   onClick={() => {
                     if (isUploading) return;
                     handleUpload();
@@ -306,7 +308,7 @@ export default function BrandLogoButton() {
           </div>
 
           <div
-            className="ft-brandlogo-button-backdrop ft-brandlogo-button-backdrop--dimmed"
+            className="ft-companylogo-cropper-backdrop ft-companylogo-cropper-backdrop--dimmed"
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
