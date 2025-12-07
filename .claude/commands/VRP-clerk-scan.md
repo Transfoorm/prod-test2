@@ -62,13 +62,16 @@ Run these scans to detect infections:
 
 Search for Clerk hooks in client components:
 ```
-Pattern: useUser|useAuth|useClerk|useSession
+Pattern: import\s*{\s*useUser\s*}\s*from\s*['"]@clerk/nextjs['"]|
+         import\s*{\s*useAuth\s*}\s*from\s*['"]@clerk/nextjs['"]|
+         import\s*{\s*useClerk\s*}\s*from\s*['"]@clerk/nextjs['"]|
+         import\s*{\s*useSession\s*}\s*from\s*['"]@clerk/nextjs['"]
 Location: src/app/domains/**
 ```
 
 Search for ANY Clerk import in domains:
 ```
-Pattern: @clerk/nextjs|@clerk/clerk-react
+Pattern: import.*from\s*['"]@clerk/.*['"]
 Location: src/app/domains/**
 ```
 
@@ -350,7 +353,7 @@ must remain in PERFECT doctrinal alignment.
 ### ❌ INSTANT REJECTION (Fire-worthy offenses)
 
 ```typescript
-// NEVER in domains
+// NEVER in domains — Clerk imports ONLY (FUSE.useUser is permitted)
 import { useUser } from '@clerk/nextjs'
 import { useAuth } from '@clerk/nextjs'
 import { useClerk } from '@clerk/nextjs'
@@ -363,35 +366,13 @@ import { anything } from '@clerk/*'
 import { anything } from '@clerk/*'
 ```
 
-### ❌ SNEAKY VIRUSES (They look innocent but aren't)
-
-```typescript
-// These inject runtime auth resolution
-<SignedIn>...</SignedIn>
-<SignedOut>...</SignedOut>
-<ClerkLoaded>...</ClerkLoaded>
-
-// Direct Convex in domains = Clerk dependency via provider
-const updateUser = useMutation(api.users.update)
-
-// Clerk-controlled navigation
-redirectToSignIn()
+⚠️ IMPORTANT  
+The scanner must distinguish FUSE identity hooks from Clerk hooks.  
+Only imports originating from the @clerk/* namespace constitute a virus.  
+Identifiers such as useFuse, useFuseUser, FuseUser, or FUSE user selectors  
+MUST NOT trigger false positives. The patterns above enforce exact matching.
 ```
-
-### ✅ THE ONLY SAFE PATTERNS
-
-```typescript
-// Server Actions (the Golden Bridge)
-'use server'
-import { auth } from '@clerk/nextjs/server'  // SSR ONLY
-
-// FUSE store receives identity via cookie
-// Never fetches it from Clerk at runtime
-
-// Domains are pure - no auth, no Clerk, no Convex
-// They receive everything from FUSE
-```
-
+  
 ---
 
 ## EXECUTION FLOW

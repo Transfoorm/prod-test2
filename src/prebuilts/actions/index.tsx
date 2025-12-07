@@ -19,6 +19,7 @@ import CrudActions from './Crud';
 import ViewActions from './View';
 import DocumentActions from './Document';
 import AdminActions from './Admin';
+import ActionPillComponent from './ActionPill';
 
 export const Actions = {
   crud: CrudActions,
@@ -26,3 +27,7 @@ export const Actions = {
   document: DocumentActions,
   admin: AdminActions,
 };
+
+// Standalone action components
+export const ActionPill = ActionPillComponent;
+export type { ActionPillProps } from './ActionPill';

@@ -327,6 +327,55 @@ A scan MUST FAIL if ANY of the following are present:
 If a scan passes while ANY violation exists,  
 **the scanner is invalid and MUST be updated immediately.**
 
+# 🚨 NEVER AGAIN FALSE NEGATIVES — SCANNER REQUIREMENTS
+
+⚠️ ZERO FALSE POSITIVES — PRECISION REQUIREMENT  
+The scanner MUST distinguish between Clerk identity and FUSE identity.  
+Only imports originating from the @clerk/* namespace constitute a virus.
+
+Identifiers such as:  
+  • useFuse  
+  • useFuseUser  
+  • FuseUser  
+  • useUser (FUSE selector)  
+MUST NOT trigger the scanner.
+
+The scanner must ONLY flag:  
+  • Explicit Clerk imports  
+  • Clerk UI components  
+  • Clerk identity flows  
+  • Clerk→Convex identity bridges  
+  • Any useUser/useAuth/useClerk imported from Clerk’s namespace  
+
+Any broader pattern match is invalid and MUST be corrected.  
+Accuracy is mandatory — noise is forbidden.
+
+A scan MUST FAIL if ANY of the following are present:
+
+• Clerk identity enters Server Actions outside /app/(auth)
+• Clerk tokens sent to Convex
+• Convex identity derived from Clerk instead of FUSE
+• Any identity translation inside Golden Bridge
+• Any hydration occurring before cookie identity lock
+• Any Clerk reference inside features, domains, shell, or FuseApp
+• Any implicit dependency on Clerk error shapes
+• Any dual-identity model detected in code or parameters
+
+If a scan passes while ANY violation exists,  
+**the scanner is invalid and MUST be updated immediately.**
+
+The scanner, High Alert, and 99 Ways docs must always stay in PERFECT ALIGNMENT.
+
+📝 FINAL NOTE
+
+Transfoorm is a sovereign runtime.
+Clerk is an external identity provider.
+The two must NEVER mix at runtime.
+
+Clerk is quarantined by design.
+The Golden Bridge is the ONLY safe way across.
+Devs MUST NOT improvise.
+
 The scanner, High Alert, and 99 Ways docs must always stay in PERFECT ALIGNMENT.
 
 📝 FINAL NOTE

@@ -403,6 +403,54 @@ All three documents — 99 Ways, High Alert, and VRP Scanner —
 must remain in PERFECT doctrinal alignment.
 
 ⸻
+# 🚨 NEVER AGAIN FALSE NEGATIVES — SCANNER REQUIREMENTS
+
+⚠️ ZERO FALSE POSITIVES — PRECISION REQUIREMENT  
+The scanner MUST distinguish between Clerk identity and FUSE identity.  
+Only imports originating from the @clerk/* namespace constitute a virus.  
+
+Identifiers such as:  
+  • useFuse  
+  • useFuseUser  
+  • FuseUser  
+  • useUser (FUSE selector)  
+MUST NOT trigger the scanner.
+
+The scanner must ONLY flag:  
+  • Explicit Clerk imports  
+  • Clerk UI components  
+  • Clerk identity flows  
+  • Clerk→Convex identity bridges  
+  • Any useUser/useAuth/useClerk imported from Clerk’s namespace  
+
+Any broader pattern match is invalid and MUST be corrected.  
+Accuracy is mandatory — noise is forbidden.
+
+A scan MUST FAIL if ANY of the following are true:
+
+• Clerk identity enters Server Actions outside /app/(auth)
+• getToken(), auth(), or clerkClient() used anywhere except auth boundary
+• Convex receives Clerk-based tokens or identity
+• Any identity translation happens inside Golden Bridge
+• Hydration occurs before FUSE cookie lock
+• Any Clerk reference appears in Shell, Domains, Features, FUSE, or Convex
+• Domain logic relies on Clerk’s schema or metadata
+• Dual identity models detected in any layer
+
+If a scan passes with ANY of these present,
+**the scanner is invalid and MUST be updated immediately.**
+
+All three documents — 99 Ways, High Alert, and VRP Scanner —
+must remain in PERFECT doctrinal alignment.
+
+⸻
+
+🏆 FINAL PRODUCT: THE OFFICIAL DOCUMENT
+
+* REFER to:
+🔥 “CLERK VIRUS HIGH ALERT — DEV BLACKLIST”
+/Users/ken/App/v1/_clerk-virus/TTT-CLERK-VIRUS-HIGH-ALERT.md
+
 
 🏆 FINAL PRODUCT: THE OFFICIAL DOCUMENT
 

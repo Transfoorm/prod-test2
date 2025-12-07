@@ -14,18 +14,23 @@
 
 import FieldLive from './Live';
 import FieldVerify from './Verify';
+import FieldVerifyEmail from './VerifyEmail';
 import FieldDisplay from './Display';
 import FieldReadonly from './Readonly';
+import FieldEmailActions from './EmailActions';
 
 export const Field = {
   live: FieldLive,
   verify: FieldVerify,
+  verifyEmail: FieldVerifyEmail,
   display: FieldDisplay,
   readonly: FieldReadonly,
+  emailActions: FieldEmailActions,
 };
 
 // Type exports for consumers
 export type { FieldLiveProps } from './Live';
 export type { FieldVerifyProps } from './Verify';
+export type { FieldVerifyEmailProps } from './VerifyEmail';
 export type { FieldDisplayProps } from './Display';
 export type { FieldReadonlyProps } from './Readonly';

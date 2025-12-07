@@ -24,7 +24,7 @@ export { Tabs } from '@/prebuilts/tabs';
 export { Search } from '@/prebuilts/search';
 export { Badge } from '@/prebuilts/badge';
 export { Tooltip } from '@/prebuilts/tooltip';
-export { Actions } from '@/prebuilts/actions';
+export { Actions, ActionPill } from '@/prebuilts/actions';
 export { Stack } from '@/prebuilts/stack';
 export { default as Backdrop } from '@/prebuilts/backdrop';
 
