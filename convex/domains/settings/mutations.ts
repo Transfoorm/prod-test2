@@ -20,6 +20,8 @@ import { v } from "convex/values";
  */
 export const updateUserSettings = mutation({
   args: {
+    // Identity fields (verified externally)
+    email: v.optional(v.string()),
     // Profile fields
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),

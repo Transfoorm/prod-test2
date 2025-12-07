@@ -34,5 +34,8 @@ export { Input } from '@/prebuilts/input';
 export { Label } from '@/prebuilts/label';
 export { Checkbox } from '@/prebuilts/input/checkbox';
 
+// Modals (re-exported from features - these need Clerk access)
+export { default as VerifyModal } from '@/features/VerifyModal';
+
 // Shared Utilities (re-exported for convenience)
 export { Icon } from '@/prebuilts/icon/iconRegistry';

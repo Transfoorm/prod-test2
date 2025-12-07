@@ -37,8 +37,6 @@ export interface FieldVerifyProps {
   required?: boolean;
   /** Helper text (shown in idle/focused) */
   helper?: string;
-  /** Format the pill text (default: "→ {value}") */
-  pillText?: (newValue: string) => string;
 }
 
 export default function FieldVerify({
@@ -49,7 +47,6 @@ export default function FieldVerify({
   placeholder = '',
   required = false,
   helper,
-  pillText = (v) => `→ ${v || '(empty)'}`,
 }: FieldVerifyProps) {
   const [state, setState] = useState<VerifyState>('idle');
   const [localValue, setLocalValue] = useState(value);
@@ -57,6 +54,7 @@ export default function FieldVerify({
   const inputRef = useRef<HTMLInputElement>(null);
   const originalValue = useRef(value);
   const isCommitting = useRef(false);
+  const isHoveringPill = useRef(false);
 
   // Sync local value when external value changes (FUSE update)
   useEffect(() => {
@@ -70,11 +68,13 @@ export default function FieldVerify({
   // Handlers
   // ─────────────────────────────────────────────────────────────────────
 
-  const handleFocus = useCallback(() => {
+  const handleFocus = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
     if (state === 'idle') {
       setState('focused');
       setErrorMessage(null);
     }
+    // Select all text on focus
+    e.target.select();
   }, [state]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,8 +90,8 @@ export default function FieldVerify({
   }, []);
 
   const handleBlur = useCallback(() => {
-    // Don't revert if we're in the middle of committing
-    if (isCommitting.current) return;
+    // Don't revert if we're in the middle of committing or hovering pill
+    if (isCommitting.current || isHoveringPill.current) return;
 
     // Revert to original and go idle
     setLocalValue(originalValue.current);
@@ -151,23 +151,26 @@ export default function FieldVerify({
   // Derived state
   // ─────────────────────────────────────────────────────────────────────
 
-  const showPill = state === 'dirty' || state === 'committing' || state === 'success' || state === 'error';
   const isDirty = localValue !== originalValue.current;
+
+  // Pill is ALWAYS visible - green when verified, orange when dirty
+  const showPill = true;
 
   // Pill content based on state
   const getPillContent = () => {
-    switch (state) {
-      case 'dirty':
-        return pillText(localValue);
-      case 'committing':
-        return <span className="vr-field-verify__spinner" />;
-      case 'success':
-        return '✓';
-      case 'error':
-        return '✗';
-      default:
-        return null;
+    if (state === 'committing') {
+      return <span className="vr-field-verify__typing">Verifying...</span>;
     }
+    if (state === 'error') {
+      return 'Invalid';
+    }
+    if (isDirty) {
+      return 'Verify →';
+    }
+    if (state === 'focused') {
+      return <span className="vr-field-verify__typing">Edit Mode</span>;
+    }
+    return 'Verified ✓';
   };
 
   // ─────────────────────────────────────────────────────────────────────
@@ -179,12 +182,17 @@ export default function FieldVerify({
     `vr-field-verify--${state}`,
   ].join(' ');
 
+  // Pill state: active (dirty/committing) > editing (focused) > verified (idle)
+  const getPillState = () => {
+    if (state === 'committing') return 'vr-field-verify__pill--active';  // Stay orange while verifying
+    if (isDirty) return 'vr-field-verify__pill--active';
+    if (state === 'focused') return 'vr-field-verify__pill--editing';
+    return 'vr-field-verify__pill--verified';
+  };
+
   const pillClasses = [
     'vr-field-verify__pill',
-    showPill && 'vr-field-verify__pill--visible',
-    state === 'dirty' && isDirty && 'vr-field-verify__pill--active',
-    state === 'committing' && 'vr-field-verify__pill--committing',
-    state === 'success' && 'vr-field-verify__pill--success',
+    getPillState(),
     state === 'error' && 'vr-field-verify__pill--error',
   ].filter(Boolean).join(' ');
 
@@ -217,7 +225,9 @@ export default function FieldVerify({
           type="button"
           className={pillClasses}
           onClick={handlePillClick}
-          onMouseDown={(e) => e.preventDefault()} // Prevent blur before click
+          onMouseDown={(e) => e.preventDefault()}
+          onMouseEnter={() => { isHoveringPill.current = true; }}
+          onMouseLeave={() => { isHoveringPill.current = false; }}
           disabled={state === 'committing' || state === 'success'}
           tabIndex={showPill ? 0 : -1}
           aria-label={state === 'dirty' ? `Confirm change to ${localValue}` : undefined}

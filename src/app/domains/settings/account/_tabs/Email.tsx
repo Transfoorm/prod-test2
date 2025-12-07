@@ -3,13 +3,18 @@
 │  /src/app/domains/settings/account/_tabs/Email.tsx                    │
 │                                                                        │
 │  Primary email uses Field.verify with Reveal choreography.            │
-│  Email changes trigger verification flow via Server Action.           │
+│  Email changes trigger VerifyModal (prebuilt handles Clerk internally)│
+│                                                                        │
+│  SOVEREIGNTY: No Clerk imports in domains - Golden Bridge enforced    │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
 
+import { useState } from 'react';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 import { useFuse } from '@/store/fuse';
-import { Field, Badge } from '@/prebuilts';
+import { Field, VerifyModal } from '@/prebuilts';
 
 export default function Email() {
   // ─────────────────────────────────────────────────────────────────────
@@ -18,26 +23,67 @@ export default function Email() {
   const user = useFuse((s) => s.user);
 
   // ─────────────────────────────────────────────────────────────────────
+  // Convex Mutations
+  // ─────────────────────────────────────────────────────────────────────
+  const updateUserSettings = useMutation(api.domains.settings.mutations.updateUserSettings);
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Local State
+  // ─────────────────────────────────────────────────────────────────────
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [modalResolver, setModalResolver] = useState<{
+    resolve: () => void;
+    reject: (error: Error) => void;
+  } | null>(null);
+
+  // ─────────────────────────────────────────────────────────────────────
   // Handlers
   // ─────────────────────────────────────────────────────────────────────
 
   const handlePrimaryEmailChange = async (newEmail: string) => {
-    // TODO: Server Action to trigger Clerk email verification
-    // For now, simulate the flow
-    console.log('Sending verification to:', newEmail);
+    // Store the pending email and show verification modal
+    // Return a Promise that resolves/rejects when modal completes
+    setPendingEmail(newEmail);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    return new Promise<void>((resolve, reject) => {
+      setModalResolver({ resolve, reject });
+      setShowVerifyModal(true);
+    });
+  };
 
-    // In production, this would:
-    // 1. Call Server Action that triggers Clerk verification
-    // 2. Clerk sends email to new address
-    // 3. User clicks link in email
-    // 4. Clerk updates primary email
-    // 5. Cookie refreshes, FUSE hydrates new email
+  const handleVerificationSuccess = async () => {
+    // VerifyModal already updated Clerk, now update FUSE and Convex
+    const { user: currentUser, setUser } = useFuse.getState();
+    if (currentUser && pendingEmail) {
+      // Update FUSE (instant UI update)
+      setUser({ ...currentUser, email: pendingEmail });
 
-    // For demo: throw to show error state, or resolve to show success
-    // throw new Error('Email verification not yet implemented');
+      // Update Convex DB (persist to backend)
+      try {
+        await updateUserSettings({ email: pendingEmail });
+      } catch (err) {
+        console.error('Failed to update email in Convex:', err);
+      }
+    }
+
+    // Resolve the promise so Field.verify knows we succeeded
+    modalResolver?.resolve();
+
+    // Clean up
+    setShowVerifyModal(false);
+    setPendingEmail(null);
+    setModalResolver(null);
+  };
+
+  const handleVerificationClose = () => {
+    // Reject the promise so Field.verify reverts
+    modalResolver?.reject(new Error('Verification cancelled'));
+
+    // Clean up
+    setShowVerifyModal(false);
+    setPendingEmail(null);
+    setModalResolver(null);
   };
 
   // ─────────────────────────────────────────────────────────────────────
@@ -45,29 +91,33 @@ export default function Email() {
   // ─────────────────────────────────────────────────────────────────────
   return (
     <div className="vr-field-spacing">
-      {/* Primary Email - Field.verify with Reveal choreography */}
-      <Field.verify
-        label="Primary Email"
-        value={user?.email ?? ''}
-        onCommit={handlePrimaryEmailChange}
-        type="email"
-        helper="Changes require email verification"
-      />
-
-      {/* Verification status badge */}
-      {user?.emailVerified && (
-        <div className="ft-email-status">
-          <Badge.status variant="success">Email Verified</Badge.status>
-        </div>
-      )}
-
-      {/* Secondary email section - future enhancement */}
-      <Field.readonly label="Secondary Email (Optional)">
-        <Field.display
-          value={user?.secondaryEmail ?? undefined}
-          emptyText="Not configured"
+      <div className="ft-field-row">
+        {/* Primary Email - Field.verify with Reveal choreography */}
+        <Field.verify
+          label="Primary Email"
+          value={user?.email ?? ''}
+          onCommit={handlePrimaryEmailChange}
+          type="email"
+          helper="* Changing will require a new email verification"
         />
-      </Field.readonly>
+
+        {/* Secondary email section - future enhancement */}
+        <Field.readonly label="Secondary Email (Optional)">
+          <Field.display
+            value={user?.secondaryEmail ?? undefined}
+            emptyText="Not Set"
+          />
+        </Field.readonly>
+      </div>
+
+      {/* Verification Modal - handles Clerk internally */}
+      <VerifyModal
+        isOpen={showVerifyModal}
+        email={pendingEmail ?? ''}
+        mode="change"
+        onSuccess={handleVerificationSuccess}
+        onClose={handleVerificationClose}
+      />
     </div>
   );
 }

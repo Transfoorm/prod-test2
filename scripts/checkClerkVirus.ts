@@ -125,6 +125,9 @@ const EXCEPTION_PATTERNS = [
   /middleware\.ts$/,                 // Auth middleware
   /\/vanish\/Quarantine\.tsx$/,      // Clerk quarantine zone
   /\/hooks\/useConvexUser\.ts$/,     // User sync hook
+  /\/features\/UserButton\//,        // Auth UI - sign out flow
+  /\/features\/UserSetup\//,         // Auth UI - onboarding/verification
+  /\/features\/VerifyModal\//,       // Auth UI - email verification modal
   /\.test\.(ts|tsx|js|jsx)$/,        // Test files
   /\.spec\.(ts|tsx|js|jsx)$/,        // Spec files
   /_clerk-virus\//,                  // Clerk virus documentation

@@ -182,8 +182,18 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   TAB PANEL VISIBILITY (FUSE Stay-Mounted Pattern)
+   TAB PANELS CONTAINER - Composite VR Internal Layout
    ═══════════════════════════════════════════════════════════════════ */
+
+.vr-tabs-panels-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.vr-tabs-panels-content {
+  /* Content panel - no additional styling needed, gap handled by container */
+}
 
 .vr-hidden {
   display: none !important;

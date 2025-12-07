@@ -150,12 +150,29 @@
   --color-success: #10b981;
   --color-success-hover: #009f67;
   --color-success-light: #dbf5ec;
+  --success-50: #ecfdf5;
+  --success-100: #d1fae5;
+  --success-500: #10b981;
+  --success-600: #059669;
+  --success-700: #047857;
+
+  /* Field.verify States */
+  --verified-bg: #d1fae5;
+  --verified-text: #359879;
+  --verify-bg: #ff6a40;
+  --verify-text: #fcede9;
+  --editing-bg: #fef3c3;
+  --editing-text: #ad9073;
 
   /* Warning */
   --color-warning: #f59e0b;
   --color-warning-hover: #db8400;
   --color-warning-light: #fef0da;
-  --warning-100: #fef0da;
+  --warning-50: #fffbeb;
+  --warning-100: #fef3c7;
+  --warning-500: #f59e0b;
+  --warning-600: #d97706;
+  --warning-700: #b45309;
 
   /* Error - Complete palette for FUSE error system */
   --color-error: #DC2626;                                        /* Primary error red (borders, accents) */
@@ -164,9 +181,19 @@
   --color-error-dark: #991B1B;                                   /* Dark text on light backgrounds */
   --color-error-button-bg: rgb(0 0 0 / 5%);                  /* Button backgrounds on error */
   --color-error-button-hover: rgb(0 0 0 / 10%);                /* Button hover on error */
+  --error-50: #fef2f2;
+  --error-100: #fee2e2;
+  --error-500: #ef4444;
+  --error-600: #dc2626;
+  --error-700: #b91c1c;
 
   /* Info */
   --color-info: #3b82f6;
+  --info-50: #eff6ff;
+  --info-100: #dbeafe;
+  --info-500: #3b82f6;
+  --info-600: #2563eb;
+  --info-700: #1d4ed8;
 
   /* ═══════════════════════════════════════════════════════════════════
      BUTTON COLORS - Token-based button variant backgrounds
@@ -440,12 +467,29 @@
   --color-success: #34d399;
   --color-success-hover: #4eedb3;
   --color-success-light: #103f2e;
+  --success-50: #103f2e;
+  --success-100: #065f46;
+  --success-500: #34d399;
+  --success-600: #10b981;
+  --success-700: #059669;
+
+  /* Field.verify States */
+  --verified-bg: #065f46;
+  --verified-text: #a7f3d0;
+  --verify-bg: #7c2d12;
+  --verify-text: #fed7aa;
+  --editing-bg: #422006;
+  --editing-text: #fde68a;
 
   /* Warning */
   --color-warning: #fbbf24;
   --color-warning-hover: #ffd93e;
   --color-warning-light: #4b390b;
+  --warning-50: #422006;
   --warning-100: #4b390b;
+  --warning-500: #fbbf24;
+  --warning-600: #f59e0b;
+  --warning-700: #d97706;
 
   /* Error - Matches light mode */
   --color-error: #DC2626;
@@ -454,9 +498,19 @@
   --color-error-dark: #991B1B;
   --color-error-button-bg: rgb(0 0 0 / 5%);
   --color-error-button-hover: rgb(0 0 0 / 10%);
+  --error-50: #450a0a;
+  --error-100: #7f1d1d;
+  --error-500: #f87171;
+  --error-600: #ef4444;
+  --error-700: #dc2626;
 
   /* Info - Transfoorm Orange (matches primary) */
   --color-info: #ff5627;
+  --info-50: #1e1b4b;
+  --info-100: #312e81;
+  --info-500: #818cf8;
+  --info-600: #6366f1;
+  --info-700: #4f46e5;
 
   /* ═══════════════════════════════════════════════════════════════════
      BUTTON COLORS - Token-based button variant backgrounds (matches light mode)

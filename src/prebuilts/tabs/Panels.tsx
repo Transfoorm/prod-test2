@@ -109,7 +109,7 @@ export default function PanelTabs({
   };
 
   return (
-    <>
+    <div className="vr-tabs-panels-container">
       <div className={`vr-tabs vr-tabs-panels ${className}`}>
         <div className="vr-tabs-panels-list">
           {tabs.map((tab) => (
@@ -133,11 +133,11 @@ export default function PanelTabs({
       {hasContent && tabs.map((tab) => (
         <div
           key={tab.id}
-          className={activeTab === tab.id ? '' : 'vr-hidden'}
+          className={activeTab === tab.id ? 'vr-tabs-panels-content' : 'vr-hidden'}
         >
           {tab.content}
         </div>
       ))}
-    </>
+    </div>
   );
 }
