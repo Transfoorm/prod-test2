@@ -544,26 +544,68 @@ button.ft-profile-country {
   min-width: 0;
 }
 
-.ft-field-action-link {
-  align-self: flex-end;
+.ft-field-action-pills {
+  display: flex;
+  gap: var(--space-sm);
   margin-top: var(--space-xs);
-  padding: 0;
+}
+
+.ft-field-action-pill {
+  padding: 6px 12px;
+  min-width: 100px;
+  height: 28px;
   font-size: var(--font-size-xs);
-  color: var(--brand-primary);
-  background: none;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: var(--bg-tertiary);
   border: none;
+  border-radius: var(--radius-full);
   cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  transition: color 150ms ease;
+  transition: background-color 150ms ease, color 150ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
-.ft-field-action-link:hover {
-  color: var(--brand-hover);
+.ft-field-action-pill:hover {
+  background-color: #e5e7eb;
+  color: var(--text-primary);
 }
 
-.ft-field-action-link:disabled {
-  color: var(--text-tertiary);
-  cursor: wait;
-  text-decoration: none;
+.ft-field-action-pill:disabled:not(.ft-field-action-pill--confirm) {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Confirmation state - orange with subtle shake */
+.ft-field-action-pill--confirm {
+  background-color: var(--brand-primary);
+  color: #fff;
+  animation: pill-nudge 0.3s ease;
+}
+
+.ft-field-action-pill--confirm:hover {
+  background-color: var(--brand-hover);
+  color: #fff;
+}
+
+@keyframes pill-nudge {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+/* Active operation (swapping/removing) - orange with typing animation */
+.ft-field-action-pill--active {
+  background-color: var(--brand-primary);
+  color: #fff;
+}
+
+.ft-field-action-pill__typing {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing-cycle 6s ease-in-out infinite;
 }

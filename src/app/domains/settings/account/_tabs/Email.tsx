@@ -16,7 +16,7 @@ import { api } from '@/convex/_generated/api';
 import { useFuse } from '@/store/fuse';
 import { Field, VerifyModal } from '@/prebuilts';
 import { refreshSessionAfterUpload } from '@/app/actions/user-mutations';
-import { swapEmailsToPrimary } from '@/app/actions/email-actions';
+import { swapEmailsToPrimary, deleteSecondaryEmail } from '@/app/actions/email-actions';
 
 export default function Email() {
   // ─────────────────────────────────────────────────────────────────────
@@ -40,6 +40,9 @@ export default function Email() {
     reject: (error: Error) => void;
   } | null>(null);
   const [isSwapping, setIsSwapping] = useState(false);
+  const [confirmingSwap, setConfirmingSwap] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
+  const [confirmingRemove, setConfirmingRemove] = useState(false);
 
   // ─────────────────────────────────────────────────────────────────────
   // Handlers
@@ -117,23 +120,31 @@ export default function Email() {
     setModalResolver(null);
   };
 
-  const handleMakePrimary = async () => {
-    const secondaryEmail = user?.secondaryEmail;
-    if (!secondaryEmail || isSwapping) return;
+  const handleMakePrimaryClick = () => {
+    if (isSwapping) return;
 
-    // Confirm with user
-    const confirmed = window.confirm(
-      `Make "${secondaryEmail}" your primary email?\n\nYour current primary email will become your secondary.`
-    );
-    if (!confirmed) return;
+    if (!confirmingSwap) {
+      // First click - enter confirmation mode
+      setConfirmingSwap(true);
+      return;
+    }
+
+    // Second click - execute swap
+    executeSwap();
+  };
+
+  const executeSwap = async () => {
+    const secondaryEmail = user?.secondaryEmail;
+    if (!secondaryEmail) return;
 
     setIsSwapping(true);
+    setConfirmingSwap(false);
 
     try {
       // Swap in Clerk
       const result = await swapEmailsToPrimary(secondaryEmail);
       if (result.error) {
-        alert(result.error);
+        console.error('Swap error:', result.error);
         return;
       }
 
@@ -158,10 +169,70 @@ export default function Email() {
       await refreshSessionAfterUpload();
     } catch (err) {
       console.error('Failed to swap emails:', err);
-      alert('Failed to swap emails. Please try again.');
     } finally {
       setIsSwapping(false);
     }
+  };
+
+  const handleSwapBlur = () => {
+    // Cancel confirmation if user clicks away
+    setTimeout(() => setConfirmingSwap(false), 150);
+  };
+
+  const handleRemoveClick = () => {
+    if (isRemoving) return;
+
+    if (!confirmingRemove) {
+      // First click - enter confirmation mode
+      setConfirmingRemove(true);
+      return;
+    }
+
+    // Second click - execute remove
+    executeRemove();
+  };
+
+  const executeRemove = async () => {
+    const secondaryEmail = user?.secondaryEmail;
+    if (!secondaryEmail) return;
+
+    setIsRemoving(true);
+    setConfirmingRemove(false);
+
+    try {
+      // Delete from Clerk
+      const result = await deleteSecondaryEmail(secondaryEmail);
+      if (result.error) {
+        console.error('Remove error:', result.error);
+        return;
+      }
+
+      // Clear in FUSE store
+      const { user: currentUser, setUser } = useFuse.getState();
+      if (currentUser) {
+        setUser({
+          ...currentUser,
+          secondaryEmail: null,
+        });
+      }
+
+      // Update Convex
+      await updateUserSettings({
+        secondaryEmail: null,
+      });
+
+      // Refresh session cookie
+      await refreshSessionAfterUpload();
+    } catch (err) {
+      console.error('Failed to remove email:', err);
+    } finally {
+      setIsRemoving(false);
+    }
+  };
+
+  const handleRemoveBlur = () => {
+    // Cancel confirmation if user clicks away
+    setTimeout(() => setConfirmingRemove(false), 150);
   };
 
   // ─────────────────────────────────────────────────────────────────────
@@ -176,7 +247,7 @@ export default function Email() {
           value={user?.email ?? ''}
           onCommit={handlePrimaryEmailChange}
           type="email"
-          helper="* Changing will require a new email verification"
+          helper="* Email updates will require verification"
         />
 
         {/* Secondary Email - Field.verify with same flow */}
@@ -187,19 +258,33 @@ export default function Email() {
             onCommit={handleSecondaryEmailChange}
             type="email"
             placeholder="Add a backup email"
-            helper="* Secondary email will require email verification"
-            helperOnFocus
           />
-          {/* Make Primary link - only shows when secondary email exists */}
+          {/* Action pills - only show when secondary email exists */}
           {user?.secondaryEmail && (
-            <button
-              type="button"
-              onClick={handleMakePrimary}
-              disabled={isSwapping}
-              className="ft-field-action-link"
-            >
-              {isSwapping ? 'Swapping...' : 'Make Primary'}
-            </button>
+            <div className="ft-field-action-pills">
+              <button
+                type="button"
+                onClick={handleMakePrimaryClick}
+                onBlur={handleSwapBlur}
+                disabled={isSwapping || isRemoving || confirmingRemove}
+                className={`ft-field-action-pill ${isSwapping ? 'ft-field-action-pill--active' : ''} ${confirmingSwap ? 'ft-field-action-pill--confirm' : ''}`}
+              >
+                {isSwapping ? (
+                  <span className="ft-field-action-pill__typing">Swapping...</span>
+                ) : confirmingSwap ? 'Confirm' : 'Make Primary'}
+              </button>
+              <button
+                type="button"
+                onClick={handleRemoveClick}
+                onBlur={handleRemoveBlur}
+                disabled={isSwapping || isRemoving || confirmingSwap}
+                className={`ft-field-action-pill ${isRemoving ? 'ft-field-action-pill--active' : ''} ${confirmingRemove ? 'ft-field-action-pill--confirm' : ''}`}
+              >
+                {isRemoving ? (
+                  <span className="ft-field-action-pill__typing">Removing...</span>
+                ) : confirmingRemove ? 'Confirm' : 'Remove'}
+              </button>
+            </div>
           )}
         </div>
       </div>

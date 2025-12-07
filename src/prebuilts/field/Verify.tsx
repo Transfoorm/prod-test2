@@ -106,6 +106,16 @@ export default function FieldVerify({
     e.preventDefault();
     e.stopPropagation();
 
+    // If in error state, clicking "Invalid" resets to original and returns to editing
+    if (state === 'error') {
+      setLocalValue(originalValue.current);
+      setState('focused');
+      setErrorMessage(null);
+      inputRef.current?.focus();
+      inputRef.current?.select();
+      return;
+    }
+
     // Validate email format if type is email
     if (type === 'email') {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -136,7 +146,7 @@ export default function FieldVerify({
       isCommitting.current = false;
       // Stay focused so user can retry or blur to revert
     }
-  }, [localValue, onCommit, type]);
+  }, [localValue, onCommit, type, state]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
@@ -172,7 +182,7 @@ export default function FieldVerify({
       return 'Verify →';
     }
     if (state === 'focused') {
-      return <span className="vr-field-verify__typing">Changing...</span>;
+      return <span className="vr-field-verify__typing">Editing...</span>;
     }
     // Empty value = not set yet, show neutral state
     if (isEmpty) {

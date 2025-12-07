@@ -88,10 +88,10 @@ export async function swapEmailsToPrimary(secondaryEmail: string) {
   try {
     const client = await clerkClient();
 
-    // Get user to find the email address ID
+    // Get user to find the email address ID (case-insensitive)
     const clerkUser = await client.users.getUser(userId);
     const emailObj = clerkUser.emailAddresses.find(
-      e => e.emailAddress === secondaryEmail
+      e => e.emailAddress.toLowerCase() === secondaryEmail.toLowerCase()
     );
 
     if (!emailObj) {
@@ -112,6 +112,41 @@ export async function swapEmailsToPrimary(secondaryEmail: string) {
   } catch (err) {
     console.error('Failed to swap emails:', err);
     return { error: 'Failed to swap emails' };
+  }
+}
+
+/**
+ * Delete secondary email by email address string
+ */
+export async function deleteSecondaryEmail(secondaryEmail: string) {
+  const { userId } = await auth();
+  if (!userId) {
+    return { error: 'Not authenticated' };
+  }
+
+  try {
+    const client = await clerkClient();
+
+    // Get user to find the email address ID (case-insensitive)
+    const clerkUser = await client.users.getUser(userId);
+    const emailObj = clerkUser.emailAddresses.find(
+      e => e.emailAddress.toLowerCase() === secondaryEmail.toLowerCase()
+    );
+
+    if (!emailObj) {
+      return { error: 'Secondary email not found in Clerk' };
+    }
+
+    // Don't allow deleting primary email
+    if (emailObj.id === clerkUser.primaryEmailAddressId) {
+      return { error: 'Cannot delete primary email' };
+    }
+
+    await client.emailAddresses.deleteEmailAddress(emailObj.id);
+    return { success: true };
+  } catch (err) {
+    console.error('Failed to delete secondary email:', err);
+    return { error: 'Failed to delete email' };
   }
 }
 
