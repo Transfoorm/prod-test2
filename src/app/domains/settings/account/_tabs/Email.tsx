@@ -15,6 +15,7 @@ import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useFuse } from '@/store/fuse';
 import { Field, VerifyModal } from '@/prebuilts';
+import { refreshSessionAfterUpload } from '@/app/actions/user-mutations';
 
 export default function Email() {
   // ─────────────────────────────────────────────────────────────────────
@@ -31,6 +32,7 @@ export default function Email() {
   // Local State
   // ─────────────────────────────────────────────────────────────────────
   const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  const [emailMode, setEmailMode] = useState<'change' | 'secondary'>('change');
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [modalResolver, setModalResolver] = useState<{
     resolve: () => void;
@@ -45,6 +47,18 @@ export default function Email() {
     // Store the pending email and show verification modal
     // Return a Promise that resolves/rejects when modal completes
     setPendingEmail(newEmail);
+    setEmailMode('change');
+
+    return new Promise<void>((resolve, reject) => {
+      setModalResolver({ resolve, reject });
+      setShowVerifyModal(true);
+    });
+  };
+
+  const handleSecondaryEmailChange = async (newEmail: string) => {
+    // Store the pending email and show verification modal for secondary
+    setPendingEmail(newEmail);
+    setEmailMode('secondary');
 
     return new Promise<void>((resolve, reject) => {
       setModalResolver({ resolve, reject });
@@ -56,14 +70,29 @@ export default function Email() {
     // VerifyModal already updated Clerk, now update FUSE and Convex
     const { user: currentUser, setUser } = useFuse.getState();
     if (currentUser && pendingEmail) {
-      // Update FUSE (instant UI update)
-      setUser({ ...currentUser, email: pendingEmail });
+      if (emailMode === 'secondary') {
+        // Secondary email - update secondaryEmail field
+        setUser({ ...currentUser, secondaryEmail: pendingEmail });
+        try {
+          await updateUserSettings({ secondaryEmail: pendingEmail });
+        } catch (err) {
+          console.error('Failed to update secondary email in Convex:', err);
+        }
+      } else {
+        // Primary email - update email field
+        setUser({ ...currentUser, email: pendingEmail });
+        try {
+          await updateUserSettings({ email: pendingEmail });
+        } catch (err) {
+          console.error('Failed to update email in Convex:', err);
+        }
+      }
 
-      // Update Convex DB (persist to backend)
+      // Refresh session cookie so changes persist across page refresh
       try {
-        await updateUserSettings({ email: pendingEmail });
+        await refreshSessionAfterUpload();
       } catch (err) {
-        console.error('Failed to update email in Convex:', err);
+        console.error('Failed to refresh session cookie:', err);
       }
     }
 
@@ -101,20 +130,24 @@ export default function Email() {
           helper="* Changing will require a new email verification"
         />
 
-        {/* Secondary email section - future enhancement */}
-        <Field.readonly label="Secondary Email (Optional)">
-          <Field.display
-            value={user?.secondaryEmail ?? undefined}
-            emptyText="Not Set"
-          />
-        </Field.readonly>
+        {/* Secondary Email - Field.verify with same flow */}
+        <Field.verify
+          label="Secondary Email (Optional)"
+          value={user?.secondaryEmail ?? ''}
+          onCommit={handleSecondaryEmailChange}
+          type="email"
+          placeholder="Add a backup email"
+          helper="* Secondary email will require email verification"
+          helperOnFocus
+        />
       </div>
 
       {/* Verification Modal - handles Clerk internally */}
       <VerifyModal
         isOpen={showVerifyModal}
         email={pendingEmail ?? ''}
-        mode="change"
+        mode={emailMode}
+        currentEmail={emailMode === 'change' ? (user?.email ?? undefined) : (user?.secondaryEmail ?? undefined)}
         onSuccess={handleVerificationSuccess}
         onClose={handleVerificationClose}
       />

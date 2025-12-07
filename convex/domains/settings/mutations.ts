@@ -22,6 +22,7 @@ export const updateUserSettings = mutation({
   args: {
     // Identity fields (verified externally)
     email: v.optional(v.string()),
+    secondaryEmail: v.optional(v.union(v.string(), v.null())),
     // Profile fields
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),

@@ -57,6 +57,7 @@ export function ClientHydrator() {
       convexId: decoded._id,
       clerkId: decoded.clerkId,
       email: decoded.email || '',
+      secondaryEmail: decoded.secondaryEmail,
       emailVerified: decoded.emailVerified,
       firstName: decoded.firstName || '',
       lastName: decoded.lastName || '',
@@ -105,6 +106,7 @@ export function ClientHydrator() {
       convexId: decoded._id,     // Explicit alias for clarity
       clerkId: decoded.clerkId,  // Auth reference only (never use for queries)
       email: decoded.email || '',
+      secondaryEmail: decoded.secondaryEmail,
       emailVerified: decoded.emailVerified,
       firstName: decoded.firstName || '',
       lastName: decoded.lastName || '',

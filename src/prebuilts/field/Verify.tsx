@@ -35,8 +35,10 @@ export interface FieldVerifyProps {
   placeholder?: string;
   /** Required indicator */
   required?: boolean;
-  /** Helper text (shown in idle/focused) */
+  /** Helper text */
   helper?: string;
+  /** Only show helper when focused (not in idle state) */
+  helperOnFocus?: boolean;
 }
 
 export default function FieldVerify({
@@ -47,6 +49,7 @@ export default function FieldVerify({
   placeholder = '',
   required = false,
   helper,
+  helperOnFocus = false,
 }: FieldVerifyProps) {
   const [state, setState] = useState<VerifyState>('idle');
   const [localValue, setLocalValue] = useState(value);
@@ -152,6 +155,7 @@ export default function FieldVerify({
   // ─────────────────────────────────────────────────────────────────────
 
   const isDirty = localValue !== originalValue.current;
+  const isEmpty = !value; // Original value is empty (no verified email yet)
 
   // Pill is ALWAYS visible - green when verified, orange when dirty
   const showPill = true;
@@ -168,7 +172,11 @@ export default function FieldVerify({
       return 'Verify →';
     }
     if (state === 'focused') {
-      return <span className="vr-field-verify__typing">Edit Mode</span>;
+      return <span className="vr-field-verify__typing">Changing...</span>;
+    }
+    // Empty value = not set yet, show neutral state
+    if (isEmpty) {
+      return 'Not Set';
     }
     return 'Verified ✓';
   };
@@ -182,11 +190,12 @@ export default function FieldVerify({
     `vr-field-verify--${state}`,
   ].join(' ');
 
-  // Pill state: active (dirty/committing) > editing (focused) > verified (idle)
+  // Pill state: active (dirty/committing) > editing (focused) > empty (not set) > verified (idle)
   const getPillState = () => {
     if (state === 'committing') return 'vr-field-verify__pill--active';  // Stay orange while verifying
     if (isDirty) return 'vr-field-verify__pill--active';
     if (state === 'focused') return 'vr-field-verify__pill--editing';
+    if (isEmpty) return 'vr-field-verify__pill--empty';  // Neutral gray for empty/not set
     return 'vr-field-verify__pill--verified';
   };
 
@@ -236,7 +245,7 @@ export default function FieldVerify({
         </button>
       </div>
 
-      {helper && state !== 'error' && (
+      {helper && state !== 'error' && (!helperOnFocus || state !== 'idle') && (
         <div className="vr-field-verify__helper">{helper}</div>
       )}
 

@@ -93,6 +93,7 @@ export async function GET(request: Request) {
         _id: existingUser?._id ? String(existingUser._id) : '',  // ✅ Convex _id (sovereignty restored)
         clerkId: userId,
         email,
+        secondaryEmail: existingUser?.secondaryEmail ?? undefined,
         emailVerified: existingUser?.emailVerified ?? false,
         firstName: existingUser?.firstName ?? firstName,
         lastName: existingUser?.lastName ?? lastName,

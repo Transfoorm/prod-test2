@@ -2,18 +2,19 @@
 │  🔱 VERIFY MODAL - Universal Email Verification                       │
 │  /src/features/VerifyModal/index.tsx                                  │
 │                                                                        │
-│  Handles both signup verification AND email changes.                  │
+│  Handles signup verification, primary email changes, and secondary.   │
 │  Lives in /features/ because it needs Clerk access (Golden Bridge).   │
 │                                                                        │
 │  Props:                                                               │
 │  - isOpen: boolean - Modal visibility                                 │
 │  - email: string - Email being verified                               │
-│  - mode: 'verify' | 'change' - Verification mode                      │
+│  - mode: 'verify' | 'change' | 'secondary' - Verification mode        │
 │  - onSuccess: () => void - Called after successful verification       │
 │  - onClose: () => void - Called when user cancels                     │
 │                                                                        │
 │  Mode 'verify': Verifies existing primary email (signup flow)         │
 │  Mode 'change': Adds new email, verifies it, sets as primary          │
+│  Mode 'secondary': Adds new email, verifies it, keeps as secondary    │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
@@ -22,13 +23,15 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useSignUp, useUser } from '@clerk/nextjs';
 import Image from 'next/image';
-import { addEmailAndSendCode, setPrimaryEmail } from '@/app/actions/email-actions';
+import { addEmailAndSendCode, setPrimaryEmail, deleteEmail } from '@/app/actions/email-actions';
 import './verify-modal.css';
 
 export interface VerifyModalProps {
   isOpen: boolean;
   email: string;
-  mode?: 'verify' | 'change';
+  mode?: 'verify' | 'change' | 'secondary';
+  /** Current email value (for cleanup - we'll find its Clerk ID and delete it) */
+  currentEmail?: string;
   onSuccess: () => void;
   onClose: () => void;
 }
@@ -37,6 +40,7 @@ export default function VerifyModal({
   isOpen,
   email,
   mode = 'verify',
+  currentEmail,
   onSuccess,
   onClose
 }: VerifyModalProps) {
@@ -64,20 +68,22 @@ export default function VerifyModal({
       setIsResending(false);
       setPendingEmailId(null);
 
-      // For 'change' mode, prepare verification when modal opens
-      if (mode === 'change' && email && clerkUser) {
+      // For 'change' or 'secondary' mode, prepare verification when modal opens
+      if ((mode === 'change' || mode === 'secondary') && email && clerkUser) {
         prepareEmailChange();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, mode, email]);
 
-  // Auto-focus first input when modal opens
+  // Auto-focus first input when modal opens or preparing completes
   useEffect(() => {
-    if (isOpen && !showSuccess && !isPreparing && firstInputRef.current) {
-      setTimeout(() => {
+    if (isOpen && !showSuccess && !isPreparing) {
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
         firstInputRef.current?.focus();
-      }, 100);
+      }, 50);
+      return () => clearTimeout(timer);
     }
   }, [isOpen, showSuccess, isPreparing]);
 
@@ -143,8 +149,8 @@ export default function VerifyModal({
     try {
       let isVerified = false;
 
-      if (mode === 'change' && pendingEmailId && clerkUser) {
-        // Email change mode - verify the new email
+      if ((mode === 'change' || mode === 'secondary') && pendingEmailId && clerkUser) {
+        // Email change/secondary mode - verify the new email
         await clerkUser.reload(); // Refresh to get latest email addresses
         const pendingEmailObj = clerkUser.emailAddresses.find(e => e.id === pendingEmailId);
         if (pendingEmailObj) {
@@ -152,8 +158,19 @@ export default function VerifyModal({
           isVerified = result.verification?.status === 'verified';
 
           if (isVerified) {
-            // Set as primary email via Server Action
-            await setPrimaryEmail(pendingEmailId);
+            // Find the old email's Clerk ID (if we have one to delete)
+            const oldEmailObj = currentEmail
+              ? clerkUser.emailAddresses.find(e => e.emailAddress === currentEmail)
+              : null;
+            const oldEmailClerkId = oldEmailObj?.id;
+
+            if (mode === 'change') {
+              // Set as primary and delete old primary email
+              await setPrimaryEmail(pendingEmailId, oldEmailClerkId);
+            } else if (mode === 'secondary' && oldEmailClerkId) {
+              // Delete old secondary email
+              await deleteEmail(oldEmailClerkId);
+            }
           }
         }
       } else if (clerkUser && clerkUser.primaryEmailAddress) {
@@ -213,7 +230,7 @@ export default function VerifyModal({
     setCode("");
 
     try {
-      if (mode === 'change' && pendingEmailId && clerkUser) {
+      if ((mode === 'change' || mode === 'secondary') && pendingEmailId && clerkUser) {
         // Resend to pending email
         const pendingEmail = clerkUser.emailAddresses.find(e => e.id === pendingEmailId);
         if (pendingEmail) {
@@ -243,7 +260,7 @@ export default function VerifyModal({
 
   const handleClose = async () => {
     // If we created a pending email but didn't verify it, clean it up
-    if (mode === 'change' && pendingEmailId && clerkUser) {
+    if ((mode === 'change' || mode === 'secondary') && pendingEmailId && clerkUser) {
       try {
         await clerkUser.reload();
         const pendingEmail = clerkUser.emailAddresses.find(e => e.id === pendingEmailId);
@@ -280,10 +297,12 @@ export default function VerifyModal({
         </div>
 
         <h1 className="ft-verify-heading">
-          {mode === 'change' ? 'Email Updated!' : 'Email Verified!'}
+          {mode === 'secondary' ? 'Secondary Email Added!' : mode === 'change' ? 'Email Updated!' : 'Email Verified!'}
         </h1>
         <p className="ft-verify-description">
-          {mode === 'change'
+          {mode === 'secondary'
+            ? 'Your secondary email has been verified successfully'
+            : mode === 'change'
             ? 'Your primary email has been changed successfully'
             : 'Your email has been successfully verified'}
         </p>
@@ -292,7 +311,7 @@ export default function VerifyModal({
           <div className="ft-verify-progress-fill" />
         </div>
         <p className="ft-verify-progress-text">
-          {mode === 'change' ? 'Updating your profile...' : 'Completing your setup...'}
+          {mode === 'secondary' || mode === 'change' ? 'Updating your profile...' : 'Completing your setup...'}
         </p>
 
         <p className="ft-verify-footer ft-verify-footer--lg">
@@ -314,7 +333,7 @@ export default function VerifyModal({
         </div>
 
         <h1 className="ft-verify-heading ft-verify-heading--sm">
-          {mode === 'change' ? 'Verify New Email' : 'Verify Your Email'}
+          {mode === 'secondary' ? 'Add Secondary Email' : mode === 'change' ? 'Verify New Email' : 'Verify Your Email'}
         </h1>
         <p className="ft-verify-description">
           {isPreparing
@@ -426,7 +445,7 @@ export default function VerifyModal({
                   Verifying...
                 </span>
               ) : (
-                mode === 'change' ? "Verify & Update Email" : "Verify Email"
+                mode === 'secondary' ? "Verify & Add Email" : mode === 'change' ? "Verify & Update Email" : "Verify Email"
               )}
             </button>
 

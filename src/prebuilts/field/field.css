@@ -297,7 +297,7 @@
   justify-content: center;
   line-height: 1;
   z-index: 1;
-  min-width: 90px;
+  min-width: 100px;
 
   /* Default - green verified (overridden by --active, --error, etc) */
   background-color: var(--success-500);
@@ -338,6 +338,14 @@
 
   /* Collapse back */
   100% { width: 0; }
+}
+
+/* Pill empty (no value set yet) - neutral gray, just a label */
+.vr-field-verify__pill--empty {
+  background-color: var(--bg-tertiary);
+  color: var(--text-tertiary);
+  pointer-events: none;
+  cursor: default;
 }
 
 /* Pill verified (no changes) - green, just a label */

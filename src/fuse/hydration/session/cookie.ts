@@ -21,6 +21,7 @@ type SessionPayload = {
   iat: number;
   // Essential user data for instant render - the FUSE magic!
   email?: string;
+  secondaryEmail?: string;
   emailVerified?: boolean;
   rank?: string;
   firstName?: string;
@@ -55,6 +56,7 @@ export async function mintSession(payload: Omit<SessionPayload, 'iat'>) {
     clerkId: payload.clerkId,
     iat: now,
     email: payload.email,
+    secondaryEmail: payload.secondaryEmail,
     emailVerified: payload.emailVerified,
     rank: payload.rank,
     firstName: payload.firstName,
@@ -130,6 +132,7 @@ export async function readSessionCookie(): Promise<SessionPayload | null> {
       clerkId: payload.clerkId,
       iat: Number(payload.iat ?? 0),
       email: payload.email as string | undefined,
+      secondaryEmail: payload.secondaryEmail as string | undefined,
       emailVerified: payload.emailVerified as boolean | undefined,
       rank: payload.rank as string | undefined,
       firstName: payload.firstName as string | undefined,
@@ -196,6 +199,7 @@ export function getSessionFromCookie(cookieStore: { get: (name: string) => { val
       clerkId: payload.clerkId,
       iat: payload.iat || 0,
       email: payload.email,
+      secondaryEmail: payload.secondaryEmail,
       emailVerified: payload.emailVerified,
       rank: payload.rank,
       firstName: payload.firstName,

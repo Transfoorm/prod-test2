@@ -31,6 +31,7 @@ export async function POST() {
       _id: String(freshUser._id),
       clerkId: freshUser.clerkId,
       email: freshUser.email || session.email,
+      secondaryEmail: freshUser.secondaryEmail || undefined,
       emailVerified: freshUser.emailVerified,
       firstName: freshUser.firstName || session.firstName,
       lastName: freshUser.lastName || session.lastName,

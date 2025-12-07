@@ -39,6 +39,7 @@ export interface FuseCookiePayload {
   _id: string;         // ✅ Convex user _id (CANONICAL, sovereign identity)
   clerkId: string;     // Clerk ID for auth handoff reference only
   email?: string;
+  secondaryEmail?: string;
   emailVerified: boolean;
   firstName?: string;
   lastName?: string;

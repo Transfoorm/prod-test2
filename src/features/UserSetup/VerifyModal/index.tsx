@@ -43,11 +43,12 @@ export default function EmailVerificationModal({
 
   // Auto-focus first input when modal opens
   useEffect(() => {
-    if (isOpen && !showSuccess && firstInputRef.current) {
+    if (isOpen && !showSuccess) {
       // Small delay to ensure modal is fully rendered
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         firstInputRef.current?.focus();
-      }, 100);
+      }, 50);
+      return () => clearTimeout(timer);
     }
   }, [isOpen, showSuccess]);
 

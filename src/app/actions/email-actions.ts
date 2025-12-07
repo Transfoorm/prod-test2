@@ -40,9 +40,9 @@ export async function addEmailAndSendCode(newEmail: string) {
 }
 
 /**
- * Set an email address as primary
+ * Set an email address as primary and delete the old primary
  */
-export async function setPrimaryEmail(emailAddressId: string) {
+export async function setPrimaryEmail(emailAddressId: string, oldEmailId?: string) {
   const { userId } = await auth();
   if (!userId) {
     return { error: 'Not authenticated' };
@@ -51,13 +51,43 @@ export async function setPrimaryEmail(emailAddressId: string) {
   try {
     const client = await clerkClient();
 
+    // Set new email as primary
     await client.users.updateUser(userId, {
       primaryEmailAddressID: emailAddressId,
     });
+
+    // Delete the old primary email (cleanup)
+    if (oldEmailId) {
+      try {
+        await client.emailAddresses.deleteEmailAddress(oldEmailId);
+      } catch {
+        // Silent failure - old email might already be deleted
+        console.warn('Could not delete old email:', oldEmailId);
+      }
+    }
 
     return { success: true };
   } catch (err) {
     console.error('Failed to set primary email:', err);
     return { error: 'Failed to update primary email' };
+  }
+}
+
+/**
+ * Delete an email address (for cleanup when changing secondary)
+ */
+export async function deleteEmail(emailAddressId: string) {
+  const { userId } = await auth();
+  if (!userId) {
+    return { error: 'Not authenticated' };
+  }
+
+  try {
+    const client = await clerkClient();
+    await client.emailAddresses.deleteEmailAddress(emailAddressId);
+    return { success: true };
+  } catch (err) {
+    console.error('Failed to delete email:', err);
+    return { error: 'Failed to delete email address' };
   }
 }
