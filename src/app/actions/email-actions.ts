@@ -74,6 +74,48 @@ export async function setPrimaryEmail(emailAddressId: string, oldEmailId?: strin
 }
 
 /**
+ * Swap secondary email to become primary (both must be verified)
+ * Old primary becomes the new secondary
+ *
+ * @param secondaryEmail - The email address string to make primary
+ */
+export async function swapEmailsToPrimary(secondaryEmail: string) {
+  const { userId } = await auth();
+  if (!userId) {
+    return { error: 'Not authenticated' };
+  }
+
+  try {
+    const client = await clerkClient();
+
+    // Get user to find the email address ID
+    const clerkUser = await client.users.getUser(userId);
+    const emailObj = clerkUser.emailAddresses.find(
+      e => e.emailAddress === secondaryEmail
+    );
+
+    if (!emailObj) {
+      return { error: 'Secondary email not found in Clerk' };
+    }
+
+    if (emailObj.verification?.status !== 'verified') {
+      return { error: 'Secondary email must be verified first' };
+    }
+
+    // Set the secondary email as primary
+    // Clerk keeps the old primary as a secondary email automatically
+    await client.users.updateUser(userId, {
+      primaryEmailAddressID: emailObj.id,
+    });
+
+    return { success: true };
+  } catch (err) {
+    console.error('Failed to swap emails:', err);
+    return { error: 'Failed to swap emails' };
+  }
+}
+
+/**
  * Delete an email address (for cleanup when changing secondary)
  */
 export async function deleteEmail(emailAddressId: string) {

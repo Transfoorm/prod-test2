@@ -532,3 +532,38 @@ button.ft-profile-country {
 .ft-profile-country__text {
   flex: 1;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   FIELD WITH ACTION - Field + action link below
+   ═══════════════════════════════════════════════════════════════════ */
+
+.ft-field-with-action {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.ft-field-action-link {
+  align-self: flex-end;
+  margin-top: var(--space-xs);
+  padding: 0;
+  font-size: var(--font-size-xs);
+  color: var(--brand-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 150ms ease;
+}
+
+.ft-field-action-link:hover {
+  color: var(--brand-hover);
+}
+
+.ft-field-action-link:disabled {
+  color: var(--text-tertiary);
+  cursor: wait;
+  text-decoration: none;
+}

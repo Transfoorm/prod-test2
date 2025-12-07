@@ -16,6 +16,7 @@ import { api } from '@/convex/_generated/api';
 import { useFuse } from '@/store/fuse';
 import { Field, VerifyModal } from '@/prebuilts';
 import { refreshSessionAfterUpload } from '@/app/actions/user-mutations';
+import { swapEmailsToPrimary } from '@/app/actions/email-actions';
 
 export default function Email() {
   // ─────────────────────────────────────────────────────────────────────
@@ -38,6 +39,7 @@ export default function Email() {
     resolve: () => void;
     reject: (error: Error) => void;
   } | null>(null);
+  const [isSwapping, setIsSwapping] = useState(false);
 
   // ─────────────────────────────────────────────────────────────────────
   // Handlers
@@ -115,6 +117,53 @@ export default function Email() {
     setModalResolver(null);
   };
 
+  const handleMakePrimary = async () => {
+    const secondaryEmail = user?.secondaryEmail;
+    if (!secondaryEmail || isSwapping) return;
+
+    // Confirm with user
+    const confirmed = window.confirm(
+      `Make "${secondaryEmail}" your primary email?\n\nYour current primary email will become your secondary.`
+    );
+    if (!confirmed) return;
+
+    setIsSwapping(true);
+
+    try {
+      // Swap in Clerk
+      const result = await swapEmailsToPrimary(secondaryEmail);
+      if (result.error) {
+        alert(result.error);
+        return;
+      }
+
+      // Swap in FUSE store
+      const { user: currentUser, setUser } = useFuse.getState();
+      if (currentUser) {
+        const oldPrimary = currentUser.email;
+        setUser({
+          ...currentUser,
+          email: secondaryEmail,
+          secondaryEmail: oldPrimary,
+        });
+      }
+
+      // Update Convex
+      await updateUserSettings({
+        email: secondaryEmail,
+        secondaryEmail: user?.email,
+      });
+
+      // Refresh session cookie
+      await refreshSessionAfterUpload();
+    } catch (err) {
+      console.error('Failed to swap emails:', err);
+      alert('Failed to swap emails. Please try again.');
+    } finally {
+      setIsSwapping(false);
+    }
+  };
+
   // ─────────────────────────────────────────────────────────────────────
   // Render
   // ─────────────────────────────────────────────────────────────────────
@@ -131,15 +180,28 @@ export default function Email() {
         />
 
         {/* Secondary Email - Field.verify with same flow */}
-        <Field.verify
-          label="Secondary Email (Optional)"
-          value={user?.secondaryEmail ?? ''}
-          onCommit={handleSecondaryEmailChange}
-          type="email"
-          placeholder="Add a backup email"
-          helper="* Secondary email will require email verification"
-          helperOnFocus
-        />
+        <div className="ft-field-with-action">
+          <Field.verify
+            label="Secondary Email (Optional)"
+            value={user?.secondaryEmail ?? ''}
+            onCommit={handleSecondaryEmailChange}
+            type="email"
+            placeholder="Add a backup email"
+            helper="* Secondary email will require email verification"
+            helperOnFocus
+          />
+          {/* Make Primary link - only shows when secondary email exists */}
+          {user?.secondaryEmail && (
+            <button
+              type="button"
+              onClick={handleMakePrimary}
+              disabled={isSwapping}
+              className="ft-field-action-link"
+            >
+              {isSwapping ? 'Swapping...' : 'Make Primary'}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Verification Modal - handles Clerk internally */}
