@@ -23,6 +23,7 @@ import { useQuery, useAction } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { Icon, Badge } from '@/prebuilts';
 import { useVanish } from '@/vanish/Drawer';
+import { useFuse } from '@/store/fuse';
 
 // Type for deletion target
 type DeletionTarget = {
@@ -43,9 +44,27 @@ type DeletionTarget = {
 export function VanishQuarantine() {
   const { config, closeDrawer, triggerComplete } = useVanish();
   const [isVisible, setIsVisible] = useState(false);
+  const hydrateAdmin = useFuse((state) => state.hydrateAdmin);
 
   // Query all users to resolve target data
   const allUsers = useQuery(api.domains.admin.users.api.getAllUsers);
+
+  /**
+   * Force refresh FUSE admin data via WARP after deletion
+   * This ensures the UI updates immediately without waiting for Convex push
+   */
+  const refreshAdminData = useCallback(async () => {
+    try {
+      const response = await fetch('/api/warp/admin');
+      if (response.ok) {
+        const data = await response.json();
+        hydrateAdmin(data, 'WARP');
+        console.log('🔥 VANISH: Admin data refreshed via WARP after deletion');
+      }
+    } catch (error) {
+      console.error('🔥 VANISH: Failed to refresh admin data:', error);
+    }
+  }, [hydrateAdmin]);
 
   /**
    * ⚠️ CLERK API INTEGRATION POINT
@@ -170,7 +189,7 @@ export function VanishQuarantine() {
 
       setIsDeleting(false);
 
-      // Trigger completion callback
+      // Trigger completion callback (show success modal immediately)
       triggerComplete({
         success: failCount === 0,
         successCount,
@@ -180,6 +199,11 @@ export function VanishQuarantine() {
       });
 
       handleClose();
+
+      // Refresh FUSE in background (WARP-style, don't block UI)
+      if (successCount > 0) {
+        refreshAdminData();
+      }
     } else {
       // Single deletion
       try {
@@ -191,7 +215,7 @@ export function VanishQuarantine() {
         if (result.success) {
           const deletedUser = targets[0];
 
-          // Trigger completion callback
+          // Trigger completion callback (show success modal immediately)
           triggerComplete({
             success: true,
             successCount: 1,
@@ -199,6 +223,9 @@ export function VanishQuarantine() {
           });
 
           handleClose();
+
+          // Refresh FUSE in background (WARP-style, don't block UI)
+          refreshAdminData();
         } else {
           // Trigger failure callback
           triggerComplete({
