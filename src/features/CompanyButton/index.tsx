@@ -30,6 +30,7 @@ export default function CompanyButton() {
   const user = useFuse((s) => s.user);
   const navigate = useFuse((s) => s.navigate);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuClosing, setIsMenuClosing] = useState(false);
   const [showCountrySelector, setShowCountrySelector] = useState(false);
   const businessLocationButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -251,7 +252,11 @@ export default function CompanyButton() {
   // MENU FUNCTIONS
   // ─────────────────────────────────────────────────────────────────────
   const closeMenu = () => {
-    setIsMenuOpen(false);
+    setIsMenuClosing(true);
+    setTimeout(() => {
+      setIsMenuOpen(false);
+      setIsMenuClosing(false);
+    }, 130); // Unmount before animation ends to prevent flash
   };
 
   const handleButtonClick = () => {
@@ -289,7 +294,7 @@ export default function CompanyButton() {
         />
         <div className="ft-company-button-text">
           <div className={`ft-company-button-title ${!user?.entityName ? 'ft-company-button-title--placeholder' : ''}`}>
-            {user?.entityName || '*Company Name'}
+            {user?.entityName || 'Company Name'}
           </div>
           <div className="ft-company-button-subtitle">
             {user?.subscriptionStatus ? formatSubscriptionStatus(user.subscriptionStatus as SubscriptionStatus) : 'Trial Period'}
@@ -309,7 +314,7 @@ export default function CompanyButton() {
 
       {isMenuOpen && (
         <>
-          <div className="ft-company-button-menu">
+          <div className={`ft-company-button-menu ${isMenuClosing ? 'ft-company-button-menu--closing' : ''}`}>
             <button
               className="ft-company-button-menu-close"
               onClick={closeMenu}
@@ -346,7 +351,7 @@ export default function CompanyButton() {
                 >
                   <Icon variant="user-pen" size="sm" className="ft-company-button-menu-icon" />
                   <div className={`ft-company-button-menu-value ${!user?.firstName || !user?.lastName ? 'ft-company-button-menu-value--placeholder' : ''}`}>
-                    {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : '*Enter Your Name'}
+                    {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : 'Your Name Here'}
                   </div>
                 </button>
               </div>
@@ -365,7 +370,7 @@ export default function CompanyButton() {
                 >
                   <Icon variant="dna" size="sm" className="ft-company-button-menu-icon" />
                   <div className={`ft-company-button-menu-value ${user?.setupStatus !== 'complete' ? 'ft-company-button-menu-value--placeholder' : ''}`}>
-                    {user?.setupStatus !== 'complete' ? '*Professional Genome' : 'Professional Genome'}
+                    {user?.setupStatus !== 'complete' ? 'Professional Genome' : 'Professional Genome'}
                   </div>
                 </button>
               </div>

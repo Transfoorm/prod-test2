@@ -288,6 +288,15 @@ export default function UserButton() {
   // Check if user has a custom avatar (not the default)
   const hasCustomAvatar = user?.avatarUrl && user.avatarUrl !== "/images/sitewide/avatar.png";
 
+  // Animated menu close (scale-out effect)
+  const closeMenu = () => {
+    setIsMenuClosing(true);
+    setTimeout(() => {
+      setShowUserMenu(false);
+      setIsMenuClosing(false);
+    }, 130); // Unmount before animation ends to prevent flash
+  };
+
   const closeAllModals = () => {
     // Close instantly without animation
     setShowUserMenu(false);
@@ -308,8 +317,10 @@ export default function UserButton() {
     <div className="ft-userbutton-container">
       <div
         onClick={() => {
-          if (showUserMenu || showProfileModal) {
-            closeAllModals();
+          if (showProfileModal) {
+            closeAllModals(); // Instant close for modal
+          } else if (showUserMenu) {
+            closeMenu(); // Animated close for menu
           } else if (!isUploading) {
             setShowUserMenu(true);
           }
@@ -394,7 +405,7 @@ export default function UserButton() {
                 <button
                   onClick={() => {
                     setErrorMessage(null);
-                    setShowUserMenu(false);
+                    closeMenu();
                   }}
                   className="ft-userbutton-error-button"
                 >
@@ -555,7 +566,7 @@ export default function UserButton() {
         <div
           className="ft-userbutton-backdrop"
           onClick={() => {
-            closeAllModals();
+            closeMenu(); // Animated close
             // Also close header menu if open
             const headerMenu = document.querySelector('.ly-sidebar-header-menu');
             if (headerMenu) {

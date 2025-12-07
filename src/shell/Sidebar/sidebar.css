@@ -41,7 +41,7 @@
   --sidebar-footer-menu-bottom: 15px;
   --sidebar-footer-text-gap: 2px;
   --sidebar-footer-name-max-width: 15ch;
-  --sidebar-footer-email-max-width: 18ch;
+  --sidebar-footer-email-max-width: 16ch;
   --sidebar-footer-chevron-size: 16px;
 }
 
@@ -297,7 +297,7 @@
 /* Position UserButton menu above sidebar footer button */
 .ly-sidebar-footer-userbutton .ft-userbutton-menu {
   position: fixed;
-  inset: auto auto var(--sidebar-footer-menu-bottom) calc(var(--sidebar-width) - 0px);  /* 🟨 MENU BOTTOM GAP */ /* 🟨 MENU RIGHT POSITION */
+  inset: auto auto var(--sidebar-footer-menu-bottom) calc(var(--sidebar-width) - 5px);  /* 🟨 MENU BOTTOM GAP */ /* 🟨 MENU RIGHT POSITION */
   background-color: var(--page-arch-color);
   transform-origin: bottom left;
   z-index: 200;

@@ -138,23 +138,42 @@
 .ft-company-button-menu {
   position: fixed;
   top: var(--company-button-menu-top);  /* 🟨 MENU TOP DISTANCE */
-  left: calc(var(--sidebar-width) - 0px);  /* 🟨 MENU RIGHT POSITION */
+  left: calc(var(--sidebar-width) - 5px);  /* 🟨 MENU RIGHT POSITION */
   background-color: var(--page-arch-color);
   box-shadow: var(--userbutton-menu-shadow);
   border: 1px solid var(--border-light);
   border-radius: var(--company-button-menu-radius);
   min-width: var(--userbutton-menu-width);
   z-index: 200;
-  animation: ft-company-button-fade-in var(--company-button-fade-in-duration) ease-out;
+  animation: ft-company-button-scale-in var(--company-button-fade-in-duration) ease-out;
+  transform-origin: top left;
 }
 
-@keyframes ft-company-button-fade-in {
+@keyframes ft-company-button-scale-in {
   from {
     opacity: 0;
+    transform: scale(0.95);
   }
 
   to {
     opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.ft-company-button-menu--closing {
+  animation: ft-company-button-scale-out var(--company-button-fade-in-duration) ease-out;
+}
+
+@keyframes ft-company-button-scale-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.95);
   }
 }
 

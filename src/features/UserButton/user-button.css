@@ -12,7 +12,7 @@
 
   /* Menu Positioning & Dimensions */
   --userbutton-menu-bottom: 64px;
-  --userbutton-menu-left: 8px;
+  --userbutton-menu-left: 3px;
   --userbutton-menu-radius: 10px;
   --userbutton-menu-width: 240px;
   --userbutton-menu-width-modal: 320px;
@@ -152,7 +152,7 @@
 .ft-userbutton-menu {
   position: fixed;
   bottom: var(--userbutton-menu-bottom);
-  left: var(--userbutton-menu-left);
+  left: calc(var(--sidebar-width) - 5px);  /* 🟨 Match CompanyButton positioning */
   background-color: var(--bg-primary);
   box-shadow: var(--userbutton-menu-shadow);
   border: 1px solid var(--border-light);
@@ -182,7 +182,24 @@
   }
 }
 
-.ft-userbutton-menu--closing,
+/* Menu scale-out (bottom-left origin for sidebar position) */
+@keyframes menu-scale-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+.ft-userbutton-menu--closing {
+  animation: menu-scale-out var(--userbutton-transition-fast) ease-out;
+  transform-origin: bottom left;
+}
+
 .ft-userbutton-modal--closing {
   animation: fade-out var(--userbutton-transition-fast) ease-out;
 }
