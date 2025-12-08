@@ -2,11 +2,19 @@
 
 /**──────────────────────────────────────────────────────────────────────────┐
  │  🚀 SETUP MODAL - New User Onboarding                                    │
- │  /src/features/SetupModal/index.tsx                                       │
+ │  /src/features/UserSetup/SetupModal/index.tsx                            │
  │                                                                            │
- │  Simplified setup modal for Captain/Pending users                         │
- │  No flying button engine - clean, direct implementation                   │
- │  Collects essential profile info on first login                           │
+ │  VR-Sovereign: Owns ALL visibility and animation state internally.        │
+ │  Dashboard just renders <SetupModal onComplete={...} /> - zero ceremony.  │
+ │                                                                            │
+ │  Reads from FUSE:                                                          │
+ │  - user.rank, user.setupStatus (visibility condition)                      │
+ │  - modalSkipped (skip state)                                               │
+ │  - modalReturning (reverse flow trigger)                                   │
+ │                                                                            │
+ │  Listens to:                                                               │
+ │  - bringModalBack event (reverse flow animation)                           │
+ │  - phoenixApproachingModal event (button reveal timing)                    │
  └────────────────────────────────────────────────────────────────────────────*/
 
 import { useState, useEffect } from 'react';
@@ -15,7 +23,7 @@ import { useUser } from '@clerk/nextjs';
 import { Sparkles } from 'lucide-react';
 import { Button } from '@/prebuilts/button';
 import VerifyModal from '@/features/UserSetup/VerifyModal';
-import { skipFlow } from '@/features/UserSetup/FlyingButton/config';
+import { skipFlow, reverseFlow } from '@/features/UserSetup/FlyingButton/config';
 
 interface SetupData {
   firstName: string;
@@ -38,19 +46,32 @@ interface SetupErrors {
 
 interface SetupModalProps {
   onComplete: (data: SetupData) => void;
-  onSkip: () => void;
-  isFadingOut?: boolean;
-  isFadingIn?: boolean;
-  isHidden?: boolean;
 }
 
-export default function SetupModal({ onComplete, onSkip, isFadingOut = false, isFadingIn = false, isHidden = false }: SetupModalProps) {
+export default function SetupModal({ onComplete }: SetupModalProps) {
+  // ─────────────────────────────────────────────────────────────────────
+  // FUSE State
+  // ─────────────────────────────────────────────────────────────────────
   const user = useFuse((s) => s.user);
   const updateUser = useFuse((s) => s.updateUser);
   const showRedArrow = useFuse((s) => s.showRedArrow);
   const setShowRedArrow = useFuse((s) => s.setShowRedArrow);
+  const modalSkipped = useFuse((s) => s.modalSkipped);
+  const setModalSkipped = useFuse((s) => s.setModalSkipped);
+  const modalReturning = useFuse((s) => s.modalReturning);
+  const setModalReturning = useFuse((s) => s.setModalReturning);
+
   const { user: clerkUser, isLoaded } = useUser();
 
+  // ─────────────────────────────────────────────────────────────────────
+  // Internal Animation State (VR-sovereign - no props from parent)
+  // ─────────────────────────────────────────────────────────────────────
+  const [isModalFadingOut, setIsModalFadingOut] = useState(false);
+  const [isModalFadingIn, setIsModalFadingIn] = useState(modalReturning);
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Form State
+  // ─────────────────────────────────────────────────────────────────────
   const [formData, setFormData] = useState<SetupData>({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
@@ -64,18 +85,58 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showEmailVerification, setShowEmailVerification] = useState(false);
   // Hide button initially if we're fading in (reverse flow from topbar)
-  const [hideSetupButton, setHideSetupButton] = useState(isFadingIn);
+  const [hideSetupButton, setHideSetupButton] = useState(modalReturning);
   // Track which placeholders are hidden (during error display)
   const [hiddenPlaceholders, setHiddenPlaceholders] = useState<Set<string>>(new Set());
 
-  // Update button visibility when fading in (reverse flow)
-  useEffect(() => {
-    if (isFadingIn) {
-      setHideSetupButton(true); // Hide button when modal is fading in
-    }
-  }, [isFadingIn]);
+  // ─────────────────────────────────────────────────────────────────────
+  // Visibility Computation (internal, not from props)
+  // ─────────────────────────────────────────────────────────────────────
+  const shouldShow = user?.rank === 'captain' && user?.setupStatus === 'pending' && !modalSkipped;
+  const isHidden = !shouldShow && !isModalFadingOut && !isModalFadingIn;
 
-  // Listen for Phoenix returning to modal
+  // ─────────────────────────────────────────────────────────────────────
+  // modalReturning Handler (reverse flow from different page)
+  // ─────────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (modalReturning) {
+      setIsModalFadingIn(true);
+      setHideSetupButton(true);
+      setTimeout(() => {
+        setModalReturning(false);
+        setIsModalFadingIn(false);
+      }, reverseFlow.modalFadeInDuration);
+    }
+  }, [modalReturning, setModalReturning]);
+
+  // ─────────────────────────────────────────────────────────────────────
+  // bringModalBack Event Listener (reverse flow same page)
+  // ─────────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    const handleBringModalBack = () => {
+      // Wait for modalShowDelay from config before showing modal
+      setTimeout(() => {
+        // Reset skip state and trigger modal to fade in
+        setModalSkipped(false);
+        setIsModalFadingIn(true);
+        setHideSetupButton(true);
+
+        // After fade-in animation completes, set to normal state
+        setTimeout(() => {
+          setIsModalFadingIn(false);
+        }, reverseFlow.modalFadeInDuration);
+      }, reverseFlow.modalShowDelay);
+    };
+
+    window.addEventListener('bringModalBack', handleBringModalBack);
+    return () => {
+      window.removeEventListener('bringModalBack', handleBringModalBack);
+    };
+  }, [setModalSkipped]);
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Phoenix Event Listeners
+  // ─────────────────────────────────────────────────────────────────────
   useEffect(() => {
     const handlePhoenixApproaching = () => {
       // Show the setup button BEFORE Phoenix arrives
@@ -95,13 +156,14 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
     };
   }, []);
 
-  // Avatar cycling - female → male → female → inclusive → repeat (7s per avatar)
+  // ─────────────────────────────────────────────────────────────────────
+  // Avatar Cycling
+  // ─────────────────────────────────────────────────────────────────────
   const avatarProfiles = ['male', 'female', 'inclusive'] as const;
   const cyclePattern = [1, 0, 1, 2]; // Maps to: female, male, female, inclusive
   const [currentCycleIndex, setCurrentCycleIndex] = useState(0);
   const currentAvatarIndex = cyclePattern[currentCycleIndex];
 
-  // Advance to next avatar in pattern every 7 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentCycleIndex((prev) => (prev + 1) % 4);
@@ -110,22 +172,24 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
     return () => clearInterval(interval);
   }, []);
 
-  // Sync with user's businessCountry when it changes
+  // ─────────────────────────────────────────────────────────────────────
+  // Sync with user's businessCountry
+  // ─────────────────────────────────────────────────────────────────────
   useEffect(() => {
     if (user?.businessCountry && user.businessCountry !== formData.businessCountry) {
       setFormData(prev => ({ ...prev, businessCountry: user.businessCountry || 'AU' }));
     }
   }, [user?.businessCountry, formData.businessCountry]);
 
-  // Hide placeholders when errors appear, restore them as errors fade out
+  // ─────────────────────────────────────────────────────────────────────
+  // Error placeholder management
+  // ─────────────────────────────────────────────────────────────────────
   useEffect(() => {
     const errorFields = Object.keys(errors).filter(key => errors[key as keyof SetupErrors]);
 
     if (errorFields.length > 0) {
-      // Hide placeholders immediately
       setHiddenPlaceholders(new Set(errorFields));
 
-      // Restore placeholders after 3.3s (500ms after error starts fading)
       const timer = setTimeout(() => {
         setHiddenPlaceholders(new Set());
       }, 3500);
@@ -134,21 +198,20 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
     }
   }, [errors]);
 
+  // ─────────────────────────────────────────────────────────────────────
+  // Form Handlers
+  // ─────────────────────────────────────────────────────────────────────
   const handleInputChange = (field: keyof SetupData, value: string) => {
     // Special handling for socialName - only allow letters, numbers and ONE dot
     if (field === 'socialName') {
-      // Check if there's already a dot in the current value
       const currentHasDot = formData.socialName.includes('.');
 
-      // If no dot yet and user types space, convert it to dot
       if (!currentHasDot && value.includes(' ')) {
         value = value.replace(' ', '.');
       }
 
-      // Remove any character that isn't a-z, A-Z, 0-9, or dot
       value = value.replace(/[^a-zA-Z0-9.]/g, '');
 
-      // If there's more than one dot, keep only the first one
       const dotIndex = value.indexOf('.');
       if (dotIndex !== -1) {
         const beforeDot = value.substring(0, dotIndex);
@@ -161,9 +224,9 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
     if (field === 'entityName') {
       const slug = value
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')  // Replace non-alphanumeric with hyphens
-        .replace(/^-+|-+$/g, '')       // Remove leading/trailing hyphens
-        .substring(0, 30);             // Limit length
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .substring(0, 30);
 
       setFormData(prev => ({
         ...prev,
@@ -174,10 +237,8 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
       setFormData(prev => ({ ...prev, [field]: value }));
     }
 
-    // Clear error for this field when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
-      // Restore placeholder immediately
       setHiddenPlaceholders(prev => {
         const next = new Set(prev);
         next.delete(field);
@@ -187,7 +248,6 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
   };
 
   const handleFieldFocus = () => {
-    // User clicked a field - clear ALL errors and restore ALL placeholders
     const hasErrors = Object.values(errors).some(e => e);
     if (hasErrors) {
       setErrors({});
@@ -197,7 +257,6 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
 
   const handleBusinessCountryChange = (value: string) => {
     setFormData(prev => ({ ...prev, businessCountry: value }));
-    // Update user in store immediately (optimistic update)
     updateUser({ businessCountry: value });
   };
 
@@ -230,7 +289,6 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
 
     setIsSubmitting(true);
 
-    // Trim all text fields (socialName already has no spaces due to input restriction)
     const trimmedData: SetupData = {
       ...formData,
       firstName: formData.firstName.trim(),
@@ -248,17 +306,14 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
       const primaryEmail = clerkUser.primaryEmailAddress;
 
       if (primaryEmail?.verification?.status === 'verified') {
-        // Email already verified - proceed directly
         await onComplete(trimmedData);
         setIsSubmitting(false);
       } else if (primaryEmail) {
-        // Email exists but not verified - send verification code
         try {
           console.log('📧 Sending verification code to:', primaryEmail.emailAddress);
           await primaryEmail.prepareVerification({ strategy: 'email_code' });
           console.log('✅ Verification code sent successfully');
 
-          // Show verification modal
           setShowEmailVerification(true);
           setIsSubmitting(false);
         } catch (err) {
@@ -267,7 +322,6 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
           setIsSubmitting(false);
         }
       } else {
-        // No primary email
         setErrors({ ...errors, general: 'No email address found. Please contact support.' });
         setIsSubmitting(false);
       }
@@ -278,13 +332,10 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
   };
 
   const handleEmailVerified = async () => {
-    // Close verification modal
     setShowEmailVerification(false);
 
-    // Update store immediately
     updateUser({ emailVerified: true, setupStatus: 'complete' });
 
-    // Trim all text fields before saving
     const trimmedData: SetupData = {
       ...formData,
       firstName: formData.firstName.trim(),
@@ -294,7 +345,6 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
       orgSlug: formData.orgSlug.trim(),
     };
 
-    // Call onComplete with trimmed data
     try {
       await onComplete(trimmedData);
     } catch {
@@ -307,9 +357,68 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
     setIsSubmitting(false);
   };
 
+  // ─────────────────────────────────────────────────────────────────────
+  // Skip Handler (internal - triggers Phoenix and fade out)
+  // ─────────────────────────────────────────────────────────────────────
+  const handleSkip = () => {
+    // Get state functions and check if in Shadow King mode
+    const { shadowKingActive, setShadowKingActive } = useFuse.getState();
+
+    if (shadowKingActive) {
+      // Shadow King mode: just close it, no Phoenix animation
+      setShadowKingActive(false);
+      setModalSkipped(true);
+      setShowRedArrow(false);
+      console.log('👑 Shadow King: Skipped, returning to app');
+      return;
+    }
+
+    // Normal mode: trigger Phoenix animation
+    const sourceButton = document.querySelector('[data-setup-source]') as HTMLElement;
+    const targetButton = document.querySelector('[data-setup-target]') as HTMLElement;
+
+    if (sourceButton && targetButton) {
+      const sourceRect = sourceButton.getBoundingClientRect();
+      const targetRect = targetButton.getBoundingClientRect();
+
+      // HOUDINI SWITCH: Hide modal button IMMEDIATELY
+      setHideSetupButton(true);
+
+      // Trigger phoenix with positions AND dimensions
+      window.dispatchEvent(new CustomEvent('phoenixShow', {
+        detail: {
+          sourceX: sourceRect.left,
+          sourceY: sourceRect.top,
+          sourceWidth: sourceRect.width,
+          targetX: targetRect.left,
+          targetY: targetRect.top,
+        }
+      }));
+    }
+
+    // Set skip state in FUSE store
+    setModalSkipped(true);
+
+    // Hide red arrow if visible
+    setShowRedArrow(false);
+
+    // Start the fade-out animation
+    setIsModalFadingOut(true);
+
+    // Wait for animation to complete, then clear fade state
+    setTimeout(() => {
+      setIsModalFadingOut(false);
+    }, skipFlow.modalUnmountDelay);
+
+    console.log('⏭️ Setup skipped by user');
+  };
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Render
+  // ─────────────────────────────────────────────────────────────────────
   return (
     <div
-      className={`ft-setup-modal ${isFadingOut ? 'ft-setup-modal--fading-out' : ''} ${isFadingIn ? 'ft-setup-modal--fading-in' : ''} ${isHidden ? 'ft-setup-modal--hidden' : ''}`}
+      className={`ft-setup-modal ${isModalFadingOut ? 'ft-setup-modal--fading-out' : ''} ${isModalFadingIn ? 'ft-setup-modal--fading-in' : ''} ${isHidden ? 'ft-setup-modal--hidden' : ''}`}
       data-fade-duration={skipFlow.modalFadeDuration}
       data-rollup-duration={skipFlow.modalRollUpDuration}>
         {/* Background decoration */}
@@ -369,7 +478,6 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
             <div className="ft-setup-benefits">
               <div className="ft-setup-benefit-item">
                 <div className="ft-setup-benefit-icon">
-                  {/* Render all 3 unique avatars stacked - cycle pattern controls which shows */}
                   {avatarProfiles.map((profile, index) => (
                     <img
                       key={index}
@@ -451,11 +559,9 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
                     value={formData.firstName}
                     onChange={(e) => {
                       handleInputChange('firstName', e.target.value);
-                      // Hide arrow when user starts typing
                       if (showRedArrow) setShowRedArrow(false);
                     }}
                     onFocus={() => {
-                      // Hide arrow when field is focused
                       if (showRedArrow) setShowRedArrow(false);
                       handleFieldFocus();
                     }}
@@ -464,7 +570,6 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
                       errors.firstName ? 'ft-setup-input-error' : ''
                     }`}
                   />
-                  {/* Red arrow - points to First Name field */}
                   {showRedArrow && (
                     <img
                       src="/images/sitewide/brand_arrow.png"
@@ -596,39 +701,7 @@ export default function SetupModal({ onComplete, onSkip, isFadingOut = false, is
 
                 <Button.ghost
                   type="button"
-                  onClick={() => {
-                    // Only trigger Phoenix if NOT in Shadow King mode
-                    // Shadow King is detected by checking if shadowKingActive is true
-                    const { shadowKingActive } = useFuse.getState();
-
-                    if (!shadowKingActive) {
-                      // Get BOTH positions BEFORE anything changes
-                      const sourceButton = document.querySelector('[data-setup-source]') as HTMLElement;
-                      const targetButton = document.querySelector('[data-setup-target]') as HTMLElement;
-
-                      if (sourceButton && targetButton) {
-                        const sourceRect = sourceButton.getBoundingClientRect();
-                        const targetRect = targetButton.getBoundingClientRect();
-
-                        // HOUDINI SWITCH: Hide modal button IMMEDIATELY
-                        setHideSetupButton(true);
-
-                        // Trigger phoenix with positions AND dimensions
-                        window.dispatchEvent(new CustomEvent('phoenixShow', {
-                          detail: {
-                            sourceX: sourceRect.left,
-                            sourceY: sourceRect.top,
-                            sourceWidth: sourceRect.width,
-                            targetX: targetRect.left,
-                            targetY: targetRect.top,
-                          }
-                        }));
-                      }
-                    }
-
-                    // Let parent handle the skip (Dashboard or Shadow King)
-                    onSkip();
-                  }}
+                  onClick={handleSkip}
                   disabled={isSubmitting}
                 >
                   Skip for now

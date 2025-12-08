@@ -2,18 +2,17 @@
 │  🔱 DASHBOARD - Sovereign Domain                                        │
 │  /src/app/domains/Dashboard.tsx                                         │
 │                                                                        │
+│  VR-Sovereign: Pure declarative shell with ZERO ceremony logic.        │
+│  SetupModal owns all visibility, animation, and skip behavior.         │
 │  FUSE 6.0: Pure client view that reads from FUSE store.                │
-│  No server fetch. No RSC. Instant render.                              │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useSetPageHeader } from '@/hooks/useSetPageHeader';
 import { useFuse } from '@/store/fuse';
 import SetupModal from '@/features/UserSetup/SetupModal';
 import FlyingButton from '@/features/UserSetup/FlyingButton';
-import { skipFlow, reverseFlow } from '@/features/UserSetup/FlyingButton/config';
 import { completeSetupAction } from '@/app/actions/user-mutations';
 import { Card } from '@/prebuilts/card';
 import { Grid } from '@/prebuilts/grid';
@@ -22,60 +21,12 @@ import { Button } from '@/prebuilts/button';
 export default function Dashboard() {
   const user = useFuse((s) => s.user);
   const updateUser = useFuse((s) => s.updateUser);
-  const modalSkipped = useFuse((s) => s.modalSkipped);
-  const setModalSkipped = useFuse((s) => s.setModalSkipped);
-  const modalReturning = useFuse((s) => s.modalReturning);
-  const setModalReturning = useFuse((s) => s.setModalReturning);
-  const setShowRedArrow = useFuse((s) => s.setShowRedArrow);
-  const [isModalFadingOut, setIsModalFadingOut] = useState(false);
-  const [isModalFadingIn, setIsModalFadingIn] = useState(modalReturning);
 
   useSetPageHeader(undefined, 'Coming soon');
 
-  // Handle modalReturning on mount - trigger fade-in animation
-  useEffect(() => {
-    if (modalReturning) {
-      setIsModalFadingIn(true);
-      // Clear the flag and animation after duration
-      setTimeout(() => {
-        setModalReturning(false);
-        setIsModalFadingIn(false);
-      }, reverseFlow.modalFadeInDuration);
-    }
-  }, [modalReturning, setModalReturning]);
-
-  // Listen for bring modal back event (for reverse flow on same page)
-  useEffect(() => {
-    const handleBringModalBack = () => {
-      // Wait for modalShowDelay from config before showing modal
-      setTimeout(() => {
-        // Reset skip state in FUSE store and trigger modal to fade in
-        setModalSkipped(false);
-        setIsModalFadingIn(true);
-
-        // After fade-in animation completes, set to normal state
-        setTimeout(() => {
-          setIsModalFadingIn(false);
-        }, reverseFlow.modalFadeInDuration);
-      }, reverseFlow.modalShowDelay);
-    };
-
-    window.addEventListener('bringModalBack', handleBringModalBack);
-    return () => {
-      window.removeEventListener('bringModalBack', handleBringModalBack);
-    };
-  }, [setModalSkipped]);
-
-  // Reset red arrow when leaving dashboard
-  useEffect(() => {
-    return () => {
-      setShowRedArrow(false);
-    };
-  }, [setShowRedArrow]);
-
-  // Show setup modal for Captain/Pending users (only if not in skip mode)
-  const shouldShowSetup = user?.rank === 'captain' && user?.setupStatus === 'pending' && !modalSkipped;
-
+  // ─────────────────────────────────────────────────────────────────────
+  // Setup Complete Handler (server action + FUSE update)
+  // ─────────────────────────────────────────────────────────────────────
   const handleSetupComplete = async (data: {
     firstName: string;
     lastName: string;
@@ -85,9 +36,6 @@ export default function Dashboard() {
     businessCountry: string;
   }) => {
     try {
-      // Reset skip state since setup is being completed
-      setModalSkipped(false);
-
       // Update FUSE store optimistically
       updateUser({
         firstName: data.firstName,
@@ -136,40 +84,15 @@ export default function Dashboard() {
     }
   };
 
-  const handleSetupSkip = () => {
-    // Set skip state in FUSE store to persist across navigation
-    setModalSkipped(true);
-
-    // Hide red arrow if visible
-    setShowRedArrow(false);
-
-    // Start the fade-out animation
-    setIsModalFadingOut(true);
-
-    // Wait for animation to complete, then unmount
-    setTimeout(() => {
-      setIsModalFadingOut(false);
-    }, skipFlow.modalUnmountDelay);
-
-    console.log('⏭️ Setup skipped by user');
-  };
-
   return (
     <Grid.verticalBig>
-      {/* Show setup modal overlay when user needs onboarding */}
-      <SetupModal
-        onComplete={handleSetupComplete}
-        onSkip={handleSetupSkip}
-        isFadingOut={isModalFadingOut}
-        isFadingIn={isModalFadingIn}
-        isHidden={!shouldShowSetup && !isModalFadingOut && !isModalFadingIn}
-      />
+      {/* SetupModal - VR owns all visibility/animation/skip behavior */}
+      <SetupModal onComplete={handleSetupComplete} />
 
-      {/* Flying button for Phoenix animation */}
+      {/* FlyingButton - VR owns Phoenix animation */}
       <FlyingButton />
 
-      {/* Dashboard content with smooth transitions */}
-      <div className={`dashboard-content-wrapper ${isModalFadingIn ? 'dashboard-content-wrapper--fading-in' : ''}`}>
+      {/* Dashboard content */}
       <Grid.cards>
         <Card.metric
           title="Your Account"
@@ -196,7 +119,6 @@ export default function Dashboard() {
         </Card.showcase>
         <Card.inputShowcase />
       </Grid.cards>
-      </div>
     </Grid.verticalBig>
   );
 }

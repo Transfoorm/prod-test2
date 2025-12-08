@@ -24,7 +24,6 @@ import { Backdrop } from '@/prebuilts';
 export default function ShadowKing() {
   const shadowKingActive = useFuse((s) => s.shadowKingActive);
   const setShadowKingActive = useFuse((s) => s.setShadowKingActive);
-  const setModalSkipped = useFuse((s) => s.setModalSkipped);
   const setShowRedArrow = useFuse((s) => s.setShowRedArrow);
   const user = useFuse((s) => s.user);
   const updateUser = useFuse((s) => s.updateUser);
@@ -106,13 +105,6 @@ export default function ShadowKing() {
     }
   };
 
-  // Skip closes Shadow King AND sets modalSkipped so Dashboard modal won't show
-  const handleSkip = () => {
-    setShadowKingActive(false);
-    setModalSkipped(true);  // Sync with Dashboard modal skip state
-    setShowRedArrow(false);  // Hide arrow when closing
-  };
-
   const handleBackdropClick = () => {
     // Outside click = just close, NOT skip
     setShadowKingActive(false);
@@ -124,10 +116,7 @@ export default function ShadowKing() {
     <>
       <Backdrop onClick={handleBackdropClick} />
       <div className="ft-shadow-king">
-        <SetupModal
-          onComplete={handleSetupComplete}
-          onSkip={handleSkip}
-        />
+        <SetupModal onComplete={handleSetupComplete} />
       </div>
     </>
   );
