@@ -278,6 +278,9 @@ export default function UserButton() {
     // Server Action handles: Clerk session revoke + cookie delete
     await signOutAction();
 
+    // Clear sidebar state so fresh login starts with collapsed sections
+    localStorage.removeItem('fuse-sidebar-sections');
+
     // Client-side redirect (server can't delete httpOnly cookies properly)
     window.location.href = '/sign-in';
   };
