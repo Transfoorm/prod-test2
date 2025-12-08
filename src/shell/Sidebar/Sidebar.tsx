@@ -13,8 +13,8 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { ChevronRight, ChevronsUpDown } from 'lucide-react';
-import UserButton from '@/features/UserButton';
-import CompanyButton from '@/features/CompanyButton';
+import UserButton from '@/features/shell/UserButton';
+import CompanyButton from '@/features/shell/CompanyButton';
 import { useFuse } from '@/store/fuse';
 import type { DomainRoute } from '@/store/fuse';
 import { Icon } from '@/prebuilts';

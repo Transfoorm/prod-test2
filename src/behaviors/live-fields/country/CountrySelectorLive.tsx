@@ -11,7 +11,7 @@
 
 import { useState, useRef } from 'react';
 import { useFuse } from '@/store/fuse';
-import CountrySelector from '@/features/CountrySelector';
+import CountrySelector from '@/features/shell/CountrySelector';
 import { useCountryLiveBehavior } from './useCountryLiveBehavior';
 
 const COUNTRIES: Record<string, { flag: string; name: string }> = {
@@ -55,7 +55,7 @@ export function CountrySelectorLive({ label, onSave }: CountrySelectorLiveProps)
 
   return (
     <div className={wrapperClass}>
-      <label className="vr-field-live__label">{label}</label>
+      <label className="vr-field__label">{label}</label>
       <div className="vr-field-live__input-wrapper">
         <button
           ref={buttonRef}

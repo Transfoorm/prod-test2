@@ -596,6 +596,7 @@ button.ft-profile-country {
   gap: var(--space-sm, 8px);
   text-align: left;
   cursor: pointer;
+  height: var(--form-input-height);
 }
 
 .ft-profile-country__flag {

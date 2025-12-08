@@ -21,7 +21,7 @@ import Cropper from 'react-easy-crop';
 import { api } from '@/convex/_generated/api';
 import { refreshSessionAfterUpload } from '@/app/actions/user-mutations';
 import { Id } from '@/convex/_generated/dataModel';
-import CountrySelector from '@/features/CountrySelector';
+import CountrySelector from '@/features/shell/CountrySelector';
 import { useFuse } from '@/store/fuse';
 import { Icon, Tooltip, Backdrop } from '@/prebuilts';
 import { formatSubscriptionStatus, type SubscriptionStatus } from '@/fuse/constants/ranks';

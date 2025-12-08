@@ -1,16 +1,16 @@
 /* Feature Components - Application-Level Reusable Features */
 
 /* Company Button (includes Logo Cropper) */
-@import url('../src/features/CompanyButton/company-button.css');
+@import url('../src/features/shell/CompanyButton/company-button.css');
 
 /* Country Selector */
-@import url('../src/features/CountrySelector/country-selector.css');
+@import url('../src/features/shell/CountrySelector/country-selector.css');
 
 /* Theme Toggle */
-@import url('../src/features/ThemeToggle/theme-toggle.css');
+@import url('../src/features/shell/ThemeToggle/theme-toggle.css');
 
 /* User Button */
-@import url('../src/features/UserButton/user-button.css');
+@import url('../src/features/shell/UserButton/user-button.css');
 
 /* Setup Modal */
 @import url('../src/features/UserSetup/SetupModal/setup-modal.css');

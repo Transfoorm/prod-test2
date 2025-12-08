@@ -36,7 +36,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useFuse } from "@/store/fuse";
 import { Icon, Tooltip, Backdrop } from "@/prebuilts";
 import { Button } from "@/prebuilts/button";
-import ThemeToggle from '@/features/ThemeToggle';
+import ThemeToggle from '@/features/shell/ThemeToggle';
 
 export default function UserButton() {
   const user = useFuse((s) => s.user);
