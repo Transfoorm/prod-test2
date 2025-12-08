@@ -284,6 +284,7 @@ export default function PasswordChangeCeremony({ onChangePassword }: PasswordCha
               onFocus={handleBox1Focus}
               onBlur={handleBox1Blur}
               autoFocus
+              autoComplete="new-password"
               placeholder="Enter new password"
             />
           )}
@@ -342,6 +343,7 @@ export default function PasswordChangeCeremony({ onChangePassword }: PasswordCha
               value={confirmPassword}
               onChange={handleBox2Change}
               onBlur={handleBox2Blur}
+              autoComplete="new-password"
               placeholder="Retype new password"
             />
           ) : (
