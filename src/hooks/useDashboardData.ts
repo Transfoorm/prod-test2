@@ -79,7 +79,7 @@ export function useDashboardData() {
         totalTransactions: finance.computed.totalTransactions || 0,
 
         // Client domain stats (all ranks)
-        totalClients: client.computed.totalPeople || 0,
+        totalClients: client.computed.totalContacts || 0,
         activeSessions: client.computed.totalSessions || 0,
 
         // Project domain stats (Captain+)

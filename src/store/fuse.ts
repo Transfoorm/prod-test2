@@ -294,7 +294,7 @@ export const useFuse = create<FuseStore>()((set, get) => {
     },
 
     clients: {
-      people: [],
+      contacts: [],
       teams: [],
       sessions: [],
       reports: [],
@@ -514,7 +514,7 @@ export const useFuse = create<FuseStore>()((set, get) => {
       const start = fuseTimer.start('clearClients');
       set({
         clients: {
-          people: [],
+          contacts: [],
           teams: [],
           sessions: [],
           reports: [],

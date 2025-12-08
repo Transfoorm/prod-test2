@@ -28,7 +28,7 @@ export const commodoreNav: NavSection[] = [
     label: 'Clients',
     icon: 'handshake',
     children: [
-      { path: ROUTES.clients.people, label: 'People' },
+      { path: ROUTES.clients.contacts, label: 'Contacts' },
       { path: ROUTES.clients.pipeline, label: 'Pipeline' },
       { path: ROUTES.clients.sessions, label: 'Sessions' }
     ]

@@ -34,7 +34,7 @@ export const ROUTES = {
   // Clients domain (All ranks with data scoping)
   clients: {
     overview: '/clients' as const,
-    people: '/clients/people' as const,
+    contacts: '/clients/contacts' as const,
     pipeline: '/clients/pipeline' as const,
     reports: '/clients/reports' as const,
     sessions: '/clients/sessions' as const,

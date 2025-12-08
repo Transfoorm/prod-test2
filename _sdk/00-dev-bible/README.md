@@ -128,7 +128,7 @@ One Zustand store. Five domains. Everything connected.
 |--------|---------|------|
 | **Session** | Current user | user, rank, preferences |
 | **Admin** | Platform management | users, deletion logs |
-| **Clients** | Business data | people, sessions, notes |
+| **Clients** | Business data | contacts, sessions, notes |
 | **Finance** | Money matters | invoices, transactions |
 | **Productivity** | Work tools | calendar, email, pipeline |
 | **Projects** | Project tracking | charts, locations |
@@ -338,7 +338,7 @@ Every bridge hook returns:
 ```typescript
 // useClientsBridge.ts
 export function useClientsBridge() {
-  const clients = useFuse((state) => state.clients.people);
+  const clients = useFuse((state) => state.clients.contacts);
   const sessions = useFuse((state) => state.clients.sessions);
 
   return {
@@ -591,7 +591,7 @@ v1/                         # Project root
 │   │   ├── (dashboard)/   # Main dashboard layout
 │   │   ├── (domains)/     # Domain routes
 │   │   │   ├── admin/     # Admin domain (users, tenant, plans, feature)
-│   │   │   ├── clients/   # Clients domain (people, sessions, pipeline, teams, reports)
+│   │   │   ├── clients/   # Clients domain (contacts, sessions, pipeline, teams, reports)
 │   │   │   ├── finance/   # Finance domain (invoices, payments, overview)
 │   │   │   ├── productivity/  # Productivity (calendar, booking, meeting, email)
 │   │   │   ├── projects/  # Projects domain (charts, locations, tracking)

@@ -17,7 +17,7 @@
 │   ├── Plans.tsx
 │   └── Feature.tsx
 ├── clients/
-│   ├── People.tsx
+│   ├── Contacts.tsx
 │   ├── Teams.tsx
 │   ├── Sessions.tsx
 │   ├── Pipeline.tsx

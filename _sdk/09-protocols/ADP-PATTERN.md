@@ -153,21 +153,21 @@ function useClientsData() {
   return {
     // DATA: Raw domain data (from FUSE)
     data: {
-      people: clients.people,
+      contacts: clients.contacts,
       pipeline: clients.pipeline,
       sessions: clients.sessions,
     },
 
     // COMPUTED: Calculated values
     computed: {
-      peopleCount: clients.people.length,
+      contactsCount: clients.contacts.length,
       activeDealValue: /* calculated */,
     },
 
     // ACTIONS: Mutations with optimistic updates
     actions: {
-      createPersonOptimistic: (person) => { /* ... */ },
-      deletePersonOptimistic: (id) => { /* ... */ },
+      createContactOptimistic: (contact) => { /* ... */ },
+      deleteContactOptimistic: (id) => { /* ... */ },
     },
 
     // FLAGS: Hydration state

@@ -23,8 +23,8 @@ import { useFuse } from '@/store/fuse';
  * Usage:
  * ```tsx
  * const { data, computed, flags } = useClientData();
- * const { people, teams, sessions } = data;
- * const { totalPeople } = computed;
+ * const { contacts, teams, sessions } = data;
+ * const { totalContacts } = computed;
  * const { isHydrated } = flags;
  * ```
  */
@@ -37,7 +37,7 @@ export function useClientData() {
   return {
     // DATA: Raw domain data from FUSE store
     data: {
-      people: clients.people,
+      contacts: clients.contacts,
       teams: clients.teams,
       sessions: clients.sessions,
       reports: clients.reports,
@@ -45,11 +45,11 @@ export function useClientData() {
 
     // COMPUTED: Calculated/derived values
     computed: {
-      totalPeople: clients.people.length,
+      totalContacts: clients.contacts.length,
       totalTeams: clients.teams.length,
       totalSessions: clients.sessions.length,
       totalReports: clients.reports.length,
-      hasData: clients.people.length > 0 || clients.teams.length > 0 || clients.sessions.length > 0,
+      hasData: clients.contacts.length > 0 || clients.teams.length > 0 || clients.sessions.length > 0,
     },
 
     // ACTIONS: Mutations and operations

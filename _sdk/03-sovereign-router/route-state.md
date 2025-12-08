@@ -27,7 +27,7 @@ Routes are simple strings in `domain/page` format:
 | `/admin/users` | `'admin/users'` |
 | `/admin/plans` | `'admin/plans'` |
 | `/finance/invoices` | `'finance/invoices'` |
-| `/clients/people` | `'clients/people'` |
+| `/clients/contacts` | `'clients/contacts'` |
 | `/settings/account` | `'settings/account'` |
 
 ## Reading the Route

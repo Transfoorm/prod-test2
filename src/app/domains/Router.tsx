@@ -32,7 +32,7 @@ import Plans from './admin/plans/Plans';
 import Feature from './admin/features/Features';
 
 // Clients
-import People from './clients/People';
+import Contacts from './clients/Contacts';
 import Teams from './clients/Teams';
 import Sessions from './clients/Sessions';
 import Pipeline from './clients/Pipeline';
@@ -142,8 +142,8 @@ export default function Router() {
       // ═══════════════════════════════════════════════════════════════
       // CLIENTS
       // ═══════════════════════════════════════════════════════════════
-      case 'clients/people':
-        return <People />;
+      case 'clients/contacts':
+        return <Contacts />;
       case 'clients/teams':
         return <Teams />;
       case 'clients/sessions':

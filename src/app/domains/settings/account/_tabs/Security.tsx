@@ -3,7 +3,7 @@
 │  /src/app/domains/settings/account/_tabs/Security.tsx                │
 │                                                                       │
 │  VR Doctrine: Tab Layer                                               │
-│  - One line import                                                    │
+│  - Feature imports only                                               │
 │  - ZERO FUSE                                                          │
 │  - ZERO callbacks                                                     │
 │  - ZERO state                                                         │

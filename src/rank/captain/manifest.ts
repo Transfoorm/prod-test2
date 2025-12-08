@@ -31,7 +31,7 @@ export const CAPTAIN_MANIFEST: RankManifest = {
   nav: [
     { path: ROUTES.dashboard, label: 'Dashboard', icon: 'home' },
     { path: ROUTES.productivity.email, label: 'Productivity', icon: 'briefcase' },
-    { path: ROUTES.clients.people, label: 'Clients', icon: 'users' },
+    { path: ROUTES.clients.contacts, label: 'Clients', icon: 'users' },
     { path: ROUTES.finance.overview, label: 'Finance', icon: 'dollar-sign' },
     { path: ROUTES.projects.overview, label: 'Projects', icon: 'folder' },
     { path: ROUTES.settings.account, label: 'Settings', icon: 'settings' },

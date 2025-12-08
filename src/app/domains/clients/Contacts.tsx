@@ -4,8 +4,8 @@ import { useSetPageHeader } from '@/hooks/useSetPageHeader';
 import { Card } from '@/prebuilts/card';
 import { Grid } from '@/prebuilts/grid';
 
-export default function People() {
-  useSetPageHeader('People', 'Manage your clients and contacts');
+export default function Contacts() {
+  useSetPageHeader('Contacts', 'Manage your clients and contacts');
 
   return (
     <Grid.verticalBig>

@@ -3,7 +3,7 @@
  * CLIENTS DOMAIN SLICE
  * ══════════════════════════════════════════════════════════════════════════════
  *
- * Handles: people, teams, sessions, reports
+ * Handles: contacts, teams, sessions, reports
  * Route: /app/domains/clients/*
  * Backend: /convex/domains/clients/
  * Access: All ranks (scoped by rank)
@@ -21,7 +21,7 @@ import { fuseTimer } from './_template';
 // ─────────────────────────────────────────────────────────────────────────────
 
 export interface ClientsData {
-  people: Record<string, unknown>[];
+  contacts: Record<string, unknown>[];
   teams: Record<string, unknown>[];
   sessions: Record<string, unknown>[];
   reports: Record<string, unknown>[];
@@ -44,7 +44,7 @@ export interface ClientsActions {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const initialClientsState: ClientsSlice = {
-  people: [],
+  contacts: [],
   teams: [],
   sessions: [],
   reports: [],
@@ -77,7 +77,7 @@ export const createClientsSlice: StateCreator<
     }));
     if (process.env.NODE_ENV === 'development') {
       console.log(`👥 FUSE: Clients domain hydrated via ${source}`, {
-        people: data.people?.length || 0,
+        contacts: data.contacts?.length || 0,
         teams: data.teams?.length || 0,
         sessions: data.sessions?.length || 0,
         reports: data.reports?.length || 0,

@@ -51,7 +51,7 @@ export default function Router() {
 | `admin/users` | `<Users />` | `/app/domains/admin/Users.tsx` |
 | `admin/plans` | `<Plans />` | `/app/domains/admin/Plans.tsx` |
 | `admin/feature` | `<Feature />` | `/app/domains/admin/Feature.tsx` |
-| `clients/people` | `<People />` | `/app/domains/clients/People.tsx` |
+| `clients/contacts` | `<Contacts />` | `/app/domains/clients/Contacts.tsx` |
 | `clients/teams` | `<Teams />` | `/app/domains/clients/Teams.tsx` |
 | `clients/sessions` | `<Sessions />` | `/app/domains/clients/Sessions.tsx` |
 | `clients/pipeline` | `<Pipeline />` | `/app/domains/clients/Pipeline.tsx` |

@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  eslint: {
+    eslint: {
     // FUSE-STYLE Enforcement: ESLint must pass for production builds
     ignoreDuringBuilds: false,
   },

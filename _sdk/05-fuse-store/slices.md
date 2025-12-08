@@ -69,7 +69,7 @@ admin: {
 }
 
 clients: {
-  people: Person[];
+  contacts: Contact[];
   teams: Team[];
   // ...
 }

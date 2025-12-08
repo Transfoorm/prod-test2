@@ -5,7 +5,7 @@
 │  Server-side endpoint for Clients domain preloading                   │
 │  Called by PRISM when user opens Clients dropdown                     │
 │                                                                        │
-│  Data: people, teams, sessions, reports                               │
+│  Data: contacts, teams, sessions, reports                             │
 │  Access: All ranks (scoped by rank)                                   │
 │                                                                        │
 │  PLUMBING: Add Convex queries here when Clients has real data.        │
@@ -24,8 +24,8 @@ export async function GET() {
     // 🔮 FUTURE: Add Convex queries when Clients domain has data
     // const { getToken } = await auth();
     // const token = await getToken({ template: 'convex' });
-    // const [people, teams, sessions, reports] = await Promise.all([
-    //   fetchQuery(api.domains.clients.api.getPeople, {}, { token }),
+    // const [contacts, teams, sessions, reports] = await Promise.all([
+    //   fetchQuery(api.domains.clients.api.getContacts, {}, { token }),
     //   fetchQuery(api.domains.clients.api.getTeams, {}, { token }),
     //   fetchQuery(api.domains.clients.api.getSessions, {}, { token }),
     //   fetchQuery(api.domains.clients.api.getReports, {}, { token }),
@@ -34,7 +34,7 @@ export async function GET() {
     console.log('🚀 WARP API: Clients data ready (plumbing)');
 
     return Response.json({
-      people: [],
+      contacts: [],
       teams: [],
       sessions: [],
       reports: []
