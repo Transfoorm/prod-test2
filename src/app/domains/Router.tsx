@@ -218,5 +218,6 @@ export default function Router() {
     }
   }
 
-  return view;
+  // Key by route to force React to unmount/remount when route changes
+  return <div key={route}>{view}</div>;
 }

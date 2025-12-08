@@ -138,11 +138,19 @@
   color: var(--error-700, #b91c1c);
 }
 
-/* Helper/error text */
+/* Helper/error text - positioned outside flow to prevent layout shift */
 .vr-field-live__helper {
+  position: absolute;
+  bottom: calc(-1 * var(--space-md));
+  left: 0;
   font-size: var(--font-size-xs);
   color: var(--text-tertiary);
   font-style: italic;
+}
+
+/* Field with helper needs bottom margin to create space for the absolute helper */
+.vr-field-live--has-helper {
+  margin-bottom: var(--space-md);
 }
 
 .vr-field-live__error {
@@ -574,13 +582,14 @@
 .vr-field-spacing {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-xl);
 }
 
 /* Simple row layout - not a VR, just CSS */
 .ft-field-row {
   display: flex;
   gap: var(--space-md);
+  align-items: flex-start;
 }
 
 .ft-field-row > * {

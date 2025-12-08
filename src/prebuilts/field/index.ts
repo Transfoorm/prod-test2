@@ -9,7 +9,6 @@
 │  - Field.verify = editable, triggers verification on change           │
 │  - Field.verifyEmail = email-specific verification flow               │
 │  - Field.verifyPassword = password change with verify pattern         │
-│  - Field.display = read-only value display                            │
 │  - Field.readonly = label + content + messages (not editable)         │
 │  - Field.emailActions = Make Primary / Remove pills                   │
 │                                                                        │
@@ -24,7 +23,6 @@ import FieldLive from './Live';
 import FieldVerify from './Verify';
 import FieldVerifyEmail from './VerifyEmail';
 import FieldVerifyPassword from './VerifyPassword';
-import FieldDisplay from './Display';
 import FieldReadonly from './Readonly';
 import FieldEmailActions from './EmailActions';
 
@@ -39,7 +37,6 @@ export const Field = {
   verify: FieldVerify,
   verifyEmail: FieldVerifyEmail,
   verifyPassword: FieldVerifyPassword,
-  display: FieldDisplay,
   readonly: FieldReadonly,
   emailActions: FieldEmailActions,
   // Layout VRs
@@ -53,7 +50,6 @@ export type { FieldLiveProps } from './Live';
 export type { FieldVerifyProps } from './Verify';
 export type { FieldVerifyEmailProps } from './VerifyEmail';
 export type { FieldVerifyPasswordProps } from './VerifyPassword';
-export type { FieldDisplayProps } from './Display';
 export type { FieldReadonlyProps } from './Readonly';
 export type { FieldGroupProps } from './Group';
 export type { FieldRowProps } from './Row';

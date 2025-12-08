@@ -41,7 +41,7 @@ export type DomainRoute =
   // Admin
   | 'admin/users'
   | 'admin/plans'
-  | 'admin/feature'
+  | 'admin/features'
   // Clients
   | 'clients/people'
   | 'clients/teams'
@@ -135,7 +135,7 @@ export interface NavigationActions {
 const KNOWN_ROUTES: DomainRoute[] = [
   'dashboard',
   'productivity/calendar', 'productivity/bookings', 'productivity/tasks', 'productivity/email', 'productivity/meetings',
-  'admin/users', 'admin/plans', 'admin/feature',
+  'admin/users', 'admin/plans', 'admin/features',
   'clients/people', 'clients/teams', 'clients/sessions', 'clients/pipeline', 'clients/reports',
   'finance/overview', 'finance/transactions', 'finance/invoices', 'finance/payments', 'finance/reports',
   'projects/charts', 'projects/locations', 'projects/tracking',

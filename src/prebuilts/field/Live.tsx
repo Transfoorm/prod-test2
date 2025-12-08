@@ -249,6 +249,7 @@ export default function FieldLive({
   const wrapperClasses = [
     'vr-field-live',
     state !== 'idle' && `vr-field-live--${state}`,
+    helper && 'vr-field-live--has-helper',
   ].filter(Boolean).join(' ');
 
   const chipClasses = [

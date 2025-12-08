@@ -37,7 +37,7 @@
   --page-sidebar-gap: var(--space-xl);    /* ✅ Gap between sidebar and content */
   --page-sidebar-sticky-top: var(--space-lg); /* ✅ Sticky sidebar top offset */
   --page-sidebar-sticky-offset: var(--space-2xl); /* ✅ Sticky sidebar bottom offset */
-  --page-dashboard-gap: var(--space-lg);  /* ✅ Gap between dashboard widgets */
+  --page-dashboard-gap: var(--space-2xl);  /* ✅ Gap between dashboard widgets */
   --page-dashboard-min-width: 300px;      /* ✅ Minimum widget width */
   --page-constrained-max-width: 1200px;   /* ✅ Max width for constrained pages */
 

@@ -38,10 +38,10 @@
   --ai-sidebar-avatar-margin-left-closed: 4px; /* Avatar left margin when closed */
 
   /* Page Header - Auto-generated titles */
-  --page-header-margin-top: 30px;        /* Gap above title/subtitle block */
+  --page-header-margin-top: 40px;        /* Gap above title/subtitle block */
   --page-header-margin-left: var(--page-content-padding-left);
   --page-subtitle-gap: 0;              /* Gap between title and subtitle */
-  --page-header-margin-bottom: 25px;     /* Gap below title/subtitle block */
+  --page-header-margin-bottom: 30px;     /* Gap below title/subtitle block */
   --page-title-size: 30px;               /* Page title font size */
   --page-subtitle-size: 14px;            /* Page subtitle font size */
 

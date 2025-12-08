@@ -19,7 +19,7 @@ export const admiralNav: NavSection[] = [
     children: [
       { path: '/admin/users', label: 'Users' },
       { path: '/admin/plans', label: 'Plans' },
-      { path: '/admin/feature', label: 'Features' }
+      { path: '/admin/features', label: 'Features' }
     ]
   },
   {

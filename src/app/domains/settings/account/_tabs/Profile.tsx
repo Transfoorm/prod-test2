@@ -21,9 +21,9 @@ export default function Profile() {
   const updateUserLocal = useFuse((s) => s.updateUserLocal);
 
   return (
-    <Field.group>
+    <div className="vr-field-spacing">
       {/* Row 1: First Name + Last Name */}
-      <Field.row>
+      <div className="ft-field-row">
         <Field.live
           label="First Name"
           value={user?.firstName ?? ''}
@@ -36,10 +36,10 @@ export default function Profile() {
           onSave={(v) => updateUserLocal({ lastName: v })}
           placeholder="Last name"
         />
-      </Field.row>
+      </div>
 
       {/* Row 2: Entity/Organisation + Social Name */}
-      <Field.row>
+      <div className="ft-field-row">
         <Field.live
           label="Entity/Organisation"
           value={user?.entityName ?? ''}
@@ -52,12 +52,12 @@ export default function Profile() {
           onSave={(v) => updateUserLocal({ socialName: v || undefined })}
           placeholder="Your 'handle'"
           transform="username"
-          helper="Letters, numbers, and one dot only"
+          helper="* Letters, numbers, and one dot only"
         />
-      </Field.row>
+      </div>
 
       {/* Row 3: Phone Number + Business Location */}
-      <Field.row>
+      <div className="ft-field-row">
         <Field.live
           label="Phone Number (Optional)"
           value={user?.phoneNumber ?? ''}
@@ -69,7 +69,7 @@ export default function Profile() {
           label="Business Location"
           onSave={(country) => updateUserLocal({ businessCountry: country })}
         />
-      </Field.row>
-    </Field.group>
+      </div>
+    </div>
   );
 }
