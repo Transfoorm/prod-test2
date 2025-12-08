@@ -49,6 +49,15 @@ export function ClientHydrator() {
       return;
     }
 
+    // 🔱 FRESH LOGIN DETECTION: Clear sidebar state if user changed
+    // This prevents sidebar state from leaking between different users on same browser
+    const lastUserId = localStorage.getItem('fuse-last-user-id');
+    if (decoded.clerkId && lastUserId !== decoded.clerkId) {
+      console.log('🔱 FUSE Hydrator: User changed, clearing sidebar state');
+      localStorage.removeItem('fuse-sidebar-sections');
+      localStorage.setItem('fuse-last-user-id', decoded.clerkId);
+    }
+
     console.log('🔍 FUSE Hydrator: Cookie decoded, rank=', decoded.rank, 'phoneNumber=', decoded.phoneNumber);
 
     // Populate store BEFORE paint - still instant to user
