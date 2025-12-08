@@ -4,8 +4,13 @@
  │  🚀 SETUP MODAL - New User Onboarding                                    │
  │  /src/features/UserSetup/SetupModal/index.tsx                            │
  │                                                                            │
- │  VR-Sovereign: Owns ALL visibility and animation state internally.        │
- │  Dashboard just renders <SetupModal onComplete={...} /> - zero ceremony.  │
+ │  VR-Sovereign: Owns ALL visibility, animation, AND server actions.        │
+ │  Dashboard just renders <SetupModal /> - pure declarative, zero ceremony. │
+ │                                                                            │
+ │  Owns:                                                                     │
+ │  - handleSetupComplete (server action + FUSE update)                       │
+ │  - handleSkip (Phoenix animation + skip state)                             │
+ │  - All form validation and submission                                      │
  │                                                                            │
  │  Reads from FUSE:                                                          │
  │  - user.rank, user.setupStatus (visibility condition)                      │
@@ -24,6 +29,7 @@ import { Sparkles } from 'lucide-react';
 import { Button } from '@/prebuilts/button';
 import VerifyModal from '@/features/UserSetup/VerifyModal';
 import { skipFlow, reverseFlow } from '@/features/UserSetup/FlyingButton/config';
+import { completeSetupAction } from '@/app/actions/user-mutations';
 
 interface SetupData {
   firstName: string;
@@ -44,11 +50,7 @@ interface SetupErrors {
   general?: string;
 }
 
-interface SetupModalProps {
-  onComplete: (data: SetupData) => void;
-}
-
-export default function SetupModal({ onComplete }: SetupModalProps) {
+export default function SetupModal() {
   // ─────────────────────────────────────────────────────────────────────
   // FUSE State
   // ─────────────────────────────────────────────────────────────────────
@@ -306,7 +308,7 @@ export default function SetupModal({ onComplete }: SetupModalProps) {
       const primaryEmail = clerkUser.primaryEmailAddress;
 
       if (primaryEmail?.verification?.status === 'verified') {
-        await onComplete(trimmedData);
+        await handleSetupComplete(trimmedData);
         setIsSubmitting(false);
       } else if (primaryEmail) {
         try {
@@ -346,7 +348,7 @@ export default function SetupModal({ onComplete }: SetupModalProps) {
     };
 
     try {
-      await onComplete(trimmedData);
+      await handleSetupComplete(trimmedData);
     } catch {
       // Silent fail - user already sees success
     }
@@ -355,6 +357,59 @@ export default function SetupModal({ onComplete }: SetupModalProps) {
   const handleVerificationCancelled = () => {
     setShowEmailVerification(false);
     setIsSubmitting(false);
+  };
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Setup Complete Handler (server action + FUSE update)
+  // ─────────────────────────────────────────────────────────────────────
+  const handleSetupComplete = async (data: SetupData) => {
+    try {
+      // Update FUSE store optimistically
+      updateUser({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        entityName: data.entityName,
+        socialName: data.socialName,
+        businessCountry: data.businessCountry,
+        setupStatus: 'complete',
+        emailVerified: true,
+      });
+
+      // Call server action to persist to database and update session cookie
+      const result = await completeSetupAction({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        entityName: data.entityName,
+        socialName: data.socialName,
+        orgSlug: data.orgSlug,
+        businessCountry: data.businessCountry,
+        emailVerified: true,
+      });
+
+      if (!result.success) {
+        throw new Error(result.error || 'Setup failed');
+      }
+
+      // Update store with fresh data from server (DB → Cookie → Store → UI)
+      if (result.user) {
+        updateUser({
+          emailVerified: result.user.emailVerified,
+          setupStatus: result.user.setupStatus as 'pending' | 'complete',
+          firstName: result.user.firstName || undefined,
+          lastName: result.user.lastName || undefined,
+          entityName: result.user.entityName || undefined,
+          socialName: result.user.socialName || undefined,
+          businessCountry: result.user.businessCountry || undefined,
+        });
+      }
+
+      console.log('✅ Setup completed successfully');
+    } catch (error) {
+      console.error('Setup failed:', error);
+      // Revert optimistic update
+      updateUser({ setupStatus: 'pending' });
+      throw error; // Re-throw to let modal handle error display
+    }
   };
 
   // ─────────────────────────────────────────────────────────────────────
