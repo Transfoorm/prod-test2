@@ -24,6 +24,33 @@ const SAVE_DELAY_MS = 500;
 
 type LiveState = 'idle' | 'focused' | 'dirty' | 'saved' | 'error';
 
+// ─────────────────────────────────────────────────────────────────────
+// Built-in Transforms (VR-owned, not tab-level)
+// ─────────────────────────────────────────────────────────────────────
+
+/** Username: letters, numbers, and ONE dot (space converts to dot) */
+const usernameTransform = (value: string, currentValue: string): string => {
+  const currentHasDot = currentValue.includes('.');
+  if (!currentHasDot && value.includes(' ')) {
+    value = value.replace(' ', '.');
+  }
+  value = value.replace(/[^a-zA-Z0-9.]/g, '');
+  const dotIndex = value.indexOf('.');
+  if (dotIndex !== -1) {
+    const beforeDot = value.substring(0, dotIndex + 1);
+    const afterDot = value.substring(dotIndex + 1).replace(/\./g, '');
+    value = beforeDot + afterDot;
+  }
+  return value;
+};
+
+/** Built-in transforms accessible by name */
+export const TRANSFORMS = {
+  username: usernameTransform,
+} as const;
+
+export type TransformName = keyof typeof TRANSFORMS;
+
 export interface FieldLiveProps {
   /** Field label */
   label: string;
@@ -39,8 +66,8 @@ export interface FieldLiveProps {
   required?: boolean;
   /** Helper text */
   helper?: string;
-  /** Transform input as user types (e.g., filter characters) */
-  transform?: (value: string, currentValue: string) => string;
+  /** Transform input as user types - function OR built-in name ('username') */
+  transform?: TransformName | ((value: string, currentValue: string) => string);
 }
 
 const CHIP_TEXT: Record<LiveState, string | null> = {
@@ -146,9 +173,10 @@ export default function FieldLive({
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     let newValue = e.target.value;
 
-    // Apply transform if provided (e.g., username character filtering)
+    // Apply transform if provided (name or function)
     if (transform) {
-      newValue = transform(newValue, localValue);
+      const transformFn = typeof transform === 'string' ? TRANSFORMS[transform] : transform;
+      newValue = transformFn(newValue, localValue);
     }
 
     setLocalValue(newValue);

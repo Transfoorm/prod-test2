@@ -15,8 +15,8 @@ import { Field } from '@/prebuilts';
 
 export default function Email() {
   return (
-    <div className="vr-field-spacing">
-      <div className="ft-field-row">
+    <Field.group>
+      <Field.row>
         {/* Primary Email */}
         <Field.verifyEmail
           label="Primary Email"
@@ -25,15 +25,15 @@ export default function Email() {
         />
 
         {/* Secondary Email + Actions */}
-        <div className="ft-field-with-action">
+        <Field.withAction>
           <Field.verifyEmail
             label="Secondary Email (Optional)"
             field="secondaryEmail"
             placeholder="Add a backup email"
           />
           <Field.emailActions />
-        </div>
-      </div>
-    </div>
+        </Field.withAction>
+      </Field.row>
+    </Field.group>
   );
 }

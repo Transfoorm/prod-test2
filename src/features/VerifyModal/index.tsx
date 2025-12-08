@@ -297,7 +297,7 @@ export default function VerifyModal({
         </div>
 
         <h1 className="ft-verify-heading">
-          {mode === 'secondary' ? 'Secondary Email Added!' : mode === 'change' ? 'Email Updated!' : 'Email Verified!'}
+          {mode === 'secondary' ? 'Email Confirmed!' : mode === 'change' ? 'Email Updated!' : 'Email Verified!'}
         </h1>
         <p className="ft-verify-description">
           {mode === 'secondary'

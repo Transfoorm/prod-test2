@@ -220,6 +220,16 @@
   color: var(--text-tertiary);
 }
 
+/* Masked display (password idle state) */
+.vr-field-verify__input--masked {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  letter-spacing: 2px;
+  font-size: var(--font-size-lg);
+}
+
 /* Idle - quiet, display-like */
 .vr-field-verify--idle .vr-field-verify__input {
   border-color: var(--border-light);
@@ -265,12 +275,6 @@
   border-color: var(--error-500);
   box-shadow: 0 0 0 3px var(--error-100);
   background-color: var(--warning-50);
-}
-
-/* Idle hover - must come after state rules for specificity */
-.vr-field-verify--idle .vr-field-verify__input:hover {
-  border-color: var(--brand-primary);
-  cursor: text;
 }
 
 /* ─────────────────────────────────────────────────────────────────────
@@ -383,6 +387,77 @@
 .vr-field-verify__pill--error {
   background-color: var(--error-500);
   color: #fff;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   EYE TOGGLE - Show/hide password toggle
+   ───────────────────────────────────────────────────────────────────── */
+
+.vr-field-verify__eye-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 150ms ease;
+  z-index: 1;
+}
+
+.vr-field-verify__eye-toggle:hover {
+  color: var(--text-primary);
+}
+
+.vr-field-verify__eye-toggle:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Empty placeholder for Retype field idle state */
+.vr-field-verify__input--empty {
+  display: flex;
+  align-items: center;
+  color: var(--text-tertiary);
+  font-style: italic;
+  border-color: var(--border-light);
+}
+
+/* Disabled state - alive, shows pointer cursor, but blocks actual editing */
+.vr-field-verify--disabled .vr-field-verify__input,
+.vr-field-verify--disabled .vr-field-verify__pill {
+  cursor: pointer;
+}
+
+/* Dormant state - dead on fresh page (opaque until sibling awakens it) */
+.vr-field-verify--dormant {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Clickable idle state - cursor pointer to signal interactivity */
+.vr-field-verify--idle:not(.vr-field-verify--disabled, .vr-field-verify--dormant) .vr-field-verify__input--empty {
+  cursor: pointer;
+}
+
+/* Idle hover - must come after disabled/dormant for specificity
+   Exclude empty inputs (they use --ready class for hover) */
+.vr-field-verify--idle .vr-field-verify__input:not(.vr-field-verify__input--empty):hover {
+  border-color: var(--brand-primary);
+  cursor: text;
+}
+
+/* Ready state - hover shows orange border when sibling passed validation */
+.vr-field-verify--ready .vr-field-verify__input--empty:hover {
+  border-color: var(--brand-primary);
 }
 
 /* ─────────────────────────────────────────────────────────────────────
@@ -552,7 +627,7 @@ button.ft-profile-country {
 
 .ft-field-action-pill {
   padding: 6px 12px;
-  min-width: 100px;
+  min-width: 110px;
   height: 28px;
   font-size: var(--font-size-xs);
   font-weight: 500;
@@ -568,12 +643,12 @@ button.ft-profile-country {
   box-sizing: border-box;
 }
 
-.ft-field-action-pill:hover {
+.ft-field-action-pill:hover:not(.ft-field-action-pill--active, .ft-field-action-pill--confirm) {
   background-color: #e5e7eb;
   color: var(--text-primary);
 }
 
-.ft-field-action-pill:disabled:not(.ft-field-action-pill--confirm) {
+.ft-field-action-pill:disabled:not(.ft-field-action-pill--confirm, .ft-field-action-pill--active) {
   opacity: 0.5;
   cursor: default;
   pointer-events: none;
@@ -597,10 +672,10 @@ button.ft-profile-country {
   75% { transform: translateX(3px); }
 }
 
-/* Active operation (swapping/removing) - orange with typing animation */
+/* Active operation (swapping/removing) - yellow with typing animation */
 .ft-field-action-pill--active {
-  background-color: var(--brand-primary);
-  color: #fff;
+  background-color: var(--editing-bg);
+  color: var(--editing-text);
 }
 
 .ft-field-action-pill__typing {
@@ -609,3 +684,4 @@ button.ft-profile-country {
   white-space: nowrap;
   animation: typing-cycle 6s ease-in-out infinite;
 }
+

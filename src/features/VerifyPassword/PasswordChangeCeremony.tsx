@@ -232,13 +232,20 @@ export default function PasswordChangeCeremony({ onChangePassword }: PasswordCha
   // Check if passwords match (for green state on box 2)
   const passwordsMatch = confirmPassword.length > 0 && password === confirmPassword;
 
+  // Box 2 should show input if it has content OR if we're in confirming/committing stage
+  const box2HasContent = confirmPassword.length > 0;
+
+  // Mismatch = box 2 has content but doesn't match box 1 (show orange focus)
+  const isMismatch = box2HasContent && !passwordsMatch;
+
   const box2State = {
     isDormant: stage === 'fresh',
     isDisabled: stage === 'typing' || (stage === 'valid' && !passwordMeetsRequirements),
-    isReady: stage === 'valid' && passwordMeetsRequirements,
-    isEditing: stage === 'confirming' || stage === 'committing',
+    isReady: stage === 'valid' && passwordMeetsRequirements && !box2HasContent,
+    isEditing: stage === 'confirming' || stage === 'committing' || box2HasContent,
     isSuccess: stage === 'success',
-    isValid: passwordsMatch && stage === 'confirming',
+    isValid: passwordsMatch,
+    isMismatch: isMismatch,
   };
 
   // ─────────────────────────────────────────────────────────────────────
@@ -316,10 +323,11 @@ export default function PasswordChangeCeremony({ onChangePassword }: PasswordCha
         className={[
           'ft-password-ceremony__box',
           box2State.isDormant && 'ft-password-ceremony__box--dormant',
-          box2State.isDisabled && 'ft-password-ceremony__box--disabled',
+          box2State.isDisabled && !box2State.isMismatch && 'ft-password-ceremony__box--disabled',
           box2State.isReady && 'ft-password-ceremony__box--ready',
           box2State.isSuccess && 'ft-password-ceremony__box--success',
           box2State.isValid && 'ft-password-ceremony__box--valid',
+          box2State.isMismatch && 'ft-password-ceremony__box--mismatch',
           confirmError && 'ft-password-ceremony__box--error',
         ].filter(Boolean).join(' ')}
         onMouseDown={!box2State.isEditing ? handleBox2Click : undefined}
@@ -334,11 +342,11 @@ export default function PasswordChangeCeremony({ onChangePassword }: PasswordCha
               value={confirmPassword}
               onChange={handleBox2Change}
               onBlur={handleBox2Blur}
-              placeholder="Confirm your new password"
+              placeholder="Retype new password"
             />
           ) : (
             <div className="ft-password-ceremony__input ft-password-ceremony__input--empty">
-              {box2State.isDormant ? '' : 'Retype Password'}
+              {box2State.isDormant ? '' : 'Retype new password'}
             </div>
           )}
           {/* Only show pill when passwords match, committing, success, or error */}
@@ -349,10 +357,10 @@ export default function PasswordChangeCeremony({ onChangePassword }: PasswordCha
                 'ft-password-ceremony__pill',
                 box2State.isSuccess && 'ft-password-ceremony__pill--success',
                 stage === 'committing' && 'ft-password-ceremony__pill--committing',
-                passwordsMatch && stage === 'confirming' && 'ft-password-ceremony__pill--active',
+                passwordsMatch && !box2State.isSuccess && stage !== 'committing' && 'ft-password-ceremony__pill--active',
                 confirmError && 'ft-password-ceremony__pill--error',
               ].filter(Boolean).join(' ')}
-              onClick={stage === 'confirming' && passwordsMatch ? handleCommit : undefined}
+              onClick={passwordsMatch ? handleCommit : undefined}
               disabled={stage === 'committing' || stage === 'success'}
             >
               {stage === 'success' ? 'Changed ✓' :

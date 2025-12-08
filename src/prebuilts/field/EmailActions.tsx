@@ -173,7 +173,7 @@ export default function EmailActions() {
       >
         {swapState === 'executing' ? (
           <span className="ft-field-action-pill__typing">Swapping...</span>
-        ) : swapState === 'confirming' ? 'Confirm' : 'Make Primary'}
+        ) : swapState === 'confirming' ? 'Confirm →' : 'Make Primary'}
       </button>
       <button
         type="button"
@@ -184,7 +184,7 @@ export default function EmailActions() {
       >
         {removeState === 'executing' ? (
           <span className="ft-field-action-pill__typing">Removing...</span>
-        ) : removeState === 'confirming' ? 'Confirm' : 'Remove'}
+        ) : removeState === 'confirming' ? 'Confirm →' : 'Remove'}
       </button>
     </div>
   );
