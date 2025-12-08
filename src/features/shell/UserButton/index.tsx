@@ -279,7 +279,11 @@ export default function UserButton() {
     await signOutAction();
 
     // Clear sidebar state so fresh login starts with collapsed sections
+    // Clear BOTH keys (legacy cleanup - there were two different keys used)
     localStorage.removeItem('fuse-sidebar-sections');
+    localStorage.removeItem('sidebar-expanded-sections');
+    // Clear user ID so next login triggers fresh sidebar state
+    localStorage.removeItem('fuse-last-user-id');
 
     // Client-side redirect (server can't delete httpOnly cookies properly)
     window.location.href = '/sign-in';

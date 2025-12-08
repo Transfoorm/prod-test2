@@ -54,7 +54,9 @@ export function ClientHydrator() {
     const lastUserId = localStorage.getItem('fuse-last-user-id');
     if (decoded.clerkId && lastUserId !== decoded.clerkId) {
       console.log('🔱 FUSE Hydrator: User changed, clearing sidebar state');
+      // Clear BOTH keys (legacy cleanup - there were two different keys used)
       localStorage.removeItem('fuse-sidebar-sections');
+      localStorage.removeItem('sidebar-expanded-sections');
       localStorage.setItem('fuse-last-user-id', decoded.clerkId);
     }
 
