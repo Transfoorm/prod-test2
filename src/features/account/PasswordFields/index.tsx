@@ -1,9 +1,9 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔱 PASSWORD CHANGE CEREMONY                                           │
-│  /src/features/VerifyPassword/PasswordChangeCeremony.tsx               │
+│  🔱 PASSWORD FIELDS - Account Security Feature                         │
+│  /src/features/account/PasswordFields/index.tsx                        │
 │                                                                        │
-│  Sovereign VR Feature for identity-grade password changes.             │
-│  Owns the entire two-box ceremony - no VR internal conflicts.          │
+│  Sovereign Feature for identity-grade password changes.                │
+│  Owns the entire two-box ceremony + server action wiring.              │
 │                                                                        │
 │  STAGES:                                                               │
 │  - fresh: Box 1 idle (dots), Box 2 dormant (opaque, dead)              │
@@ -20,16 +20,12 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Icon } from '@/prebuilts/icon/iconRegistry';
-import './password-ceremony.css';
+import { changePassword } from '@/app/actions/password-actions';
+import './password-fields.css';
 
 type CeremonyStage = 'fresh' | 'typing' | 'valid' | 'confirming' | 'committing' | 'success';
 
-interface PasswordChangeCeremonyProps {
-  /** Server action to change password */
-  onChangePassword: (password: string) => Promise<{ error?: string }>;
-}
-
-export default function PasswordChangeCeremony({ onChangePassword }: PasswordChangeCeremonyProps) {
+export function PasswordFields() {
   // ─────────────────────────────────────────────────────────────────────
   // State
   // ─────────────────────────────────────────────────────────────────────
@@ -192,7 +188,7 @@ export default function PasswordChangeCeremony({ onChangePassword }: PasswordCha
     setConfirmError(null);
 
     try {
-      const result = await onChangePassword(password);
+      const result = await changePassword(password);
 
       if (result.error) {
         setConfirmError(result.error);
@@ -209,7 +205,7 @@ export default function PasswordChangeCeremony({ onChangePassword }: PasswordCha
       setConfirmError(err instanceof Error ? err.message : 'Failed to change password');
       setStage('confirming');
     }
-  }, [password, confirmPassword, passwordMeetsRequirements, onChangePassword, resetToFresh]);
+  }, [password, confirmPassword, passwordMeetsRequirements, resetToFresh]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && stage === 'confirming' && confirmPassword) {

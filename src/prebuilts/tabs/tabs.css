@@ -161,6 +161,18 @@
   cursor: not-allowed;
 }
 
+.vr-tabs-panels .vr-tabs-panels-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.vr-tabs-panels .vr-tabs-panels-icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
 .vr-tabs-panels .vr-tabs-panels-tab-count {
   display: inline-flex;
   align-items: center;

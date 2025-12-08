@@ -2,9 +2,8 @@
 │  🤖 VARIANT ROBOT - Field.verify                                       │
 │  /src/prebuilts/field/Verify.tsx                                       │
 │                                                                        │
-│  SELF-SUFFICIENT VR - Two modes:                                       │
-│  1. field prop: Reads/writes FUSE automatically                        │
-│  2. value/onCommit props: Callback mode for custom flows               │
+│  DUMB VR - Pure visual shell, NO FUSE.                                │
+│  Receives value, fires onCommit callback. That's it.                  │
 │                                                                        │
 │  The Reveal Pattern:                                                   │
 │  - idle: Display mode (no border, quiet)                              │
@@ -20,37 +19,16 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { useFuse } from '@/store/fuse';
-import type { FuseUser } from '@/store/types';
 
 type VerifyState = 'idle' | 'focused' | 'dirty' | 'committing' | 'success' | 'error';
 
-// Fields that can be used with Field.verify
-type VerifyableField = keyof NonNullable<FuseUser>;
-
-// Props for self-sufficient mode (FUSE wired in)
-interface FieldVerifyPropsWithField {
-  /** FUSE field key - VR reads/writes this field automatically */
-  field: VerifyableField;
-  /** Field label */
-  label: string;
-  value?: never;
-  onCommit?: never;
-}
-
-// Props for callback mode (custom flows like VerifyEmail)
-interface FieldVerifyPropsWithCallback {
+export interface FieldVerifyProps {
   /** Current value */
   value: string;
   /** Called when user clicks the commit pill */
   onCommit: (newValue: string) => Promise<void>;
   /** Field label */
   label: string;
-  field?: never;
-}
-
-// Shared optional props
-interface FieldVerifyCommonProps {
   /** Input type */
   type?: 'text' | 'email' | 'tel';
   /** Placeholder when empty */
@@ -63,30 +41,16 @@ interface FieldVerifyCommonProps {
   helperOnFocus?: boolean;
 }
 
-export type FieldVerifyProps = (FieldVerifyPropsWithField | FieldVerifyPropsWithCallback) & FieldVerifyCommonProps;
-
-export default function FieldVerify(props: FieldVerifyProps) {
-  const {
-    label,
-    type = 'text',
-    placeholder = '',
-    required = false,
-    helper,
-    helperOnFocus = false,
-  } = props;
-
-  // ─────────────────────────────────────────────────────────────────────
-  // FUSE - Only used in self-sufficient mode
-  // ─────────────────────────────────────────────────────────────────────
-  const user = useFuse((s) => s.user);
-  const updateUserLocal = useFuse((s) => s.updateUserLocal);
-
-  // Determine mode and get value
-  const isSelfSufficient = 'field' in props && props.field !== undefined;
-  const value = isSelfSufficient
-    ? String(user?.[props.field] ?? '')
-    : (props.value ?? '');
-
+export default function FieldVerify({
+  value,
+  onCommit,
+  label,
+  type = 'text',
+  placeholder = '',
+  required = false,
+  helper,
+  helperOnFocus = false,
+}: FieldVerifyProps) {
   const [state, setState] = useState<VerifyState>('idle');
   const [localValue, setLocalValue] = useState(value);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -95,7 +59,7 @@ export default function FieldVerify(props: FieldVerifyProps) {
   const isCommitting = useRef(false);
   const isHoveringPill = useRef(false);
 
-  // Sync local value when external value changes (FUSE update)
+  // Sync local value when external value changes
   useEffect(() => {
     if (state === 'idle' || state === 'success') {
       setLocalValue(value);
@@ -167,13 +131,8 @@ export default function FieldVerify(props: FieldVerifyProps) {
     setState('committing');
 
     try {
-      if (isSelfSufficient && 'field' in props) {
-        // SELF-SUFFICIENT: Write directly to FUSE
-        await updateUserLocal({ [props.field]: localValue || undefined });
-      } else if ('onCommit' in props && props.onCommit) {
-        // CALLBACK MODE: Let parent handle it
-        await props.onCommit(localValue);
-      }
+      // CALLBACK MODE: Let parent handle it
+      await onCommit(localValue);
 
       setState('success');
       originalValue.current = localValue;
@@ -189,7 +148,7 @@ export default function FieldVerify(props: FieldVerifyProps) {
       isCommitting.current = false;
       // Stay focused so user can retry or blur to revert
     }
-  }, [localValue, type, state, props, isSelfSufficient, updateUserLocal]);
+  }, [localValue, type, state, onCommit]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {

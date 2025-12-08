@@ -28,6 +28,7 @@ import { useState, useEffect, ReactNode } from 'react';
 export interface PanelTabItem {
   id: string;
   label: string;
+  icon?: ReactNode;
   count?: number;
   content?: ReactNode;
   disabled?: boolean;
@@ -120,6 +121,7 @@ export default function PanelTabs({
               type="button"
               disabled={tab.disabled}
             >
+              {tab.icon && <span className="vr-tabs-panels-icon">{tab.icon}</span>}
               {tab.label}
               {tab.count !== undefined && (
                 <span className="vr-tabs-panels-tab-count">{tab.count.toLocaleString()}</span>

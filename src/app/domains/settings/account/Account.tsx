@@ -15,7 +15,7 @@
 import { useSetPageHeader } from '@/hooks/useSetPageHeader';
 import { usePageTiming } from '@/fuse/hooks/usePageTiming';
 import { useFuse } from '@/store/fuse';
-import { Tabs, Stack } from '@/prebuilts';
+import { Tabs, Stack, Icon } from '@/prebuilts';
 import Profile from './_tabs/Profile';
 import Email from './_tabs/Email';
 import Security from './_tabs/Security';
@@ -66,10 +66,10 @@ export default function Account() {
       >
         <Tabs.panels
           tabs={[
-            { id: 'profile', label: 'Profile', content: <Profile /> },
-            { id: 'email', label: 'Email', content: <Email /> },
-            { id: 'security', label: 'Security', content: <Security /> },
-            { id: 'genome', label: 'Professional Genome', content: <Genome /> },
+            { id: 'profile', label: 'Profile', icon: <Icon variant="user" />, content: <Profile /> },
+            { id: 'email', label: 'Email', icon: <Icon variant="send" />, content: <Email /> },
+            { id: 'security', label: 'Security', icon: <Icon variant="lock" />, content: <Security /> },
+            { id: 'genome', label: 'Genome', icon: <Icon variant="dna" />, content: <Genome /> },
           ]}
         />
       </div>

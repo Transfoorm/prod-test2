@@ -1,39 +1,19 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔱 EMAIL TAB - Account Email Management                              │
+│  🔱 EMAIL TAB - Pure Declaration                                      │
 │  /src/app/domains/settings/account/_tabs/Email.tsx                    │
-│                                                                        │
-│  PURE DECLARATIVE SHELL - All logic encapsulated in VRs:             │
-│  - Field.verifyEmail: Email field with modal choreography            │
-│  - Field.emailActions: Make Primary / Remove pills                   │
-│                                                                        │
+│                                                                       │
+│  VR Doctrine: Tab Layer                                               │
+│  - One line import                                                    │
+│  - ZERO FUSE                                                          │
+│  - ZERO callbacks                                                     │
+│  - ZERO state                                                         │
+│  - Pure declaration                                                   │
+│                                                                       │
 │  SOVEREIGNTY: No Clerk imports in domains - Golden Bridge enforced    │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-'use client';
-
-import { Field } from '@/prebuilts';
+import { EmailFields } from '@/features/account/EmailFields';
 
 export default function Email() {
-  return (
-    <div className="vr-field-spacing">
-      <div className="ft-field-row">
-        {/* Primary Email */}
-        <Field.verifyEmail
-          label="Primary Email"
-          field="email"
-          helper="* Any email updates will require verification"
-        />
-
-        {/* Secondary Email + Actions */}
-        <Field.withAction>
-          <Field.verifyEmail
-            label="Secondary Email (Optional)"
-            field="secondaryEmail"
-            placeholder="Add a backup email"
-          />
-          <Field.emailActions />
-        </Field.withAction>
-      </div>
-    </div>
-  );
+  return <EmailFields />;
 }

@@ -1,17 +1,19 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔱 SECURITY TAB - Account Security Settings                         │
+│  🔱 SECURITY TAB - Pure Declaration                                   │
 │  /src/app/domains/settings/account/_tabs/Security.tsx                │
-│                                                                        │
-│  Uses PasswordChangeCeremony for identity-grade password changes.    │
-│                                                                        │
+│                                                                       │
+│  VR Doctrine: Tab Layer                                               │
+│  - One line import                                                    │
+│  - ZERO FUSE                                                          │
+│  - ZERO callbacks                                                     │
+│  - ZERO state                                                         │
+│  - Pure declaration                                                   │
+│                                                                       │
 │  SOVEREIGNTY: No Clerk imports in domains - Golden Bridge enforced    │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-'use client';
-
-import PasswordChangeCeremony from '@/features/VerifyPassword/PasswordChangeCeremony';
-import { changePassword } from '@/app/actions/password-actions';
+import { PasswordFields } from '@/features/account/PasswordFields';
 
 export default function Security() {
-  return <PasswordChangeCeremony onChangePassword={changePassword} />;
+  return <PasswordFields />;
 }

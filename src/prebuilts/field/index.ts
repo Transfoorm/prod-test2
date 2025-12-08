@@ -1,32 +1,31 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🤖 FIELD VR - Complete Field Units                                   │
+│  🤖 FIELD VR - Dumb Visual Shells                                     │
 │  /src/prebuilts/field/index.ts                                        │
-│                                                                        │
+│                                                                       │
 │  Usage: import { Field } from '@/prebuilts';                          │
-│                                                                        │
+│                                                                       │
+│  VR DOCTRINE: These are DUMB SHELLS. No FUSE, no business logic.      │
+│  They receive value, fire callbacks. That's it.                       │
+│                                                                       │
 │  CONTENT VRs (behavioral units):                                      │
 │  - Field.live = auto-save with all states handled                     │
 │  - Field.verify = editable, triggers verification on change           │
-│  - Field.verifyEmail = email-specific verification flow               │
 │  - Field.verifyPassword = password change with verify pattern         │
 │  - Field.readonly = label + content + messages (not editable)         │
-│  - Field.emailActions = Make Primary / Remove pills                   │
-│                                                                        │
+│                                                                       │
 │  LAYOUT VRs (VR LAYOUT LAW - Fields own their layout):                │
 │  - Field.group = vertical spacing between rows                        │
 │  - Field.row = horizontal arrangement of fields                       │
 │  - Field.withAction = field + action button pairing                   │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-// Content VRs
+// Content VRs - DUMB SHELLS
 import FieldLive from './Live';
 import FieldVerify from './Verify';
-import FieldVerifyEmail from './VerifyEmail';
 import FieldVerifyPassword from './VerifyPassword';
 import FieldReadonly from './Readonly';
-import FieldEmailActions from './EmailActions';
 
-// Layout VRs
+// Layout VRs - Divs with lipstick
 import FieldGroup from './Group';
 import FieldRow from './Row';
 import FieldWithAction from './WithAction';
@@ -35,10 +34,8 @@ export const Field = {
   // Content VRs
   live: FieldLive,
   verify: FieldVerify,
-  verifyEmail: FieldVerifyEmail,
   verifyPassword: FieldVerifyPassword,
   readonly: FieldReadonly,
-  emailActions: FieldEmailActions,
   // Layout VRs
   group: FieldGroup,
   row: FieldRow,
@@ -48,7 +45,6 @@ export const Field = {
 // Type exports for consumers
 export type { FieldLiveProps } from './Live';
 export type { FieldVerifyProps } from './Verify';
-export type { FieldVerifyEmailProps } from './VerifyEmail';
 export type { FieldVerifyPasswordProps } from './VerifyPassword';
 export type { FieldReadonlyProps } from './Readonly';
 export type { FieldGroupProps } from './Group';
