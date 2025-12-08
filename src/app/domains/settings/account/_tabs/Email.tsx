@@ -15,8 +15,8 @@ import { Field } from '@/prebuilts';
 
 export default function Email() {
   return (
-    <Field.group>
-      <Field.row>
+    <div className="vr-field-spacing">
+      <div className="ft-field-row">
         {/* Primary Email */}
         <Field.verifyEmail
           label="Primary Email"
@@ -33,7 +33,7 @@ export default function Email() {
           />
           <Field.emailActions />
         </Field.withAction>
-      </Field.row>
-    </Field.group>
+      </div>
+    </div>
   );
 }

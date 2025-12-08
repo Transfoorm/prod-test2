@@ -249,7 +249,7 @@ export default function FieldLive({
   const wrapperClasses = [
     'vr-field-live',
     state !== 'idle' && `vr-field-live--${state}`,
-    helper && 'vr-field-live--has-helper',
+    helper && 'vr-field--has-helper',
   ].filter(Boolean).join(' ');
 
   const chipClasses = [
@@ -261,9 +261,9 @@ export default function FieldLive({
 
   return (
     <div className={wrapperClasses}>
-      <label className="vr-field-live__label">
+      <label className="vr-field__label">
         {label}
-        {required && <span className="vr-field-live__required">*</span>}
+        {required && <span className="vr-field__required">*</span>}
       </label>
       <div className="vr-field-live__input-wrapper">
         <input
@@ -280,10 +280,10 @@ export default function FieldLive({
         <div className={chipClasses}>{chipText}</div>
       </div>
       {helper && state !== 'error' && (
-        <div className="vr-field-live__helper">{helper}</div>
+        <div className="vr-field__helper">{helper}</div>
       )}
       {errorMessage && state === 'error' && (
-        <div className="vr-field-live__error">{errorMessage}</div>
+        <div className="vr-field__error">{errorMessage}</div>
       )}
     </div>
   );

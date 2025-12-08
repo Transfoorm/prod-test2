@@ -3,13 +3,52 @@
    /src/prebuilts/field/field.css
 
    ALL field-related styles in ONE file:
+   - Shared base classes (.vr-field__*)
    - Field.live (auto-save with states)
-   - Field.display (read-only)
-   - Field.row (horizontal layout)
-   - Field.wrapper (label + messages)
+   - Field.verify (identity-grade with reveal)
+   - Field.readonly (non-editable)
+   - Layout utilities
 
    TTT Gap Model: NO external margins - container controls spacing
    ═══════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   SHARED FIELD BASE - Used by all field types
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Label - shared across all field types */
+.vr-field__label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+/* Required asterisk */
+.vr-field__required {
+  color: var(--error-600);
+  margin-left: 2px;
+}
+
+/* Helper text - positioned outside flow */
+.vr-field__helper {
+  position: absolute;
+  bottom: calc(-1 * var(--space-md));
+  left: 0;
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+/* Error message */
+.vr-field__error {
+  font-size: var(--font-size-xs);
+  color: var(--error-600);
+}
+
+/* Field with helper needs bottom margin */
+.vr-field--has-helper {
+  margin-bottom: var(--space-md);
+}
 
 /* ═══════════════════════════════════════════════════════════════════
    FIELD.LIVE - Complete auto-save field
@@ -21,17 +60,6 @@
   flex-direction: column;
   gap: var(--space-xs);
   position: relative;
-}
-
-.vr-field-live__label {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--text-primary);
-}
-
-.vr-field-live__required {
-  color: var(--error-600);
-  margin-left: 2px;
 }
 
 .vr-field-live__input {
@@ -138,25 +166,7 @@
   color: var(--error-700, #b91c1c);
 }
 
-/* Helper/error text - positioned outside flow to prevent layout shift */
-.vr-field-live__helper {
-  position: absolute;
-  bottom: calc(-1 * var(--space-md));
-  left: 0;
-  font-size: var(--font-size-xs);
-  color: var(--text-tertiary);
-  font-style: italic;
-}
-
-/* Field with helper needs bottom margin to create space for the absolute helper */
-.vr-field-live--has-helper {
-  margin-bottom: var(--space-md);
-}
-
-.vr-field-live__error {
-  font-size: var(--font-size-xs);
-  color: var(--error-600);
-}
+/* NOTE: Helper, error, has-helper now use shared .vr-field__* classes */
 
 /* ═══════════════════════════════════════════════════════════════════
    FIELD.VERIFY - Identity-grade field with Reveal choreography
@@ -178,16 +188,7 @@
   position: relative;
 }
 
-.vr-field-verify__label {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--text-primary);
-}
-
-.vr-field-verify__required {
-  color: var(--error-600);
-  margin-left: 2px;
-}
+/* NOTE: Label, required now use shared .vr-field__* classes */
 
 /* Input wrapper for pill positioning */
 .vr-field-verify__input-wrapper {
@@ -296,7 +297,7 @@
   transform: translateY(-50%);
   font-size: var(--font-size-xs);
   font-weight: 500;
-  padding: 8px 14px;
+  padding: 7px 14px;
   border-radius: var(--radius-full);
   border: none;
   cursor: pointer;
@@ -307,7 +308,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 1;
+  line-height: normal;
   z-index: 1;
   min-width: 100px;
 
@@ -335,6 +336,7 @@
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
+  line-height: normal;
   animation: typing-cycle 6s ease-in-out infinite;
 }
 
@@ -486,20 +488,7 @@
   to { transform: rotate(360deg); }
 }
 
-/* ─────────────────────────────────────────────────────────────────────
-   HELPER & ERROR TEXT
-   ───────────────────────────────────────────────────────────────────── */
-
-.vr-field-verify__helper {
-  font-size: var(--font-size-xs);
-  color: var(--text-tertiary);
-  font-style: italic;
-}
-
-.vr-field-verify__error {
-  font-size: var(--font-size-xs);
-  color: var(--error-600);
-}
+/* NOTE: Helper, error, has-helper now use shared .vr-field__* classes */
 
 /* ═══════════════════════════════════════════════════════════════════
    FIELD.DISPLAY - Read-only display

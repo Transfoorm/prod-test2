@@ -2,8 +2,9 @@
 │  🤖 VARIANT ROBOT - Field.verify                                       │
 │  /src/prebuilts/field/Verify.tsx                                       │
 │                                                                        │
-│  Identity-grade field with Reveal choreography.                        │
-│  Used for sensitive fields requiring explicit confirmation.            │
+│  SELF-SUFFICIENT VR - Two modes:                                       │
+│  1. field prop: Reads/writes FUSE automatically                        │
+│  2. value/onCommit props: Callback mode for custom flows               │
 │                                                                        │
 │  The Reveal Pattern:                                                   │
 │  - idle: Display mode (no border, quiet)                              │
@@ -19,16 +20,37 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { useFuse } from '@/store/fuse';
+import type { FuseUser } from '@/store/types';
 
 type VerifyState = 'idle' | 'focused' | 'dirty' | 'committing' | 'success' | 'error';
 
-export interface FieldVerifyProps {
+// Fields that can be used with Field.verify
+type VerifyableField = keyof NonNullable<FuseUser>;
+
+// Props for self-sufficient mode (FUSE wired in)
+interface FieldVerifyPropsWithField {
+  /** FUSE field key - VR reads/writes this field automatically */
+  field: VerifyableField;
   /** Field label */
   label: string;
-  /** Current value (from FUSE) */
+  value?: never;
+  onCommit?: never;
+}
+
+// Props for callback mode (custom flows like VerifyEmail)
+interface FieldVerifyPropsWithCallback {
+  /** Current value */
   value: string;
   /** Called when user clicks the commit pill */
   onCommit: (newValue: string) => Promise<void>;
+  /** Field label */
+  label: string;
+  field?: never;
+}
+
+// Shared optional props
+interface FieldVerifyCommonProps {
   /** Input type */
   type?: 'text' | 'email' | 'tel';
   /** Placeholder when empty */
@@ -41,16 +63,30 @@ export interface FieldVerifyProps {
   helperOnFocus?: boolean;
 }
 
-export default function FieldVerify({
-  label,
-  value,
-  onCommit,
-  type = 'text',
-  placeholder = '',
-  required = false,
-  helper,
-  helperOnFocus = false,
-}: FieldVerifyProps) {
+export type FieldVerifyProps = (FieldVerifyPropsWithField | FieldVerifyPropsWithCallback) & FieldVerifyCommonProps;
+
+export default function FieldVerify(props: FieldVerifyProps) {
+  const {
+    label,
+    type = 'text',
+    placeholder = '',
+    required = false,
+    helper,
+    helperOnFocus = false,
+  } = props;
+
+  // ─────────────────────────────────────────────────────────────────────
+  // FUSE - Only used in self-sufficient mode
+  // ─────────────────────────────────────────────────────────────────────
+  const user = useFuse((s) => s.user);
+  const updateUserLocal = useFuse((s) => s.updateUserLocal);
+
+  // Determine mode and get value
+  const isSelfSufficient = 'field' in props && props.field !== undefined;
+  const value = isSelfSufficient
+    ? String(user?.[props.field] ?? '')
+    : (props.value ?? '');
+
   const [state, setState] = useState<VerifyState>('idle');
   const [localValue, setLocalValue] = useState(value);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -131,7 +167,14 @@ export default function FieldVerify({
     setState('committing');
 
     try {
-      await onCommit(localValue);
+      if (isSelfSufficient && 'field' in props) {
+        // SELF-SUFFICIENT: Write directly to FUSE
+        await updateUserLocal({ [props.field]: localValue || undefined });
+      } else if ('onCommit' in props && props.onCommit) {
+        // CALLBACK MODE: Let parent handle it
+        await props.onCommit(localValue);
+      }
+
       setState('success');
       originalValue.current = localValue;
 
@@ -146,7 +189,7 @@ export default function FieldVerify({
       isCommitting.current = false;
       // Stay focused so user can retry or blur to revert
     }
-  }, [localValue, onCommit, type, state]);
+  }, [localValue, type, state, props, isSelfSufficient, updateUserLocal]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
@@ -165,10 +208,7 @@ export default function FieldVerify({
   // ─────────────────────────────────────────────────────────────────────
 
   const isDirty = localValue !== originalValue.current;
-  const isEmpty = !value; // Original value is empty (no verified email yet)
-
-  // Pill is ALWAYS visible - green when verified, orange when dirty
-  const showPill = true;
+  const isEmpty = !value; // Original value is empty (no verified value yet)
 
   // Pill content based on state
   const getPillContent = () => {
@@ -198,7 +238,8 @@ export default function FieldVerify({
   const wrapperClasses = [
     'vr-field-verify',
     `vr-field-verify--${state}`,
-  ].join(' ');
+    helper && 'vr-field--has-helper',
+  ].filter(Boolean).join(' ');
 
   // Pill state: active (dirty/committing) > editing (focused) > empty (not set) > verified (idle)
   const getPillState = () => {
@@ -221,9 +262,9 @@ export default function FieldVerify({
 
   return (
     <div className={wrapperClasses}>
-      <label className="vr-field-verify__label">
+      <label className="vr-field__label">
         {label}
-        {required && <span className="vr-field-verify__required">*</span>}
+        {required && <span className="vr-field__required">*</span>}
       </label>
 
       <div className="vr-field-verify__input-wrapper">
@@ -248,7 +289,7 @@ export default function FieldVerify({
           onMouseEnter={() => { isHoveringPill.current = true; }}
           onMouseLeave={() => { isHoveringPill.current = false; }}
           disabled={state === 'committing' || state === 'success'}
-          tabIndex={showPill ? 0 : -1}
+          tabIndex={0}
           aria-label={state === 'dirty' ? `Confirm change to ${localValue}` : undefined}
         >
           {getPillContent()}
@@ -256,11 +297,11 @@ export default function FieldVerify({
       </div>
 
       {helper && state !== 'error' && (!helperOnFocus || state !== 'idle') && (
-        <div className="vr-field-verify__helper">{helper}</div>
+        <div className="vr-field__helper">{helper}</div>
       )}
 
       {errorMessage && state === 'error' && (
-        <div id="verify-error" className="vr-field-verify__error" role="alert">
+        <div id="verify-error" className="vr-field__error" role="alert">
           {errorMessage}
         </div>
       )}

@@ -456,6 +456,85 @@ export default function UsersTab() {
 
 ---
 
+## 🏗️ VR DOCTRINE: THE STACK
+
+### The Complete Architecture
+
+```
+VR → Feature → Tab
+```
+
+**VR (Prebuilts)** = Pure UI behavior (dumb shell)
+**Feature** = VR + FUSE + business logic (smart wrapper)
+**Tab/Page (Domain)** = One line import (pure declaration)
+
+### The Rules
+
+| Layer | Responsibility | FUSE? | CSS Prefix |
+|-------|---------------|-------|------------|
+| **VR** | Dumb visual shell, receives value, fires callback | NO | `.vr-*` |
+| **Feature** | Wires FUSE, adds transforms, handles edge cases | YES | `.ft-*` |
+| **Tab** | One line import, pure declaration | NO | NONE |
+
+### The Sponge Principle
+
+**Features are the sponge.** They absorb:
+- FUSE wiring
+- Business logic
+- Transforms & validations
+- Modal flows
+- Edge cases
+- All the dirt
+
+**VRs and Tabs stay dry. Features get wet.**
+
+### Example: The Perfect Tab
+
+```tsx
+// ❌ WRONG - Tab has FUSE wiring (dirty)
+export default function Profile() {
+  const user = useFuse((s) => s.user);
+  const updateUserLocal = useFuse((s) => s.updateUserLocal);
+
+  return (
+    <Field.live
+      label="First Name"
+      value={user?.firstName ?? ''}
+      onSave={(v) => updateUserLocal({ firstName: v })}
+    />
+  );
+}
+
+// ✅ RIGHT - Tab is pure declaration
+import { ProfileFields } from '@/features/account/ProfileFields';
+
+export default function Profile() {
+  return <ProfileFields />;
+}
+```
+
+### CSS Alignment
+
+The prefixes tell you exactly where code belongs:
+
+```css
+/* VR - dumb visual shell (prebuilts) */
+.vr-field-live { }
+.vr-field-live--focused { }
+.vr-field-live__input { }
+
+/* Feature - specific wiring (features) */
+.ft-field-row { }
+.ft-profile-country { }
+.ft-setup-modal { }
+```
+
+- `styles/prebuilts.css` → Imports all `.vr-*` CSS
+- `styles/features.css` → Imports all `.ft-*` CSS (largest by design)
+- Tabs have NO CSS
+
+---
+
 ## 🏗️ VR ARCHITECTURE
 
 ### File Structure
@@ -662,4 +741,4 @@ This is the doctrine VRGURU enforces.
 **End Doctrine.**
 
 *VR Guru Mode Activated*
-*Enforcing VR Gospel: _sdk/11-conventions/VRS-COMPONENTS.md*
+*Enforcing VR Gospel: `_sdk/VR-DOCTRINE.md`*
