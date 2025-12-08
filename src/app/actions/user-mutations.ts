@@ -50,7 +50,6 @@ export async function updateBusinessCountryAction(businessCountry: string) {
       clerkId: freshUser.clerkId,
       email: freshUser.email || session?.email || '',
       secondaryEmail: freshUser.secondaryEmail || undefined,
-      emailVerified: freshUser.emailVerified,
       firstName: freshUser.firstName || session?.firstName,
       lastName: freshUser.lastName || session?.lastName,
       avatarUrl: freshUser.avatarUrl || undefined,
@@ -60,8 +59,7 @@ export async function updateBusinessCountryAction(businessCountry: string) {
       businessCountry: freshUser.businessCountry as string,
       entityName: freshUser.entityName as string,
       socialName: freshUser.socialName as string,
-      themeName: (freshUser.themeName as string) || session?.themeName,
-      themeMode: session?.themeMode || 'light',
+      themeMode: freshUser.themeDark ? 'dark' : 'light',
       mirorAvatarProfile: freshUser.mirorAvatarProfile as 'male' | 'female' | 'inclusive' | undefined,
       mirorEnchantmentEnabled: freshUser.mirorEnchantmentEnabled,
       mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
@@ -95,7 +93,6 @@ export async function completeSetupAction(data: {
   socialName: string;
   orgSlug: string;
   businessCountry?: string;
-  emailVerified?: boolean;
 }) {
   try {
     const { userId } = await auth();
@@ -123,7 +120,6 @@ export async function completeSetupAction(data: {
       clerkId: freshUser.clerkId,
       email: freshUser.email || session?.email || '',
       secondaryEmail: freshUser.secondaryEmail || undefined,
-      emailVerified: freshUser.emailVerified,
       firstName: freshUser.firstName || session?.firstName,
       lastName: freshUser.lastName || session?.lastName,
       avatarUrl: freshUser.avatarUrl || undefined,
@@ -133,8 +129,7 @@ export async function completeSetupAction(data: {
       businessCountry: freshUser.businessCountry as string,
       entityName: freshUser.entityName as string,
       socialName: freshUser.socialName as string,
-      themeName: (freshUser.themeName as string) || session?.themeName,
-      themeMode: session?.themeMode || 'light',
+      themeMode: freshUser.themeDark ? 'dark' : 'light',
       mirorAvatarProfile: freshUser.mirorAvatarProfile as 'male' | 'female' | 'inclusive' | undefined,
       mirorEnchantmentEnabled: freshUser.mirorEnchantmentEnabled,
       mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
@@ -221,7 +216,6 @@ export async function updateProfileAction(data: {
       clerkId: freshUser.clerkId,
       email: freshUser.email || session?.email || '',
       secondaryEmail: freshUser.secondaryEmail || undefined,
-      emailVerified: freshUser.emailVerified,
       firstName: freshUser.firstName || session?.firstName,
       lastName: freshUser.lastName || session?.lastName,
       avatarUrl: freshUser.avatarUrl || undefined,
@@ -232,8 +226,7 @@ export async function updateProfileAction(data: {
       entityName: freshUser.entityName as string,
       socialName: freshUser.socialName as string,
       phoneNumber: freshUser.phoneNumber as string,
-      themeName: (freshUser.themeName as string) || session?.themeName,
-      themeMode: session?.themeMode || 'light',
+      themeMode: freshUser.themeDark ? 'dark' : 'light',
       mirorAvatarProfile: freshUser.mirorAvatarProfile as 'male' | 'female' | 'inclusive' | undefined,
       mirorEnchantmentEnabled: freshUser.mirorEnchantmentEnabled,
       mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
@@ -284,7 +277,6 @@ export async function refreshSessionAfterUpload() {
       clerkId: freshUser.clerkId,
       email: freshUser.email || session?.email || '',
       secondaryEmail: freshUser.secondaryEmail || undefined,
-      emailVerified: freshUser.emailVerified,
       firstName: freshUser.firstName || session?.firstName,
       lastName: freshUser.lastName || session?.lastName,
       avatarUrl: freshUser.avatarUrl || undefined,
@@ -294,8 +286,7 @@ export async function refreshSessionAfterUpload() {
       businessCountry: freshUser.businessCountry as string,
       entityName: freshUser.entityName as string,
       socialName: freshUser.socialName as string,
-      themeName: (freshUser.themeName as string) || session?.themeName,
-      themeMode: session?.themeMode || 'light',
+      themeMode: freshUser.themeDark ? 'dark' : 'light',
       mirorAvatarProfile: freshUser.mirorAvatarProfile as 'male' | 'female' | 'inclusive' | undefined,
       mirorEnchantmentEnabled: freshUser.mirorEnchantmentEnabled,
       mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,

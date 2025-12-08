@@ -49,7 +49,6 @@ export async function POST(request: NextRequest) {
       socialName,
       orgSlug,
       businessCountry,
-      emailVerified,
     } = body;
 
     // Validate required fields
@@ -69,7 +68,6 @@ export async function POST(request: NextRequest) {
       socialName,
       orgSlug,
       businessCountry,
-      emailVerified,
     });
 
     return NextResponse.json({ success: true });

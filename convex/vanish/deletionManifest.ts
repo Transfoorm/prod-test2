@@ -119,7 +119,7 @@ export const DELETION_MANIFEST: DeletionManifest = {
   },
 
   preserve: [
-    'admin_users_DeletionLogs',    // Immutable audit trail
+    'admin_users_DeleteLog',    // Immutable audit trail
     // 'billingHistory' // Example: Financial compliance records
   ],
 

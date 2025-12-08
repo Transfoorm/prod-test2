@@ -28,7 +28,7 @@ import { v } from "convex/values";
  */
 export const deleteDeletionLog = mutation({
   args: {
-    logId: v.id("admin_users_DeletionLogs"),
+    logId: v.id("admin_users_DeleteLog"),
     callerClerkId: v.string(),  // 🔱 SOVEREIGN: Identity from FUSE session cookie
   },
 

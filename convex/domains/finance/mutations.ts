@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🔌 FINANCE DOMAIN MUTATIONS - SRS Layer 4                            │
-│  /convex/domains/finance/mutations.ts                                  │
+│  /convex/domains/finance_banking_Statements/mutations.ts                                  │
 │                                                                        │
 │  Financial transaction CRUD with rank-based authorization:             │
 │  • Create: Captain/Commodore/Admiral only                              │
@@ -87,7 +87,7 @@ export const createTransaction = mutation({
 
     const now = Date.now();
 
-    const transactionId = await ctx.db.insert("finance", {
+    const transactionId = await ctx.db.insert("finance_banking_Statements", {
       type: args.type,
       amount: args.amount,
       currency: args.currency,
@@ -113,7 +113,7 @@ export const createTransaction = mutation({
  */
 export const updateTransaction = mutation({
   args: {
-    transactionId: v.id("finance"),
+    transactionId: v.id("finance_banking_Statements"),
     amount: v.optional(v.number()),
     currency: v.optional(v.string()),
     description: v.optional(v.string()),
@@ -174,7 +174,7 @@ export const updateTransaction = mutation({
  */
 export const deleteTransaction = mutation({
   args: {
-    transactionId: v.id("finance"),
+    transactionId: v.id("finance_banking_Statements"),
   },
   handler: async (ctx, args) => {
     const user = await getCurrentUserWithRank(ctx);

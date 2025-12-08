@@ -94,7 +94,6 @@ export async function GET(request: Request) {
         clerkId: userId,
         email,
         secondaryEmail: existingUser?.secondaryEmail ?? undefined,
-        emailVerified: existingUser?.emailVerified ?? false,
         firstName: existingUser?.firstName ?? firstName,
         lastName: existingUser?.lastName ?? lastName,
         rank: userRank,
@@ -105,9 +104,8 @@ export async function GET(request: Request) {
         socialName: existingUser?.socialName,
         avatarUrl: existingUser?.avatarUrl ?? undefined,
         brandLogoUrl: existingUser?.brandLogoUrl ?? undefined,
-        // 🌓 Theme preferences from DB (convert themeDark boolean to themeMode string)
+        // 🌓 Theme preferences from DB
         themeMode: existingUser?.themeDark ? 'dark' : 'light',
-        themeName: existingUser?.themeName ?? 'transtheme',
         mirorAvatarProfile: existingUser?.mirorAvatarProfile,
         mirorEnchantmentEnabled: existingUser?.mirorEnchantmentEnabled,
         mirorEnchantmentTiming: existingUser?.mirorEnchantmentTiming,
@@ -125,7 +123,6 @@ export async function GET(request: Request) {
         _id: '',  // ⚠️ Empty _id - will upgrade on next successful login
         clerkId: userId,
         email,
-        emailVerified: false,
         firstName,
         lastName,
         rank: 'captain',
@@ -138,7 +135,6 @@ export async function GET(request: Request) {
         brandLogoUrl: undefined,
         // 🌓 Theme defaults for new/fallback users
         themeMode: 'light',
-        themeName: 'transtheme',
         mirorAvatarProfile: undefined,
         mirorEnchantmentEnabled: undefined,
         mirorEnchantmentTiming: undefined,

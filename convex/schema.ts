@@ -2,24 +2,36 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ADMIN DOMAIN
+  // ═══════════════════════════════════════════════════════════════════════════
+
   admin_users: defineTable({
+    // Identity (required)
     clerkId: v.string(),
-    email: v.string(), // Primary email
-    secondaryEmail: v.optional(v.union(v.string(), v.null())), // Secondary email (if verified) - can be null when deleted
-    emailVerified: v.optional(v.boolean()),
-    firstName: v.string(), // REQUIRED - Seeded from Clerk on signup, governed by Convex
-    lastName: v.string(),  // REQUIRED - Seeded from Clerk on signup, governed by Convex
+    email: v.string(),
+    firstName: v.string(),
+    lastName: v.string(),
+
+    // Profile (optional - user fills in over time)
+    secondaryEmail: v.optional(v.string()),
     avatarUrl: v.optional(v.union(v.string(), v.id("_storage"))),
-    imageUrl: v.optional(v.union(v.string(), v.id("_storage"))), // Legacy field - migrate to avatarUrl
-    brandLogoUrl: v.optional(v.union(v.string(), v.id("_storage"))), // Optional: Only set when user uploads custom logo
-    // Naval Rank System - Developer-only feature gating
+    brandLogoUrl: v.optional(v.union(v.string(), v.id("_storage"))),
+    entityName: v.optional(v.string()),
+    socialName: v.optional(v.string()),
+    orgSlug: v.optional(v.string()),
+    phoneNumber: v.optional(v.string()),
+    businessCountry: v.optional(v.string()),
+
+    // Naval Rank System (required)
     rank: v.union(
       v.literal("crew"),
       v.literal("captain"),
       v.literal("commodore"),
       v.literal("admiral")
     ),
-    // User onboarding status
+
+    // User onboarding status (required)
     setupStatus: v.union(
       v.literal("invited"),
       v.literal("pending"),
@@ -27,14 +39,122 @@ export default defineSchema({
       v.literal("complete"),
       v.literal("revoked")
     ),
-    // Profile fields
+
+    // Theme preferences (required with defaults)
+    themeDark: v.boolean(), // Default: false (light mode)
+
+    // Miror AI avatar preference (optional - user configures)
+    mirorAvatarProfile: v.optional(v.union(
+      v.literal("male"),
+      v.literal("female"),
+      v.literal("inclusive")
+    )),
+    mirorEnchantmentEnabled: v.optional(v.boolean()),
+    mirorEnchantmentTiming: v.optional(v.union(
+      v.literal("subtle"),
+      v.literal("magical"),
+      v.literal("playful")
+    )),
+
+    // Timestamps (required)
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    lastLoginAt: v.number(),
+    loginCount: v.number(), // Default: 1 on signup
+
+    // Subscription & Trial Management (required)
+    subscriptionStatus: v.union(
+      v.literal("trial"),
+      v.literal("active"),
+      v.literal("expired"),
+      v.literal("lifetime"),
+      v.literal("cancelled")
+    ),
+    trialStartedAt: v.optional(v.number()),
+    trialEndsAt: v.optional(v.number()),
+    trialDuration: v.optional(v.number()),
+
+    // Payment Integration (optional - only when connected)
+    stripeCustomerId: v.optional(v.string()),
+    stripeSubscriptionId: v.optional(v.string()),
+    paypalSubscriptionId: v.optional(v.string()),
+    subscriptionStartedAt: v.optional(v.number()),
+    subscriptionRenewsAt: v.optional(v.number()),
+    lastPaymentAt: v.optional(v.number()),
+
+    // Vanish Protocol (optional - only when deletion in progress)
+    deletedAt: v.optional(v.number()),
+    deletionStatus: v.optional(v.union(
+      v.literal("pending"),
+      v.literal("completed"),
+      v.literal("failed")
+    )),
+  }).index("by_clerk_id", ["clerkId"])
+    .index("by_rank", ["rank"])
+    .index("by_subscription_status", ["subscriptionStatus"]),
+
+  // Vanish Protocol: Immutable audit trail for user deletions
+  admin_users_DeleteLog: defineTable({
+    // Original user identity (all required - user always has these at deletion)
+    userId: v.string(),
+    clerkId: v.string(),
+    email: v.string(),
+    firstName: v.string(),
+    lastName: v.string(),
+    rank: v.string(),
+    setupStatus: v.string(),
+    subscriptionStatus: v.string(),
+
+    // Optional profile fields (may not have been set)
     entityName: v.optional(v.string()),
     socialName: v.optional(v.string()),
-    orgSlug: v.optional(v.string()),
-    phoneNumber: v.optional(v.string()),
-    // Business configuration
-    businessCountry: v.optional(v.string()),
-    // Professional Genome - Behavioral/contextual fingerprint
+
+    // Deletion metadata (required)
+    deletedBy: v.string(),
+    deletedByRole: v.union(
+      v.literal("self"),
+      v.literal("admiral")
+    ),
+    reason: v.optional(v.string()),
+
+    // Cascade scope
+    scope: v.object({
+      userProfile: v.boolean(),
+      clerkAccount: v.boolean(),
+      storageFiles: v.array(v.string()),
+      relatedTables: v.array(v.string()),
+    }),
+
+    // Cascade execution (required)
+    status: v.union(
+      v.literal("in_progress"),
+      v.literal("completed"),
+      v.literal("failed")
+    ),
+    chunksCascaded: v.number(),
+    recordsDeleted: v.number(),
+    errorMessage: v.optional(v.string()),
+    clerkDeletionError: v.optional(v.string()),
+
+    // Timing (required)
+    deletedAt: v.number(),
+    completedAt: v.optional(v.number()),
+
+    // Compliance (optional)
+    ipAddress: v.optional(v.string()),
+    userAgent: v.optional(v.string()),
+  }).index("by_clerk_id", ["clerkId"])
+    .index("by_deleted_at", ["deletedAt"])
+    .index("by_status", ["status"]),
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SETTINGS DOMAIN
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // Professional Genome - User's behavioral/contextual fingerprint
+  settings_account_Genome: defineTable({
+    userId: v.id("admin_users"),
+
     // Professional Identity
     jobTitle: v.optional(v.string()),
     department: v.optional(v.string()),
@@ -50,6 +170,7 @@ export default defineSchema({
       v.literal("executive"),
       v.literal("founder")
     )),
+
     // Company Context
     industry: v.optional(v.string()),
     companySize: v.optional(v.union(
@@ -61,7 +182,8 @@ export default defineSchema({
       v.literal("5001+")
     )),
     companyWebsite: v.optional(v.string()),
-    // Transformation Journey (Transfoorm's domain edge)
+
+    // Transformation Journey
     transformationGoal: v.optional(v.string()),
     transformationStage: v.optional(v.union(
       v.literal("exploring"),
@@ -81,167 +203,83 @@ export default defineSchema({
       v.literal("3_6_months"),
       v.literal("immediate")
     )),
+
     // Growth Intel
     howDidYouHearAboutUs: v.optional(v.string()),
     teamSize: v.optional(v.number()),
     annualRevenue: v.optional(v.string()),
     successMetric: v.optional(v.string()),
-    // Theme preferences
-    themeName: v.optional(v.literal("transtheme")), // Single theme with light/dark modes
-    themeDark: v.optional(v.boolean()), // Boolean controls mode (true=dark, false=light)
-    // Miror AI avatar preference
-    mirorAvatarProfile: v.optional(v.union(
-      v.literal("male"),
-      v.literal("female"),
-      v.literal("inclusive")
-    )),
-    mirorEnchantmentEnabled: v.optional(v.boolean()), // Enable/disable sparkle animation
-    mirorEnchantmentTiming: v.optional(v.union(
-      v.literal("subtle"),
-      v.literal("magical"),
-      v.literal("playful")
-    )), // Timing: subtle (1-2s/15-25s), magical (2-3s/8-15s), playful (2-3s/4-7s)
+
+    // Meta
+    completionPercent: v.number(), // 0-100, calculated on save
     createdAt: v.number(),
     updatedAt: v.number(),
-    lastLoginAt: v.number(), // TTT-CERTIFIED: Required login tracking (set to createdAt on signup, updated on login)
-    loginCount: v.optional(v.number()), // Total number of logins (incremented on each login)
-    // RANK-AWARE SYSTEM: Subscription & Trial Management
-    subscriptionStatus: v.union(
-      v.literal("trial"),      // Active trial period
-      v.literal("active"),     // Paid subscription (Stripe/PayPal)
-      v.literal("expired"),    // Trial ended, no payment
-      v.literal("lifetime"),   // Granted by Admiral, never expires
-      v.literal("cancelled")   // Was paid, now cancelled
-    ),
-    trialStartedAt: v.optional(v.number()),    // When trial began (timestamp)
-    trialEndsAt: v.optional(v.number()),       // When trial expires (timestamp)
-    trialDuration: v.optional(v.number()),     // Days granted (for audit trail)
-    // PAYMENT INTEGRATION HOOKS (for future Stripe/PayPal)
-    stripeCustomerId: v.optional(v.string()),       // Stripe customer ID
-    stripeSubscriptionId: v.optional(v.string()),   // Stripe subscription ID
-    paypalSubscriptionId: v.optional(v.string()),   // PayPal subscription ID
-    subscriptionStartedAt: v.optional(v.number()),  // When paid subscription began
-    subscriptionRenewsAt: v.optional(v.number()),   // Next billing date
-    lastPaymentAt: v.optional(v.number()),          // Last successful payment timestamp
-    // VANISH PROTOCOL 2.0: Idempotency and tombstone fields
-    deletedAt: v.optional(v.number()), // Timestamp when deletion started
-    deletionStatus: v.optional(v.union(
-      v.literal("pending"),    // Deletion in progress (multi-chunk cascade)
-      v.literal("completed"),  // Deletion finished successfully
-      v.literal("failed")      // Deletion failed mid-cascade (requires manual cleanup)
-    )),
-  }).index("by_clerk_id", ["clerkId"])
-    .index("by_rank", ["rank"])
-    .index("by_subscription_status", ["subscriptionStatus"]),
+  }).index("by_user", ["userId"]),
 
-  // VANISH PROTOCOL 2.0: Immutable audit trail for user deletions
-  admin_users_DeletionLogs: defineTable({
-    // Original user identity (before deletion)
-    userId: v.string(), // Stored as string, not v.id() - user may already be deleted
-    clerkId: v.string(),
-    email: v.string(), // Preserved for audit trail
-    firstName: v.optional(v.string()), // User's first name at deletion time
-    lastName: v.optional(v.string()), // User's last name at deletion time
-    rank: v.optional(v.string()), // User's rank at deletion time
-    setupStatus: v.optional(v.string()), // User's setup status at deletion time
-    subscriptionStatus: v.optional(v.string()), // User's subscription status at deletion time (trial/active/expired)
-    entityName: v.optional(v.string()), // Entity name at deletion time
-    socialName: v.optional(v.string()), // Social name at deletion time
+  // ═══════════════════════════════════════════════════════════════════════════
+  // CLIENTS DOMAIN
+  // ═══════════════════════════════════════════════════════════════════════════
 
-    // Deletion metadata
-    deletedBy: v.string(), // clerkId of user who initiated deletion (self or Admiral)
-    deletedByRole: v.optional(v.union(
-      v.literal("self"),    // User deleted their own account
-      v.literal("admiral")  // Admiral deleted via tenant management
-    )),
-    reason: v.optional(v.string()), // Optional deletion reason
-
-    // Cascade scope (append pattern - grows as cascade progresses)
-    scope: v.object({
-      userProfile: v.boolean(), // User record deleted
-      clerkAccount: v.optional(v.boolean()), // Clerk account deleted
-      storageFiles: v.array(v.string()), // Storage file IDs deleted
-      relatedTables: v.array(v.string()), // "tableName:count" entries
-    }),
-
-    // Cascade execution metadata
-    status: v.union(
-      v.literal("in_progress"),
-      v.literal("completed"),
-      v.literal("failed")
-    ),
-    chunksCascaded: v.optional(v.number()), // Number of batches processed
-    recordsDeleted: v.optional(v.number()), // Total records removed
-    errorMessage: v.optional(v.string()), // If cascade failed
-    clerkDeletionError: v.optional(v.string()), // If Clerk deletion failed (VANISH BLEMISH fix)
-
-    // Timing
-    deletedAt: v.number(), // When deletion started
-    completedAt: v.optional(v.number()), // When cascade finished
-
-    // Compliance metadata
-    ipAddress: v.optional(v.string()),
-    userAgent: v.optional(v.string()),
-  }).index("by_clerk_id", ["clerkId"])
-    .index("by_deleted_at", ["deletedAt"])
-    .index("by_status", ["status"]),
-
-  // SRS LAYER 4: Client Domain (Rank-Based Data Scoping)
-  clients: defineTable({
-    // Client identity
+  clients_contacts_Users: defineTable({
+    // Identity (required)
     firstName: v.string(),
     lastName: v.string(),
     email: v.string(),
+
+    // Profile (optional)
     company: v.optional(v.string()),
     jobTitle: v.optional(v.string()),
     phoneNumber: v.optional(v.string()),
 
-    // SRS rank-based scoping fields
-    orgId: v.string(), // Organization this client belongs to (Captain/Commodore scope)
-    assignedTo: v.optional(v.id("admin_users")), // User assigned to this client (Crew scope)
+    // SRS rank-scoping (required)
+    orgId: v.string(),
+    assignedTo: v.optional(v.id("admin_users")),
 
-    // Client metadata
-    status: v.optional(v.union(
+    // Status (required with default)
+    status: v.union(
       v.literal("active"),
       v.literal("inactive"),
       v.literal("prospect"),
       v.literal("archived")
-    )),
+    ),
     notes: v.optional(v.string()),
 
-    // Timestamps
+    // Timestamps (required)
     createdAt: v.number(),
     updatedAt: v.number(),
-    createdBy: v.id("admin_users"), // User who created this client
+    createdBy: v.id("admin_users"),
   }).index("by_org", ["orgId"])
     .index("by_assigned", ["assignedTo"])
     .index("by_email", ["email"])
     .index("by_status", ["status"]),
 
-  // SRS LAYER 4: Finance Domain (Rank-Based Data Scoping)
-  finance: defineTable({
-    // Transaction identity
+  // ═══════════════════════════════════════════════════════════════════════════
+  // FINANCE DOMAIN
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  finance_banking_Statements: defineTable({
+    // Transaction identity (required)
     type: v.union(
       v.literal("invoice"),
       v.literal("payment"),
       v.literal("expense")
     ),
     amount: v.number(),
-    currency: v.string(), // USD, EUR, etc.
+    currency: v.string(),
     description: v.string(),
 
-    // SRS rank-scoping fields
-    orgId: v.string(), // Organization this transaction belongs to
+    // SRS rank-scoping (required)
+    orgId: v.string(),
 
-    // Metadata
-    status: v.optional(v.union(
+    // Status (required with default)
+    status: v.union(
       v.literal("pending"),
       v.literal("paid"),
       v.literal("overdue")
-    )),
+    ),
     date: v.number(),
 
-    // Timestamps
+    // Timestamps (required)
     createdAt: v.number(),
     updatedAt: v.number(),
     createdBy: v.id("admin_users"),
@@ -250,16 +288,20 @@ export default defineSchema({
     .index("by_status", ["status"])
     .index("by_date", ["date"]),
 
-  // SRS LAYER 4: Project Domain (Rank-Based Data Scoping)
-  projects: defineTable({
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PROJECTS DOMAIN
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  projects_tracking_Schedule: defineTable({
+    // Identity (required)
     name: v.string(),
     description: v.optional(v.string()),
 
-    // SRS rank-scoping fields
-    orgId: v.string(), // Organization this project belongs to
-    assignedTo: v.optional(v.id("admin_users")), // User assigned to this project (Crew scope)
+    // SRS rank-scoping (required)
+    orgId: v.string(),
+    assignedTo: v.optional(v.id("admin_users")),
 
-    // Metadata
+    // Status (required)
     status: v.union(
       v.literal("active"),
       v.literal("completed"),
@@ -268,7 +310,7 @@ export default defineSchema({
     startDate: v.optional(v.number()),
     endDate: v.optional(v.number()),
 
-    // Timestamps
+    // Timestamps (required)
     createdAt: v.number(),
     updatedAt: v.number(),
     createdBy: v.id("admin_users"),
@@ -277,8 +319,47 @@ export default defineSchema({
     .index("by_status", ["status"])
     .index("by_date", ["startDate"]),
 
-  // SRS LAYER 4: Productivity Domain - Email Management
-  prod_email_Messages: defineTable({
+  projects_tracking_Costs: defineTable({
+    // Link to project (required)
+    projectId: v.id("projects_tracking_Schedule"),
+
+    // Cost details (required)
+    name: v.string(),
+    amount: v.number(),
+    currency: v.string(),
+    category: v.union(
+      v.literal("labor"),
+      v.literal("materials"),
+      v.literal("equipment"),
+      v.literal("services"),
+      v.literal("other")
+    ),
+
+    // SRS rank-scoping (required)
+    orgId: v.string(),
+
+    // Status (required)
+    status: v.union(
+      v.literal("estimated"),
+      v.literal("approved"),
+      v.literal("spent")
+    ),
+    date: v.number(),
+
+    // Timestamps (required)
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    createdBy: v.id("admin_users"),
+  }).index("by_project", ["projectId"])
+    .index("by_org", ["orgId"])
+    .index("by_category", ["category"])
+    .index("by_status", ["status"]),
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PRODUCTIVITY DOMAIN
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  productivity_email_Messages: defineTable({
     subject: v.string(),
     body: v.string(),
     from: v.string(),
@@ -295,8 +376,7 @@ export default defineSchema({
   }).index("by_org", ["orgId"])
     .index("by_status", ["status"]),
 
-  // SRS LAYER 4: Productivity Domain - Calendar Events
-  prod_cal_Events: defineTable({
+  productivity_calendar_Events: defineTable({
     title: v.string(),
     description: v.optional(v.string()),
     startTime: v.number(),
@@ -309,8 +389,7 @@ export default defineSchema({
   }).index("by_org", ["orgId"])
     .index("by_start_time", ["startTime"]),
 
-  // SRS LAYER 4: Productivity Domain - Bookings
-  prod_book_Bookings: defineTable({
+  productivity_bookings_Form: defineTable({
     clientName: v.string(),
     serviceType: v.string(),
     scheduledTime: v.number(),
@@ -326,12 +405,11 @@ export default defineSchema({
   }).index("by_org", ["orgId"])
     .index("by_status", ["status"]),
 
-  // SRS LAYER 4: Productivity Domain - Meetings
-  prod_pipe_Meetings: defineTable({
+  productivity_pipeline_Prospects: defineTable({
     title: v.string(),
     participants: v.array(v.string()),
     scheduledTime: v.number(),
-    duration: v.number(), // minutes
+    duration: v.number(),
     orgId: v.string(),
     notes: v.optional(v.string()),
     createdAt: v.number(),

@@ -237,7 +237,6 @@ export default function UserButton() {
           convexId: String(freshUser._id),   // Explicit alias
           clerkId: freshUser.clerkId,        // ⚠️ Auth reference only
           email: freshUser.email || '',
-          emailVerified: freshUser.emailVerified,
           firstName: freshUser.firstName,
           lastName: freshUser.lastName,
           avatarUrl: freshUser.avatarUrl,
@@ -521,6 +520,7 @@ export default function UserButton() {
 
             {previewUrl && isCropping && (
               <div className="ft-userbutton-cropper-container">
+                {/* ISVEA: style prop required by react-easy-crop library */}
                 <Cropper
                   image={previewUrl}
                   crop={crop}
@@ -532,7 +532,7 @@ export default function UserButton() {
                   cropShape="round"
                   zoomSpeed={1}
                   restrictPosition={false}
-                  style={{}}
+                  style={{ containerStyle: {}, mediaStyle: {}, cropAreaStyle: {} }}
                   classes={{}}
                   mediaProps={{}}
                   cropperProps={{}}

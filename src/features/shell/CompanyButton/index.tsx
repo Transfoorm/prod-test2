@@ -206,7 +206,6 @@ export default function CompanyButton() {
           convexId: String(freshUser._id),
           clerkId: freshUser.clerkId,
           email: freshUser.email || '',
-          emailVerified: freshUser.emailVerified,
           firstName: freshUser.firstName,
           lastName: freshUser.lastName,
           avatarUrl: freshUser.avatarUrl,

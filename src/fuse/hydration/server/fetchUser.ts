@@ -8,7 +8,6 @@ import { api } from '@/convex/_generated/api';
 export type ServerUser = {
   clerkId: string;
   email?: string;
-  emailVerified?: boolean;
   firstName?: string;
   lastName?: string;
   avatarUrl?: string;
@@ -17,26 +16,12 @@ export type ServerUser = {
   businessCountry?: string;
   entityName?: string;
   socialName?: string;
-  themeName?: 'transtheme';
   themeDark?: boolean;
   mirorAvatarProfile?: 'male' | 'female' | 'inclusive';
   mirorEnchantmentEnabled?: boolean;
   mirorEnchantmentTiming?: 'subtle' | 'magical' | 'playful';
-  // Professional Genome
-  jobTitle?: string;
-  department?: string;
-  seniority?: string;
-  industry?: string;
-  companySize?: string;
-  companyWebsite?: string;
-  transformationGoal?: string;
-  transformationStage?: string;
-  transformationType?: string;
-  timelineUrgency?: string;
-  howDidYouHearAboutUs?: string;
-  teamSize?: number;
-  annualRevenue?: string;
-  successMetric?: string;
+  // Note: Professional Genome is now in settings_account_Genome table
+  // and fetched separately via getUserGenome query
 };
 
 export async function fetchUserServer(): Promise<ServerUser | null> {
@@ -59,10 +44,10 @@ export async function fetchUserServer(): Promise<ServerUser | null> {
 
     // FUSE 5.0 Doctrine: Convex is the single source of truth
     // Use fresh data from Convex, not stale cookie
+    // Note: Professional Genome is now in settings_account_Genome table
     const userData: ServerUser = {
       clerkId: convexUser.clerkId,
       email: convexUser.email,
-      emailVerified: convexUser.emailVerified,
       firstName: convexUser.firstName,
       lastName: convexUser.lastName,
       avatarUrl: convexUser.avatarUrl ?? undefined,
@@ -71,26 +56,10 @@ export async function fetchUserServer(): Promise<ServerUser | null> {
       businessCountry: convexUser.businessCountry,
       entityName: convexUser.entityName,
       socialName: convexUser.socialName,
-      themeName: convexUser.themeName,
       themeDark: convexUser.themeDark,
       mirorAvatarProfile: convexUser.mirorAvatarProfile,
       mirorEnchantmentEnabled: convexUser.mirorEnchantmentEnabled,
       mirorEnchantmentTiming: convexUser.mirorEnchantmentTiming,
-      // Professional Genome
-      jobTitle: convexUser.jobTitle,
-      department: convexUser.department,
-      seniority: convexUser.seniority,
-      industry: convexUser.industry,
-      companySize: convexUser.companySize,
-      companyWebsite: convexUser.companyWebsite,
-      transformationGoal: convexUser.transformationGoal,
-      transformationStage: convexUser.transformationStage,
-      transformationType: convexUser.transformationType,
-      timelineUrgency: convexUser.timelineUrgency,
-      howDidYouHearAboutUs: convexUser.howDidYouHearAboutUs,
-      teamSize: convexUser.teamSize,
-      annualRevenue: convexUser.annualRevenue,
-      successMetric: convexUser.successMetric,
     };
 
     console.log(`FUSE fetchUserServer: Using fresh Convex data (rank: ${convexUser.rank})`);

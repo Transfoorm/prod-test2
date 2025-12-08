@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🔌 PROJECT DOMAIN MUTATIONS - SRS Layer 4                            │
-│  /convex/domains/projects/mutations.ts                                 │
+│  /convex/domains/projects_tracking_Schedule/mutations.ts                                 │
 │                                                                        │
 │  Project CRUD with rank-based authorization:                           │
 │  • Create: Captain/Commodore/Admiral only                              │
@@ -81,7 +81,7 @@ export const createProject = mutation({
 
     const now = Date.now();
 
-    const projectId = await ctx.db.insert("projects", {
+    const projectId = await ctx.db.insert("projects_tracking_Schedule", {
       name: args.name,
       description: args.description,
       orgId,
@@ -102,12 +102,12 @@ export const createProject = mutation({
  * Update existing project
  *
  * Authorization: Captain/Commodore/Admiral only
- * - Captain/Commodore: Can only update projects in their organization
+ * - Captain/Commodore: Can only update projects_tracking_Schedule in their organization
  * - Admiral: Can update any project
  */
 export const updateProject = mutation({
   args: {
-    projectId: v.id("projects"),
+    projectId: v.id("projects_tracking_Schedule"),
     name: v.optional(v.string()),
     description: v.optional(v.string()),
     assignedTo: v.optional(v.id("admin_users")),
@@ -165,12 +165,12 @@ export const updateProject = mutation({
  * Delete project
  *
  * Authorization: Captain/Commodore/Admiral only
- * - Captain/Commodore: Can only delete projects in their organization
+ * - Captain/Commodore: Can only delete projects_tracking_Schedule in their organization
  * - Admiral: Can delete any project
  */
 export const deleteProject = mutation({
   args: {
-    projectId: v.id("projects"),
+    projectId: v.id("projects_tracking_Schedule"),
   },
   handler: async (ctx, args) => {
     const user = await getCurrentUserWithRank(ctx);

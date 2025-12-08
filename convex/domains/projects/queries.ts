@@ -1,12 +1,12 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🔌 PROJECT DOMAIN QUERIES - SRS Layer 4                              │
-│  /convex/domains/projects/queries.ts                                   │
+│  /convex/domains/projects_tracking_Schedule/queries.ts                                   │
 │                                                                        │
 │  Rank-based data scoping for project management:                       │
-│  • Crew: Assigned projects only                                        │
-│  • Captain: Organization-scoped projects                               │
-│  • Commodore: Organization-scoped projects                             │
-│  • Admiral: All projects (cross-org, platform-wide)                    │
+│  • Crew: Assigned projects_tracking_Schedule only                                        │
+│  • Captain: Organization-scoped projects_tracking_Schedule                               │
+│  • Commodore: Organization-scoped projects_tracking_Schedule                             │
+│  • Admiral: All projects_tracking_Schedule (cross-org, platform-wide)                    │
 │                                                                        │
 │  SRS Commandment #4: Data scoping via Convex query filters            │
 └────────────────────────────────────────────────────────────────────────┘ */
@@ -33,39 +33,39 @@ async function getCurrentUserWithRank(ctx: QueryCtx) {
 }
 
 /**
- * List projects with rank-based scoping
+ * List projects_tracking_Schedule with rank-based scoping
  *
  * SRS Layer 4: Data Scoping
- * - Crew: Only assigned projects
+ * - Crew: Only assigned projects_tracking_Schedule
  * - Captain/Commodore: Organization-scoped
- * - Admiral: All projects (cross-org)
+ * - Admiral: All projects_tracking_Schedule (cross-org)
  */
 export const listProjects = query({
   handler: async (ctx) => {
     const user = await getCurrentUserWithRank(ctx);
     const rank = user.rank || "crew";
 
-    let projects;
+    let projects_tracking_Schedule;
 
     if (rank === "admiral") {
-      // Admiral: See ALL projects (cross-org, platform-wide)
-      projects = await ctx.db.query("projects").collect();
+      // Admiral: See ALL projects_tracking_Schedule (cross-org, platform-wide)
+      projects_tracking_Schedule = await ctx.db.query("projects_tracking_Schedule").collect();
     } else if (rank === "captain" || rank === "commodore") {
       // Captain/Commodore: Organization-scoped
       const orgId = user.orgSlug || "";
-      projects = await ctx.db
-        .query("projects")
+      projects_tracking_Schedule = await ctx.db
+        .query("projects_tracking_Schedule")
         .withIndex("by_org", (q) => q.eq("orgId", orgId))
         .collect();
     } else {
-      // Crew: Assigned projects only
-      projects = await ctx.db
-        .query("projects")
+      // Crew: Assigned projects_tracking_Schedule only
+      projects_tracking_Schedule = await ctx.db
+        .query("projects_tracking_Schedule")
         .withIndex("by_assigned", (q) => q.eq("assignedTo", user._id))
         .collect();
     }
 
-    return projects;
+    return projects_tracking_Schedule;
   },
 });
 
@@ -76,7 +76,7 @@ export const listProjects = query({
  * - Validates user has access to this specific project
  */
 export const getProject = query({
-  args: { projectId: v.id("projects") },
+  args: { projectId: v.id("projects_tracking_Schedule") },
   handler: async (ctx, args) => {
     const user = await getCurrentUserWithRank(ctx);
     const rank = user.rank || "crew";
@@ -87,7 +87,7 @@ export const getProject = query({
 
     // Check authorization based on rank
     if (rank === "admiral") {
-      // Admiral: Access all projects
+      // Admiral: Access all projects_tracking_Schedule
       return project;
     } else if (rank === "captain" || rank === "commodore") {
       // Captain/Commodore: Must match organization

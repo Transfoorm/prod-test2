@@ -40,7 +40,6 @@ export const getUserSettings = query({
         convexId: String(user._id),   // Explicit alias for clarity
         clerkId: user.clerkId,        // ⚠️ Auth reference only
         email: user.email,
-        emailVerified: user.emailVerified,
         secondaryEmail: user.secondaryEmail,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -49,24 +48,7 @@ export const getUserSettings = query({
         socialName: user.socialName,
         phoneNumber: user.phoneNumber,
         businessCountry: user.businessCountry,
-        // Professional Genome
-        jobTitle: user.jobTitle,
-        department: user.department,
-        seniority: user.seniority,
-        industry: user.industry,
-        companySize: user.companySize,
-        companyWebsite: user.companyWebsite,
-        // Transformation Journey
-        transformationGoal: user.transformationGoal,
-        transformationStage: user.transformationStage,
-        transformationType: user.transformationType,
-        timelineUrgency: user.timelineUrgency,
-        howDidYouHearAboutUs: user.howDidYouHearAboutUs,
-        teamSize: user.teamSize,
-        annualRevenue: user.annualRevenue,
-        successMetric: user.successMetric,
         // Theme preferences
-        themeName: user.themeName,
         themeDark: user.themeDark,
         // Miror AI preferences
         mirorAvatarProfile: user.mirorAvatarProfile,
@@ -86,5 +68,60 @@ export const getUserSettings = query({
       // Notifications (empty for now - can add separate notifications table later)
       notifications: [],
     };
+  },
+});
+
+/**
+ * Get current user's Professional Genome
+ *
+ * SRS Layer 4: Self-Scoped Data Access
+ * - Genome now lives in settings_account_Genome table
+ * - Returns null if not yet created
+ */
+export const getUserGenome = query({
+  handler: async (ctx: QueryCtx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+
+    const user = await ctx.db
+      .query("admin_users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) return null;
+
+    // Get genome from separate table
+    const genome = await ctx.db
+      .query("settings_account_Genome")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .first();
+
+    if (!genome) {
+      // Return empty genome with 0% completion
+      return {
+        userId: user._id,
+        completionPercent: 0,
+        // Professional Identity
+        jobTitle: undefined,
+        department: undefined,
+        seniority: undefined,
+        // Company Context
+        industry: undefined,
+        companySize: undefined,
+        companyWebsite: undefined,
+        // Transformation Journey
+        transformationGoal: undefined,
+        transformationStage: undefined,
+        transformationType: undefined,
+        timelineUrgency: undefined,
+        // Growth Intel
+        howDidYouHearAboutUs: undefined,
+        teamSize: undefined,
+        annualRevenue: undefined,
+        successMetric: undefined,
+      };
+    }
+
+    return genome;
   },
 });

@@ -18,7 +18,7 @@ import type { CascadeStatusType } from '@/prebuilts/badge/Cascade';
 import type { SortableColumn } from '@/prebuilts/table/Sortable';
 import { useAdminData } from '@/hooks/useAdminData';
 
-type DeletionLog = Doc<"admin_users_DeletionLogs">;
+type DeletionLog = Doc<"admin_users_DeleteLog">;
 
 export default function DeletedUsers() {
 
@@ -59,7 +59,7 @@ export default function DeletedUsers() {
   }, [deletionLogsRaw]);
 
   // Selection state for deletion logs
-  const [selectedLogs, setSelectedLogs] = useState<Set<Id<"admin_users_DeletionLogs">>>(new Set());
+  const [selectedLogs, setSelectedLogs] = useState<Set<Id<"admin_users_DeleteLog">>>(new Set());
 
   // Ref to hold filtered data for header checkbox (avoids circular dependency)
   type FormattedLog = (typeof tableData)[number];
@@ -99,7 +99,7 @@ export default function DeletedUsers() {
     }
   }, [selectedLogs.size]);
 
-  const handleRowCheckbox = useCallback((logId: Id<"admin_users_DeletionLogs">) => {
+  const handleRowCheckbox = useCallback((logId: Id<"admin_users_DeleteLog">) => {
     setSelectedLogs(prev => {
       const next = new Set(prev);
       if (next.has(logId)) {
@@ -112,7 +112,7 @@ export default function DeletedUsers() {
   }, []);
 
   // Handler for deleting single journal entry
-  const handleDeleteJournalEntry = useCallback(async (logId: Id<"admin_users_DeletionLogs">) => {
+  const handleDeleteJournalEntry = useCallback(async (logId: Id<"admin_users_DeleteLog">) => {
     setModalState({
       isOpen: true,
       title: 'Delete VANISH Journal Entry?',
@@ -155,7 +155,7 @@ export default function DeletedUsers() {
   }, [deleteJournalEntry]);
 
   // Handler for bulk deleting journal entries (called by VR with selected IDs)
-  const handleBulkDeleteLogs = useCallback(async (logIds: Id<"admin_users_DeletionLogs">[]) => {
+  const handleBulkDeleteLogs = useCallback(async (logIds: Id<"admin_users_DeleteLog">[]) => {
 
     setModalState({
       isOpen: true,

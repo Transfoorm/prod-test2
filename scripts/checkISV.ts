@@ -39,6 +39,7 @@ const EXCEPTION_FILES = new Set([
 
   // UserButton (Dynamic import Cropper requires empty style/classes props)
   'src/features/UserButton/index.tsx',
+  'src/features/shell/UserButton/index.tsx',  // react-easy-crop requires style prop
 ]);
 
 interface Violation {

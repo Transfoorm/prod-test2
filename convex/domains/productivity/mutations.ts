@@ -49,7 +49,7 @@ export const createEmail = mutation({
     const orgId = user.orgSlug || "";
     const now = Date.now();
 
-    const emailId = await ctx.db.insert("prod_email_Messages", {
+    const emailId = await ctx.db.insert("productivity_email_Messages", {
       ...args,
       orgId,
       createdAt: now,
@@ -63,7 +63,7 @@ export const createEmail = mutation({
 
 export const updateEmail = mutation({
   args: {
-    emailId: v.id("prod_email_Messages"),
+    emailId: v.id("productivity_email_Messages"),
     subject: v.optional(v.string()),
     body: v.optional(v.string()),
     status: v.optional(v.union(v.literal("draft"), v.literal("sent"), v.literal("archived"))),
@@ -92,7 +92,7 @@ export const updateEmail = mutation({
 });
 
 export const deleteEmail = mutation({
-  args: { emailId: v.id("prod_email_Messages") },
+  args: { emailId: v.id("productivity_email_Messages") },
   handler: async (ctx, args) => {
     const user = await getCurrentUserWithRank(ctx);
     const email = await ctx.db.get(args.emailId);
@@ -128,7 +128,7 @@ export const createCalendarEvent = mutation({
     const orgId = user.orgSlug || "";
     const now = Date.now();
 
-    const eventId = await ctx.db.insert("prod_cal_Events", {
+    const eventId = await ctx.db.insert("productivity_calendar_Events", {
       ...args,
       orgId,
       createdAt: now,
@@ -142,7 +142,7 @@ export const createCalendarEvent = mutation({
 
 export const updateCalendarEvent = mutation({
   args: {
-    eventId: v.id("prod_cal_Events"),
+    eventId: v.id("productivity_calendar_Events"),
     title: v.optional(v.string()),
     description: v.optional(v.string()),
     startTime: v.optional(v.number()),
@@ -175,7 +175,7 @@ export const updateCalendarEvent = mutation({
 });
 
 export const deleteCalendarEvent = mutation({
-  args: { eventId: v.id("prod_cal_Events") },
+  args: { eventId: v.id("productivity_calendar_Events") },
   handler: async (ctx, args) => {
     const user = await getCurrentUserWithRank(ctx);
     const event = await ctx.db.get(args.eventId);
@@ -210,7 +210,7 @@ export const createBooking = mutation({
     const orgId = user.orgSlug || "";
     const now = Date.now();
 
-    const bookingId = await ctx.db.insert("prod_book_Bookings", {
+    const bookingId = await ctx.db.insert("productivity_bookings_Form", {
       ...args,
       orgId,
       createdAt: now,
@@ -224,7 +224,7 @@ export const createBooking = mutation({
 
 export const updateBooking = mutation({
   args: {
-    bookingId: v.id("prod_book_Bookings"),
+    bookingId: v.id("productivity_bookings_Form"),
     clientName: v.optional(v.string()),
     serviceType: v.optional(v.string()),
     scheduledTime: v.optional(v.number()),
@@ -255,7 +255,7 @@ export const updateBooking = mutation({
 });
 
 export const deleteBooking = mutation({
-  args: { bookingId: v.id("prod_book_Bookings") },
+  args: { bookingId: v.id("productivity_bookings_Form") },
   handler: async (ctx, args) => {
     const user = await getCurrentUserWithRank(ctx);
     const booking = await ctx.db.get(args.bookingId);
@@ -291,7 +291,7 @@ export const createMeeting = mutation({
     const orgId = user.orgSlug || "";
     const now = Date.now();
 
-    const meetingId = await ctx.db.insert("prod_pipe_Meetings", {
+    const meetingId = await ctx.db.insert("productivity_pipeline_Prospects", {
       ...args,
       orgId,
       createdAt: now,
@@ -305,7 +305,7 @@ export const createMeeting = mutation({
 
 export const updateMeeting = mutation({
   args: {
-    meetingId: v.id("prod_pipe_Meetings"),
+    meetingId: v.id("productivity_pipeline_Prospects"),
     title: v.optional(v.string()),
     participants: v.optional(v.array(v.string())),
     scheduledTime: v.optional(v.number()),
@@ -338,7 +338,7 @@ export const updateMeeting = mutation({
 });
 
 export const deleteMeeting = mutation({
-  args: { meetingId: v.id("prod_pipe_Meetings") },
+  args: { meetingId: v.id("productivity_pipeline_Prospects") },
   handler: async (ctx, args) => {
     const user = await getCurrentUserWithRank(ctx);
     const meeting = await ctx.db.get(args.meetingId);

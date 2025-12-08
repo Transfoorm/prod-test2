@@ -49,18 +49,18 @@ export const listClients = query({
 
     if (rank === "admiral") {
       // Admiral: See ALL clients (cross-org, platform-wide)
-      clients = await ctx.db.query("clients").collect();
+      clients = await ctx.db.query("clients_contacts_Users").collect();
     } else if (rank === "captain" || rank === "commodore") {
       // Captain/Commodore: Organization-scoped
       const orgId = user.orgSlug || "";
       clients = await ctx.db
-        .query("clients")
+        .query("clients_contacts_Users")
         .withIndex("by_org", (q) => q.eq("orgId", orgId))
         .collect();
     } else {
       // Crew: Assigned clients only
       clients = await ctx.db
-        .query("clients")
+        .query("clients_contacts_Users")
         .withIndex("by_assigned", (q) => q.eq("assignedTo", user._id))
         .collect();
     }
@@ -76,7 +76,7 @@ export const listClients = query({
  * - Validates user has access to this specific client
  */
 export const getClient = query({
-  args: { clientId: v.id("clients") },
+  args: { clientId: v.id("clients_contacts_Users") },
   handler: async (ctx, args) => {
     const user = await getCurrentUserWithRank(ctx);
     const rank = user.rank || "crew";

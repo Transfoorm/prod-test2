@@ -16,7 +16,7 @@
   --company-button-logo-size: 32px;
 
   /* Chevron Dimensions */
-  --company-button-chevron-size: 16px;
+  --company-button-chevron-size: 14px;
 
   /* Menu Positioning */
   --company-button-menu-top: 12px;
@@ -61,6 +61,7 @@
    ═══════════════════════════════════════════════════════════════════════ */
 
 .ft-company-button {
+  position: relative;
   width: 100%;
   padding: var(--space-sm) var(--space-xs);
   background-color: var(--sidebar-button-rest);  /* 🟨 BUTTON REST COLOR */
@@ -100,7 +101,12 @@
 }
 
 .ft-company-button-chevron {
-  display: none;  /* Hidden to maximize space for company name */
+  position: absolute;
+  bottom: 8px;
+  right: 17px;
+  width: var(--company-button-chevron-size);
+  height: var(--company-button-chevron-size);
+  color: var(--text-tertiary);
 }
 
 .ft-company-button-text {

@@ -16,7 +16,6 @@ export class UsersModel {
     args: {
       clerkId: string;
       email: string;
-      emailVerified?: boolean;
       firstName?: string;
       lastName?: string;
       avatarUrl?: string;
@@ -44,7 +43,6 @@ export class UsersModel {
       throw new Error(`User with clerkId ${args.clerkId} already exists`);
     }
 
-    const defaultTheme = THEME_DEFAULTS.DEFAULT_THEME;
     const defaultMode = THEME_DEFAULTS.DEFAULT_MODE;
     const now = Date.now();
 
@@ -55,7 +53,6 @@ export class UsersModel {
     const userId = await db.insert("admin_users", {
       clerkId: args.clerkId,
       email: args.email,
-      emailVerified: args.emailVerified,
       firstName: args.firstName || '', // Empty string shows "Setup Incomplete" in UI
       lastName: args.lastName || '', // Empty string shows "Setup Incomplete" in UI
       avatarUrl: args.avatarUrl,
@@ -63,8 +60,7 @@ export class UsersModel {
       rank: RANK_SYSTEM_DEFAULTS.DEFAULT_RANK, // Default rank from system constants
       setupStatus: args.setupStatus || "pending", // Default setup status
       businessCountry: args.businessCountry || "AU", // Default business country
-      themeName: defaultTheme, // Default theme
-      themeDark: defaultMode, // Default mode
+      themeDark: defaultMode, // Default mode (required field)
       // RANK-AWARE SYSTEM: Set trial period on signup
       subscriptionStatus: RANK_SYSTEM_DEFAULTS.DEFAULT_SUBSCRIPTION_STATUS,
       trialStartedAt: now,
@@ -73,7 +69,7 @@ export class UsersModel {
       createdAt: now,
       updatedAt: now,
       lastLoginAt: now, // TTT-CERTIFIED: Account creation = first login
-      loginCount: 1, // First login on signup
+      loginCount: 1, // First login on signup (required field)
     });
 
     return userId;
@@ -94,14 +90,13 @@ export class UsersModel {
   static async getUserThemePreferences(
     db: DatabaseReader,
     clerkId: string
-  ): Promise<{ themeName: string; themeDark: boolean } | null> {
+  ): Promise<{ themeDark: boolean } | null> {
     const user = await this.getUserByClerkId(db, clerkId);
 
     if (!user) return null;
 
     return {
-      themeName: user.themeName || THEME_DEFAULTS.DEFAULT_THEME,
-      themeDark: user.themeDark || THEME_DEFAULTS.DEFAULT_MODE
+      themeDark: user.themeDark
     };
   }
 
@@ -109,24 +104,24 @@ export class UsersModel {
   static async updateThemePreferences(
     db: DatabaseWriter,
     clerkId: string,
-    themeName?: "transtheme",
+    _themeName?: "transtheme", // Kept for API compatibility but not stored
     themeDark?: boolean
-  ): Promise<{ themeName: string; themeDark: boolean }> {
+  ): Promise<{ themeDark: boolean }> {
     const existingUser = await this.getUserByClerkId(db, clerkId);
 
     if (!existingUser) {
       throw new Error("User not found");
     }
 
-    await db.patch(existingUser._id, {
-      themeName,
-      themeDark,
-      updatedAt: Date.now(),
-    });
+    if (themeDark !== undefined) {
+      await db.patch(existingUser._id, {
+        themeDark,
+        updatedAt: Date.now(),
+      });
+    }
 
     return {
-      themeName: themeName || existingUser.themeName || THEME_DEFAULTS.DEFAULT_THEME,
-      themeDark: themeDark !== undefined ? themeDark : (existingUser.themeDark || THEME_DEFAULTS.DEFAULT_MODE)
+      themeDark: themeDark !== undefined ? themeDark : existingUser.themeDark
     };
   }
 

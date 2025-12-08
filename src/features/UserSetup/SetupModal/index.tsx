@@ -383,7 +383,6 @@ export default function SetupModal() {
         socialName: data.socialName,
         orgSlug: data.orgSlug,
         businessCountry: data.businessCountry,
-        emailVerified: true,
       });
 
       if (!result.success) {
@@ -393,7 +392,6 @@ export default function SetupModal() {
       // Update store with fresh data from server (DB → Cookie → Store → UI)
       if (result.user) {
         updateUser({
-          emailVerified: result.user.emailVerified,
           setupStatus: result.user.setupStatus as 'pending' | 'complete',
           firstName: result.user.firstName || undefined,
           lastName: result.user.lastName || undefined,

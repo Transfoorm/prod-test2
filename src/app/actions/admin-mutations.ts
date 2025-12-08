@@ -26,7 +26,7 @@ const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
  *
  * 🔱 SOVEREIGN: Identity from FUSE session cookie, not Clerk token
  */
-export async function deleteDeletionLogAction(logId: Id<"admin_users_DeletionLogs">) {
+export async function deleteDeletionLogAction(logId: Id<"admin_users_DeleteLog">) {
   try {
     // 🔱 SOVEREIGN: Read identity from FUSE session cookie
     const session = await readSessionCookie();

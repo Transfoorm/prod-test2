@@ -187,12 +187,12 @@ export function EmailFields() {
       if (currentUser) {
         setUser({
           ...currentUser,
-          secondaryEmail: null,
+          secondaryEmail: undefined,
         });
       }
 
       await updateUserSettings({
-        secondaryEmail: null,
+        secondaryEmail: undefined,
       });
 
       await refreshSessionAfterUpload();

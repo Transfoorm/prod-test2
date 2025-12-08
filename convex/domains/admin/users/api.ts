@@ -168,8 +168,8 @@ export const getUserForEdit = query({
 
     if (!user) return null;
 
-    // Resolve storage URL for avatar (check avatarUrl first, fallback to imageUrl for migration)
-    const avatarField = user.avatarUrl || user.imageUrl;
+    // Resolve storage URL for avatar
+    const avatarField = user.avatarUrl;
     let avatarUrl = null;
 
     if (avatarField) {
@@ -216,8 +216,8 @@ export const getCurrentUser = query({
 
     if (!user) return null;
 
-    // Resolve storage URL for avatar (check avatarUrl first, fallback to imageUrl for migration)
-    const avatarField = user.avatarUrl || user.imageUrl;
+    // Resolve storage URL for avatar
+    const avatarField = user.avatarUrl;
     let avatarUrl = null;
 
     if (avatarField) {
@@ -292,7 +292,7 @@ export const getUserByClerkId = query({
     if (!user) return null;
 
     // Resolve storage URL for avatar
-    const avatarField = user.avatarUrl || user.imageUrl;
+    const avatarField = user.avatarUrl;
     let avatarUrl = null;
 
     if (avatarField) {
@@ -325,7 +325,6 @@ export const createUser = mutation({
   args: {
     clerkId: v.string(),
     email: v.string(),
-    emailVerified: v.optional(v.boolean()),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
     avatarUrl: v.optional(v.string()),
@@ -453,7 +452,6 @@ export const completeSetup = mutation({
     socialName: v.string(),
     orgSlug: v.string(),
     businessCountry: v.optional(v.string()),
-    emailVerified: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const user = await UsersModel.getUserByClerkId(ctx.db, args.clerkId);
@@ -469,7 +467,6 @@ export const completeSetup = mutation({
       socialName: args.socialName,
       orgSlug: args.orgSlug,
       businessCountry: args.businessCountry,
-      emailVerified: args.emailVerified,
       setupStatus: "complete",
       updatedAt: Date.now(),
     });
@@ -554,141 +551,15 @@ export const updateEntity = mutation({
   },
 });
 
-// Reset/clear all professional genome fields
-export const resetProfessionalGenome = mutation({
-  args: {
-    userId: v.id("admin_users"),
-  },
-  handler: async (ctx, args) => {
-    // Clear all professional genome fields
-    await ctx.db.patch(args.userId, {
-      jobTitle: '',
-      department: '',
-      seniority: undefined,
-      industry: '',
-      companySize: undefined,
-      companyWebsite: '',
-      transformationGoal: '',
-      transformationStage: undefined,
-      transformationType: undefined,
-      timelineUrgency: undefined,
-      howDidYouHearAboutUs: '',
-      teamSize: 0,
-      annualRevenue: '',
-      successMetric: '',
-      updatedAt: Date.now(),
-    });
-
-    return { success: true };
-  },
-});
-
-export const updateProfessionalGenome = mutation({
-  args: {
-    clerkId: v.string(),
-    // Professional Identity
-    jobTitle: v.optional(v.string()),
-    department: v.optional(v.string()),
-    seniority: v.optional(v.union(
-      v.literal("staff"),
-      v.literal("admin"),
-      v.literal("consultant"),
-      v.literal("contractor"),
-      v.literal("coach"),
-      v.literal("advisor"),
-      v.literal("manager"),
-      v.literal("director"),
-      v.literal("executive"),
-      v.literal("founder"),
-      v.literal("")
-    )),
-    // Company Context
-    industry: v.optional(v.string()),
-    companySize: v.optional(v.union(
-      v.literal("1-10"),
-      v.literal("11-50"),
-      v.literal("51-200"),
-      v.literal("201-1000"),
-      v.literal("1001-5000"),
-      v.literal("5001+"),
-      v.literal("")
-    )),
-    companyWebsite: v.optional(v.string()),
-    // Transformation Journey
-    transformationGoal: v.optional(v.string()),
-    transformationStage: v.optional(v.union(
-      v.literal("exploring"),
-      v.literal("planning"),
-      v.literal("executing"),
-      v.literal("scaling"),
-      v.literal("")
-    )),
-    transformationType: v.optional(v.union(
-      v.literal("digital"),
-      v.literal("operational"),
-      v.literal("cultural"),
-      v.literal("product"),
-      v.literal("go_to_market"),
-      v.literal("")
-    )),
-    timelineUrgency: v.optional(v.union(
-      v.literal("exploratory"),
-      v.literal("3_6_months"),
-      v.literal("immediate"),
-      v.literal("")
-    )),
-    // Growth Intel
-    howDidYouHearAboutUs: v.optional(v.string()),
-    teamSize: v.optional(v.number()),
-    annualRevenue: v.optional(v.string()),
-    successMetric: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    const user = await UsersModel.getUserByClerkId(ctx.db, args.clerkId);
-
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    const updates: Partial<typeof user> = {
-      updatedAt: Date.now(),
-    };
-
-    // Professional Identity
-    if (args.jobTitle !== undefined) updates.jobTitle = args.jobTitle;
-    if (args.department !== undefined) updates.department = args.department;
-    if (args.seniority !== undefined) updates.seniority = args.seniority || undefined;
-
-    // Company Context
-    if (args.industry !== undefined) updates.industry = args.industry;
-    if (args.companySize !== undefined) updates.companySize = args.companySize || undefined;
-    if (args.companyWebsite !== undefined) updates.companyWebsite = args.companyWebsite;
-
-    // Transformation Journey
-    if (args.transformationGoal !== undefined) updates.transformationGoal = args.transformationGoal;
-    if (args.transformationStage !== undefined) updates.transformationStage = args.transformationStage || undefined;
-    if (args.transformationType !== undefined) updates.transformationType = args.transformationType || undefined;
-    if (args.timelineUrgency !== undefined) updates.timelineUrgency = args.timelineUrgency || undefined;
-
-    // Growth Intel
-    if (args.howDidYouHearAboutUs !== undefined) updates.howDidYouHearAboutUs = args.howDidYouHearAboutUs;
-    if (args.teamSize !== undefined) updates.teamSize = args.teamSize;
-    if (args.annualRevenue !== undefined) updates.annualRevenue = args.annualRevenue;
-    if (args.successMetric !== undefined) updates.successMetric = args.successMetric;
-
-    await ctx.db.patch(user._id, updates);
-
-    return { success: true };
-  },
-});
+// NOTE: Professional Genome mutations moved to /convex/domains/settings/mutations.ts
+// Genome data now lives in settings_account_Genome table
 
 // Webhook mutation to sync user data from Clerk
 export const syncUserFromClerk = mutation({
   args: {
     clerkId: v.string(),
     email: v.optional(v.string()),
-    emailVerified: v.optional(v.boolean()),
-    secondaryEmail: v.optional(v.union(v.string(), v.null())),
+    secondaryEmail: v.optional(v.string()),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
     avatarUrl: v.optional(v.string()),
@@ -702,19 +573,17 @@ export const syncUserFromClerk = mutation({
       return await UsersModel.createUser(ctx.db, {
         clerkId: args.clerkId,
         email: args.email || '',
-        emailVerified: args.emailVerified,
         firstName: args.firstName,
         lastName: args.lastName,
         avatarUrl: args.avatarUrl,
       });
     }
 
-    const updates: Partial<typeof user> = {
+    const updates: Record<string, unknown> = {
       updatedAt: Date.now(),
     };
 
     if (args.email !== undefined) updates.email = args.email;
-    if (args.emailVerified !== undefined) updates.emailVerified = args.emailVerified;
     if (args.secondaryEmail !== undefined) updates.secondaryEmail = args.secondaryEmail;
     if (args.firstName !== undefined) updates.firstName = args.firstName;
     if (args.lastName !== undefined) updates.lastName = args.lastName;
@@ -753,7 +622,7 @@ export const getAllDeletionLogs = query({
       return []; // Return empty array instead of throwing
     }
 
-    const logs = await ctx.db.query("admin_users_DeletionLogs")
+    const logs = await ctx.db.query("admin_users_DeleteLog")
       .order("desc")
       .collect();
     return logs;

@@ -1,12 +1,12 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🔌 FINANCE DOMAIN QUERIES - SRS Layer 4                              │
-│  /convex/domains/finance/queries.ts                                    │
+│  /convex/domains/finance_banking_Statements/queries.ts                                    │
 │                                                                        │
 │  Rank-based data scoping for financial management:                     │
 │  • Crew: Read-only, organization-scoped                                │
 │  • Captain: Full access, organization-scoped                           │
 │  • Commodore: Full access, organization-scoped                         │
-│  • Admiral: All finance (cross-org, platform-wide)                     │
+│  • Admiral: All finance_banking_Statements (cross-org, platform-wide)                     │
 │                                                                        │
 │  SRS Commandment #4: Data scoping via Convex query filters            │
 └────────────────────────────────────────────────────────────────────────┘ */
@@ -38,7 +38,7 @@ async function getCurrentUserWithRank(ctx: QueryCtx) {
  * SRS Layer 4: Data Scoping
  * - Crew: Read-only, organization-scoped
  * - Captain/Commodore: Organization-scoped
- * - Admiral: All finance (cross-org)
+ * - Admiral: All finance_banking_Statements (cross-org)
  */
 export const listTransactions = query({
   handler: async (ctx) => {
@@ -49,12 +49,12 @@ export const listTransactions = query({
 
     if (rank === "admiral") {
       // Admiral: See ALL transactions (cross-org, platform-wide)
-      transactions = await ctx.db.query("finance").collect();
+      transactions = await ctx.db.query("finance_banking_Statements").collect();
     } else {
       // Crew/Captain/Commodore: Organization-scoped
       const orgId = user.orgSlug || "";
       transactions = await ctx.db
-        .query("finance")
+        .query("finance_banking_Statements")
         .withIndex("by_org", (q) => q.eq("orgId", orgId))
         .collect();
     }
@@ -70,7 +70,7 @@ export const listTransactions = query({
  * - Validates user has access to this specific transaction
  */
 export const getTransaction = query({
-  args: { transactionId: v.id("finance") },
+  args: { transactionId: v.id("finance_banking_Statements") },
   handler: async (ctx, args) => {
     const user = await getCurrentUserWithRank(ctx);
     const rank = user.rank || "crew";

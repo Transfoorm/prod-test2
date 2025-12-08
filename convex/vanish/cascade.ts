@@ -136,8 +136,6 @@ async function sweepStorageFiles(
   console.log(`[VANISH STORAGE] 🔍 Checking user ${userId}:`);
   console.log(`[VANISH STORAGE]    Email: ${user.email}`);
   console.log(`[VANISH STORAGE]    avatarUrl: ${user.avatarUrl}`);
-  console.log(`[VANISH STORAGE]    avatarUrl type: ${typeof user.avatarUrl}`);
-  console.log(`[VANISH STORAGE]    imageUrl: ${user.imageUrl}`);
 
   // Sweep user avatar (if it's a storage ID, not a URL)
   if (user.avatarUrl && typeof user.avatarUrl === 'string') {
@@ -160,21 +158,6 @@ async function sweepStorageFiles(
     }
   } else {
     console.log(`[VANISH STORAGE]   No avatarUrl to delete`);
-  }
-
-  // Also sweep legacy imageUrl field
-  if (user.imageUrl && typeof user.imageUrl === 'string') {
-    const isStorageId = !user.imageUrl.startsWith('http');
-
-    if (isStorageId) {
-      try {
-        await storage.delete(user.imageUrl as Id<"_storage">);
-        deletedFiles.push(user.imageUrl);
-        console.log(`[VANISH STORAGE] ✓ Deleted legacy imageUrl storage file: ${user.imageUrl}`);
-      } catch (error) {
-        console.error(`[VANISH] ✗ Failed to delete legacy imageUrl ${user.imageUrl}:`, error);
-      }
-    }
   }
 
   // Sweep files from other tables (based on manifest)
@@ -388,7 +371,7 @@ export async function executeUserDeletionCascade(
     await markDeletionStart(db, userId);
 
     // Create initial audit log entry
-    const auditLogId = await db.insert('admin_users_DeletionLogs', {
+    const auditLogId = await db.insert('admin_users_DeleteLog', {
       userId: userId.toString(),
       clerkId: user.clerkId,
       email: user.email,
@@ -404,11 +387,14 @@ export async function executeUserDeletionCascade(
       reason: options.reason, // Store deletion reason for compliance
       scope: {
         userProfile: false, // Will be updated
+        clerkAccount: false, // Will be updated
         storageFiles: [],
         relatedTables: [],
       },
       status: 'in_progress',
       deletedAt: Date.now(),
+      chunksCascaded: 0, // Initial value, will be updated
+      recordsDeleted: 0, // Initial value, will be updated
     });
 
     // Sweep storage files
@@ -504,7 +490,7 @@ export async function executeUserDeletionCascade(
       }
 
       const auditLog = await db
-        .query('admin_users_DeletionLogs')
+        .query('admin_users_DeleteLog')
         .withIndex('by_clerk_id', (q) => q.eq('clerkId', user!.clerkId))
         .order('desc')
         .first();

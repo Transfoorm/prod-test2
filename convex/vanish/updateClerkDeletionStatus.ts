@@ -31,7 +31,7 @@ export const updateClerkDeletionStatus = mutation({
   handler: async (ctx, args) => {
     // Find the most recent deletion log for this user
     const deletionLog = await ctx.db
-      .query("admin_users_DeletionLogs")
+      .query("admin_users_DeleteLog")
       .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.targetClerkId))
       .order("desc")
       .first();

@@ -87,7 +87,7 @@ export const createClient = mutation({
 
     const now = Date.now();
 
-    const clientId = await ctx.db.insert("clients", {
+    const clientId = await ctx.db.insert("clients_contacts_Users", {
       firstName: args.firstName,
       lastName: args.lastName,
       email: args.email,
@@ -116,7 +116,7 @@ export const createClient = mutation({
  */
 export const updateClient = mutation({
   args: {
-    clientId: v.id("clients"),
+    clientId: v.id("clients_contacts_Users"),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
     email: v.optional(v.string()),
@@ -186,7 +186,7 @@ export const updateClient = mutation({
  */
 export const deleteClient = mutation({
   args: {
-    clientId: v.id("clients"),
+    clientId: v.id("clients_contacts_Users"),
   },
   handler: async (ctx, args) => {
     const user = await getCurrentUserWithRank(ctx);

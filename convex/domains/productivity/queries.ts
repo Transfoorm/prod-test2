@@ -39,11 +39,11 @@ export const listEmails = query({
     const rank = user.rank || "crew";
 
     if (rank === "admiral") {
-      return await ctx.db.query("prod_email_Messages").collect();
+      return await ctx.db.query("productivity_email_Messages").collect();
     } else {
       const orgId = user.orgSlug || "";
       return await ctx.db
-        .query("prod_email_Messages")
+        .query("productivity_email_Messages")
         .withIndex("by_org", (q) => q.eq("orgId", orgId))
         .collect();
     }
@@ -59,11 +59,11 @@ export const listCalendarEvents = query({
     const rank = user.rank || "crew";
 
     if (rank === "admiral") {
-      return await ctx.db.query("prod_cal_Events").collect();
+      return await ctx.db.query("productivity_calendar_Events").collect();
     } else {
       const orgId = user.orgSlug || "";
       return await ctx.db
-        .query("prod_cal_Events")
+        .query("productivity_calendar_Events")
         .withIndex("by_org", (q) => q.eq("orgId", orgId))
         .collect();
     }
@@ -79,11 +79,11 @@ export const listBookings = query({
     const rank = user.rank || "crew";
 
     if (rank === "admiral") {
-      return await ctx.db.query("prod_book_Bookings").collect();
+      return await ctx.db.query("productivity_bookings_Form").collect();
     } else {
       const orgId = user.orgSlug || "";
       return await ctx.db
-        .query("prod_book_Bookings")
+        .query("productivity_bookings_Form")
         .withIndex("by_org", (q) => q.eq("orgId", orgId))
         .collect();
     }
@@ -99,11 +99,11 @@ export const listMeetings = query({
     const rank = user.rank || "crew";
 
     if (rank === "admiral") {
-      return await ctx.db.query("prod_pipe_Meetings").collect();
+      return await ctx.db.query("productivity_pipeline_Prospects").collect();
     } else {
       const orgId = user.orgSlug || "";
       return await ctx.db
-        .query("prod_pipe_Meetings")
+        .query("productivity_pipeline_Prospects")
         .withIndex("by_org", (q) => q.eq("orgId", orgId))
         .collect();
     }
