@@ -49,9 +49,10 @@ export async function fetchUserServer(): Promise<ServerUser | null> {
 
     // FUSE 5.0 Doctrine: Convex is the single source of truth
     // Use fresh data from Convex, not stale cookie
+    // 🛡️ S.I.D. Phase 15: clerkId comes from session, not Convex query
     const userData: ServerUser = {
       _id: String(convexUser._id),        // ✅ Sovereign identity
-      clerkId: convexUser.clerkId,        // Reference only
+      clerkId: session.clerkId,           // Preserve from session
       email: convexUser.email,
       firstName: convexUser.firstName,
       lastName: convexUser.lastName,

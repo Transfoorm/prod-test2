@@ -234,11 +234,11 @@ export default function UserButton() {
       });
       if (freshUser) {
         const { setUser } = useFuse.getState();
-
+        // 🛡️ S.I.D. Phase 15: clerkId comes from current user state, not Convex query
         setUser({
           id: String(freshUser._id),         // ✅ SOVEREIGNTY: Convex _id (canonical)
           convexId: String(freshUser._id),   // Explicit alias
-          clerkId: freshUser.clerkId,        // ⚠️ Auth reference only
+          clerkId: user!.clerkId,            // Preserve from existing FUSE state
           email: freshUser.email || '',
           firstName: freshUser.firstName,
           lastName: freshUser.lastName,

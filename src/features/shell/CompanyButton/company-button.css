@@ -64,7 +64,7 @@
   position: relative;
   width: 100%;
   padding: var(--space-sm) var(--space-xs);
-  background-color: var(--sidebar-button-rest);  /* 🟨 BUTTON REST COLOR */
+  background-color: var(--sidebar-main-button-rest);  /* 🟨 BUTTON REST COLOR */
   color: var(--sidebar-button-text);
   border: none;
   border-radius: var(--radius-md);
@@ -78,12 +78,12 @@
 }
 
 .ft-company-button:hover {
-  background-color: var(--sidebar-button-hover);
+  background-color: var(--sidebar-main-button-hover);
 }
 
 .ft-company-button--active,
 .ft-company-button--active:hover {
-  background-color: var(--sidebar-button-active);  /* 🟨 BUTTON ACTIVE COLOR */
+  background-color: var(--sidebar-main-button-active);  /* 🟨 BUTTON ACTIVE COLOR */
 }
 
 /* Company logo - larger with rounded corners */

@@ -26,9 +26,11 @@ export default function Account() {
   usePageTiming('/settings/account');
 
   const user = useFuse((s) => s.user);
+  const genome = useFuse((s) => s.genome);
   const setShadowKingActive = useFuse((s) => s.setShadowKingActive);
 
   const freeze = user?.setupStatus === 'pending';
+  const genomePercent = genome?.completionPercent ?? 0;
 
   // If frozen, intercept field interactions only - tabs are allowed
   const handleInteraction = (e: React.MouseEvent | React.FocusEvent) => {
@@ -69,7 +71,7 @@ export default function Account() {
             { id: 'profile', label: 'Profile', icon: <Icon variant="user" />, content: <Profile /> },
             { id: 'email', label: 'Email', icon: <Icon variant="send" />, content: <Email /> },
             { id: 'security', label: 'Security', icon: <Icon variant="lock" />, content: <Security /> },
-            { id: 'genome', label: 'Genome', icon: <Icon variant="dna" />, content: <Genome />, highlight: true },
+            { id: 'genome', label: <>Genome <span className="vr-tabs-panels-label-sm">{genomePercent}%</span></>, icon: <Icon variant="dna" />, content: <Genome />, highlight: true },
           ]}
         />
       </div>

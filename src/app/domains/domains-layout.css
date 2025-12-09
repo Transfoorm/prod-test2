@@ -85,9 +85,9 @@
 
 /*  👨🏻‍✈️ Admiral rank - distinct shell appearance (light mode only) */
 [data-theme-mode="light"] [data-user-rank="admiral"] {
-  /* 🎨 Single source: change this, all shell parts follow */
-        --admiral-shell-bg: #e8dee1;
-        --page-arch-border: 2px solid #ddd3d6;
+  /* 🎨 Single source: change this, all shell parts follow  [std bg = f1eded] */
+        --admiral-shell-bg: #f1eded;
+        --page-arch-border: 2px solid #ff5020;
        
   /* 🎨 All shell parts below, follow --admiral-shell-bg above */
               --appshell-bg: var(--admiral-shell-bg);

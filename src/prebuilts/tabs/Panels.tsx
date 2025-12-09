@@ -27,7 +27,7 @@ import { useState, useEffect, ReactNode } from 'react';
 
 export interface PanelTabItem {
   id: string;
-  label: string;
+  label: ReactNode;
   icon?: ReactNode;
   count?: number;
   content?: ReactNode;

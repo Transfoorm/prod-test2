@@ -64,9 +64,10 @@ export async function updateBusinessCountryAction(businessCountry: string) {
     if (!freshUser) throw new Error('User not found');
 
     // Mint new session with updated data
+    // 🛡️ S.I.D. Phase 15: clerkId comes from existing session, not Convex query
     const token = await mintSession({
       _id: String(freshUser._id),
-      clerkId: freshUser.clerkId,
+      clerkId: session.clerkId, // Preserve from existing session
       email: freshUser.email || session.email || '',
       secondaryEmail: freshUser.secondaryEmail || undefined,
       firstName: freshUser.firstName || session.firstName,
@@ -126,9 +127,10 @@ export async function completeSetupAction(data: {
     if (!freshUser) throw new Error('User not found');
 
     // Mint new session with updated data
+    // 🛡️ S.I.D. Phase 15: clerkId comes from existing session, not Convex query
     const token = await mintSession({
       _id: String(freshUser._id),
-      clerkId: freshUser.clerkId,
+      clerkId: session.clerkId, // Preserve from existing session
       email: freshUser.email || session.email || '',
       secondaryEmail: freshUser.secondaryEmail || undefined,
       firstName: freshUser.firstName || session.firstName,
@@ -216,9 +218,10 @@ export async function updateProfileAction(data: {
     if (!freshUser) throw new Error('User not found');
 
     // Mint new session with updated data
+    // 🛡️ S.I.D. Phase 15: clerkId comes from existing session, not Convex query
     const token = await mintSession({
       _id: String(freshUser._id),
-      clerkId: freshUser.clerkId,
+      clerkId: session.clerkId, // Preserve from existing session
       email: freshUser.email || session.email || '',
       secondaryEmail: freshUser.secondaryEmail || undefined,
       firstName: freshUser.firstName || session.firstName,
@@ -308,9 +311,10 @@ export async function refreshSessionAfterUpload() {
     console.log('🔍 refreshSessionAfterUpload - avatarUrl from Convex:', freshUser.avatarUrl);
 
     // Mint new session with updated avatar and brandLogo
+    // 🛡️ S.I.D. Phase 15: clerkId comes from existing session, not Convex query
     const token = await mintSession({
       _id: String(freshUser._id),
-      clerkId: freshUser.clerkId,
+      clerkId: session.clerkId, // Preserve from existing session
       email: freshUser.email || session.email || '',
       secondaryEmail: freshUser.secondaryEmail || undefined,
       firstName: freshUser.firstName || session.firstName,

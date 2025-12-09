@@ -144,10 +144,10 @@ export default function ActiveUsers() {
   const columns: SortableColumn<UserData>[] = [
     { key: 'select', variant: 'checkbox', checked: checkedRows, onCheck: handleRowCheckbox, onHeaderCheck: handleHeaderCheckbox, getRowLabel: (row) => `${row.firstName}`, currentUserId: fuseUser?.id, sortable: false },
     { key: 'createdAt', header: 'Created', sortable: true, width: '11%' },
-    { key: 'firstName', header: 'First', sortable: true, width: '9%' },
-    { key: 'lastName', header: 'Last', sortable: true, width: '12%' },
     { key: 'email', header: 'Email', sortable: true, width: '17%' },
     { key: 'setupStatus', header: 'Setup', sortable: true, width: '10%', render: (_value, row) => <Badge.setup status={row.setupStatus as SetupStatusType} /> },
+    { key: 'firstName', header: 'First', sortable: true, width: '9%' },
+    { key: 'lastName', header: 'Last', sortable: true, width: '12%' },
     { key: 'entityName', header: 'Entity', sortable: true, width: '12%' },
     { key: 'socialName', header: 'Social', sortable: true, width: '12%' },
     { key: 'rank', header: 'Rank', sortable: true, width: '10%', render: (_value, row) => <Badge.rank rank={row.rank as RankType} /> },

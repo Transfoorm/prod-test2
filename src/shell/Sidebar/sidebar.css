@@ -105,7 +105,7 @@
 .ly-sidebar-button {
   width: 100%;
   padding: var(--space-sm) var(--space-md);
-  background-color: var(--sidebar-button-rest);  /* 🟨 BUTTON REST COLOR */
+  background-color: var(--sidebar-main-button-rest);  /* 🟨 BUTTON REST COLOR */
   color: var(--sidebar-button-text);  /* 🟨 BUTTON TEXT COLOR */
   border: none;
   border-radius: var(--radius-md);
@@ -120,7 +120,7 @@
 }
 
 .ly-sidebar-button:hover {
-  background-color: var(--sidebar-button-hover);  /* 🟨 BUTTON HOVER COLOR */
+  background-color: var(--sidebar-main-button-hover);  /* 🟨 BUTTON HOVER COLOR */
 }
 
 .ly-sidebar-icon {
@@ -131,7 +131,7 @@
 
 .ly-sidebar-button--active {
   /* Subtle active state - you're HERE */
-  background-color: var(--sidebar-button-active);  /* 🟨 BUTTON ACTIVE COLOR */
+  background-color: var(--sidebar-main-button-active);  /* 🟨 BUTTON ACTIVE COLOR */
   text-shadow: 0.3px 0 0 currentcolor;  /* Fake bold - no text shift */
   box-shadow: inset var(--sidebar-active-indicator-width) 0 0 var(--color-primary-light);  /* Left BRACKET --> ⟬ */
 }
@@ -161,7 +161,7 @@
 }
 
 .ly-sidebar-collapse-all:hover {
-  background-color: var(--sidebar-button-hover);
+  background-color: var(--sidebar-main-button-hover);
   color: var(--text-secondary);
   border-color: var(--border-normal);
 }
@@ -217,11 +217,11 @@
 }
 
 .ly-sidebar-sublink:hover {
-  background-color: var(--sidebar-button-hover);
+  background-color: var(--sidebar-sublink-button-hover);  /* 🟨 SUBLINK HOVER COLOR */
 }
 
 .ly-sidebar-sublink--active {
-  background-color: var(--bg-active);  /* 🟨 SUBLINK ACTIVE COLOR */
+  background-color: var(--sidebar-sublink-button-active);  /* 🟨 SUBLINK ACTIVE COLOR */
   text-shadow: 0.3px 0 0 currentcolor;  /* Fake bold - no text shift */
 }
 
@@ -255,15 +255,15 @@
   left: var(--sidebar-footer-separator-inset);  /* 🟨 FOOTER SEPARATOR LEFT */
   right: var(--sidebar-footer-separator-inset);  /* 🟨 FOOTER SEPARATOR RIGHT */
   height: var(--sidebar-footer-separator-thickness);                             /* <-- thickness of the line */
-  background-color: var(--sidebar-button-hover);   /* <-- color of the line */
+  background-color: var(--sidebar-main-button-hover);   /* <-- color of the line */
 }
 
 .ly-sidebar-footer:hover {
-  background-color: var(--sidebar-button-hover);
+  background-color: var(--sidebar-main-button-hover);
 }
 
 .ly-sidebar-footer--active {
-  background-color: var(--sidebar-button-active);
+  background-color: var(--sidebar-main-button-active);
 }
 
 .ly-sidebar-footer-userbutton {

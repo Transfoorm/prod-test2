@@ -21,13 +21,15 @@ import { useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useQuery, useAction } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import type { Id } from '@/convex/_generated/dataModel';
 import { Icon, Badge } from '@/prebuilts';
 import { useVanish } from '@/vanish/Drawer';
 import { useFuse } from '@/store/fuse';
 
 // Type for deletion target
+// 🛡️ S.I.D. Phase 15: VANISH now uses sovereign _id for target identification
 type DeletionTarget = {
-  clerkId: string;
+  _id: string;  // Convex sovereign ID
   name: string;
   email: string;
   rank: 'admiral' | 'commodore' | 'captain' | 'crew';
@@ -46,8 +48,12 @@ export function VanishQuarantine() {
   const [isVisible, setIsVisible] = useState(false);
   const hydrateAdmin = useFuse((state) => state.hydrateAdmin);
 
-  // Query all users to resolve target data
-  const allUsers = useQuery(api.domains.admin.users.api.getAllUsers);
+  // 🛡️ S.I.D. Phase 15: Query now uses callerUserId (sovereign)
+  const fuseUser = useFuse((state) => state.user);
+  const allUsers = useQuery(
+    api.domains.admin.users.api.getAllUsers,
+    fuseUser?.id ? { callerUserId: fuseUser.id as Id<"admin_users"> } : "skip"
+  );
 
   /**
    * Force refresh FUSE admin data via WARP after deletion
@@ -68,11 +74,12 @@ export function VanishQuarantine() {
 
   /**
    * ⚠️ CLERK API INTEGRATION POINT
+   * 🛡️ S.I.D. Phase 15: Now accepts sovereign userId, internally looks up clerkId
    *
    * This action calls Clerk's API to delete user authentication records.
    * This is the ONLY place in VANISH that directly touches Clerk.
    */
-  const deleteUser = useAction(api.domains.admin.users.api.deleteAnyUserWithClerk);
+  const deleteUser = useAction(api.vanish.deleteAnyUserAction.deleteAnyUserWithClerkV2);
 
   // Deletion state
   const [deleteReason, setDeleteReason] = useState('');
@@ -88,12 +95,12 @@ export function VanishQuarantine() {
     targetIds.push(...config.targets);
   }
 
-  // Resolve user data for targets (check both _id and clerkId for compatibility)
+  // 🛡️ S.I.D. Phase 15: Resolve user data for targets using sovereign _id only
   const targets: DeletionTarget[] = allUsers
     ? allUsers
-        .filter((u) => targetIds.includes(u._id) || targetIds.includes(u.clerkId))
+        .filter((u) => targetIds.includes(u._id))
         .map((u) => ({
-          clerkId: u.clerkId,
+          _id: u._id,
           name: `${u.firstName || ''} ${u.lastName || ''}`.trim() || 'Unknown',
           email: u.email,
           rank: (u.rank || 'crew') as 'admiral' | 'commodore' | 'captain' | 'crew',
@@ -170,8 +177,9 @@ export function VanishQuarantine() {
 
       for (const target of targets) {
         try {
+          // 🛡️ S.I.D. Phase 15: Pass sovereign _id, action looks up clerkId internally
           const result = await deleteUser({
-            targetClerkId: target.clerkId,
+            targetUserId: target._id as Id<"admin_users">,
             reason: deleteReason
           });
 
@@ -207,8 +215,9 @@ export function VanishQuarantine() {
     } else {
       // Single deletion
       try {
+        // 🛡️ S.I.D. Phase 15: Pass sovereign _id, action looks up clerkId internally
         const result = await deleteUser({
-          targetClerkId: targets[0].clerkId,
+          targetUserId: targets[0]._id as Id<"admin_users">,
           reason: deleteReason
         });
 
@@ -314,7 +323,7 @@ export function VanishQuarantine() {
               <div className="ft-vanish-target-list">
                 {targets.map((target: DeletionTarget) => (
                   <div
-                    key={target.clerkId}
+                    key={target._id}
                     className="ft-vanish-target-item"
                   >
                     <div className="ft-vanish-target-name">

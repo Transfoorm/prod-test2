@@ -76,7 +76,13 @@ export default function UserRankTable() {
   const handleRankChange = async (userId: Id<'admin_users'>, newRank: UserRank) => {
     setChangingRank(userId);
     try {
-      await setUserRank({ userId, rank: newRank });
+      // 🛡️ S.I.D. Phase 15: Pass callerUserId (sovereign) to mutation
+      if (!currentUser?.id) throw new Error('Not authenticated');
+      await setUserRank({
+        userId,
+        rank: newRank,
+        callerUserId: currentUser.id as Id<'admin_users'>
+      });
     } catch (error) {
       console.error('Failed to update rank:', error);
     } finally {

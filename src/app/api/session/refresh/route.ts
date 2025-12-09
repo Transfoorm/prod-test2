@@ -32,9 +32,10 @@ export async function POST() {
     }
 
     // Mint new session cookie with fresh data
+    // 🛡️ S.I.D. Phase 15: clerkId comes from existing session, not Convex query
     const token = await mintSession({
       _id: String(freshUser._id),
-      clerkId: freshUser.clerkId,
+      clerkId: session.clerkId, // Preserve from existing session
       email: freshUser.email || session.email,
       secondaryEmail: freshUser.secondaryEmail || undefined,
       firstName: freshUser.firstName || session.firstName,

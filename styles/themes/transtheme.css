@@ -30,15 +30,15 @@
   --sidebar-border: 0 none var(--sidebar-border-color);
 
   /* Sidebar Button States - Clean 3-State System */
-  --sidebar-button-rest: transparent;                            /* Resting: invisible/inherits bg */
-  --sidebar-button-hover: #ebe7e7;                               /* Hover: light highlight */
-  --sidebar-button-active: var(--sidebar-button-hover);                            /* Active: stronger highlight (selected) */
-  --sidebar-button-text: #474c56;                                /* Text & icon color */
-  --sidebar-button-active-text: #ff5020;                         /* Active text: Transfoorm orange */
+  --sidebar-main-button-rest: transparent;                        /* Resting: invisible/inherits bg */
+  --sidebar-main-button-active: #ede9e9;
+  --sidebar-main-button-hover: var(--sidebar-main-button-active);
+  --sidebar-sublink-button-rest:   var(--sidebar-main-button-rest);     /* Inherits cascading up to main - change once! */
+  --sidebar-sublink-button-active: var(--sidebar-main-button-active);   /* Inherits cascading up to main - change once! */
+  --sidebar-sublink-button-hover:  var(--sidebar-main-button-active);   /* Inherits cascading up to main - change once! */
+  --sidebar-button-text: #474c56;                                 /* Text & icon color for both Main and Sublink Buttons */
 
-  /* Dropdown Section */
-  --sidebar-dropdown-inset-bg: rgb(242 237 237 / 100%);           /* THE MOAT ✴️ */
-  --sidebar-dropdown-inset-border: 1px none #d4d0cc;             /* Moat border */
+    /* AI Sidebar States or System */
   --ai-sidebar-bg: var(--appshell-bg);
   --ai-sidebar-border-color: none;                                 /* <- For when NO PAGE ARCH */
   --ai-sidebar-border: 50px none var(--ai-sidebar-border-color);
@@ -122,8 +122,10 @@
   --bg-secondary: #f9f6f6;
   --bg-tertiary: #f3f4f6;
   --bg-hover: #f3efee;                                           /* Hover state for buttons/interactive elements */
-  --bg-active: #ebe7e6;                                          /* Active/pressed state for buttons/interactive elements */
-  --bg-sideline: #dad0cd;                                          /* Active/pressed state for buttons/interactive elements */
+  --bg-active: #ebe7e6;                                          /* Active/pressed state for buttons/interactive */
+  --bg-sideline: #dad0cd;                                       
+  --bg-tab-hover: #f1efef;  
+  --bg-tab-rest: #fafafa;  
 
   /* Field box backgrounds */
   --bg-fieldbox-primary: #fafbda;                                /* f2f39e */
@@ -324,12 +326,14 @@
   --sidebar-border-color: none;
   --sidebar-border: 0 none var(--sidebar-border-color);
 
-  /* Sidebar Button States - Clean 3-State System (matches light mode) */
-  --sidebar-button-rest: transparent;                            /* Resting: invisible/inherits bg */
-  --sidebar-button-hover: #374151;                               /* Hover: subtle highlight */
-  --sidebar-button-active: var(--sidebar-button-hover);          /* Active: same as hover (selected) */
-  --sidebar-button-text: #d1d5db;                                /* Text & icon color */
-  --sidebar-button-active-text: #ff7a52;                         /* Active text: Bright orange for dark mode */
+  /* Sidebar Button States - Clean 3-State System */
+  --sidebar-main-button-rest: transparent;                        /* Resting: invisible/inherits bg */
+  --sidebar-main-button-active: #374151;
+  --sidebar-main-button-hover: var(--sidebar-main-button-active);
+  --sidebar-sublink-button-rest: transparent;                     /* Resting: invisible/inherits bg */
+  --sidebar-sublink-button-active: #374151;
+  --sidebar-sublink-button-hover: var(--sidebar-sublink-button-active);
+  --sidebar-button-text: #d1d5db;                                 /* Text & icon color for both Main and Sublink Buttons */
 
   /* Shadow hierarchy - depth-based elevation (dark mode - stronger) */
   --sidebar-button-shadow-rest: 0 2px 4px rgb(0 0 0 / 20%);      /* Depth 0 - parent sections */
@@ -340,8 +344,6 @@
   --sidebar-button-shadow-hover: 0 4px 8px rgb(0 0 0 / 30%), 0 2px 4px rgb(0 0 0 / 20%);
   --sidebar-button-border: 1px solid #4a5568;
   --sidebar-button-hover-border: 1px solid #5a6478;
-  --sidebar-dropdown-inset-bg: rgb(0 0 0 / 6%);
-  --sidebar-dropdown-inset-border: 1px none #4a5568;
   --ai-sidebar-bg: var(--appshell-bg);
   --ai-sidebar-border-color: none;
   --ai-sidebar-border: 50px none var(--ai-sidebar-border-color);

@@ -147,11 +147,11 @@
 
 .vr-tabs-panels .vr-tabs-panels-trigger:hover:not(.disabled, .active) {
   color: var(--text-primary);
-  background-color: var(--bg-active);
+  background-color: var(--bg-tab-hover);
 }
 
 .vr-tabs-panels .vr-tabs-panels-trigger.active {
-  background-color: var(--page-arch-color);
+  background-color: var(--bg-tab-rest);
   color: var(--text-primary);
   box-shadow: var(--shadow-sm);
 }
@@ -194,6 +194,14 @@
   color: var(--text-inverse);
 }
 
+/* Tab label with smaller inline text (e.g., "Genome 29%") */
+.vr-tabs-panels-label-sm {
+  font-size: var(--font-size-xs);
+  opacity: 0.8;
+  position: relative;
+  top: 1px;
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    TAB PANELS CONTAINER - Composite VR Internal Layout
    ═══════════════════════════════════════════════════════════════════ */
@@ -204,9 +212,10 @@
   gap: var(--space-xl);
 }
 
+ /* Content panel - no additional styling needed, gap handled by container 
 .vr-tabs-panels-content {
-  /* Content panel - no additional styling needed, gap handled by container */
-}
+ 
+} */
 
 .vr-hidden {
   display: none !important;
@@ -236,5 +245,5 @@
 }
 
 .vr-tabs-panels .vr-tabs-panels-trigger--highlight {
-  animation: vr-tabs-highlight-breathe 8s ease-in-out infinite;
+  animation: vr-tabs-highlight-breathe 3s ease-in-out infinite;
 }
