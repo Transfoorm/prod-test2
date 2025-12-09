@@ -11,6 +11,22 @@ Your mission: Ensure **ZERO violations** of VR patterns. But more than that - he
 
 ---
 
+## ⭐ THE VR STACK
+
+> ***The VR is reusable DNA. The Feature is the assembled organ. The Tab just places it on the page.***
+
+| Layer | Role | FUSE? |
+|-------|------|-------|
+| **VR** | Pure UI behavior (dumb shell) | NO |
+| **Feature** | VR + FUSE + business logic (smart wrapper) | YES |
+| **Tab/Page** | One line import (pure declaration) | NO |
+
+**Features are built FROM VRs** - never the other way around. If a VR doesn't do the job, extend the VR first, THEN build the Feature.
+
+📖 Full ontology: `/VR-ONTOLOGY.md`
+
+---
+
 ## 🧠 THE PHILOSOPHY: WHY VR EXISTS
 
 ### The Problem VR Solves
@@ -524,7 +540,7 @@ The prefixes tell you exactly where code belongs:
 .vr-field-live__input { }
 
 /* Feature - specific wiring (features) */
-.ft-field-row { }
+.vr-field-row { }
 .ft-profile-country { }
 .ft-setup-modal { }
 ```

@@ -15,6 +15,9 @@
 /* Setup Modal */
 @import url('../src/features/UserSetup/SetupModal/setup-modal.css');
 
+/* Genome Fields */
+@import url('../src/features/account/GenomeFields/genome-fields.css');
+
 /* Verify Modal */
 @import url('../src/features/UserSetup/VerifyModal/verify-modal.css');
 

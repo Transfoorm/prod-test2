@@ -149,6 +149,33 @@ export type FuseUser = {
 } | null;
 
 /**
+ * Professional Genome - User's professional profile
+ * Lives in settings_account_Genome table (separate from admin_users)
+ */
+export type GenomeData = {
+  // Completion tracking
+  completionPercent: number;
+  // Professional Identity
+  jobTitle?: string | null;
+  department?: string | null;
+  seniority?: string | null;
+  // Company Context
+  industry?: string | null;
+  companySize?: string | null;
+  companyWebsite?: string | null;
+  // Transformation Journey
+  transformationGoal?: string | null;
+  transformationStage?: string | null;
+  transformationType?: string | null;
+  timelineUrgency?: string | null;
+  // Growth Intel
+  howDidYouHearAboutUs?: string | null;
+  teamSize?: number | null;
+  annualRevenue?: string | null;
+  successMetric?: string | null;
+} | null;
+
+/**
  * Theme mode type following FUSE-STYLE system
  */
 export type ThemeMode = 'light' | 'dark';

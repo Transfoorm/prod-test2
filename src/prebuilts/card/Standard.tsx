@@ -15,10 +15,10 @@ import { ReactNode } from 'react';
 import { Icon, IconVariant } from '@/prebuilts/icon/iconRegistry';
 
 export interface StandardCardProps {
-  title?: string;
+  title?: ReactNode;
   subtitle?: string;
   icon?: IconVariant;
-  children: ReactNode;
+  children?: ReactNode;
   footer?: ReactNode;
   className?: string;
 }
@@ -47,6 +47,9 @@ export default function StandardCard({
   footer,
   className = ''
 }: StandardCardProps) {
+  // Check if children has meaningful content
+  const hasContent = children !== null && children !== undefined && children !== '';
+
   return (
     <div className={`vr-card vr-card-standard ${className}`}>
       {(title || subtitle) && (
@@ -61,9 +64,11 @@ export default function StandardCard({
         </div>
       )}
 
-      <div className="vr-card-standard-content">
-        {children}
-      </div>
+      {hasContent && (
+        <div className="vr-card-standard-content">
+          {children}
+        </div>
+      )}
 
       {footer && (
         <div className="vr-card-standard-footer">

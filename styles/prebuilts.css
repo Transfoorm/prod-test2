@@ -71,11 +71,11 @@
    CARD VARIANT VARIABLES - Shared infrastructure for CardVC
    ═══════════════════════════════════════════════════════════════════ */
   --card-padding: var(--space-lg);        /* ✅ Default card padding */
-  --card-radius: var(--radius-lg);        /* ✅ Card border radius */
+  --card-radius: var(--radius-md);        /* ✅ Card border radius */
   --card-border-width: 1px;               /* ✅ Card border thickness */
   --card-shadow: var(--shadow-sm);        /* ✅ Card elevation */
   --card-gap: var(--space-md);            /* ✅ Internal spacing between elements */
-  --card-header-padding: var(--space-lg); /* ✅ Card header padding */
+  --card-header-padding: var(--space-md); /* ✅ Card header padding - compact */
   --card-content-padding: var(--space-lg); /* ✅ Card content padding */
   --card-footer-padding: var(--space-md); /* ✅ Card footer padding */
   --card-min-height: 160px;               /* ✅ Minimum card height */

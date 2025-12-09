@@ -18,6 +18,7 @@
 
 'use client';
 
+import './email-fields.css';
 import { useState, useCallback } from 'react';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
@@ -217,15 +218,15 @@ export function EmailFields() {
   const currentEmailForModal = pendingField === 'email' ? primaryEmail : secondaryEmail;
 
   const swapClasses = [
-    'ft-field-action-pill',
-    swapState === 'executing' && 'ft-field-action-pill--active',
-    swapState === 'confirming' && 'ft-field-action-pill--confirm',
+    'ft-email-action-pill',
+    swapState === 'executing' && 'ft-email-action-pill--active',
+    swapState === 'confirming' && 'ft-email-action-pill--confirm',
   ].filter(Boolean).join(' ');
 
   const removeClasses = [
-    'ft-field-action-pill',
-    removeState === 'executing' && 'ft-field-action-pill--active',
-    removeState === 'confirming' && 'ft-field-action-pill--confirm',
+    'ft-email-action-pill',
+    removeState === 'executing' && 'ft-email-action-pill--active',
+    removeState === 'confirming' && 'ft-email-action-pill--confirm',
   ].filter(Boolean).join(' ');
 
   // ─────────────────────────────────────────────────────────────────────
@@ -235,18 +236,18 @@ export function EmailFields() {
   return (
     <>
       <div className="vr-field-spacing">
-        <div className="ft-field-row">
+        <div className="vr-field-row">
           {/* Primary Email */}
           <Field.verify
             label="Primary Email"
             value={primaryEmail}
             onCommit={(v) => handleEmailCommit('email', v)}
             type="email"
-            helper="* Any email updates will require verification"
+            helper="* Changing your email will require verification"
           />
 
           {/* Secondary Email + Actions */}
-          <div className="ft-field-with-action">
+          <div className="ft-email-field-with-action">
             <Field.verify
               label="Secondary Email (Optional)"
               value={secondaryEmail}
@@ -257,7 +258,7 @@ export function EmailFields() {
 
             {/* Actions - only show when secondary email exists */}
             {secondaryEmail && (
-              <div className="ft-field-action-pills">
+              <div className="ft-email-action-pills">
                 <button
                   type="button"
                   onClick={handleSwapClick}
@@ -266,7 +267,7 @@ export function EmailFields() {
                   className={swapClasses}
                 >
                   {swapState === 'executing' ? (
-                    <span className="ft-field-action-pill__typing">Swapping...</span>
+                    <span className="ft-email-action-pill__typing">Swapping...</span>
                   ) : swapState === 'confirming' ? 'Confirm →' : 'Make Primary'}
                 </button>
                 <button
@@ -277,7 +278,7 @@ export function EmailFields() {
                   className={removeClasses}
                 >
                   {removeState === 'executing' ? (
-                    <span className="ft-field-action-pill__typing">Removing...</span>
+                    <span className="ft-email-action-pill__typing">Removing...</span>
                   ) : removeState === 'confirming' ? 'Confirm →' : 'Remove'}
                 </button>
               </div>

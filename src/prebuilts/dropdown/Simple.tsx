@@ -34,6 +34,10 @@ export interface SimpleDropdownProps {
   disabled?: boolean;
   placeholder?: string;
   className?: string;
+  /** Field label displayed above dropdown */
+  label?: string;
+  /** Required indicator */
+  required?: boolean;
 }
 
 /**
@@ -55,6 +59,8 @@ export default function SimpleDropdown({
   disabled = false,
   placeholder = 'Select an option',
   className = '',
+  label,
+  required = false,
 }: SimpleDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -92,6 +98,14 @@ export default function SimpleDropdown({
       ref={containerRef}
       onKeyDown={handleKeyDown}
     >
+      {/* Label */}
+      {label && (
+        <label className="vr-dropdown-simple__label">
+          {label}
+          {required && <span className="vr-dropdown-simple__required">*</span>}
+        </label>
+      )}
+
       {/* Current selection button */}
       <button
         type="button"

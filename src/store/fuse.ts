@@ -51,6 +51,7 @@ import {
 // Core types
 import type {
   FuseUser,
+  GenomeData,
   ThemeName,
   ThemeMode,
   UserRank,
@@ -75,6 +76,7 @@ interface FuseStore {
   // Core State
   // ─────────────────────────────────────────────────────────────────────────────
   user: FuseUser;
+  genome: GenomeData;
   rank: UserRank | undefined;
   isHydrated: boolean;
   themeMode: ThemeMode;
@@ -115,6 +117,12 @@ interface FuseStore {
   updateUser: (updates: Partial<NonNullable<FuseUser>>) => void;
   /** Update user profile with optimistic UI + Server Action sync (TTT-LiveField pattern) */
   updateUserLocal: (updates: Partial<NonNullable<FuseUser>>) => Promise<void>;
+
+  // Genome actions
+  /** Hydrate genome from query */
+  hydrateGenome: (data: GenomeData) => void;
+  /** Update genome with optimistic UI (for Field.live auto-save) */
+  updateGenomeLocal: (updates: Partial<NonNullable<GenomeData>>) => void;
 
   hydrateThemeMode: (mode: ThemeMode) => void;
   hydrateThemeName: (name: ThemeName) => void;
@@ -203,6 +211,7 @@ export const useFuse = create<FuseStore>()((set, get) => {
     // ════════════════════════════════════════════════════════════════════════
 
     user: null,
+    genome: null,
     rank: undefined,
     isHydrated: false,
     themeMode: THEME_DEFAULTS.DEFAULT_MODE,
@@ -719,6 +728,31 @@ export const useFuse = create<FuseStore>()((set, get) => {
       }
 
       fuseTimer.end('updateUserLocal', start);
+    },
+
+    // ────────────────────────────────────────────────────────────────────────
+    // Genome Actions
+    // ────────────────────────────────────────────────────────────────────────
+
+    hydrateGenome: (data: GenomeData) => {
+      const start = fuseTimer.start('hydrateGenome');
+      set({ genome: data, lastActionTiming: performance.now() });
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🧬 FUSE: Genome hydrated', data);
+      }
+      fuseTimer.end('hydrateGenome', start);
+    },
+
+    updateGenomeLocal: (updates: Partial<NonNullable<GenomeData>>) => {
+      const start = fuseTimer.start('updateGenomeLocal');
+      set((state) => {
+        const currentGenome = state.genome || { completionPercent: 0 };
+        return {
+          genome: { ...currentGenome, ...updates },
+          lastActionTiming: performance.now(),
+        };
+      });
+      fuseTimer.end('updateGenomeLocal', start);
     },
 
     hydrateThemeMode: (mode) => {

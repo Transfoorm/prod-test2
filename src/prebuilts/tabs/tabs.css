@@ -108,7 +108,8 @@
   height: var(--tabs-panels-height);
   align-items: center;
   border-radius: var(--tabs-panels-container-radius);
-  background-color: var(--appshell-bg);
+  background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-tertiary));
+  border: var(--card-border-width) solid var(--border-normal);
   padding: var(--tabs-panels-container-padding);
   color: var(--text-secondary);
   width: fit-content;

@@ -134,7 +134,7 @@ The TTT naming convention was always there:
 .vr-field-live__input { }
 
 /* Feature - specific wiring */
-.ft-field-row { }
+.vr-field-row { }
 .ft-profile-country { }
 .ft-setup-modal { }
 ```

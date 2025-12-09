@@ -25,7 +25,7 @@ export function ProfileFields() {
   return (
     <div className="vr-field-spacing">
       {/* Row 1: First Name + Last Name */}
-      <div className="ft-field-row">
+      <div className="vr-field-row">
         <Field.live
           label="First Name"
           value={user?.firstName ?? ''}
@@ -41,7 +41,7 @@ export function ProfileFields() {
       </div>
 
       {/* Row 2: Entity/Organisation + Social Name */}
-      <div className="ft-field-row">
+      <div className="vr-field-row">
         <Field.live
           label="Entity/Organisation"
           value={user?.entityName ?? ''}
@@ -59,7 +59,7 @@ export function ProfileFields() {
       </div>
 
       {/* Row 3: Phone Number + Business Location */}
-      <div className="ft-field-row">
+      <div className="vr-field-row">
         <Field.live
           label="Phone Number (Optional)"
           value={user?.phoneNumber ?? ''}

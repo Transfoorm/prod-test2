@@ -44,6 +44,7 @@ export function usePrism() {
   const hydrateProjects = useFuse((s) => s.hydrateProjects);
   const hydrateSystem = useFuse((s) => s.hydrateSystem);
   const hydrateSettings = useFuse((s) => s.hydrateSettings);
+  const hydrateGenome = useFuse((s) => s.hydrateGenome);
 
   // TTTS-1 compliant: status === 'hydrated' means data is ready (ONE source of truth)
   const productivityStatus = useFuse((s) => s.productivity.status);
@@ -118,6 +119,11 @@ export function usePrism() {
         hydrateFn(data, 'WARP');
       }
 
+      // Settings domain also includes genome - hydrate it separately
+      if (domain === 'settings' && data.genome) {
+        hydrateGenome(data.genome);
+      }
+
       console.log(`🔮 PRISM: ${domain} loaded in ${duration.toFixed(2)}ms`, data);
     } catch (error) {
       console.error(`🔮 PRISM: Failed to preload ${domain}:`, error);
@@ -127,7 +133,8 @@ export function usePrism() {
     }
   }, [
     domainStatusMap,
-    hydrateMap
+    hydrateMap,
+    hydrateGenome
   ]);
 
   return { preloadDomain };

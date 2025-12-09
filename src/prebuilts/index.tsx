@@ -33,6 +33,7 @@ export { Field } from '@/prebuilts/field';
 export { Input } from '@/prebuilts/input';
 export { Label } from '@/prebuilts/label';
 export { Checkbox } from '@/prebuilts/input/checkbox';
+export { Dropdown } from '@/prebuilts/dropdown';
 
 // Modals (re-exported from features - these need Clerk access)
 export { default as VerifyModal } from '@/features/VerifyModal';

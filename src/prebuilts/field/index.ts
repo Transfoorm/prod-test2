@@ -14,7 +14,7 @@
 │                                                                       │
 │  LAYOUT: Use CSS classes directly in Features:                        │
 │  - .vr-field-spacing = vertical spacing between rows                  │
-│  - .ft-field-row = horizontal arrangement of fields                   │
+│  - .vr-field-row = horizontal arrangement of fields                   │
 │  - .ft-field-with-action = field + action button pairing              │
 └────────────────────────────────────────────────────────────────────────┘ */
 

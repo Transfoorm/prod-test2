@@ -5,37 +5,38 @@
 │  Server-side endpoint for Settings domain preloading                  │
 │  Called by PRISM when user opens Settings dropdown                    │
 │                                                                        │
-│  Data: userProfile, preferences, notifications                        │
+│  Data: userProfile, preferences, notifications, genome                │
 │  Access: All ranks (SELF-scoped)                                      │
-│                                                                        │
-│  PLUMBING: Add Convex queries here when Settings has real data.       │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { auth } from '@clerk/nextjs/server';
+import { fetchQuery } from 'convex/nextjs';
+import { api } from '@/convex/_generated/api';
 
 export async function GET() {
-  const { userId } = await auth();
+  const { userId, getToken } = await auth();
 
   if (!userId) {
     return new Response('Unauthorized', { status: 401 });
   }
 
   try {
-    // 🔮 FUTURE: Add Convex queries when Settings domain has data
-    // const { getToken } = await auth();
-    // const token = await getToken({ template: 'convex' });
-    // const [userProfile, preferences, notifications] = await Promise.all([
-    //   fetchQuery(api.domains.settings.api.getUserProfile, {}, { token }),
-    //   fetchQuery(api.domains.settings.api.getPreferences, {}, { token }),
-    //   fetchQuery(api.domains.settings.api.getNotifications, {}, { token }),
-    // ]);
+    const token = await getToken({ template: 'convex' });
 
-    console.log('🚀 WARP API: Settings data ready (plumbing)');
+    // Fetch genome data for Professional Genome tab
+    const genome = await fetchQuery(
+      api.domains.settings.queries.getUserGenome,
+      {},
+      { token: token ?? undefined }
+    );
+
+    console.log('🚀 WARP API: Settings data ready (genome preloaded)');
 
     return Response.json({
       userProfile: null,
       preferences: [],
-      notifications: []
+      notifications: [],
+      genome,
     });
   } catch (error) {
     console.error('❌ WARP API: Failed to fetch settings data:', error);

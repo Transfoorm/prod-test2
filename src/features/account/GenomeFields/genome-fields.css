@@ -1,0 +1,100 @@
+/* ═══════════════════════════════════════════════════════════════════
+   🧬 GENOME FIELDS FEATURE - Layout Styles
+   /src/features/account/GenomeFields/genome-fields.css
+
+   Feature-level CSS (ft-*) - Cards use Card.standard VR
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Container */
+.ft-genome {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  max-width: 1200px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Completion Bar (footer progress indicator)
+   ───────────────────────────────────────────────────────────────────── */
+
+.ft-genome-completion {
+  width: 100%;
+}
+
+.ft-genome-completion-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.ft-genome-completion-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--status-success);
+  border-radius: var(--radius-full);
+  transition: width 0.5s ease;
+}
+
+/* Data-driven width steps (0-100 in 10% increments) */
+.ft-genome-completion-fill[data-percent="0"] { width: 0%; }
+.ft-genome-completion-fill[data-percent="10"] { width: 10%; }
+.ft-genome-completion-fill[data-percent="20"] { width: 20%; }
+.ft-genome-completion-fill[data-percent="30"] { width: 30%; }
+.ft-genome-completion-fill[data-percent="40"] { width: 40%; }
+.ft-genome-completion-fill[data-percent="50"] { width: 50%; }
+.ft-genome-completion-fill[data-percent="60"] { width: 60%; }
+.ft-genome-completion-fill[data-percent="70"] { width: 70%; }
+.ft-genome-completion-fill[data-percent="80"] { width: 80%; }
+.ft-genome-completion-fill[data-percent="90"] { width: 90%; }
+.ft-genome-completion-fill[data-percent="100"] { width: 100%; }
+
+/* Percentage text in title - lighter, smaller */
+.ft-genome-percent {
+  font-weight: var(--font-weight-normal);
+  font-size: var(--font-size-md);
+}
+
+/* Inner card override - unified highlight bg, no borders */
+.ft-genome-inner-card.vr-card-standard {
+  border: 1px solid var(--border-light);
+  box-shadow: none;
+  background: var(--card-highlight-bg);
+}
+
+.ft-genome-inner-card.vr-card-standard .vr-card-standard-header {
+  background: transparent;
+  border-bottom: none;
+}
+
+.ft-genome-inner-card.vr-card-standard .vr-card-standard-content {
+  background: transparent;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Field Rows - Genome-specific grid with smart child-count detection
+   ───────────────────────────────────────────────────────────────────── */
+
+.ft-genome-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+}
+
+/* Single field takes full width */
+.ft-genome-row:has(> :only-child) {
+  grid-template-columns: 1fr;
+}
+
+/* Three children = three columns */
+.ft-genome-row:has(> :nth-child(3):last-child) {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Mobile adjustments - always single column */
+@media (max-width: 640px) {
+  .ft-genome-row {
+    grid-template-columns: 1fr;
+  }
+}

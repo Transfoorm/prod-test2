@@ -163,6 +163,23 @@
 
 /* NOTE: Helper, error, has-helper now use shared .vr-field__* classes */
 
+/* Textarea variant - multiline, resizable */
+.vr-field-live__textarea {
+  height: auto;
+  min-height: calc(var(--form-input-height) * 2);
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* Character counter - absolute positioned, zero layout impact */
+.vr-field-live__counter {
+  position: absolute;
+  bottom: -18px;
+  right: 0;
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    FIELD.VERIFY - Identity-grade field with Reveal choreography
    States: idle | focused | dirty | committing | success | error
@@ -465,7 +482,7 @@
 /* Horizontal row - fields side by side */
 .vr-field-row {
   display: flex;
-  gap: var(--space-md);
+  gap: var(--space-lg);
   align-items: flex-start;
 }
 

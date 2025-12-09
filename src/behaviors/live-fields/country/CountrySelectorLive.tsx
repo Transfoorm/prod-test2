@@ -9,6 +9,7 @@
 
 'use client';
 
+import './country-selector.css';
 import { useState, useRef } from 'react';
 import { useFuse } from '@/store/fuse';
 import CountrySelector from '@/features/shell/CountrySelector';
@@ -60,10 +61,10 @@ export function CountrySelectorLive({ label, onSave }: CountrySelectorLiveProps)
         <button
           ref={buttonRef}
           onClick={() => setShowDropdown(!showDropdown)}
-          className="vr-field-live__input ft-profile-country"
+          className="vr-field-live__input ft-country-selector"
         >
-          <span className="ft-profile-country__flag">{country?.flag}</span>
-          <span className="ft-profile-country__text">{country?.name}</span>
+          <span className="ft-country-selector__flag">{country?.flag}</span>
+          <span className="ft-country-selector__text">{country?.name}</span>
         </button>
         <div className={chipClass}>
           {saveState === 'saved' ? 'Saved ✓' : saveState === 'error' ? 'Error' : null}

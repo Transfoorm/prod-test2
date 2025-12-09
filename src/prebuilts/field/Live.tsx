@@ -44,9 +44,15 @@ const usernameTransform = (value: string, currentValue: string): string => {
   return value;
 };
 
+/** Numbers only: strips everything except digits */
+const numbersOnlyTransform = (value: string): string => {
+  return value.replace(/[^0-9]/g, '');
+};
+
 /** Built-in transforms accessible by name */
 export const TRANSFORMS = {
   username: usernameTransform,
+  numbersOnly: numbersOnlyTransform,
 } as const;
 
 export type TransformName = keyof typeof TRANSFORMS;
@@ -68,6 +74,12 @@ export interface FieldLiveProps {
   helper?: string;
   /** Transform input as user types - function OR built-in name ('username') */
   transform?: TransformName | ((value: string, currentValue: string) => string);
+  /** Multiline textarea mode */
+  multiline?: boolean;
+  /** Max characters (shows counter when multiline) */
+  maxLength?: number;
+  /** Textarea rows (default 3) */
+  rows?: number;
 }
 
 const CHIP_TEXT: Record<LiveState, string | null> = {
@@ -87,11 +99,15 @@ export default function FieldLive({
   required = false,
   helper,
   transform,
+  multiline = false,
+  maxLength,
+  rows = 3,
 }: FieldLiveProps) {
   const [state, setState] = useState<LiveState>('idle');
   const [localValue, setLocalValue] = useState(value);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const originalValue = useRef(value);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const badgeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -163,15 +179,20 @@ export default function FieldLive({
   // ─────────────────────────────────────────────────────────────────────
   // Event handlers
   // ─────────────────────────────────────────────────────────────────────
-  const handleFocus = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
+  const handleFocus = useCallback((e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     e.target.select();
     isFocused.current = true;
     setState('focused');
     setErrorMessage(null);
   }, []);
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     let newValue = e.target.value;
+
+    // Enforce maxLength if set
+    if (maxLength && newValue.length > maxLength) {
+      newValue = newValue.slice(0, maxLength);
+    }
 
     // Apply transform if provided (name or function)
     if (transform) {
@@ -192,7 +213,7 @@ export default function FieldLive({
     saveTimeoutRef.current = setTimeout(() => {
       doSave(newValue);
     }, SAVE_DELAY_MS);
-  }, [doSave, transform, localValue]);
+  }, [doSave, transform, localValue, maxLength]);
 
   const handleBlur = useCallback(() => {
     isFocused.current = false;
@@ -266,19 +287,38 @@ export default function FieldLive({
         {required && <span className="vr-field__required">*</span>}
       </label>
       <div className="vr-field-live__input-wrapper">
-        <input
-          ref={inputRef}
-          type={type}
-          value={localValue}
-          onChange={handleChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          placeholder={placeholder}
-          data-field={label.toLowerCase().replace(/\s+/g, '-')}
-          className="vr-field-live__input"
-        />
-        <div className={chipClasses}>{chipText}</div>
+        {multiline ? (
+          <textarea
+            ref={textareaRef}
+            value={localValue}
+            onChange={handleChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            placeholder={placeholder}
+            rows={rows}
+            data-field={label.toLowerCase().replace(/\s+/g, '-')}
+            className="vr-field-live__input vr-field-live__textarea"
+          />
+        ) : (
+          <input
+            ref={inputRef}
+            type={type}
+            value={localValue}
+            onChange={handleChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            placeholder={placeholder}
+            data-field={label.toLowerCase().replace(/\s+/g, '-')}
+            className="vr-field-live__input"
+          />
+        )}
+        {!multiline && <div className={chipClasses}>{chipText}</div>}
       </div>
+      {multiline && maxLength && (
+        <div className="vr-field-live__counter">
+          {localValue.length} / {maxLength} characters
+        </div>
+      )}
       {helper && state !== 'error' && (
         <div className="vr-field__helper">{helper}</div>
       )}
