@@ -22,9 +22,9 @@ import './email-fields.css';
 import { useState, useCallback } from 'react';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import type { Id } from '@/convex/_generated/dataModel';
 import { useFuse } from '@/store/fuse';
-import { Field } from '@/prebuilts';
-import VerifyModal from '@/features/VerifyModal';
+import { Field, VerifyModal } from '@/prebuilts';
 import { swapEmailsToPrimary, deleteSecondaryEmail } from '@/app/actions/email-actions';
 import { refreshSessionAfterUpload } from '@/app/actions/user-mutations';
 
@@ -77,17 +77,20 @@ export function EmailFields() {
   const handleVerificationSuccess = useCallback(async () => {
     const { user: currentUser, setUser } = useFuse.getState();
     if (currentUser && pendingEmail && pendingField) {
+      // 🛡️ SID-5.3: Convex mutations require callerUserId (from FUSE store's convexId)
+      const callerUserId = currentUser.convexId as Id<'admin_users'>;
+
       if (pendingField === 'secondaryEmail') {
         setUser({ ...currentUser, secondaryEmail: pendingEmail });
         try {
-          await updateUserSettings({ secondaryEmail: pendingEmail });
+          await updateUserSettings({ callerUserId, secondaryEmail: pendingEmail });
         } catch (err) {
           console.error('Failed to update secondary email in Convex:', err);
         }
       } else {
         setUser({ ...currentUser, email: pendingEmail });
         try {
-          await updateUserSettings({ email: pendingEmail });
+          await updateUserSettings({ callerUserId, email: pendingEmail });
         } catch (err) {
           console.error('Failed to update email in Convex:', err);
         }
@@ -143,12 +146,15 @@ export function EmailFields() {
           email: secondaryEmail,
           secondaryEmail: oldPrimary,
         });
-      }
 
-      await updateUserSettings({
-        email: secondaryEmail || undefined,
-        secondaryEmail: primaryEmail || undefined,
-      });
+        // 🛡️ SID-5.3: Convex mutations require callerUserId (from FUSE store's convexId)
+        const callerUserId = currentUser.convexId as Id<'admin_users'>;
+        await updateUserSettings({
+          callerUserId,
+          email: secondaryEmail || undefined,
+          secondaryEmail: primaryEmail || undefined,
+        });
+      }
 
       await refreshSessionAfterUpload();
     } catch (err) {
@@ -190,11 +196,14 @@ export function EmailFields() {
           ...currentUser,
           secondaryEmail: undefined,
         });
-      }
 
-      await updateUserSettings({
-        secondaryEmail: undefined,
-      });
+        // 🛡️ SID-5.3: Convex mutations require callerUserId (from FUSE store's convexId)
+        const callerUserId = currentUser.convexId as Id<'admin_users'>;
+        await updateUserSettings({
+          callerUserId,
+          secondaryEmail: undefined,
+        });
+      }
 
       await refreshSessionAfterUpload();
     } catch (err) {

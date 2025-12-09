@@ -1,20 +1,23 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔱 VERIFY MODAL - Universal Email Verification                       │
-│  /src/features/VerifyModal/index.tsx                                  │
+│  🛡️ VERIFY MODAL - Auth Boundary Component                          │
+│  /src/app/(auth)/components/VerifyModal/index.tsx                    │
 │                                                                        │
-│  Handles signup verification, primary email changes, and secondary.   │
-│  Lives in /features/ because it needs Clerk access (Golden Bridge).   │
+│  S.I.D. PHASE 12 COMPLIANT - Auth Boundary Pattern                    │
 │                                                                        │
-│  Props:                                                               │
-│  - isOpen: boolean - Modal visibility                                 │
-│  - email: string - Email being verified                               │
-│  - mode: 'verify' | 'change' | 'secondary' - Verification mode        │
-│  - onSuccess: () => void - Called after successful verification       │
-│  - onClose: () => void - Called when user cancels                     │
+│  This component lives in the (auth) zone because it REQUIRES Clerk    │
+│  frontend SDK for prepareVerification() and attemptVerification().    │
 │                                                                        │
-│  Mode 'verify': Verifies existing primary email (signup flow)         │
-│  Mode 'change': Adds new email, verifies it, sets as primary          │
-│  Mode 'secondary': Adds new email, verifies it, keeps as secondary    │
+│  CLERK HOOKS ARE LEGAL HERE - This is the auth boundary.              │
+│                                                                        │
+│  Features import this component to handle email verification flows    │
+│  without directly using Clerk hooks themselves.                       │
+│                                                                        │
+│  Modes:                                                               │
+│  - 'verify': Verifies existing primary email (signup flow)            │
+│  - 'change': Adds new email, verifies it, sets as primary             │
+│  - 'secondary': Adds new email, verifies it, keeps as secondary       │
+│                                                                        │
+│  REF: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md              │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
@@ -44,8 +47,13 @@ export default function VerifyModal({
   onSuccess,
   onClose
 }: VerifyModalProps) {
+  // ═══════════════════════════════════════════════════════════════════
+  // 🛡️ CLERK HOOKS - LEGAL IN AUTH BOUNDARY (SID-12.3)
+  // These hooks are the ONLY way to call prepareVerification/attemptVerification
+  // ═══════════════════════════════════════════════════════════════════
   const { signUp, isLoaded: signUpLoaded } = useSignUp();
   const { user: clerkUser, isLoaded: userLoaded } = useUser();
+
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isPreparing, setIsPreparing] = useState(false);
@@ -79,7 +87,6 @@ export default function VerifyModal({
   // Auto-focus first input when modal opens or preparing completes
   useEffect(() => {
     if (isOpen && !showSuccess && !isPreparing) {
-      // Small delay to ensure DOM is ready
       const timer = setTimeout(() => {
         firstInputRef.current?.focus();
       }, 50);
@@ -117,6 +124,7 @@ export default function VerifyModal({
       await clerkUser.reload();
 
       // Step 3: Find the email and send verification code
+      // 🛡️ CLERK SDK CALL - Legal in auth boundary
       const newEmailObj = clerkUser.emailAddresses.find(e => e.id === result.emailAddressId);
       if (newEmailObj) {
         await newEmailObj.prepareVerification({ strategy: 'email_code' });
@@ -151,9 +159,10 @@ export default function VerifyModal({
 
       if ((mode === 'change' || mode === 'secondary') && pendingEmailId && clerkUser) {
         // Email change/secondary mode - verify the new email
-        await clerkUser.reload(); // Refresh to get latest email addresses
+        await clerkUser.reload();
         const pendingEmailObj = clerkUser.emailAddresses.find(e => e.id === pendingEmailId);
         if (pendingEmailObj) {
+          // 🛡️ CLERK SDK CALL - Legal in auth boundary
           const result = await pendingEmailObj.attemptVerification({ code });
           isVerified = result.verification?.status === 'verified';
 
@@ -175,6 +184,7 @@ export default function VerifyModal({
         }
       } else if (clerkUser && clerkUser.primaryEmailAddress) {
         // Standard verify mode - verify existing primary email
+        // 🛡️ CLERK SDK CALL - Legal in auth boundary
         const result = await clerkUser.primaryEmailAddress.attemptVerification({ code });
         isVerified = (
           result.verification?.status === "verified" ||
@@ -182,6 +192,7 @@ export default function VerifyModal({
         );
       } else if (signUp) {
         // Signup verification
+        // 🛡️ CLERK SDK CALL - Legal in auth boundary
         const result = await signUp.attemptEmailAddressVerification({ code });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const anyResult = result as any;
@@ -234,11 +245,14 @@ export default function VerifyModal({
         // Resend to pending email
         const pendingEmail = clerkUser.emailAddresses.find(e => e.id === pendingEmailId);
         if (pendingEmail) {
+          // 🛡️ CLERK SDK CALL - Legal in auth boundary
           await pendingEmail.prepareVerification({ strategy: "email_code" });
         }
       } else if (clerkUser && clerkUser.primaryEmailAddress) {
+        // 🛡️ CLERK SDK CALL - Legal in auth boundary
         await clerkUser.primaryEmailAddress.prepareVerification({ strategy: "email_code" });
       } else if (signUp) {
+        // 🛡️ CLERK SDK CALL - Legal in auth boundary
         await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
       } else {
         throw new Error('No verification method available');

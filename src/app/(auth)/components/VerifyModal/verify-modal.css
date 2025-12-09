@@ -1,6 +1,8 @@
 /* ═══════════════════════════════════════════════════════════════════
-   EMAIL VERIFICATION MODAL STYLES
-   Phoenix animation system - email verification UI
+   🛡️ VERIFY MODAL - Email verification modal styles
+   /src/app/(auth)/components/VerifyModal/verify-modal.css
+
+   S.I.D. PHASE 12 - Auth Boundary Component Styles
    ═══════════════════════════════════════════════════════════════════ */
 
 :root {
@@ -62,7 +64,7 @@
   margin: 20px;
   box-shadow: var(--verify-container-shadow);
   border: 1px solid var(--verify-border-brand);
-  animation: fade-in 0.3s ease-out;
+  animation: verify-fade-in 0.3s ease-out;
 }
 
 .ft-verify-container--narrow {
@@ -138,13 +140,20 @@
   height: 100%;
   background: var(--verify-progress-fill-bg);
   border-radius: 999px;
-  animation: loading 1.5s ease-in-out;
+  animation: verify-loading 1.5s ease-in-out;
 }
 
 .ft-verify-progress-text {
   font-size: var(--font-size-sm);
   color: var(--verify-text-secondary);
   text-align: center;
+}
+
+/* Preparing State */
+.ft-verify-preparing {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
 }
 
 /* Form */
@@ -251,10 +260,17 @@
 
 /* Loading Spinner */
 .ft-verify-spinner {
-  animation: spin 1s linear infinite;
+  animation: verify-spin 1s linear infinite;
   margin-right: 12px;
   width: 20px;
   height: 20px;
+}
+
+.ft-verify-spinner--large {
+  width: 48px;
+  height: 48px;
+  margin-right: 0;
+  color: var(--verify-text-brand);
 }
 
 .ft-verify-spinner-circle {
@@ -297,7 +313,7 @@
   font-size: var(--font-size-sm);
   color: var(--verify-text-success);
   font-weight: var(--font-weight-semibold);
-  animation: fade-in-bounce 0.3s ease-out;
+  animation: verify-fade-in-bounce 0.3s ease-out;
 }
 
 /* Cancel Section */
@@ -331,7 +347,7 @@
 }
 
 /* Animations */
-@keyframes fade-in {
+@keyframes verify-fade-in {
   from {
     opacity: 0;
     transform: scale(0.95);
@@ -343,7 +359,7 @@
   }
 }
 
-@keyframes spin {
+@keyframes verify-spin {
   from {
     transform: rotate(0deg);
   }
@@ -353,7 +369,7 @@
   }
 }
 
-@keyframes fade-in-bounce {
+@keyframes verify-fade-in-bounce {
   0% {
     opacity: 0;
     transform: scale(0.8) translateY(-10px);
@@ -370,7 +386,7 @@
   }
 }
 
-@keyframes loading {
+@keyframes verify-loading {
   from {
     width: 0%;
   }

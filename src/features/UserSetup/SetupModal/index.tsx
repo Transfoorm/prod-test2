@@ -24,12 +24,11 @@
 
 import { useState, useEffect } from 'react';
 import { useFuse } from '@/store/fuse';
-import { useUser } from '@clerk/nextjs';
 import { Sparkles } from 'lucide-react';
-import { Button } from '@/prebuilts/button';
-import VerifyModal from '@/features/UserSetup/VerifyModal';
+import { Button, VerifyModal } from '@/prebuilts';
 import { skipFlow, reverseFlow } from '@/features/UserSetup/FlyingButton/config';
 import { completeSetupAction } from '@/app/actions/user-mutations';
+import { checkPrimaryEmailVerified, preparePrimaryEmailVerification } from '@/app/actions/email-actions';
 
 interface SetupData {
   firstName: string;
@@ -62,8 +61,6 @@ export default function SetupModal() {
   const setModalSkipped = useFuse((s) => s.setModalSkipped);
   const modalReturning = useFuse((s) => s.modalReturning);
   const setModalReturning = useFuse((s) => s.setModalReturning);
-
-  const { user: clerkUser, isLoaded } = useUser();
 
   // ─────────────────────────────────────────────────────────────────────
   // Internal Animation State (VR-sovereign - no props from parent)
@@ -301,31 +298,48 @@ export default function SetupModal() {
     };
 
     try {
-      if (!isLoaded || !clerkUser) {
-        throw new Error('Clerk user not loaded');
+      // 🛡️ SID Phase 12: Use server action to check verification status
+      const verificationCheck = await checkPrimaryEmailVerified();
+
+      if (verificationCheck.error) {
+        setErrors({ ...errors, general: verificationCheck.error });
+        setIsSubmitting(false);
+        return;
       }
 
-      const primaryEmail = clerkUser.primaryEmailAddress;
-
-      if (primaryEmail?.verification?.status === 'verified') {
+      if (verificationCheck.verified) {
+        // Email already verified - complete setup directly
         await handleSetupComplete(trimmedData);
         setIsSubmitting(false);
-      } else if (primaryEmail) {
+      } else {
+        // Email needs verification - prepare and show modal
         try {
-          console.log('📧 Sending verification code to:', primaryEmail.emailAddress);
-          await primaryEmail.prepareVerification({ strategy: 'email_code' });
-          console.log('✅ Verification code sent successfully');
+          console.log('📧 Checking verification status for email');
+          const prepResult = await preparePrimaryEmailVerification();
 
+          if (prepResult.error) {
+            setErrors({ ...errors, general: prepResult.error });
+            setIsSubmitting(false);
+            return;
+          }
+
+          if (prepResult.alreadyVerified) {
+            // Already verified - complete setup
+            await handleSetupComplete(trimmedData);
+            setIsSubmitting(false);
+            return;
+          }
+
+          // Show verification modal - the modal will handle prepareVerification
+          // via Clerk SDK (it's in the auth boundary)
+          console.log('✅ Opening verification modal');
           setShowEmailVerification(true);
           setIsSubmitting(false);
         } catch (err) {
-          console.error('❌ Failed to send verification code:', err);
+          console.error('❌ Failed to prepare verification:', err);
           setErrors({ ...errors, general: 'Failed to send verification code. Please try again.' });
           setIsSubmitting(false);
         }
-      } else {
-        setErrors({ ...errors, general: 'No email address found. Please contact support.' });
-        setIsSubmitting(false);
       }
     } catch {
       setErrors({ ...errors, general: 'Email verification failed. Please try again.' });

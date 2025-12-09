@@ -198,3 +198,108 @@ export async function deleteEmail(emailAddressId: string) {
     return { error: 'Failed to delete email address' };
   }
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 🛡️ S.I.D. PHASE 12: EMAIL VERIFICATION SERVER ACTIONS
+// These actions replace direct Clerk hook usage in Features zone
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Check if user's primary email is verified
+ * 🛡️ SID-12.1: Uses session.clerkId for Clerk API calls
+ */
+export async function checkPrimaryEmailVerified() {
+  const session = await readSessionCookie();
+  if (!session?.clerkId) {
+    return { error: 'Not authenticated', verified: false };
+  }
+
+  try {
+    const client = await clerkClient();
+    const clerkUser = await client.users.getUser(session.clerkId);
+    const primaryEmail = clerkUser.primaryEmailAddress;
+
+    if (!primaryEmail) {
+      return { error: 'No primary email found', verified: false };
+    }
+
+    return {
+      verified: primaryEmail.verification?.status === 'verified',
+      email: primaryEmail.emailAddress,
+    };
+  } catch (err) {
+    console.error('Failed to check email verification:', err);
+    return { error: 'Failed to check verification status', verified: false };
+  }
+}
+
+/**
+ * Send verification code to primary email
+ * 🛡️ SID-12.1: Uses session.clerkId for Clerk API calls
+ *
+ * NOTE: Clerk Backend API doesn't support prepareVerification directly.
+ * We must use a workaround: create a magic link or use frontend SDK.
+ * For now, returns emailId so frontend can call prepareVerification on it.
+ */
+export async function preparePrimaryEmailVerification() {
+  const session = await readSessionCookie();
+  if (!session?.clerkId) {
+    return { error: 'Not authenticated' };
+  }
+
+  try {
+    const client = await clerkClient();
+    const clerkUser = await client.users.getUser(session.clerkId);
+    const primaryEmail = clerkUser.primaryEmailAddress;
+
+    if (!primaryEmail) {
+      return { error: 'No primary email found' };
+    }
+
+    if (primaryEmail.verification?.status === 'verified') {
+      return { alreadyVerified: true, email: primaryEmail.emailAddress };
+    }
+
+    // Return email info for frontend to initiate verification
+    // Clerk Backend API can't call prepareVerification - that's a frontend SDK method
+    return {
+      success: true,
+      emailId: primaryEmail.id,
+      email: primaryEmail.emailAddress,
+      needsClientVerification: true,
+    };
+  } catch (err) {
+    console.error('Failed to prepare verification:', err);
+    return { error: 'Failed to prepare verification' };
+  }
+}
+
+/**
+ * Get email verification status for a specific email
+ * 🛡️ SID-12.1: Uses session.clerkId for Clerk API calls
+ */
+export async function getEmailVerificationStatus(emailId: string) {
+  const session = await readSessionCookie();
+  if (!session?.clerkId) {
+    return { error: 'Not authenticated' };
+  }
+
+  try {
+    const client = await clerkClient();
+    const clerkUser = await client.users.getUser(session.clerkId);
+    const email = clerkUser.emailAddresses.find(e => e.id === emailId);
+
+    if (!email) {
+      return { error: 'Email not found' };
+    }
+
+    return {
+      verified: email.verification?.status === 'verified',
+      status: email.verification?.status,
+      email: email.emailAddress,
+    };
+  } catch (err) {
+    console.error('Failed to get verification status:', err);
+    return { error: 'Failed to check status' };
+  }
+}

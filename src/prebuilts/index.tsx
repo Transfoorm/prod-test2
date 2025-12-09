@@ -35,8 +35,9 @@ export { Label } from '@/prebuilts/label';
 export { Checkbox } from '@/prebuilts/input/checkbox';
 export { Dropdown } from '@/prebuilts/dropdown';
 
-// Modals (re-exported from features - these need Clerk access)
-export { default as VerifyModal } from '@/features/VerifyModal';
+// 🛡️ Auth Boundary Components (S.I.D. Phase 12)
+// VerifyModal lives in (auth) zone because it requires Clerk SDK for verification
+export { default as VerifyModal } from '@/app/(auth)/components/VerifyModal';
 
 // Shared Utilities (re-exported for convenience)
 export { Icon } from '@/prebuilts/icon/iconRegistry';
