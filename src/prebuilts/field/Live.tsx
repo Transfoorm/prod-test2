@@ -90,6 +90,10 @@ const CHIP_TEXT: Record<LiveState, string | null> = {
   error: 'Error',
 };
 
+// Default max lengths (sensible limits, can be overridden)
+const DEFAULT_MAX_LENGTH = 255;           // Single-line: standard varchar
+const DEFAULT_MULTILINE_MAX_LENGTH = 3000; // Multiline: longer text
+
 export default function FieldLive({
   label,
   value,
@@ -103,6 +107,9 @@ export default function FieldLive({
   maxLength,
   rows = 3,
 }: FieldLiveProps) {
+  // Apply default maxLength if not specified
+  const effectiveMaxLength = maxLength ?? (multiline ? DEFAULT_MULTILINE_MAX_LENGTH : DEFAULT_MAX_LENGTH);
+
   const [state, setState] = useState<LiveState>('idle');
   const [localValue, setLocalValue] = useState(value);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -189,9 +196,9 @@ export default function FieldLive({
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     let newValue = e.target.value;
 
-    // Enforce maxLength if set
-    if (maxLength && newValue.length > maxLength) {
-      newValue = newValue.slice(0, maxLength);
+    // Enforce maxLength
+    if (newValue.length > effectiveMaxLength) {
+      newValue = newValue.slice(0, effectiveMaxLength);
     }
 
     // Apply transform if provided (name or function)
@@ -213,7 +220,7 @@ export default function FieldLive({
     saveTimeoutRef.current = setTimeout(() => {
       doSave(newValue);
     }, SAVE_DELAY_MS);
-  }, [doSave, transform, localValue, maxLength]);
+  }, [doSave, transform, localValue, effectiveMaxLength]);
 
   const handleBlur = useCallback(() => {
     isFocused.current = false;
@@ -314,9 +321,9 @@ export default function FieldLive({
         )}
         {!multiline && <div className={chipClasses}>{chipText}</div>}
       </div>
-      {multiline && maxLength && (
+      {multiline && (
         <div className="vr-field-live__counter">
-          {localValue.length} / {maxLength} characters
+          {localValue.length} / {effectiveMaxLength} characters
         </div>
       )}
       {helper && state !== 'error' && (

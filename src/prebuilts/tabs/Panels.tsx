@@ -32,6 +32,8 @@ export interface PanelTabItem {
   count?: number;
   content?: ReactNode;
   disabled?: boolean;
+  /** Breathing animation between current color and --color-primary-light */
+  highlight?: boolean;
 }
 
 export interface PanelTabsProps {
@@ -117,7 +119,7 @@ export default function PanelTabs({
             <button
               key={tab.id}
               onClick={() => handleTabClick(tab)}
-              className={`vr-tabs-panels-trigger ${activeTab === tab.id ? 'active' : ''} ${tab.disabled ? 'disabled' : ''}`}
+              className={`vr-tabs-panels-trigger ${activeTab === tab.id ? 'active' : ''} ${tab.disabled ? 'disabled' : ''} ${tab.highlight ? 'vr-tabs-panels-trigger--highlight' : ''}`}
               type="button"
               disabled={tab.disabled}
             >

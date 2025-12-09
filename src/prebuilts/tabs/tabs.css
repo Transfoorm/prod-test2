@@ -211,3 +211,30 @@
 .vr-hidden {
   display: none !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   HIGHLIGHT BREATHING ANIMATION - Gentle color pulse
+   ═══════════════════════════════════════════════════════════════════ */
+
+@keyframes vr-tabs-highlight-breathe {
+  0% { color: inherit; }
+
+  /* Quick anticipation - slight shift toward orange */
+  15% { color: inherit; }
+
+  /* Smooth glide to full orange */
+  40% { color: var(--color-primary); }
+
+  /* Hold orange briefly */
+  55% { color: var(--color-primary); }
+
+  /* Gentle ease back */
+  75% { color: inherit; }
+
+  /* Rest period */
+  100% { color: inherit; }
+}
+
+.vr-tabs-panels .vr-tabs-panels-trigger--highlight {
+  animation: vr-tabs-highlight-breathe 8s ease-in-out infinite;
+}

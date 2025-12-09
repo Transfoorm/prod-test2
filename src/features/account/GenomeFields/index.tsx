@@ -73,7 +73,7 @@ const TIMELINE_URGENCY_OPTIONS = [
 export function GenomeFields() {
   // ─────────────────────────────────────────────────────────────────────
   // FUSE wiring - all state access lives here in the Feature
-  // Genome data is preloaded via WARP when navigating to settings
+  // Data flows: WARP → FUSE (Golden Bridge pattern)
   // ─────────────────────────────────────────────────────────────────────
   const genome = useFuse((s) => s.genome);
   const updateGenomeLocal = useFuse((s) => s.updateGenomeLocal);

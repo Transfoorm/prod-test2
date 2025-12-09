@@ -53,7 +53,7 @@
 
 .vr-card-standard .vr-card-standard-footer {
   padding: var(--space-md) var(--space-lg);
-  background-color: var(--bg-tertiary);
+  background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-tertiary));
   border-top: var(--card-border-width) solid var(--border-light);
 }
 

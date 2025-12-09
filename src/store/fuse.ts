@@ -747,8 +747,27 @@ export const useFuse = create<FuseStore>()((set, get) => {
       const start = fuseTimer.start('updateGenomeLocal');
       set((state) => {
         const currentGenome = state.genome || { completionPercent: 0 };
+        const newGenome = { ...currentGenome, ...updates };
+
+        // Calculate completion percent client-side (mirrors Convex logic)
+        const fields = [
+          'jobTitle', 'department', 'seniority',
+          'industry', 'companySize', 'companyWebsite',
+          'transformationGoal', 'transformationStage', 'transformationType', 'timelineUrgency',
+          'howDidYouHearAboutUs', 'teamSize', 'annualRevenue', 'successMetric'
+        ] as const;
+
+        let filled = 0;
+        for (const field of fields) {
+          const value = newGenome[field];
+          if (value !== undefined && value !== null && value !== '') {
+            filled++;
+          }
+        }
+        const completionPercent = Math.round((filled / fields.length) * 100);
+
         return {
-          genome: { ...currentGenome, ...updates },
+          genome: { ...newGenome, completionPercent },
           lastActionTiming: performance.now(),
         };
       });

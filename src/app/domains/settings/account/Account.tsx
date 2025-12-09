@@ -69,7 +69,7 @@ export default function Account() {
             { id: 'profile', label: 'Profile', icon: <Icon variant="user" />, content: <Profile /> },
             { id: 'email', label: 'Email', icon: <Icon variant="send" />, content: <Email /> },
             { id: 'security', label: 'Security', icon: <Icon variant="lock" />, content: <Security /> },
-            { id: 'genome', label: 'Genome', icon: <Icon variant="dna" />, content: <Genome /> },
+            { id: 'genome', label: 'Genome', icon: <Icon variant="dna" />, content: <Genome />, highlight: true },
           ]}
         />
       </div>
