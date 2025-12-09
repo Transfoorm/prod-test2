@@ -57,6 +57,15 @@ export default defineSchema({
     phoneNumber: v.optional(v.string()),
     businessCountry: v.optional(v.string()),
 
+    /**
+     * @deprecated S.I.D. Phase 15 — clerkId is LEGACY ONLY.
+     * Kept as optional to allow schema deployment while existing production
+     * documents still contain this field. Will be removed via migration.
+     * DO NOT use for identity lookups — use identity_clerk_registry instead.
+     * See: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md
+     */
+    clerkId: v.optional(v.string()),
+
     // Naval Rank System (required)
     rank: v.union(
       v.literal("crew"),
@@ -76,6 +85,8 @@ export default defineSchema({
 
     // Theme preferences (required with defaults)
     themeDark: v.boolean(), // Default: false (light mode)
+    /** @deprecated Legacy field — use themeDark instead */
+    themeName: v.optional(v.string()),
 
     // Miror AI avatar preference (optional - user configures)
     mirorAvatarProfile: v.optional(v.union(
