@@ -18,8 +18,8 @@
 /* Genome Fields */
 @import url('../src/features/account/GenomeFields/genome-fields.css');
 
-/* Verify Modal */
-@import url('../src/features/UserSetup/VerifyModal/verify-modal.css');
+/* Verify Modal - Lives in auth boundary (S.I.D. Phase 12) */
+@import url('../src/app/(auth)/components/VerifyModal/verify-modal.css');
 
 /* Flying Button (Phoenix) */
 @import url('../src/features/UserSetup/FlyingButton/flying-button.css');
