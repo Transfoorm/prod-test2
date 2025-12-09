@@ -13,8 +13,6 @@
 
 import { Field, Dropdown, Card } from '@/prebuilts';
 import { useFuse } from '@/store/fuse';
-import { useMutation } from 'convex/react';
-import { api } from '@/convex/_generated/api';
 import './genome-fields.css';
 
 // ─────────────────────────────────────────────────────────────────────
@@ -74,20 +72,14 @@ export function GenomeFields() {
   // ─────────────────────────────────────────────────────────────────────
   // FUSE wiring - all state access lives here in the Feature
   // Data flows: WARP → FUSE (Golden Bridge pattern)
+  // Persistence: updateGenomeLocal → Server Action → Convex
   // ─────────────────────────────────────────────────────────────────────
   const genome = useFuse((s) => s.genome);
   const updateGenomeLocal = useFuse((s) => s.updateGenomeLocal);
 
-  // Convex mutation for persistence
-  const updateGenomeMutation = useMutation(api.domains.settings.mutations.updateGenome);
-
-  // Unified save handler - updates FUSE optimistically, then persists to DB
+  // Save handler - FUSE action handles both optimistic update AND persistence
   const handleSave = async (field: string, value: string | number | undefined) => {
-    // Optimistic update
-    updateGenomeLocal({ [field]: value });
-
-    // Persist to DB
-    await updateGenomeMutation({ [field]: value });
+    await updateGenomeLocal({ [field]: value });
   };
 
   const completionPercent = genome?.completionPercent ?? 0;

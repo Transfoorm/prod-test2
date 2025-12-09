@@ -251,8 +251,42 @@ export async function updateProfileAction(data: {
 }
 
 /**
- * Refresh session cookie after avatar upload
+ * Update genome fields (no cookie update needed - genome is in separate table)
+ * TTT-LiveField pattern: Called from FUSE store action on field blur
  */
+export async function updateGenomeAction(data: {
+  jobTitle?: string;
+  department?: string;
+  seniority?: string;
+  industry?: string;
+  companySize?: string;
+  companyWebsite?: string;
+  transformationGoal?: string;
+  transformationStage?: string;
+  transformationType?: string;
+  timelineUrgency?: string;
+  howDidYouHearAboutUs?: string;
+  teamSize?: number;
+  annualRevenue?: string;
+  successMetric?: string;
+}) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error('Unauthorized');
+
+    // Call Convex mutation via HTTP client with clerkId for auth
+    await convex.mutation(api.domains.settings.mutations.updateGenome, {
+      clerkId: userId,
+      ...data,
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('updateGenomeAction error:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+}
+
 export async function refreshSessionAfterUpload() {
   try {
     const { userId } = await auth();

@@ -151,6 +151,8 @@ export const updateMirorSettings = mutation({
  */
 export const updateGenome = mutation({
   args: {
+    // Auth - passed from Server Action
+    clerkId: v.string(),
     // Professional Identity
     jobTitle: v.optional(v.string()),
     department: v.optional(v.string()),
@@ -171,12 +173,11 @@ export const updateGenome = mutation({
     successMetric: v.optional(v.string()),
   },
   handler: async (ctx: MutationCtx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
+    const { clerkId, ...genomeFields } = args;
 
     const user = await ctx.db
       .query("admin_users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkId))
       .first();
 
     if (!user) throw new Error("User not found");
@@ -191,8 +192,8 @@ export const updateGenome = mutation({
 
     if (existingGenome) {
       // Update existing genome
-      const updates = { ...args, updatedAt: now };
-      const completionPercent = calculateGenomeCompletion({ ...existingGenome, ...args });
+      const updates = { ...genomeFields, updatedAt: now };
+      const completionPercent = calculateGenomeCompletion({ ...existingGenome, ...genomeFields });
 
       await ctx.db.patch(existingGenome._id, {
         ...updates,
@@ -200,11 +201,11 @@ export const updateGenome = mutation({
       });
     } else {
       // Create new genome record
-      const completionPercent = calculateGenomeCompletion(args);
+      const completionPercent = calculateGenomeCompletion(genomeFields);
 
       await ctx.db.insert("settings_account_Genome", {
         userId: user._id,
-        ...args,
+        ...genomeFields,
         completionPercent,
         createdAt: now,
         updatedAt: now,

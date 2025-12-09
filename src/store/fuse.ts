@@ -122,7 +122,7 @@ interface FuseStore {
   /** Hydrate genome from query */
   hydrateGenome: (data: GenomeData) => void;
   /** Update genome with optimistic UI (for Field.live auto-save) */
-  updateGenomeLocal: (updates: Partial<NonNullable<GenomeData>>) => void;
+  updateGenomeLocal: (updates: Partial<NonNullable<GenomeData>>) => Promise<void>;
 
   hydrateThemeMode: (mode: ThemeMode) => void;
   hydrateThemeName: (name: ThemeName) => void;
@@ -743,8 +743,10 @@ export const useFuse = create<FuseStore>()((set, get) => {
       fuseTimer.end('hydrateGenome', start);
     },
 
-    updateGenomeLocal: (updates: Partial<NonNullable<GenomeData>>) => {
+    updateGenomeLocal: async (updates: Partial<NonNullable<GenomeData>>) => {
       const start = fuseTimer.start('updateGenomeLocal');
+
+      // 1. Optimistic update (instant UI feedback)
       set((state) => {
         const currentGenome = state.genome || { completionPercent: 0 };
         const newGenome = { ...currentGenome, ...updates };
@@ -771,6 +773,22 @@ export const useFuse = create<FuseStore>()((set, get) => {
           lastActionTiming: performance.now(),
         };
       });
+
+      // 2. Persist via Server Action (handles auth)
+      // Filter out null values and completionPercent (calculated server-side)
+      const actionUpdates: Record<string, string | number | undefined> = {};
+      for (const [key, value] of Object.entries(updates)) {
+        if (key !== 'completionPercent' && value !== null) {
+          actionUpdates[key] = value as string | number | undefined;
+        }
+      }
+
+      const { updateGenomeAction } = await import('@/app/actions/user-mutations');
+      const result = await updateGenomeAction(actionUpdates);
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to save genome');
+      }
+
       fuseTimer.end('updateGenomeLocal', start);
     },
 
