@@ -52,8 +52,9 @@ export class UsersModel {
     const trialDuration = RANK_SYSTEM_DEFAULTS.DEFAULT_TRIAL_DURATION;
     const trialEndsAt = calculateTrialEndDate(trialDuration, now);
 
+    // 🛡️ S.I.D. Phase 15: clerkId NOT stored in domain table - only in registry
     const userId = await db.insert("admin_users", {
-      clerkId: args.clerkId,
+      // clerkId removed per SID-15.1 - stored only in identity_clerk_registry
       email: args.email,
       firstName: args.firstName || '', // Empty string shows "Setup Incomplete" in UI
       lastName: args.lastName || '', // Empty string shows "Setup Incomplete" in UI

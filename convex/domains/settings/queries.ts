@@ -31,11 +31,12 @@ export const getUserSettings = query({
     if (!user) return null;
 
     // Return user profile data for settings pages
+    // 🛡️ S.I.D. Phase 15: clerkId removed - not returned from domain queries
     return {
       userProfile: {
         id: String(user._id),         // ✅ SOVEREIGNTY: Convex _id (canonical identity)
         convexId: String(user._id),   // Explicit alias for clarity
-        clerkId: user.clerkId,        // ⚠️ Auth reference only
+        // clerkId removed per SID-15.3 - use FUSE cookie for Clerk reference
         email: user.email,
         secondaryEmail: user.secondaryEmail,
         firstName: user.firstName,

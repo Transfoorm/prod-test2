@@ -40,17 +40,9 @@ export default defineSchema({
 
   admin_users: defineTable({
     // Identity (required)
-    /**
-     * @deprecated REFERENCE ONLY — Do NOT use for business logic lookups.
-     * clerkId exists solely for:
-     * - Webhook correlation (user.created, user.deleted events from Clerk)
-     * - Vanish Protocol (account deletion flows)
-     * - Identity handoff ceremony (auth boundary only)
-     *
-     * All runtime identity MUST use the Convex document _id.
-     * See: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md
-     */
-    clerkId: v.string(),
+    // 🛡️ S.I.D. Phase 15: clerkId REMOVED from domain table
+    // Clerk identity now lives ONLY in identity_clerk_registry table.
+    // See: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md (SID-15.1)
     email: v.string(),
     firstName: v.string(),
     lastName: v.string(),

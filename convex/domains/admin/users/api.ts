@@ -105,9 +105,10 @@ export const getAllUsers = query({
     console.log(`✅ getAllUsers: Returning ${admin_users.length} admin_users (sorted by _creationTime DESC - v2)`);
 
     // Return with basic info (no sensitive data)
+    // 🛡️ S.I.D. Phase 15: clerkId removed from domain query returns
     return admin_users.map(user => ({
       _id: user._id,
-      clerkId: user.clerkId,
+      // clerkId removed per SID-15.3
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
@@ -139,9 +140,10 @@ export const getAllUsersPaginated = query({
     const admin_users = await ctx.db.query("admin_users").order("desc").collect();
 
     // Return with basic info (no sensitive data)
+    // 🛡️ S.I.D. Phase 15: clerkId removed from domain query returns
     return admin_users.map((user) => ({
       _id: user._id,
-      clerkId: user.clerkId,
+      // clerkId removed per SID-15.3
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,

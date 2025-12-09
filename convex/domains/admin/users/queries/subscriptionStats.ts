@@ -113,12 +113,13 @@ export const getExpiringTrials = query({
       .collect();
 
     // Filter and sort by expiration date
+    // 🛡️ S.I.D. Phase 15: clerkId removed from domain query returns
     const expiring = trialUsers
       .map((user) => {
         const daysRemaining = getTrialDaysRemaining(user.trialEndsAt);
         return {
           _id: user._id,
-          clerkId: user.clerkId,
+          // clerkId removed per SID-15.3
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,

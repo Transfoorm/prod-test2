@@ -25,7 +25,7 @@ import {
 import { executeBatchDelete } from "./strategies/deleteStrategy";
 import { executeBatchAnonymize } from "./strategies/anonymizeStrategy";
 import { executeReassignStrategy } from "./strategies/reassignStrategy";
-import { deleteClerkIdentity } from "@/convex/identity/registry";
+import { deleteClerkIdentity, getClerkIdFromUserId } from "@/convex/identity/registry";
 
 /**
  * Cascade execution result
@@ -371,11 +371,17 @@ export async function executeUserDeletionCascade(
     // Mark deletion start
     await markDeletionStart(db, userId);
 
+    // 🛡️ S.I.D. Phase 15: Get clerkId from registry (not user record)
+    const clerkId = await getClerkIdFromUserId(db, userId);
+    if (!clerkId) {
+      console.warn(`[VANISH] No registry mapping for userId ${userId}, using empty clerkId`);
+    }
+
     // Create initial audit log entry
     // SOVEREIGN: userId and deletedBy are now v.id("admin_users")
     const auditLogId = await db.insert('admin_users_DeleteLog', {
       userId: userId,  // SOVEREIGN: Convex document ID
-      clerkId: user.clerkId,  // Reference only for webhook correlation
+      clerkId: clerkId || '',  // From registry for webhook correlation
       email: user.email,
       firstName: user.firstName, // Preserve first name at deletion time
       lastName: user.lastName, // Preserve last name at deletion time
