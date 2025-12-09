@@ -44,6 +44,24 @@ type SessionPayload = {
   // Dashboard preferences (WARP'd during login)
   dashboardLayout?: 'classic' | 'focus' | 'metrics';
   dashboardWidgets?: string[];
+  // Professional Genome (persisted for zero-loading)
+  genome?: {
+    completionPercent: number;
+    jobTitle?: string;
+    department?: string;
+    seniority?: string;
+    industry?: string;
+    companySize?: string;
+    companyWebsite?: string;
+    transformationGoal?: string;
+    transformationStage?: string;
+    transformationType?: string;
+    timelineUrgency?: string;
+    howDidYouHearAboutUs?: string;
+    teamSize?: number;
+    annualRevenue?: string;
+    successMetric?: string;
+  };
 };
 
 export async function mintSession(payload: Omit<SessionPayload, 'iat'>) {
@@ -75,7 +93,9 @@ export async function mintSession(payload: Omit<SessionPayload, 'iat'>) {
     mirorEnchantmentTiming: payload.mirorEnchantmentTiming,
     // Dashboard preferences (WARP'd during login)
     dashboardLayout: payload.dashboardLayout,
-    dashboardWidgets: payload.dashboardWidgets
+    dashboardWidgets: payload.dashboardWidgets,
+    // Professional Genome
+    genome: payload.genome
   })
     .setProtectedHeader({ alg: ALG })
     .setIssuedAt()
@@ -151,7 +171,9 @@ export async function readSessionCookie(): Promise<SessionPayload | null> {
       mirorEnchantmentTiming: payload.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
       // Dashboard preferences
       dashboardLayout: payload.dashboardLayout as 'classic' | 'focus' | 'metrics' | undefined,
-      dashboardWidgets: payload.dashboardWidgets as string[] | undefined
+      dashboardWidgets: payload.dashboardWidgets as string[] | undefined,
+      // Professional Genome
+      genome: payload.genome as SessionPayload['genome']
     };
 
     console.log(`FUSE Cookie: Session read ${Date.now() - startTime}ms (${sessionData.email})`);
@@ -218,7 +240,9 @@ export function getSessionFromCookie(cookieStore: { get: (name: string) => { val
       mirorEnchantmentTiming: payload.mirorEnchantmentTiming,
       // Dashboard preferences
       dashboardLayout: payload.dashboardLayout,
-      dashboardWidgets: payload.dashboardWidgets
+      dashboardWidgets: payload.dashboardWidgets,
+      // Professional Genome
+      genome: payload.genome
     };
   } catch {
     return null;

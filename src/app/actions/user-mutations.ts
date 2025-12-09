@@ -252,7 +252,7 @@ export async function updateProfileAction(data: {
 }
 
 /**
- * Update genome fields (no cookie update needed - genome is in separate table)
+ * Update genome fields and refresh session cookie (FUSE doctrine: instant persistence)
  * 🛡️ SID-5.3: Uses session._id (sovereign) for all Convex calls
  * TTT-LiveField pattern: Called from FUSE store action on field blur
  */
@@ -282,6 +282,57 @@ export async function updateGenomeAction(data: {
       userId: session._id as Id<"admin_users">,
       ...data,
     });
+
+    // 🛡️ SID-5.3: Fetch fresh genome data using sovereign _id
+    const freshGenome = await convex.query(api.domains.settings.queries.getUserGenome, {
+      callerUserId: session._id as Id<"admin_users">,
+    });
+
+    // Mint new session with updated genome (FUSE doctrine: cookie = truth)
+    const token = await mintSession({
+      _id: session._id,
+      clerkId: session.clerkId,
+      email: session.email,
+      secondaryEmail: session.secondaryEmail,
+      firstName: session.firstName,
+      lastName: session.lastName,
+      avatarUrl: session.avatarUrl,
+      brandLogoUrl: session.brandLogoUrl,
+      rank: session.rank,
+      setupStatus: session.setupStatus,
+      businessCountry: session.businessCountry,
+      entityName: session.entityName,
+      socialName: session.socialName,
+      phoneNumber: session.phoneNumber,
+      themeName: session.themeName,
+      themeMode: session.themeMode,
+      mirorAvatarProfile: session.mirorAvatarProfile,
+      mirorEnchantmentEnabled: session.mirorEnchantmentEnabled,
+      mirorEnchantmentTiming: session.mirorEnchantmentTiming,
+      dashboardLayout: session.dashboardLayout,
+      dashboardWidgets: session.dashboardWidgets,
+      genome: freshGenome ? {
+        completionPercent: freshGenome.completionPercent ?? 0,
+        jobTitle: freshGenome.jobTitle,
+        department: freshGenome.department,
+        seniority: freshGenome.seniority,
+        industry: freshGenome.industry,
+        companySize: freshGenome.companySize,
+        companyWebsite: freshGenome.companyWebsite,
+        transformationGoal: freshGenome.transformationGoal,
+        transformationStage: freshGenome.transformationStage,
+        transformationType: freshGenome.transformationType,
+        timelineUrgency: freshGenome.timelineUrgency,
+        howDidYouHearAboutUs: freshGenome.howDidYouHearAboutUs,
+        teamSize: freshGenome.teamSize,
+        annualRevenue: freshGenome.annualRevenue,
+        successMetric: freshGenome.successMetric,
+      } : undefined,
+    });
+
+    // Update cookie
+    const cookieStore = await cookies();
+    cookieStore.set(SESSION_COOKIE, token, COOKIE_OPTIONS);
 
     return { success: true };
   } catch (error) {

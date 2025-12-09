@@ -59,6 +59,24 @@ export interface FuseCookiePayload {
   // Dashboard preferences (WARP'd during login)
   dashboardLayout?: 'classic' | 'focus' | 'metrics';
   dashboardWidgets?: string[];
+  // Professional Genome (baked during genome save)
+  genome?: {
+    completionPercent: number;
+    jobTitle?: string;
+    department?: string;
+    seniority?: string;
+    industry?: string;
+    companySize?: string;
+    companyWebsite?: string;
+    transformationGoal?: string;
+    transformationStage?: string;
+    transformationType?: string;
+    timelineUrgency?: string;
+    howDidYouHearAboutUs?: string;
+    teamSize?: number;
+    annualRevenue?: string;
+    successMetric?: string;
+  };
 }
 
 /**

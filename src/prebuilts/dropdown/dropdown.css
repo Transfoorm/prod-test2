@@ -243,7 +243,7 @@
 
 /* Custom value icon (pencil) */
 .vr-dropdown-simple-custom-icon {
-  color: var(--brand-primary, #f97316);
+  color: var(--text-tertiary);
   margin-left: auto;
   margin-right: var(--space-sm);
   flex-shrink: 0;

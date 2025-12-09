@@ -26,6 +26,7 @@ export function ClientHydrator() {
   const hydrateThemeMode = useFuse((state) => state.hydrateThemeMode);
   const hydrateThemeName = useFuse((state) => state.hydrateThemeName);
   const hydrateDashboard = useFuse((state) => state.hydrateDashboard);
+  const hydrateGenome = useFuse((state) => state.hydrateGenome);
   const setAISidebarState = useFuse((state) => state.setAISidebarState);
 
   const hasHydrated = useRef(false);
@@ -101,9 +102,15 @@ export function ClientHydrator() {
       }, 'COOKIE');
     }
 
+    // 🧬 Hydrate Genome from cookie (baked during genome save)
+    if (decoded.genome) {
+      hydrateGenome(decoded.genome);
+      console.log('🧬 FUSE: Genome hydrated from cookie, completion=', decoded.genome.completionPercent);
+    }
+
     setAISidebarState('closed');
     console.log('⚡ FUSE: Store hydrated synchronously from cookie');
-  }, [setUser, hydrateThemeMode, hydrateThemeName, hydrateDashboard, setAISidebarState]);
+  }, [setUser, hydrateThemeMode, hydrateThemeName, hydrateDashboard, hydrateGenome, setAISidebarState]);
 
   // Helper function to hydrate store from decoded cookie data
   // Currently unused - reserved for future cookie polling implementation
