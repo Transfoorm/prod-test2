@@ -6,8 +6,8 @@
    - Shared base classes (.vr-field__*)
    - Field.live (auto-save with states)
    - Field.verify (identity-grade with reveal)
-   - Field.readonly (non-editable)
-   - Layout utilities
+   - Field.readonly (label + content wrapper)
+   - Layout utilities (vr-field-spacing, vr-field-row)
 
    TTT Gap Model: NO external margins - container controls spacing
    ═══════════════════════════════════════════════════════════════════ */
@@ -29,10 +29,10 @@
   margin-left: 2px;
 }
 
-/* Helper text - positioned outside flow */
+/* Helper text - absolute positioned, zero layout impact */
 .vr-field__helper {
   position: absolute;
-  bottom: calc(-1 * var(--space-md));
+  bottom: -18px;
   left: 0;
   font-size: var(--font-size-xs);
   color: var(--text-tertiary);
@@ -43,11 +43,6 @@
 .vr-field__error {
   font-size: var(--font-size-xs);
   color: var(--error-600);
-}
-
-/* Field with helper needs bottom margin */
-.vr-field--has-helper {
-  margin-bottom: var(--space-md);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -229,16 +224,6 @@
   color: var(--text-tertiary);
 }
 
-/* Masked display (password idle state) */
-.vr-field-verify__input--masked {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  color: var(--text-secondary);
-  letter-spacing: 2px;
-  font-size: var(--font-size-lg);
-}
-
 /* Idle - quiet, display-like */
 .vr-field-verify--idle .vr-field-verify__input {
   border-color: var(--border-light);
@@ -337,10 +322,10 @@
   overflow: hidden;
   white-space: nowrap;
   line-height: normal;
-  animation: typing-cycle 6s ease-in-out infinite;
+  animation: vr-field-verify-typing-cycle 6s ease-in-out infinite;
 }
 
-@keyframes typing-cycle {
+@keyframes vr-field-verify-typing-cycle {
   /* Start empty */
   0% { width: 0; }
 
@@ -399,75 +384,10 @@
   color: #fff;
 }
 
-/* ─────────────────────────────────────────────────────────────────────
-   EYE TOGGLE - Show/hide password toggle
-   ───────────────────────────────────────────────────────────────────── */
-
-.vr-field-verify__eye-toggle {
-  position: absolute;
-  top: 50%;
-  right: 12px;
-  transform: translateY(-50%);
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: none;
-  border-radius: var(--radius-sm);
-  background-color: transparent;
-  color: var(--text-tertiary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 150ms ease;
-  z-index: 1;
-}
-
-.vr-field-verify__eye-toggle:hover {
-  color: var(--text-primary);
-}
-
-.vr-field-verify__eye-toggle:focus-visible {
-  outline: 2px solid var(--brand-primary);
-  outline-offset: 2px;
-}
-
-/* Empty placeholder for Retype field idle state */
-.vr-field-verify__input--empty {
-  display: flex;
-  align-items: center;
-  color: var(--text-tertiary);
-  font-style: italic;
-  border-color: var(--border-light);
-}
-
-/* Disabled state - alive, shows pointer cursor, but blocks actual editing */
-.vr-field-verify--disabled .vr-field-verify__input,
-.vr-field-verify--disabled .vr-field-verify__pill {
-  cursor: pointer;
-}
-
-/* Dormant state - dead on fresh page (opaque until sibling awakens it) */
-.vr-field-verify--dormant {
-  opacity: 0.4;
-  pointer-events: none;
-}
-
-/* Clickable idle state - cursor pointer to signal interactivity */
-.vr-field-verify--idle:not(.vr-field-verify--disabled, .vr-field-verify--dormant) .vr-field-verify__input--empty {
-  cursor: pointer;
-}
-
-/* Idle hover - must come after disabled/dormant for specificity
-   Exclude empty inputs (they use --ready class for hover) */
-.vr-field-verify--idle .vr-field-verify__input:not(.vr-field-verify__input--empty):hover {
+/* Idle hover - subtle highlight on hover */
+.vr-field-verify--idle .vr-field-verify__input:hover {
   border-color: var(--brand-primary);
   cursor: text;
-}
-
-/* Ready state - hover shows orange border when sibling passed validation */
-.vr-field-verify--ready .vr-field-verify__input--empty:hover {
-  border-color: var(--brand-primary);
 }
 
 /* ─────────────────────────────────────────────────────────────────────
@@ -489,39 +409,6 @@
 }
 
 /* NOTE: Helper, error, has-helper now use shared .vr-field__* classes */
-
-/* ═══════════════════════════════════════════════════════════════════
-   FIELD.DISPLAY - Read-only display
-   ═══════════════════════════════════════════════════════════════════ */
-
-.vr-field-display {
-  width: 100%;
-  padding: var(--space-md);
-  font-size: var(--font-size-md);
-  background-color: var(--bg-input, #fff);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  line-height: normal;
-  height: var(--form-input-height);
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-}
-
-.vr-field-display--filled {
-  color: var(--text-primary);
-  font-style: normal;
-}
-
-.vr-field-display--empty {
-  color: var(--text-tertiary);
-  font-style: italic;
-}
-
-.vr-field-display--disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
 
 /* ═══════════════════════════════════════════════════════════════════
    FIELD.READONLY - Label + field + messages (not editable)
@@ -565,122 +452,25 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   FIELD SPACING - Vertical spacing utility
+   FIELD LAYOUT - Spacing utilities for field groups
    ═══════════════════════════════════════════════════════════════════ */
 
+/* Vertical stack - gaps between rows */
 .vr-field-spacing {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  gap: var(--space-lg);
 }
 
-/* Simple row layout - not a VR, just CSS */
-.ft-field-row {
+/* Horizontal row - fields side by side */
+.vr-field-row {
   display: flex;
   gap: var(--space-md);
   align-items: flex-start;
 }
 
-.ft-field-row > * {
+.vr-field-row > * {
   flex: 1;
   min-width: 0;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   PROFILE COUNTRY - Country selector button (uses Field.live classes)
-   ═══════════════════════════════════════════════════════════════════ */
-
-button.ft-profile-country {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm, 8px);
-  text-align: left;
-  cursor: pointer;
-  height: var(--form-input-height);
-}
-
-.ft-profile-country__flag {
-  font-size: 1.25rem;
-}
-
-.ft-profile-country__text {
-  flex: 1;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   FIELD WITH ACTION - Field + action link below
-   ═══════════════════════════════════════════════════════════════════ */
-
-.ft-field-with-action {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-}
-
-.ft-field-action-pills {
-  display: flex;
-  gap: var(--space-sm);
-  margin-top: var(--space-xs);
-}
-
-.ft-field-action-pill {
-  padding: 6px 12px;
-  min-width: 110px;
-  height: 28px;
-  font-size: var(--font-size-xs);
-  font-weight: 500;
-  color: var(--text-secondary);
-  background-color: var(--bg-tertiary);
-  border: none;
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  transition: background-color 150ms ease, color 150ms ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-}
-
-.ft-field-action-pill:hover:not(.ft-field-action-pill--active, .ft-field-action-pill--confirm) {
-  background-color: #e5e7eb;
-  color: var(--text-primary);
-}
-
-.ft-field-action-pill:disabled:not(.ft-field-action-pill--confirm, .ft-field-action-pill--active) {
-  opacity: 0.5;
-  cursor: default;
-  pointer-events: none;
-}
-
-/* Confirmation state - orange with subtle shake */
-.ft-field-action-pill--confirm {
-  background-color: var(--brand-primary);
-  color: #fff;
-  animation: pill-nudge 0.3s ease;
-}
-
-.ft-field-action-pill--confirm:hover {
-  background-color: var(--brand-hover);
-  color: #fff;
-}
-
-@keyframes pill-nudge {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-3px); }
-  75% { transform: translateX(3px); }
-}
-
-/* Active operation (swapping/removing) - yellow with typing animation */
-.ft-field-action-pill--active {
-  background-color: var(--editing-bg);
-  color: var(--editing-text);
-}
-
-.ft-field-action-pill__typing {
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  animation: typing-cycle 6s ease-in-out infinite;
 }
 

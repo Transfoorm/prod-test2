@@ -1,0 +1,83 @@
+/* ═══════════════════════════════════════════════════════════════════
+   EMAIL FIELDS - Feature-specific styles
+   ═══════════════════════════════════════════════════════════════════ */
+
+.ft-email-field-with-action {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.ft-email-action-pills {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.ft-email-action-pill {
+  padding: 6px 12px;
+  min-width: 110px;
+  height: 28px;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: var(--bg-tertiary);
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.ft-email-action-pill:hover:not(.ft-email-action-pill--active, .ft-email-action-pill--confirm) {
+  background-color: #e5e7eb;
+  color: var(--text-primary);
+}
+
+.ft-email-action-pill:disabled:not(.ft-email-action-pill--confirm, .ft-email-action-pill--active) {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Confirmation state - orange with subtle shake */
+.ft-email-action-pill--confirm {
+  background-color: var(--brand-primary);
+  color: #fff;
+  animation: email-pill-nudge 0.3s ease;
+}
+
+.ft-email-action-pill--confirm:hover {
+  background-color: var(--brand-hover);
+  color: #fff;
+}
+
+@keyframes email-pill-nudge {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+/* Active operation (swapping/removing) - yellow with typing animation */
+.ft-email-action-pill--active {
+  background-color: var(--editing-bg);
+  color: var(--editing-text);
+}
+
+.ft-email-action-pill__typing {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: email-typing-cycle 6s ease-in-out infinite;
+}
+
+@keyframes email-typing-cycle {
+  0% { width: 0; }
+  40% { width: 100%; }
+  80% { width: 100%; }
+  100% { width: 0; }
+}
