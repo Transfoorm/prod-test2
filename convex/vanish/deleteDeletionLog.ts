@@ -16,6 +16,7 @@
 
 import { mutation } from "@/convex/_generated/server";
 import { v } from "convex/values";
+import { getUserIdFromClerkId } from "@/convex/identity/registry";
 
 /**
  * DELETE DELETION LOG ENTRY
@@ -44,16 +45,20 @@ export const deleteDeletionLog = mutation({
 
     // ═══════════════════════════════════════════════════════════════
     // 2. VERIFY ADMIRAL RANK
+    // 🛡️ S.I.D. Phase 14: Use identity registry for Clerk→Convex lookup
     // ═══════════════════════════════════════════════════════════════
 
-    const caller = await ctx.db
-      .query("admin_users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", callerClerkId))
-      .first();
+    const callerUserId = await getUserIdFromClerkId(ctx.db, callerClerkId);
+    if (!callerUserId) {
+      throw new Error(
+        `[VANISH JOURNAL] Caller not found in registry: No mapping for ${callerClerkId}`
+      );
+    }
 
+    const caller = await ctx.db.get(callerUserId);
     if (!caller) {
       throw new Error(
-        `[VANISH JOURNAL] Caller not found: No Convex user record for ${callerClerkId}`
+        `[VANISH JOURNAL] Caller not found: No Convex user record for ${callerUserId}`
       );
     }
 

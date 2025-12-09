@@ -25,6 +25,7 @@ import {
 import { executeBatchDelete } from "./strategies/deleteStrategy";
 import { executeBatchAnonymize } from "./strategies/anonymizeStrategy";
 import { executeReassignStrategy } from "./strategies/reassignStrategy";
+import { deleteClerkIdentity } from "@/convex/identity/registry";
 
 /**
  * Cascade execution result
@@ -426,6 +427,9 @@ export async function executeUserDeletionCascade(
       totalPreserved += stats.preserved;
       totalChunks += stats.chunks;
     }
+
+    // 🛡️ S.I.D. Phase 14: Delete identity registry mapping
+    await deleteClerkIdentity(db, userId);
 
     // Delete user record
     await db.delete(userId);

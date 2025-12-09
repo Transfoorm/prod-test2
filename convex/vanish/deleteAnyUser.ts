@@ -29,6 +29,7 @@
 import { mutation } from "@/convex/_generated/server";
 import { v } from "convex/values";
 import { executeUserDeletionCascade } from "./cascade";
+import { getUserIdFromClerkId } from "@/convex/identity/registry";
 
 /**
  * DELETE ANY USER (ADMIRAL ONLY)
@@ -84,16 +85,20 @@ export const deleteAnyUser = mutation({
 
     // ═══════════════════════════════════════════════════════════════
     // 2. VERIFY ADMIRAL RANK
+    // 🛡️ S.I.D. Phase 14: Use identity registry for Clerk→Convex lookup
     // ═══════════════════════════════════════════════════════════════
 
-    const caller = await ctx.db
-      .query("admin_users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", callerClerkId))
-      .first();
+    const callerUserId = await getUserIdFromClerkId(ctx.db, callerClerkId);
+    if (!callerUserId) {
+      throw new Error(
+        `[VANISH] Caller not found in registry: No mapping for ${callerClerkId}`
+      );
+    }
 
+    const caller = await ctx.db.get(callerUserId);
     if (!caller) {
       throw new Error(
-        `[VANISH] Caller not found: No Convex user record for ${callerClerkId}`
+        `[VANISH] Caller not found: No Convex user record for ${callerUserId}`
       );
     }
 
@@ -105,14 +110,18 @@ export const deleteAnyUser = mutation({
 
     // ═══════════════════════════════════════════════════════════════
     // 3. FIND TARGET USER BY CLERKID
+    // 🛡️ S.I.D. Phase 14: Use identity registry for Clerk→Convex lookup
     // ⚠️ QUARANTINED: VANISH requires ClerkID for cross-system deletion
     // ═══════════════════════════════════════════════════════════════
 
-    const targetUser = await ctx.db
-      .query("admin_users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.targetClerkId))
-      .first();
+    const targetUserId = await getUserIdFromClerkId(ctx.db, args.targetClerkId);
+    if (!targetUserId) {
+      throw new Error(
+        `[VANISH] Target not found in registry: No mapping for clerkId ${args.targetClerkId}`
+      );
+    }
 
+    const targetUser = await ctx.db.get(targetUserId);
     if (!targetUser) {
       throw new Error(
         `[VANISH] Target not found: No user with clerkId ${args.targetClerkId}`

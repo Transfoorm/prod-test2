@@ -3,6 +3,38 @@ import { v } from "convex/values";
 
 export default defineSchema({
   // ═══════════════════════════════════════════════════════════════════════════
+  // IDENTITY DOMAIN (S.I.D. Phase 14 - Sovereign Identity Registry)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /**
+   * 🛡️ SOVEREIGN IDENTITY REGISTRY
+   *
+   * This table is the ONLY place where Clerk identity is correlated to Convex identity.
+   * All Clerk → Convex lookups MUST go through this registry.
+   *
+   * Purpose:
+   * - Webhook correlation (user.created, user.deleted events from Clerk)
+   * - Vanish Protocol (account deletion flows)
+   * - Identity handoff ceremony (auth boundary only)
+   *
+   * NEVER use this table for runtime identity. Use Convex _id directly.
+   *
+   * See: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md (SID-14.2, SID-14.3)
+   */
+  identity_clerk_registry: defineTable({
+    /** External auth provider ID (currently Clerk) */
+    externalId: v.string(),
+    /** Sovereign Convex user ID - THE source of truth */
+    userId: v.id("admin_users"),
+    /** Auth provider name for future federation (SID-20) */
+    provider: v.literal("clerk"),
+    /** When this mapping was created */
+    createdAt: v.number(),
+  })
+    .index("by_external_id", ["externalId"])
+    .index("by_user_id", ["userId"]),
+
+  // ═══════════════════════════════════════════════════════════════════════════
   // ADMIN DOMAIN
   // ═══════════════════════════════════════════════════════════════════════════
 
@@ -100,13 +132,9 @@ export default defineSchema({
       v.literal("failed")
     )),
   })
-    /**
-     * @deprecated WEBHOOK-ONLY INDEX — Do NOT use for runtime identity lookups.
-     * Required until SID Phase 10 (Webhook Refactor).
-     * All business logic MUST use ctx.db.get(userId) with Convex _id.
-     * See: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md (SID-6.2, SID-6.3)
-     */
-    .index("by_clerk_id", ["clerkId"])
+    // 🛡️ S.I.D. Phase 14: by_clerk_id REMOVED - use identity_clerk_registry instead
+    // All Clerk→Convex lookups now go through the sovereign registry table.
+    // See: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md (SID-14.1)
     .index("by_rank", ["rank"])
     .index("by_subscription_status", ["subscriptionStatus"]),
 

@@ -30,9 +30,11 @@
 
 import { QueryCtx, MutationCtx } from "@/convex/_generated/server";
 import { Doc } from "@/convex/_generated/dataModel";
+import { getUserIdFromClerkId } from "@/convex/identity/registry";
 
 /**
  * Validates sovereign identity from FUSE session cookie
+ * 🛡️ S.I.D. Phase 14: Uses identity registry for Clerk→Convex lookup
  *
  * @param ctx - Convex context (query or mutation)
  * @param callerClerkId - ClerkId passed from Server Action (via session cookie)
@@ -51,16 +53,22 @@ export async function requireSovereignIdentity(
     );
   }
 
-  // Look up user by clerkId
-  const user = await ctx.db
-    .query("admin_users")
-    .withIndex("by_clerk_id", (q) => q.eq("clerkId", callerClerkId))
-    .first();
+  // 🛡️ S.I.D. Phase 14: Look up via identity registry (not domain table index)
+  const userId = await getUserIdFromClerkId(ctx.db, callerClerkId);
 
-  if (!user) {
+  if (!userId) {
     throw new Error(
       `[SOVEREIGN GUARD] User not found for clerkId: ${callerClerkId}. ` +
       "User may have been deleted or clerkId is invalid."
+    );
+  }
+
+  const user = await ctx.db.get(userId);
+
+  if (!user) {
+    throw new Error(
+      `[SOVEREIGN GUARD] User document missing for userId: ${userId}. ` +
+      "Registry mapping exists but user record is gone."
     );
   }
 

@@ -1,16 +1,22 @@
 // FUSE Users Model - Business Logic Layer
 // Following Convex Best Practices: Model-Driven Architecture
+// 🛡️ S.I.D. Phase 14: Uses identity_clerk_registry for Clerk correlation
 
 import { DatabaseReader, DatabaseWriter } from "@/convex/_generated/server";
 import { THEME_DEFAULTS } from "@/convex/system/constants";
-import { Doc } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import { RANK_SYSTEM_DEFAULTS, calculateTrialEndDate } from "@/fuse/constants/ranks";
+import {
+  registerClerkIdentity,
+  getUserIdFromClerkId,
+} from "@/convex/identity/registry";
 
 // Core user business logic - pure TypeScript functions
 export class UsersModel {
 
   // Create new user with defaults
   // 🛡️ UNIQUE CONSTRAINT: Prevents duplicate emails in database
+  // 🛡️ S.I.D. Phase 14: Registers Clerk→Convex mapping in identity registry
   static async createUser(
     db: DatabaseWriter,
     args: {
@@ -33,13 +39,9 @@ export class UsersModel {
       throw new Error(`User with email ${args.email} already exists`);
     }
 
-    // 🛡️ DUPLICATE CHECK: Enforce clerkId uniqueness
-    const existingByClerkId = await db
-      .query("admin_users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
-      .first();
-
-    if (existingByClerkId) {
+    // 🛡️ S.I.D. Phase 14: Check for existing clerkId via registry (not domain table)
+    const existingUserId = await getUserIdFromClerkId(db, args.clerkId);
+    if (existingUserId) {
       throw new Error(`User with clerkId ${args.clerkId} already exists`);
     }
 
@@ -72,18 +74,22 @@ export class UsersModel {
       loginCount: 1, // First login on signup (required field)
     });
 
+    // 🛡️ S.I.D. Phase 14: Register Clerk→Convex mapping in identity registry
+    await registerClerkIdentity(db, args.clerkId, userId as Id<"admin_users">);
+
     return userId;
   }
 
   // Get user by Clerk ID
+  // 🛡️ S.I.D. Phase 14: Uses identity registry for Clerk→Convex lookup
   static async getUserByClerkId(
     db: DatabaseReader,
     clerkId: string
   ): Promise<Doc<"admin_users"> | null> {
-    return await db
-      .query("admin_users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkId))
-      .first();
+    // Look up userId from registry, then fetch user document
+    const userId = await getUserIdFromClerkId(db, clerkId);
+    if (!userId) return null;
+    return await db.get(userId);
   }
 
   // Get user theme preferences

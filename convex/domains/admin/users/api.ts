@@ -1,10 +1,12 @@
 // FUSE Users API - Domain Wrapper Layer
+// 🛡️ S.I.D. Phase 14: Uses identity_clerk_registry for Clerk correlation
 import { query, mutation } from "@/convex/_generated/server";
 import type { QueryCtx, MutationCtx } from "@/convex/_generated/server";
 import type { Doc, Id } from "@/convex/_generated/dataModel";
 import { v } from "convex/values";
 import { UsersModel } from "./model";
 import { isTrialExpired, isInGracePeriod } from "@/fuse/constants/ranks";
+import { getUserIdFromClerkId } from "@/convex/identity/registry";
 
 // ══════════════════════════════════════════════════════════════════════
 // AUTHORIZATION HELPER
@@ -361,27 +363,28 @@ export const ensureUser = mutation({
     const start = Date.now();
     console.log(`🛡️ SID ensureUser: START for clerkId=${args.clerkId}`);
 
-    // Look up existing user by clerkId (ONLY place this is permitted)
-    const existing = await ctx.db
-      .query("admin_users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
-      .first();
+    // 🛡️ S.I.D. Phase 14: Look up via identity registry (not domain table index)
+    const existingUserId = await getUserIdFromClerkId(ctx.db, args.clerkId);
 
-    if (existing) {
-      // Update last login
-      await ctx.db.patch(existing._id, {
-        lastLoginAt: Date.now(),
-        loginCount: (existing.loginCount || 0) + 1,
-        updatedAt: Date.now(),
-      });
+    if (existingUserId) {
+      const existing = await ctx.db.get(existingUserId);
+      if (existing) {
+        // Update last login
+        await ctx.db.patch(existing._id, {
+          lastLoginAt: Date.now(),
+          loginCount: (existing.loginCount || 0) + 1,
+          updatedAt: Date.now(),
+        });
 
-      console.log(`🛡️ SID ensureUser: EXISTING user ${existing._id} in ${Date.now() - start}ms`);
+        console.log(`🛡️ SID ensureUser: EXISTING user ${existing._id} in ${Date.now() - start}ms`);
 
-      // Return the SOVEREIGN _id and user data
-      return existing;
+        // Return the SOVEREIGN _id and user data
+        return existing;
+      }
     }
 
     // Create new user — Convex becomes source of truth
+    // (UsersModel.createUser also registers in identity_clerk_registry)
     console.log(`🛡️ SID ensureUser: CREATING new user for ${args.email}`);
     const userIdString = await UsersModel.createUser(ctx.db, {
       clerkId: args.clerkId,

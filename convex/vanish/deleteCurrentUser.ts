@@ -23,6 +23,7 @@
 import { mutation } from "@/convex/_generated/server";
 import { v } from "convex/values";
 import { executeUserDeletionCascade } from "./cascade";
+import { getUserIdFromClerkId } from "@/convex/identity/registry";
 
 /**
  * DELETE CURRENT USER
@@ -80,16 +81,20 @@ export const deleteCurrentUser = mutation({
 
     // ═══════════════════════════════════════════════════════════════
     // 3. FIND CONVEX USER RECORD
+    // 🛡️ S.I.D. Phase 14: Use identity registry for Clerk→Convex lookup
     // ═══════════════════════════════════════════════════════════════
 
-    const user = await ctx.db
-      .query("admin_users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkId))
-      .first();
+    const userId = await getUserIdFromClerkId(ctx.db, clerkId);
+    if (!userId) {
+      throw new Error(
+        `[VANISH] User not found in registry: No mapping for clerkId ${clerkId}`
+      );
+    }
 
+    const user = await ctx.db.get(userId);
     if (!user) {
       throw new Error(
-        `[VANISH] User not found: No Convex user record for clerkId ${clerkId}`
+        `[VANISH] User not found: No Convex user record for userId ${userId}`
       );
     }
 
