@@ -273,7 +273,7 @@ SID-13.4 Scan result: S.I.D. CERTIFICATION: SOVEREIGN IDENTITY ENGINEERING LEVEL
 ⸻
 
 ═══════════════════════════════════════════════════════════════════════════
-  ✅ PHASES 0-13: COMPLETE — S.I.D. LEVEL I CERTIFIED
+  ✅ PHASES 0-15: COMPLETE — S.I.D. LEVEL II CERTIFIED
 ═══════════════════════════════════════════════════════════════════════════
 
 The following phases have been fully implemented and certified:
@@ -294,50 +294,15 @@ The following phases have been fully implemented and certified:
 | 11 | WARP Reintegration | ✅ Complete |
 | 12 | Feature Zone Purification | ✅ Complete |
 | 13 | Dante Scan Certification | ✅ PASSED (0 violations) |
+| 14 | Index Eradication | ✅ Complete (identity_clerk_registry) |
+| 15 | Schema Purification | ✅ Complete (clerkId removed from admin_users) |
 
 ═══════════════════════════════════════════════════════════════════════════
   🔮 FUTURE PHASES (NOT YET IMPLEMENTED)
 ═══════════════════════════════════════════════════════════════════════════
 
-The following phases are architectural roadmap items for future development:
-
-⸻
-
-PHASE 14 — INDEX ERADICATION (Remove by_clerk_id Entirely)
-
-SID-14.1 All .index("by_clerk_id") declarations MUST be removed from schema.
-
-SID-14.2 Any Clerk-based lookup MUST route through a sovereign mapping table instead.
-
-SID-14.3 Webhook handlers MUST use the Convex sovereign registry for correlation.
-
-SID-14.4 No Convex function may rely on clerkId for locating a user.
-
-SID-14.5 VANISH flows MUST be refactored to operate strictly on Convex _id.
-
-SID-14.6 Full Surgery is complete when:
-    • All by_clerk_id indexes removed
-    • No Convex schema references Clerk identity
-    • All Clerk → Convex correlation uses a sovereign registry
-
-⸻
-
-PHASE 15 — SCHEMA PURIFICATION (Remove ALL clerkId Fields)
-
-SID-15.1 clerkId MUST NOT exist as a stored field in any Convex table.
-
-SID-15.2 If Clerk identity is needed for correlation, it MUST live in:
-    • A dedicated sovereign mapping table
-    • Never inside domain tables
-
-SID-15.3 No domain, feature, or mutation may accept or store clerkId.
-
-SID-15.4 After removal, schema MUST be validated against:
-    • No clerkId fields
-    • No clerkId indexes
-    • No clerkId references
-
-SID-15.5 Migration MUST be executed to backfill registry lookups.
+The following phases are architectural roadmap items for future development.
+These phases introduce multi-tenancy (organizations) and require significant new functionality.
 
 ⸻
 
