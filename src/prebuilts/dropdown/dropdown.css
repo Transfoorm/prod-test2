@@ -206,6 +206,56 @@
   flex-shrink: 0;
 }
 
+/* "Other" option - separator line above */
+.vr-dropdown-simple-option--other {
+  border-top: 1px solid var(--border-light);
+  margin-top: var(--space-xs);
+  padding-top: var(--space-sm);
+}
+
+/* "Other" mode - inline text input */
+.vr-dropdown-simple-other {
+  width: 100%;
+}
+
+.vr-dropdown-simple-other__input {
+  width: 100%;
+  padding: var(--space-md);
+  font-size: var(--font-size-md);
+  font-family: inherit;
+  color: var(--text-primary);
+  background-color: var(--bg-input, #fff);
+  border: 1px solid var(--brand-primary, #f97316);
+  border-radius: var(--radius-md, 8px);
+  line-height: normal;
+  height: var(--form-input-height);
+  box-sizing: border-box;
+  box-shadow: 0 0 0 3px var(--brand-light, #fed7aa);
+}
+
+.vr-dropdown-simple-other__input:focus {
+  outline: none;
+}
+
+.vr-dropdown-simple-other__input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Custom value icon (pencil) */
+.vr-dropdown-simple-custom-icon {
+  color: var(--brand-primary, #f97316);
+  margin-left: auto;
+  margin-right: var(--space-sm);
+  flex-shrink: 0;
+}
+
+/* "Other" option label with icon */
+.vr-dropdown-simple-option-other-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    🎯 VARIANT 2: DROPDOWN WITH ICONS - Generic Custom Dropdown
    ═══════════════════════════════════════════════════════════════════ */

@@ -12,7 +12,7 @@
   --tabs-panels-height: 40px;
   --tabs-panels-container-radius: 8px;
   --tabs-panels-container-padding: 4px;
-  --tabs-panels-list-gap: 4px;
+  --tabs-panels-list-gap: 6px;
   --tabs-panels-trigger-gap: 6px;
   --tabs-panels-trigger-radius: 6px;
   --tabs-panels-trigger-padding-y: 6px;
@@ -147,7 +147,7 @@
 
 .vr-tabs-panels .vr-tabs-panels-trigger:hover:not(.disabled, .active) {
   color: var(--text-primary);
-  background-color: var(--bg-hover);
+  background-color: var(--bg-active);
 }
 
 .vr-tabs-panels .vr-tabs-panels-trigger.active {

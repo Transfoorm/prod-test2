@@ -60,8 +60,10 @@ const TRANSFORMATION_TYPE_OPTIONS = [
 
 const TIMELINE_URGENCY_OPTIONS = [
   { value: 'exploratory', label: 'Exploratory (no rush)' },
-  { value: '3_6_months', label: '3-6 months' },
   { value: 'immediate', label: 'Immediate' },
+  { value: '3_6_months', label: '3-6 months' },
+  { value: '1_2_years', label: '1-2 years' },
+  { value: 'lifes_work', label: "My Life's Work" },
 ];
 
 // ─────────────────────────────────────────────────────────────────────
@@ -126,6 +128,8 @@ export function GenomeFields() {
               value={genome?.seniority ?? ''}
               onChange={(v: string) => handleSave('seniority', v || undefined)}
               placeholder="Select seniority level"
+              allowOther
+              otherPlaceholder="e.g. Chief Innovation Officer"
             />
             <Dropdown.simple
               label="Company Size"
@@ -133,6 +137,8 @@ export function GenomeFields() {
               value={genome?.companySize ?? ''}
               onChange={(v: string) => handleSave('companySize', v || undefined)}
               placeholder="Select company size"
+              allowOther
+              otherPlaceholder="e.g. 10,000+ employees"
             />
           </div>
 
@@ -178,6 +184,8 @@ export function GenomeFields() {
                   value={genome?.transformationStage ?? ''}
                   onChange={(v: string) => handleSave('transformationStage', v || undefined)}
                   placeholder="Select stage"
+                  allowOther
+                  otherPlaceholder="e.g. Restructuring"
                 />
                 <Dropdown.simple
                   label="Transformation Type"
@@ -185,6 +193,8 @@ export function GenomeFields() {
                   value={genome?.transformationType ?? ''}
                   onChange={(v: string) => handleSave('transformationType', v || undefined)}
                   placeholder="Select type"
+                  allowOther
+                  otherPlaceholder="e.g. Talent & Culture"
                 />
                 <Dropdown.simple
                   label="Timeline & Urgency"
@@ -192,6 +202,8 @@ export function GenomeFields() {
                   value={genome?.timelineUrgency ?? ''}
                   onChange={(v: string) => handleSave('timelineUrgency', v || undefined)}
                   placeholder="Select timeline"
+                  allowOther
+                  otherPlaceholder="e.g. Q1 2025"
                 />
               </div>
             </div>

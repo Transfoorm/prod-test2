@@ -154,49 +154,16 @@ export const updateGenome = mutation({
     // Professional Identity
     jobTitle: v.optional(v.string()),
     department: v.optional(v.string()),
-    seniority: v.optional(v.union(
-      v.literal("staff"),
-      v.literal("admin"),
-      v.literal("consultant"),
-      v.literal("contractor"),
-      v.literal("coach"),
-      v.literal("advisor"),
-      v.literal("manager"),
-      v.literal("director"),
-      v.literal("executive"),
-      v.literal("founder")
-    )),
+    seniority: v.optional(v.string()),
     // Company Context
     industry: v.optional(v.string()),
-    companySize: v.optional(v.union(
-      v.literal("1-10"),
-      v.literal("11-50"),
-      v.literal("51-200"),
-      v.literal("201-1000"),
-      v.literal("1001-5000"),
-      v.literal("5001+")
-    )),
+    companySize: v.optional(v.string()),
     companyWebsite: v.optional(v.string()),
     // Transformation Journey
     transformationGoal: v.optional(v.string()),
-    transformationStage: v.optional(v.union(
-      v.literal("exploring"),
-      v.literal("planning"),
-      v.literal("executing"),
-      v.literal("scaling")
-    )),
-    transformationType: v.optional(v.union(
-      v.literal("digital"),
-      v.literal("operational"),
-      v.literal("cultural"),
-      v.literal("product"),
-      v.literal("go_to_market")
-    )),
-    timelineUrgency: v.optional(v.union(
-      v.literal("exploratory"),
-      v.literal("3_6_months"),
-      v.literal("immediate")
-    )),
+    transformationStage: v.optional(v.string()),
+    transformationType: v.optional(v.string()),
+    timelineUrgency: v.optional(v.string()),
     // Growth Intel
     howDidYouHearAboutUs: v.optional(v.string()),
     teamSize: v.optional(v.number()),
