@@ -305,7 +305,7 @@ async function processTableCascade(
  *
  * @param db - Convex database writer
  * @param userId - ID of user to delete
- * @param deletedBy - clerkId of user initiating deletion
+ * @param deletedBy - Convex _id of user initiating deletion (SOVEREIGN IDENTITY)
  * @param options - Cascade options
  * @returns Cascade execution result
  *
@@ -329,7 +329,7 @@ export async function executeUserDeletionCascade(
   db: DatabaseWriter,
   storage: MutationCtx["storage"],
   userId: Id<"admin_users">,
-  deletedBy: string,
+  deletedBy: Id<"admin_users">,  // SOVEREIGN: Convex _id, not clerkId
   options: CascadeOptions = {}
 ): Promise<CascadeResult> {
   const startTime = Date.now();
@@ -371,9 +371,10 @@ export async function executeUserDeletionCascade(
     await markDeletionStart(db, userId);
 
     // Create initial audit log entry
+    // SOVEREIGN: userId and deletedBy are now v.id("admin_users")
     const auditLogId = await db.insert('admin_users_DeleteLog', {
-      userId: userId.toString(),
-      clerkId: user.clerkId,
+      userId: userId,  // SOVEREIGN: Convex document ID
+      clerkId: user.clerkId,  // Reference only for webhook correlation
       email: user.email,
       firstName: user.firstName, // Preserve first name at deletion time
       lastName: user.lastName, // Preserve last name at deletion time
@@ -382,8 +383,8 @@ export async function executeUserDeletionCascade(
       subscriptionStatus: user.subscriptionStatus, // Preserve subscription status at deletion time
       entityName: user.entityName, // Preserve entity name at deletion time
       socialName: user.socialName, // Preserve social name at deletion time
-      deletedBy,
-      deletedByRole: deletedBy === user.clerkId ? 'self' : 'admiral',
+      deletedBy: deletedBy,  // SOVEREIGN: Convex document ID of deleter
+      deletedByRole: deletedBy === userId ? 'self' : 'admiral',
       reason: options.reason, // Store deletion reason for compliance
       scope: {
         userProfile: false, // Will be updated
@@ -489,9 +490,10 @@ export async function executeUserDeletionCascade(
         };
       }
 
+      // SOVEREIGN: Use by_user_id index instead of by_clerk_id
       const auditLog = await db
         .query('admin_users_DeleteLog')
-        .withIndex('by_clerk_id', (q) => q.eq('clerkId', user!.clerkId))
+        .withIndex('by_user_id', (q) => q.eq('userId', userId))
         .order('desc')
         .first();
 

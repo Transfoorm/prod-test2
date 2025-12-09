@@ -2,27 +2,31 @@
 │  🔒 SERVER-SIDE PASSWORD MANAGEMENT                                    │
 │  /api/user/password/change                                             │
 │                                                                        │
-│  Handles password change with verification code flow                  │
-│  Similar to email verification pattern                                │
+│  🛡️ S.I.D. COMPLIANT - Phase 9                                        │
+│  - SID-9.1: Identity from readSessionCookie(), NOT auth()              │
+│  - SID-5.3: Convex queries use userId (sovereign _id)                  │
+│  - SID-12.1: Clerk API uses session.clerkId (permitted)                │
 │                                                                        │
 │  ADMIRAL SUPPORT:                                                      │
-│  - Accepts optional targetUserId to edit other users                  │
-│  - Requires Admiral rank when changing another user's password        │
+│  - Accepts optional targetClerkId to edit other users                  │
+│  - Requires Admiral rank when changing another user's password         │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { readSessionCookie } from '@/fuse/hydration/session/cookie';
 import { ConvexHttpClient } from 'convex/browser';
 import { api } from '@/convex/_generated/api';
+import type { Id } from '@/convex/_generated/dataModel';
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export async function POST(req: Request) {
   try {
-    // Get authenticated user
-    const { userId } = await auth();
+    // 🛡️ SID-9.1: Identity from FUSE session cookie
+    const session = await readSessionCookie();
 
-    if (!userId) {
+    if (!session || !session._id || !session.clerkId) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
@@ -30,18 +34,18 @@ export async function POST(req: Request) {
     }
 
     // Get data from request body
-    const { newPassword, targetUserId } = await req.json();
+    const { newPassword, targetClerkId } = await req.json();
 
     // Determine which user to operate on
-    let targetUserClerkId = userId; // Default to session user
+    let targetUserClerkId = session.clerkId; // Default to session user
 
     // If targeting another user, verify Admiral permissions
-    if (targetUserId && targetUserId !== userId) {
-      console.log('[API PASSWORD CHANGE] Admiral operation detected - targetUserId:', targetUserId);
+    if (targetClerkId && targetClerkId !== session.clerkId) {
+      console.log('[API PASSWORD CHANGE] Admiral operation detected - targetClerkId:', targetClerkId);
 
-      // Query Convex to get requesting user's rank
-      const requestingUser = await convex.query(api.domains.admin.users.api.getUserByClerkId, {
-        clerkId: userId,
+      // 🛡️ SID-5.3: Query Convex using sovereign userId
+      const requestingUser = await convex.query(api.domains.admin.users.api.getCurrentUser, {
+        userId: session._id as Id<"admin_users">,
       });
 
       if (!requestingUser) {
@@ -61,7 +65,7 @@ export async function POST(req: Request) {
       }
 
       console.log('[API PASSWORD CHANGE] Admiral permission verified');
-      targetUserClerkId = targetUserId;
+      targetUserClerkId = targetClerkId;
     }
 
     if (!newPassword || typeof newPassword !== 'string') {
@@ -102,9 +106,7 @@ export async function POST(req: Request) {
 
     console.log('[API PASSWORD CHANGE] Changing password for user:', targetUserClerkId);
 
-    // FUSE PRINCIPLE: User is already authenticated with verified session
-    // No need to verify current password - they proved their identity by logging in
-    // ADMIRAL POWER: Admiral can change any user's password without knowing current password
+    // 🛡️ SID-12.1: Clerk API uses clerkId (permitted for Clerk operations)
     const client = await clerkClient();
 
     await client.users.updateUser(targetUserClerkId, {

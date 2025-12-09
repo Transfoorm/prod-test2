@@ -4,12 +4,12 @@
  * Server actions for admin operations that don't affect user session.
  * These wrap Convex mutations to keep domain views Convex-free (SRB-4 compliant).
  *
+ * 🛡️ S.I.D. PHASE 4 COMPLETE: Pipeline Purification
+ * - All mutations accept userId (sovereign)
+ * - Identity flows from FUSE session cookie
+ *
  * ARCHITECTURE:
  * Component → Server Action → Convex Mutation → FUSE re-hydrates via WARP
- *
- * 🔱 SOVEREIGN IDENTITY:
- * Identity flows from FUSE session cookie, NOT from Clerk getToken().
- * Clerk is quarantined at the /auth/** boundary only.
  */
 
 'use server';
@@ -24,15 +24,16 @@ const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 /**
  * Delete a deletion log entry (VANISH journal cleanup)
  *
- * 🔱 SOVEREIGN: Identity from FUSE session cookie, not Clerk token
+ * ⚠️ QUARANTINED: VANISH requires clerkId for cross-system integrity.
+ * This is an exception to SID-5.3 - see S.I.D. doctrine on VANISH quarantine.
  */
 export async function deleteDeletionLogAction(logId: Id<"admin_users_DeleteLog">) {
   try {
-    // 🔱 SOVEREIGN: Read identity from FUSE session cookie
+    // 🛡️ SID-9.1: Identity originates from readSessionCookie()
     const session = await readSessionCookie();
     if (!session?.clerkId) throw new Error('Unauthorized: No valid session');
 
-    // Call Convex mutation with clerkId from session cookie
+    // ⚠️ QUARANTINED: VANISH mutation requires clerkId
     const result = await convex.mutation(api.domains.admin.users.api.deleteDeletionLog, {
       logId,
       callerClerkId: session.clerkId,

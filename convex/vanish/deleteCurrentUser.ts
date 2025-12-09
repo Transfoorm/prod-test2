@@ -106,7 +106,7 @@ export const deleteCurrentUser = mutation({
       ctx.db,
       ctx.storage,
       user._id,
-      clerkId, // deletedBy = self
+      user._id, // SOVEREIGN: deletedBy = self (user's own Convex _id)
       {
         deleteStorageFiles: true,
         skipClerkDeletion: false, // Clerk webhook will handle or manual cleanup

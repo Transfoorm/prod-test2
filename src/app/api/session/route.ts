@@ -1,210 +1,95 @@
-// FUSE 4.0 SESSION API - The Heart of Zero Loading States
-// Following FUSE Doctrine: 2BA + TTT Ready (100K/10K/1K)
+// 🛡️ S.I.D. COMPLIANT SESSION API
+// FUSE 5.0 + Sovereign Identity Doctrine
 //
-// This is the CORE of FUSE - the cookie minting system that eliminates loading states
+// This route now delegates to the Identity Handoff Ceremony
+// which is the ONE place where Clerk identity enters the system.
+//
+// REF: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md
 
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
-import { clerkClient } from '@clerk/nextjs/server';
-import { mintSession, setSessionCookie, clearSessionCookie } from '@/fuse/hydration/session/cookie';
-import { ConvexHttpClient } from 'convex/browser';
-import { api } from '@/convex/_generated/api';
-import { DEFAULT_WIDGETS_BY_RANK } from '@/store/domains/dashboard';
+import { clearSessionCookie } from '@/fuse/hydration/session/cookie';
+import { performIdentityHandoff } from '@/app/(auth)/actions/identity-handoff';
 
-// GET /api/session — Clerk redirects here after sign-in, we mint FUSE cookie and redirect to dashboard
+// GET /api/session — Clerk redirects here after sign-in
+// Now delegates to the Identity Handoff Ceremony (SID-1.5)
 export async function GET(request: Request) {
   const startTime = Date.now();
-  console.log('🚀 FUSE: Session minting started');
+  console.log('🛡️ SID: Session route invoked — delegating to Identity Handoff Ceremony');
 
   try {
-    // ⏱️ Step 1: Clerk auth check
-    const step1 = Date.now();
-    const { userId } = await auth();
-    console.log(`  ├─ auth() → ${Date.now() - step1}ms`);
+    // ═══════════════════════════════════════════════════════════════
+    // 🛡️ IDENTITY HANDOFF CEREMONY
+    //
+    // This is now THE ONLY path to session creation.
+    // The ceremony ensures:
+    // - SID-1.1: Identity originates from Convex, not auth()
+    // - SID-1.5: Handoff occurs exactly once
+    // - SID-1.6: No session without valid Convex _id
+    // - SID-1.7: FUSE is source of truth after handoff
+    // ═══════════════════════════════════════════════════════════════
+    const result = await performIdentityHandoff();
 
-    if (!userId) {
-      console.error('ERROR FUSE Session: No userId from Clerk auth()');
-      return NextResponse.redirect(new URL('/sign-in', request.url));
+    if (!result.success) {
+      console.error('🛡️ SID: Identity Handoff FAILED:', result.error);
+      const signInUrl = new URL('/sign-in', request.url);
+      signInUrl.searchParams.set('error', 'session_failed');
+      return NextResponse.redirect(signInUrl);
     }
 
-    // ⏱️ Step 2: Init Convex client (instant)
-    const step2 = Date.now();
-    const convexClient = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
-    console.log(`  ├─ ConvexHttpClient init → ${Date.now() - step2}ms`);
+    // Session was minted with sovereign identity — redirect to app
+    console.log(`✅ SID Session: ${Date.now() - startTime}ms (sovereign identity established)`);
+    console.log(`   Sovereign _id: ${result.userId}`);
 
-    // ⏱️ Step 3: Parallel execution - Clerk + Convex (critical path optimization)
-    const step3 = Date.now();
-    const client = await clerkClient();
-    const [clerkUser, existingUser] = await Promise.all([
-      client.users.getUser(userId),
-      convexClient.query(api.domains.admin.users.api.getCurrentUser, { clerkId: userId })
-    ]);
-    console.log(`  ├─ Promise.all[clerkUser, convexUser] → ${Date.now() - step3}ms`);
-
-    const email = clerkUser.primaryEmailAddress?.emailAddress ?? '';
-    const firstName = clerkUser.firstName || '';
-    const lastName = clerkUser.lastName || '';
-
-    // FUSE Doctrine: "Clerk handshake and then no more clerk - EVER!"
-    // Only save user-uploaded avatars, not Clerk's default avatars
-    // Clerk defaults contain "eyJ0eXBlIjoiZGVmYXVsdCI" in the URL
-    const clerkImageUrl = clerkUser.imageUrl || '';
-    const isClerkDefault = clerkImageUrl.includes('eyJ0eXBlIjoiZGVmYXVsdCI');
-    const avatarToSave = (clerkImageUrl && !isClerkDefault) ? clerkImageUrl : undefined;
-
-    console.log('FUSE Cookie: Minting session for', email);
-    if (isClerkDefault) {
-      console.log('FUSE Sovereignty: Skipping Clerk default avatar - will use FUSE default');
-    }
-
-    // Declare token in outer scope
-    let token: string;
-
-    // Create or check user in Convex database
-    try {
-
-      // If user doesn't exist, create them
-      if (!existingUser) {
-        // ⏱️ Step 4a: Create new user
-        const step4a = Date.now();
-        console.log('FUSE Database: Creating new user record for', email);
-        await convexClient.mutation(api.domains.admin.users.api.createUser, {
-          clerkId: userId,
-          email,
-          firstName,
-          lastName,
-          avatarUrl: avatarToSave,
-          setupStatus: "pending",
-          businessCountry: "AU"
-        });
-        console.log(`  ├─ convex.createUser() → ${Date.now() - step4a}ms`);
-      } else {
-        // ⚡ CRITICAL PATH OPTIMIZATION: Skip updateLastLogin during login (298ms saved!)
-        // lastLoginAt will be updated asynchronously from client after login completes
-        console.log('FUSE Database: User record already exists (skipping lastLogin update for speed)');
-      }
-
-      // ⏱️ Step 5: Mint JWT
-      const step5 = Date.now();
-      // FUSE 5.0: Mint session cookie with user data from Convex (or defaults for new users)
-      // Use database values if they exist, fallback to Clerk values
-      const userRank = existingUser?.rank ?? 'captain';
-      token = await mintSession({
-        _id: existingUser?._id ? String(existingUser._id) : '',  // ✅ Convex _id (sovereignty restored)
-        clerkId: userId,
-        email,
-        secondaryEmail: existingUser?.secondaryEmail ?? undefined,
-        firstName: existingUser?.firstName ?? firstName,
-        lastName: existingUser?.lastName ?? lastName,
-        rank: userRank,
-        setupStatus: existingUser?.setupStatus ?? 'pending',
-        subscriptionStatus: existingUser?.subscriptionStatus ?? 'trial',
-        businessCountry: existingUser?.businessCountry ?? 'AU',
-        entityName: existingUser?.entityName,
-        socialName: existingUser?.socialName,
-        avatarUrl: existingUser?.avatarUrl ?? undefined,
-        brandLogoUrl: existingUser?.brandLogoUrl ?? undefined,
-        // 🌓 Theme preferences from DB
-        themeMode: existingUser?.themeDark ? 'dark' : 'light',
-        mirorAvatarProfile: existingUser?.mirorAvatarProfile,
-        mirorEnchantmentEnabled: existingUser?.mirorEnchantmentEnabled,
-        mirorEnchantmentTiming: existingUser?.mirorEnchantmentTiming,
-        // 🚀 WARP: Dashboard preferences (baked during login)
-        dashboardLayout: 'classic',
-        dashboardWidgets: DEFAULT_WIDGETS_BY_RANK[userRank] || DEFAULT_WIDGETS_BY_RANK['captain']
-      });
-      console.log(`  ├─ mintSession() → ${Date.now() - step5}ms`);
-    } catch (dbError) {
-      console.error('FUSE Database: Failed to create/check user record:', dbError);
-      // Continue with session creation even if database operation fails
-
-      // Mint session with Clerk data as fallback (no Clerk avatar per FUSE doctrine)
-      token = await mintSession({
-        _id: '',  // ⚠️ Empty _id - will upgrade on next successful login
-        clerkId: userId,
-        email,
-        firstName,
-        lastName,
-        rank: 'captain',
-        setupStatus: 'pending',
-        subscriptionStatus: 'trial',
-        businessCountry: 'AU',
-        entityName: undefined,
-        socialName: undefined,
-        avatarUrl: undefined,
-        brandLogoUrl: undefined,
-        // 🌓 Theme defaults for new/fallback users
-        themeMode: 'light',
-        mirorAvatarProfile: undefined,
-        mirorEnchantmentEnabled: undefined,
-        mirorEnchantmentTiming: undefined,
-        // 🚀 WARP: Dashboard preferences (fallback to captain defaults)
-        dashboardLayout: 'classic',
-        dashboardWidgets: DEFAULT_WIDGETS_BY_RANK['captain']
-      });
-
-      const res = NextResponse.redirect(new URL('/', request.url), 303);
-      setSessionCookie(res, token);
-      console.log(`FUSE Session: ${Date.now() - startTime}ms (complete + cookie set)`);
-      return res;
-    }
-
-    // ⏱️ Step 6: Set cookie and redirect
-    const step6 = Date.now();
-    const res = NextResponse.redirect(new URL('/', request.url), 303);
-    setSessionCookie(res, token);
-    console.log(`  └─ setSessionCookie() → ${Date.now() - step6}ms`);
-
-    console.log(`✅ FUSE Session TOTAL: ${Date.now() - startTime}ms`);
-    return res;
+    return NextResponse.redirect(new URL('/', request.url), 303);
 
   } catch (error) {
-    console.error('ERROR FUSE Session:', error);
-    // Redirect with error query param for user feedback
+    console.error('🛡️ SID: Session route CATASTROPHIC FAILURE:', error);
     const signInUrl = new URL('/sign-in', request.url);
     signInUrl.searchParams.set('error', 'session_failed');
     return NextResponse.redirect(signInUrl);
   }
 }
 
-// POST /api/session — Keep for manual session creation if needed
+// POST /api/session — Manual session creation via Identity Handoff
 export async function POST(request: Request) {
+  console.log('🛡️ SID: Session POST — delegating to Identity Handoff Ceremony');
+
   try {
-    const { userId } = await auth();
-    if (!userId) {
+    const result = await performIdentityHandoff();
+
+    if (!result.success) {
+      console.error('🛡️ SID: POST Identity Handoff FAILED:', result.error);
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const client = await clerkClient();
-    const clerkUser = await client.users.getUser(userId);
-    const email = clerkUser.primaryEmailAddress?.emailAddress ?? '';
-
-    console.log('SUCCESS FUSE 2.0 Session created via POST for:', email);
-
-    // Always redirect on POST for consistency
-    const res = NextResponse.redirect(new URL('/', request.url), 303);
-    return res;
+    console.log('✅ SID Session POST: Sovereign identity established');
+    return NextResponse.redirect(new URL('/', request.url), 303);
 
   } catch (error) {
-    console.error('ERROR Session POST failed:', error);
+    console.error('🛡️ SID: Session POST FAILED:', error);
     return new NextResponse('Internal Server Error', { status: 500 });
   }
 }
 
-// DELETE /api/session — clear FUSE cookie
+// DELETE /api/session — Clear FUSE cookie (sovereign session destruction)
 export async function DELETE() {
-  console.log('FUSE Session: Clearing session cookie');
+  console.log('🛡️ SID: Session DELETE — clearing sovereign cookie');
   const res = new NextResponse(null, { status: 204 });
   clearSessionCookie(res);
   return res;
 }
 
-// ⚡ FUSE 5.0 PERFORMANCE OPTIMIZATIONS:
-// 1. Lightweight query (no storage URL resolution): 2400ms → 10ms
-// 2. Parallel Clerk + Convex queries: saves 773ms
-// 3. Skip updateLastLogin during critical path: saves 298ms
-// Result: 3462ms → ~800ms (beats 1.5s production login!)
+// ═══════════════════════════════════════════════════════════════════════
+// 🛡️ S.I.D. PHASE 0 COMPLETE
 //
-// TTT Ready: Scales to 100K users with sub-second session creation
-// Store Brain: Manages session state and cookie lifecycle
-// FUSE Core: This IS the zero-loading-state engine
+// This route now enforces:
+// - SID-1.1: Identity does NOT originate from auth() here
+// - SID-1.5: Identity Handoff Ceremony is the ONLY path
+// - SID-1.6: No session without valid Convex _id
+// - SID-1.7: FUSE cookie is sovereign after handoff
+//
+// The poisoned flow (auth() → clerkId → Convex lookup → empty _id) is ELIMINATED.
+// The sovereign flow (Identity Handoff → ensureUser → guaranteed _id) is ESTABLISHED.
+//
+// REF: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md
+// ═══════════════════════════════════════════════════════════════════════

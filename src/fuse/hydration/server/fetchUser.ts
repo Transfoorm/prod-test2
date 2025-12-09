@@ -1,12 +1,18 @@
-// FUSE 5.0 Server-Side User Fetch
-// Reads session cookie and fetches fresh data from Convex for SSR
+/**
+ * 🛡️ S.I.D. COMPLIANT - FUSE 5.0 Server-Side User Fetch
+ * Reads session cookie and fetches fresh data from Convex for SSR
+ *
+ * SID-5.3: Uses session._id (sovereign) for Convex lookups
+ */
 
 import { readSessionCookie } from '@/fuse/hydration/session/cookie';
 import { ConvexHttpClient } from 'convex/browser';
 import { api } from '@/convex/_generated/api';
+import type { Id } from '@/convex/_generated/dataModel';
 
 export type ServerUser = {
-  clerkId: string;
+  _id: string;           // ✅ Sovereign Convex _id
+  clerkId: string;       // Reference only (for SID-12.1 Clerk API calls)
   email?: string;
   firstName?: string;
   lastName?: string;
@@ -20,22 +26,21 @@ export type ServerUser = {
   mirorAvatarProfile?: 'male' | 'female' | 'inclusive';
   mirorEnchantmentEnabled?: boolean;
   mirorEnchantmentTiming?: 'subtle' | 'magical' | 'playful';
-  // Note: Professional Genome is now in settings_account_Genome table
-  // and fetched separately via getUserGenome query
 };
 
 export async function fetchUserServer(): Promise<ServerUser | null> {
   try {
     const session = await readSessionCookie();
 
-    if (!session || !session.clerkId) {
+    // 🛡️ SID-9.1: Identity from session._id (sovereign)
+    if (!session || !session._id) {
       return null;
     }
 
-    // VALIDATE: Ensure Convex user exists (prevents orphaned cookie data)
+    // 🛡️ SID-5.3: Validate Convex user exists using sovereign _id
     const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
-    const convexUser = await convex.query(api.domains.admin.users.api.getUserByClerkId, {
-      clerkId: session.clerkId
+    const convexUser = await convex.query(api.domains.admin.users.api.getCurrentUser, {
+      userId: session._id as Id<"admin_users">
     });
 
     if (!convexUser) {
@@ -44,9 +49,9 @@ export async function fetchUserServer(): Promise<ServerUser | null> {
 
     // FUSE 5.0 Doctrine: Convex is the single source of truth
     // Use fresh data from Convex, not stale cookie
-    // Note: Professional Genome is now in settings_account_Genome table
     const userData: ServerUser = {
-      clerkId: convexUser.clerkId,
+      _id: String(convexUser._id),        // ✅ Sovereign identity
+      clerkId: convexUser.clerkId,        // Reference only
       email: convexUser.email,
       firstName: convexUser.firstName,
       lastName: convexUser.lastName,

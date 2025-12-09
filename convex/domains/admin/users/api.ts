@@ -1,6 +1,7 @@
 // FUSE Users API - Domain Wrapper Layer
 import { query, mutation } from "@/convex/_generated/server";
 import type { QueryCtx, MutationCtx } from "@/convex/_generated/server";
+import type { Doc, Id } from "@/convex/_generated/dataModel";
 import { v } from "convex/values";
 import { UsersModel } from "./model";
 import { isTrialExpired, isInGracePeriod } from "@/fuse/constants/ranks";
@@ -43,12 +44,13 @@ async function requireAdmiral(ctx: QueryCtx | MutationCtx) {
 
 // QUERIES
 
-// Get all admin_users (Admiral-only, for user management)
+// 🛡️ SID Phase 2: Sovereign Identity Mutation
 // TTT-CERTIFIED: Update lastLoginAt, increment loginCount, and check trial expiration on every login
 export const updateLastLogin = mutation({
-  args: { clerkId: v.string() },
+  args: { userId: v.id("admin_users") },
   handler: async (ctx, args) => {
-    const user = await UsersModel.getUserByClerkId(ctx.db, args.clerkId);
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.userId);
     if (!user) {
       throw new Error("User not found");
     }
@@ -79,7 +81,7 @@ export const updateLastLogin = mutation({
 
     // Lifetime and active subscriptions never expire, skip checks
 
-    await ctx.db.patch(user._id, updates);
+    await ctx.db.patch(args.userId, updates);
 
     return {
       success: true,
@@ -194,25 +196,28 @@ export const getUserForEdit = query({
 });
 
 // ⚡ FUSE 5.0: Lightweight query for session minting (skips expensive storage URL resolution)
+// 🛡️ SID Phase 2: Now accepts userId instead of clerkId
 // Used during login critical path where storage URLs aren't needed yet (only raw data for JWT)
 export const getCurrentUserForSession = query({
-  args: { clerkId: v.string() },
+  args: { userId: v.id("admin_users") },
   handler: async (ctx, args) => {
     const start = Date.now();
-    console.log(`⚡ getCurrentUserForSession: START for clerkId=${args.clerkId}`);
+    console.log(`⚡ getCurrentUserForSession: START for userId=${args.userId}`);
 
-    // Direct model query - no storage URL resolution (2400ms → ~10ms)
-    const user = await UsersModel.getUserByClerkId(ctx.db, args.clerkId);
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.userId);
 
     console.log(`⚡ getCurrentUserForSession: DONE in ${Date.now() - start}ms`);
     return user;
   },
 });
 
+// 🛡️ SID Phase 2: Sovereign Identity Query
 export const getCurrentUser = query({
-  args: { clerkId: v.string() },
+  args: { userId: v.id("admin_users") },
   handler: async (ctx, args) => {
-    const user = await UsersModel.getUserByClerkId(ctx.db, args.clerkId);
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.userId);
 
     if (!user) return null;
 
@@ -284,9 +289,12 @@ export const getRawUserDocument = query({
   },
 });
 
+// 🛡️ SID Phase 2: DEPRECATED - Use getUserById instead
+// Kept for backwards compatibility during migration only
 export const getUserByClerkId = query({
   args: { clerkId: v.string() },
   handler: async (ctx, args) => {
+    console.warn('⚠️ DEPRECATED: getUserByClerkId called - use getUserById instead');
     const user = await UsersModel.getUserByClerkId(ctx.db, args.clerkId);
 
     if (!user) return null;
@@ -313,10 +321,164 @@ export const getUserByClerkId = query({
   },
 });
 
+// 🛡️ SID Phase 2: Sovereign Identity Query
 export const getUserThemePreferences = query({
-  args: { clerkId: v.string() },
+  args: { userId: v.id("admin_users") },
   handler: async (ctx, args) => {
-    return await UsersModel.getUserThemePreferences(ctx.db, args.clerkId);
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.userId);
+    if (!user) return null;
+    return { themeDark: user.themeDark };
+  },
+});
+
+// ══════════════════════════════════════════════════════════════════════
+// 🛡️ S.I.D. PHASE 0 — SOVEREIGN IDENTITY MUTATIONS
+// These mutations are the ONLY place where clerkId is accepted
+// Called ONLY during Identity Handoff Ceremony
+// REF: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md
+// ══════════════════════════════════════════════════════════════════════
+
+/**
+ * 🛡️ ensureUser — Identity Handoff Ceremony Mutation
+ *
+ * The ONE mutation that accepts clerkId and returns sovereign _id.
+ * Called ONLY from /app/(auth)/actions/identity-handoff.ts
+ *
+ * SID Rules Enforced:
+ * - SID-1.2: Clerk identity not used before Convex _id exists
+ * - SID-1.3: Session minting will NOT produce empty _id (we guarantee it)
+ * - SID-1.6: No session minted without valid Convex _id
+ * - SID-5.4: After this point, NO mutation looks up by clerkId
+ */
+export const ensureUser = mutation({
+  args: {
+    clerkId: v.string(),
+    email: v.string(),
+    firstName: v.optional(v.string()),
+    lastName: v.optional(v.string()),
+    avatarUrl: v.optional(v.string()),
+  },
+  handler: async (ctx, args): Promise<Doc<"admin_users"> | null> => {
+    const start = Date.now();
+    console.log(`🛡️ SID ensureUser: START for clerkId=${args.clerkId}`);
+
+    // Look up existing user by clerkId (ONLY place this is permitted)
+    const existing = await ctx.db
+      .query("admin_users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
+      .first();
+
+    if (existing) {
+      // Update last login
+      await ctx.db.patch(existing._id, {
+        lastLoginAt: Date.now(),
+        loginCount: (existing.loginCount || 0) + 1,
+        updatedAt: Date.now(),
+      });
+
+      console.log(`🛡️ SID ensureUser: EXISTING user ${existing._id} in ${Date.now() - start}ms`);
+
+      // Return the SOVEREIGN _id and user data
+      return existing;
+    }
+
+    // Create new user — Convex becomes source of truth
+    console.log(`🛡️ SID ensureUser: CREATING new user for ${args.email}`);
+    const userIdString = await UsersModel.createUser(ctx.db, {
+      clerkId: args.clerkId,
+      email: args.email,
+      firstName: args.firstName,
+      lastName: args.lastName,
+      avatarUrl: args.avatarUrl,
+    });
+
+    // Return the newly created user with SOVEREIGN _id
+    const userId = userIdString as Id<"admin_users">;
+    const newUser = await ctx.db.get(userId);
+
+    console.log(`🛡️ SID ensureUser: NEW user ${userIdString} in ${Date.now() - start}ms`);
+
+    return newUser;
+  },
+});
+
+/**
+ * 🛡️ getUserById — Sovereign Identity Query
+ *
+ * The CORRECT way to look up a user — by Convex _id, not clerkId.
+ * Used by Server Actions after reading session._id from FUSE cookie.
+ *
+ * SID Rules Enforced:
+ * - SID-5.3: Convex accepts only userId: v.id("admin_users")
+ * - SID-9.4: Uses ctx.db.get(userId) for identity resolution
+ */
+export const getUserById = query({
+  args: { userId: v.id("admin_users") },
+  handler: async (ctx, args) => {
+    const start = Date.now();
+    console.log(`🛡️ SID getUserById: START for userId=${args.userId}`);
+
+    // Direct document fetch — THE SOVEREIGN WAY
+    const user = await ctx.db.get(args.userId);
+
+    if (!user) {
+      console.log(`🛡️ SID getUserById: NOT FOUND in ${Date.now() - start}ms`);
+      return null;
+    }
+
+    // Resolve storage URLs
+    let avatarUrl = null;
+    if (user.avatarUrl) {
+      try {
+        const url = await ctx.storage.getUrl(user.avatarUrl);
+        avatarUrl = url;
+      } catch {
+        if (typeof user.avatarUrl === 'string' && user.avatarUrl.startsWith('http')) {
+          avatarUrl = user.avatarUrl;
+        }
+      }
+    }
+
+    let brandLogoUrl = null;
+    if (user.brandLogoUrl) {
+      try {
+        const url = await ctx.storage.getUrl(user.brandLogoUrl);
+        brandLogoUrl = url;
+      } catch {
+        if (typeof user.brandLogoUrl === 'string' && user.brandLogoUrl.startsWith('http')) {
+          brandLogoUrl = user.brandLogoUrl;
+        }
+      }
+    }
+
+    console.log(`🛡️ SID getUserById: FOUND ${user.email} in ${Date.now() - start}ms`);
+
+    return {
+      ...user,
+      avatarUrl,
+      brandLogoUrl,
+    };
+  },
+});
+
+/**
+ * 🛡️ getUserByIdForSession — Lightweight Sovereign Query
+ *
+ * Like getUserById but skips storage URL resolution for session reminting.
+ * Used when we just need raw data for JWT, not for display.
+ */
+export const getUserByIdForSession = query({
+  args: { userId: v.id("admin_users") },
+  handler: async (ctx, args) => {
+    const start = Date.now();
+    console.log(`⚡ getUserByIdForSession: START for userId=${args.userId}`);
+
+    // Direct document fetch — no storage URL resolution
+    const user = await ctx.db.get(args.userId);
+
+    console.log(`⚡ getUserByIdForSession: DONE in ${Date.now() - start}ms`);
+    return user;
   },
 });
 
@@ -342,25 +504,33 @@ export const createUser = mutation({
   },
 });
 
+// 🛡️ SID Phase 2: Sovereign Identity Mutation
 export const updateThemePreferences = mutation({
   args: {
-    clerkId: v.string(),
+    userId: v.id("admin_users"),
     themeName: v.optional(v.literal("transtheme")),
     themeDark: v.optional(v.boolean())
   },
   handler: async (ctx, args) => {
-    return await UsersModel.updateThemePreferences(
-      ctx.db,
-      args.clerkId,
-      args.themeName,
-      args.themeDark
-    );
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
+
+    if (args.themeDark !== undefined) {
+      await ctx.db.patch(args.userId, {
+        themeDark: args.themeDark,
+        updatedAt: Date.now(),
+      });
+    }
+
+    return { themeDark: args.themeDark ?? user.themeDark };
   },
 });
 
+// 🛡️ SID Phase 2: Sovereign Identity Mutation
 export const updateMirorAvatarProfile = mutation({
   args: {
-    clerkId: v.string(),
+    userId: v.id("admin_users"),
     mirorAvatarProfile: v.union(
       v.literal("male"),
       v.literal("female"),
@@ -368,13 +538,11 @@ export const updateMirorAvatarProfile = mutation({
     )
   },
   handler: async (ctx, args) => {
-    const user = await UsersModel.getUserByClerkId(ctx.db, args.clerkId);
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
 
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    await ctx.db.patch(user._id, {
+    await ctx.db.patch(args.userId, {
       mirorAvatarProfile: args.mirorAvatarProfile,
       updatedAt: Date.now(),
     });
@@ -383,19 +551,18 @@ export const updateMirorAvatarProfile = mutation({
   },
 });
 
+// 🛡️ SID Phase 2: Sovereign Identity Mutation
 export const updateMirorEnchantment = mutation({
   args: {
-    clerkId: v.string(),
+    userId: v.id("admin_users"),
     mirorEnchantmentEnabled: v.boolean()
   },
   handler: async (ctx, args) => {
-    const user = await UsersModel.getUserByClerkId(ctx.db, args.clerkId);
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
 
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    await ctx.db.patch(user._id, {
+    await ctx.db.patch(args.userId, {
       mirorEnchantmentEnabled: args.mirorEnchantmentEnabled,
       updatedAt: Date.now(),
     });
@@ -404,9 +571,10 @@ export const updateMirorEnchantment = mutation({
   },
 });
 
+// 🛡️ SID Phase 2: Sovereign Identity Mutation
 export const updateMirorEnchantmentTiming = mutation({
   args: {
-    clerkId: v.string(),
+    userId: v.id("admin_users"),
     mirorEnchantmentTiming: v.union(
       v.literal("subtle"),
       v.literal("magical"),
@@ -414,13 +582,11 @@ export const updateMirorEnchantmentTiming = mutation({
     )
   },
   handler: async (ctx, args) => {
-    const user = await UsersModel.getUserByClerkId(ctx.db, args.clerkId);
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
 
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    await ctx.db.patch(user._id, {
+    await ctx.db.patch(args.userId, {
       mirorEnchantmentTiming: args.mirorEnchantmentTiming,
       updatedAt: Date.now(),
     });
@@ -429,23 +595,30 @@ export const updateMirorEnchantmentTiming = mutation({
   },
 });
 
+// 🛡️ SID Phase 2: Sovereign Identity Mutation
 export const updateBusinessCountry = mutation({
   args: {
-    clerkId: v.string(),
+    userId: v.id("admin_users"),
     businessCountry: v.string(),
   },
   handler: async (ctx, args) => {
-    return await UsersModel.updateBusinessCountry(
-      ctx.db,
-      args.clerkId,
-      args.businessCountry
-    );
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
+
+    await ctx.db.patch(args.userId, {
+      businessCountry: args.businessCountry,
+      updatedAt: Date.now(),
+    });
+
+    return user;
   },
 });
 
+// 🛡️ SID Phase 2: Sovereign Identity Mutation
 export const completeSetup = mutation({
   args: {
-    clerkId: v.string(),
+    userId: v.id("admin_users"),
     firstName: v.string(),
     lastName: v.string(),
     entityName: v.string(),
@@ -454,13 +627,11 @@ export const completeSetup = mutation({
     businessCountry: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const user = await UsersModel.getUserByClerkId(ctx.db, args.clerkId);
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
 
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    await ctx.db.patch(user._id, {
+    await ctx.db.patch(args.userId, {
       firstName: args.firstName,
       lastName: args.lastName,
       entityName: args.entityName,
@@ -475,9 +646,10 @@ export const completeSetup = mutation({
   },
 });
 
+// 🛡️ SID Phase 2: Sovereign Identity Mutation
 export const updateProfile = mutation({
   args: {
-    clerkId: v.string(),
+    userId: v.id("admin_users"),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
     entityName: v.optional(v.string()),
@@ -486,13 +658,11 @@ export const updateProfile = mutation({
     businessCountry: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const user = await UsersModel.getUserByClerkId(ctx.db, args.clerkId);
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
 
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    const updates: Partial<typeof user> = {
+    const updates: Record<string, unknown> = {
       updatedAt: Date.now(),
     };
 
@@ -510,27 +680,26 @@ export const updateProfile = mutation({
     if (args.phoneNumber !== undefined) updates.phoneNumber = args.phoneNumber;
     if (args.businessCountry !== undefined) updates.businessCountry = args.businessCountry;
 
-    await ctx.db.patch(user._id, updates);
+    await ctx.db.patch(args.userId, updates);
 
     return { success: true };
   },
 });
 
+// 🛡️ SID Phase 2: Sovereign Identity Mutation
 export const updateEntity = mutation({
   args: {
-    clerkId: v.string(),
+    userId: v.id("admin_users"),
     entityName: v.optional(v.string()),
     socialName: v.optional(v.string()),
     businessCountry: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const user = await UsersModel.getUserByClerkId(ctx.db, args.clerkId);
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
 
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    const updates: Partial<typeof user> = {
+    const updates: Record<string, unknown> = {
       updatedAt: Date.now(),
     };
 
@@ -545,7 +714,7 @@ export const updateEntity = mutation({
     if (args.socialName !== undefined) updates.socialName = args.socialName;
     if (args.businessCountry !== undefined) updates.businessCountry = args.businessCountry;
 
-    await ctx.db.patch(user._id, updates);
+    await ctx.db.patch(args.userId, updates);
 
     return { success: true };
   },

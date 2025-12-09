@@ -1,57 +1,76 @@
 /**
- * 🛡️ FUSE Stack Server Actions - Cookie-Aware User Mutations
+ * 🛡️ S.I.D. COMPLIANT Server Actions - Sovereign Identity User Mutations
  *
  * These server actions wrap Convex mutations and automatically update session cookies,
  * eliminating the need for manual session refresh calls.
  *
- * ARCHITECTURE:
- * Component → Server Action → Convex Mutation + Cookie Update → ClientHydrator → FUSE State
+ * 🛡️ S.I.D. PHASE 4 COMPLETE: Pipeline Purification
+ * - All auth() calls REMOVED (Phase 1)
+ * - All mutations accept userId (Phase 2)
+ * - All call-sites pass userId (Phase 4)
  *
- * This maintains the Golden Bridge automation principle.
+ * ARCHITECTURE:
+ * Component → Server Action → FUSE Cookie → Convex Mutation + Cookie Update → ClientHydrator → FUSE State
+ *
+ * SID Rules Enforced:
+ * - SID-3.1: auth() does NOT appear here (outside auth boundary)
+ * - SID-3.3: Server Actions do NOT call Clerk to determine identity
+ * - SID-5.3: userId (sovereign) passed to all Convex mutations
+ * - SID-9.1: Identity originates from readSessionCookie()
+ *
+ * REF: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md
  */
 
 'use server';
 
-import { auth } from '@clerk/nextjs/server';
 import { ConvexHttpClient } from 'convex/browser';
 import { api } from '@/convex/_generated/api';
-import { readSessionCookie, mintSession } from '@/fuse/hydration/session/cookie';
+import type { Id } from '@/convex/_generated/dataModel';
+import { readSessionCookie, mintSession, SESSION_COOKIE } from '@/fuse/hydration/session/cookie';
 import { cookies } from 'next/headers';
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
+// Cookie settings - centralized for consistency
+const COOKIE_OPTIONS = {
+  httpOnly: false, // Must be false for client-side hydration
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax' as const,
+  path: '/',
+  maxAge: 60 * 60 * 24 * 30, // 30 days
+};
+
 /**
  * Update business country and auto-update session cookie
+ * 🛡️ SID-5.3: Uses session._id (sovereign) for all Convex calls
  */
 export async function updateBusinessCountryAction(businessCountry: string) {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error('Unauthorized');
+    // 🛡️ SID-9.1: Identity originates from readSessionCookie()
+    const session = await readSessionCookie();
+    if (!session?._id) throw new Error('Unauthorized');
 
-    // Call Convex mutation
+    // 🛡️ SID-5.3: Pass sovereign userId to Convex mutation
     await convex.mutation(api.domains.admin.users.api.updateBusinessCountry, {
-      clerkId: userId,
+      userId: session._id as Id<"admin_users">,
       businessCountry,
     });
 
-    // Fetch fresh user data (getCurrentUser resolves storage IDs to URLs)
+    // 🛡️ SID-5.3: Fetch fresh user data using sovereign _id
     const freshUser = await convex.query(api.domains.admin.users.api.getCurrentUser, {
-      clerkId: userId,
+      userId: session._id as Id<"admin_users">,
     });
 
     if (!freshUser) throw new Error('User not found');
-
-    // Read current session to preserve fields not in Convex
-    const session = await readSessionCookie();
 
     // Mint new session with updated data
     const token = await mintSession({
       _id: String(freshUser._id),
       clerkId: freshUser.clerkId,
-      email: freshUser.email || session?.email || '',
+      email: freshUser.email || session.email || '',
       secondaryEmail: freshUser.secondaryEmail || undefined,
-      firstName: freshUser.firstName || session?.firstName,
-      lastName: freshUser.lastName || session?.lastName,
+      firstName: freshUser.firstName || session.firstName,
+      lastName: freshUser.lastName || session.lastName,
       avatarUrl: freshUser.avatarUrl || undefined,
       brandLogoUrl: freshUser.brandLogoUrl || undefined,
       rank: freshUser.rank as string,
@@ -65,16 +84,9 @@ export async function updateBusinessCountryAction(businessCountry: string) {
       mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
     });
 
-    // Update cookie (Server Action context - set directly on cookies store)
+    // Update cookie
     const cookieStore = await cookies();
-    const isProd = process.env.NODE_ENV === 'production';
-    cookieStore.set('FUSE_5.0', token, {
-      httpOnly: false, // Must be false for client-side hydration
-      secure: isProd,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-    });
+    cookieStore.set(SESSION_COOKIE, token, COOKIE_OPTIONS);
 
     return { success: true };
   } catch (error) {
@@ -85,6 +97,7 @@ export async function updateBusinessCountryAction(businessCountry: string) {
 
 /**
  * Complete setup and auto-update session cookie
+ * 🛡️ SID-5.3: Uses session._id (sovereign) for all Convex calls
  */
 export async function completeSetupAction(data: {
   firstName: string;
@@ -95,33 +108,31 @@ export async function completeSetupAction(data: {
   businessCountry?: string;
 }) {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error('Unauthorized');
+    // 🛡️ SID-9.1: Identity originates from readSessionCookie()
+    const session = await readSessionCookie();
+    if (!session?._id) throw new Error('Unauthorized');
 
-    // Call Convex mutation
+    // 🛡️ SID-5.3: Pass sovereign userId to Convex mutation
     await convex.mutation(api.domains.admin.users.api.completeSetup, {
-      clerkId: userId,
+      userId: session._id as Id<"admin_users">,
       ...data,
     });
 
-    // Fetch fresh user data (getCurrentUser resolves storage IDs to URLs)
+    // 🛡️ SID-5.3: Fetch fresh user data using sovereign _id
     const freshUser = await convex.query(api.domains.admin.users.api.getCurrentUser, {
-      clerkId: userId,
+      userId: session._id as Id<"admin_users">,
     });
 
     if (!freshUser) throw new Error('User not found');
-
-    // Read current session
-    const session = await readSessionCookie();
 
     // Mint new session with updated data
     const token = await mintSession({
       _id: String(freshUser._id),
       clerkId: freshUser.clerkId,
-      email: freshUser.email || session?.email || '',
+      email: freshUser.email || session.email || '',
       secondaryEmail: freshUser.secondaryEmail || undefined,
-      firstName: freshUser.firstName || session?.firstName,
-      lastName: freshUser.lastName || session?.lastName,
+      firstName: freshUser.firstName || session.firstName,
+      lastName: freshUser.lastName || session.lastName,
       avatarUrl: freshUser.avatarUrl || undefined,
       brandLogoUrl: freshUser.brandLogoUrl || undefined,
       rank: freshUser.rank as string,
@@ -135,16 +146,9 @@ export async function completeSetupAction(data: {
       mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
     });
 
-    // Update cookie (Server Action context - set directly on cookies store)
+    // Update cookie
     const cookieStore = await cookies();
-    const isProd = process.env.NODE_ENV === 'production';
-    cookieStore.set('FUSE_5.0', token, {
-      httpOnly: false, // Must be false for client-side hydration
-      secure: isProd,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-    });
+    cookieStore.set(SESSION_COOKIE, token, COOKIE_OPTIONS);
 
     return { success: true, user: freshUser };
   } catch (error) {
@@ -155,6 +159,7 @@ export async function completeSetupAction(data: {
 
 /**
  * Update theme preferences in database only (no cookie refresh)
+ * 🛡️ SID-5.3: Uses session._id (sovereign) for all Convex calls
  *
  * FUSE Pattern: UI updates via store + localStorage (instant)
  * DB sync is fire-and-forget for persistence across devices/sessions
@@ -162,12 +167,13 @@ export async function completeSetupAction(data: {
  */
 export async function updateThemeAction(themeDark: boolean) {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error('Unauthorized');
+    // 🛡️ SID-9.1: Identity originates from readSessionCookie()
+    const session = await readSessionCookie();
+    if (!session?._id) throw new Error('Unauthorized');
 
-    // Just update DB - store + localStorage already have the right value
+    // 🛡️ SID-5.3: Pass sovereign userId to Convex mutation
     await convex.mutation(api.domains.admin.users.api.updateThemePreferences, {
-      clerkId: userId,
+      userId: session._id as Id<"admin_users">,
       themeDark,
     });
 
@@ -180,6 +186,7 @@ export async function updateThemeAction(themeDark: boolean) {
 
 /**
  * Update user profile settings and auto-update session cookie
+ * 🛡️ SID-5.3: Uses session._id (sovereign) for all Convex calls
  * TTT-LiveField pattern: Called from FUSE store action on field blur
  */
 export async function updateProfileAction(data: {
@@ -191,33 +198,31 @@ export async function updateProfileAction(data: {
   businessCountry?: string;
 }) {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error('Unauthorized');
+    // 🛡️ SID-9.1: Identity originates from readSessionCookie()
+    const session = await readSessionCookie();
+    if (!session?._id) throw new Error('Unauthorized');
 
-    // Call Convex mutation
+    // 🛡️ SID-5.3: Pass sovereign userId to Convex mutation
     await convex.mutation(api.domains.admin.users.api.updateProfile, {
-      clerkId: userId,
+      userId: session._id as Id<"admin_users">,
       ...data,
     });
 
-    // Fetch fresh user data (getCurrentUser resolves storage IDs to URLs)
+    // 🛡️ SID-5.3: Fetch fresh user data using sovereign _id
     const freshUser = await convex.query(api.domains.admin.users.api.getCurrentUser, {
-      clerkId: userId,
+      userId: session._id as Id<"admin_users">,
     });
 
     if (!freshUser) throw new Error('User not found');
-
-    // Read current session
-    const session = await readSessionCookie();
 
     // Mint new session with updated data
     const token = await mintSession({
       _id: String(freshUser._id),
       clerkId: freshUser.clerkId,
-      email: freshUser.email || session?.email || '',
+      email: freshUser.email || session.email || '',
       secondaryEmail: freshUser.secondaryEmail || undefined,
-      firstName: freshUser.firstName || session?.firstName,
-      lastName: freshUser.lastName || session?.lastName,
+      firstName: freshUser.firstName || session.firstName,
+      lastName: freshUser.lastName || session.lastName,
       avatarUrl: freshUser.avatarUrl || undefined,
       brandLogoUrl: freshUser.brandLogoUrl || undefined,
       rank: freshUser.rank as string,
@@ -232,16 +237,9 @@ export async function updateProfileAction(data: {
       mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
     });
 
-    // Update cookie (Server Action context - set directly on cookies store)
+    // Update cookie
     const cookieStore = await cookies();
-    const isProd = process.env.NODE_ENV === 'production';
-    cookieStore.set('FUSE_5.0', token, {
-      httpOnly: false, // Must be false for client-side hydration
-      secure: isProd,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-    });
+    cookieStore.set(SESSION_COOKIE, token, COOKIE_OPTIONS);
 
     return { success: true };
   } catch (error) {
@@ -252,6 +250,7 @@ export async function updateProfileAction(data: {
 
 /**
  * Update genome fields (no cookie update needed - genome is in separate table)
+ * 🛡️ SID-5.3: Uses session._id (sovereign) for all Convex calls
  * TTT-LiveField pattern: Called from FUSE store action on field blur
  */
 export async function updateGenomeAction(data: {
@@ -271,12 +270,13 @@ export async function updateGenomeAction(data: {
   successMetric?: string;
 }) {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error('Unauthorized');
+    // 🛡️ SID-9.1: Identity originates from readSessionCookie()
+    const session = await readSessionCookie();
+    if (!session?._id) throw new Error('Unauthorized');
 
-    // Call Convex mutation via HTTP client with clerkId for auth
+    // 🛡️ SID-5.3: Pass sovereign userId to Convex mutation
     await convex.mutation(api.domains.settings.mutations.updateGenome, {
-      clerkId: userId,
+      userId: session._id as Id<"admin_users">,
       ...data,
     });
 
@@ -287,14 +287,19 @@ export async function updateGenomeAction(data: {
   }
 }
 
+/**
+ * Refresh session after file upload
+ * 🛡️ SID-5.3: Uses session._id (sovereign) for all Convex calls
+ */
 export async function refreshSessionAfterUpload() {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error('Unauthorized');
+    // 🛡️ SID-9.1: Identity originates from readSessionCookie()
+    const session = await readSessionCookie();
+    if (!session?._id) throw new Error('Unauthorized');
 
-    // Fetch fresh user data (getCurrentUser resolves storage IDs to URLs)
+    // 🛡️ SID-5.3: Fetch fresh user data using sovereign _id
     const freshUser = await convex.query(api.domains.admin.users.api.getCurrentUser, {
-      clerkId: userId,
+      userId: session._id as Id<"admin_users">,
     });
 
     if (!freshUser) throw new Error('User not found');
@@ -302,17 +307,14 @@ export async function refreshSessionAfterUpload() {
     console.log('🔍 refreshSessionAfterUpload - brandLogoUrl from Convex:', freshUser.brandLogoUrl);
     console.log('🔍 refreshSessionAfterUpload - avatarUrl from Convex:', freshUser.avatarUrl);
 
-    // Read current session
-    const session = await readSessionCookie();
-
     // Mint new session with updated avatar and brandLogo
     const token = await mintSession({
       _id: String(freshUser._id),
       clerkId: freshUser.clerkId,
-      email: freshUser.email || session?.email || '',
+      email: freshUser.email || session.email || '',
       secondaryEmail: freshUser.secondaryEmail || undefined,
-      firstName: freshUser.firstName || session?.firstName,
-      lastName: freshUser.lastName || session?.lastName,
+      firstName: freshUser.firstName || session.firstName,
+      lastName: freshUser.lastName || session.lastName,
       avatarUrl: freshUser.avatarUrl || undefined,
       brandLogoUrl: freshUser.brandLogoUrl || undefined,
       rank: freshUser.rank as string,
@@ -326,16 +328,9 @@ export async function refreshSessionAfterUpload() {
       mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
     });
 
-    // Update cookie (Server Action context - set directly on cookies store)
+    // Update cookie
     const cookieStore = await cookies();
-    const isProd = process.env.NODE_ENV === 'production';
-    cookieStore.set('FUSE_5.0', token, {
-      httpOnly: false, // Match the original FUSE cookie setting
-      secure: isProd,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-    });
+    cookieStore.set(SESSION_COOKIE, token, COOKIE_OPTIONS);
 
     return { success: true };
   } catch (error) {

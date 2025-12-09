@@ -2,6 +2,9 @@
 │  🚀 TRUE WARP - Projects Data Preload API                            │
 │  /src/app/api/warp/projects/route.ts                                  │
 │                                                                        │
+│  🛡️ S.I.D. COMPLIANT - Phase 9                                        │
+│  - SID-9.1: Identity from readSessionCookie(), NOT auth()              │
+│                                                                        │
 │  Server-side endpoint for Projects domain preloading                  │
 │  Called by PRISM when user opens Projects dropdown                    │
 │                                                                        │
@@ -11,24 +14,19 @@
 │  PLUMBING: Add Convex queries here when Projects has real data.       │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import { auth } from '@clerk/nextjs/server';
+import { readSessionCookie } from '@/fuse/hydration/session/cookie';
 
 export async function GET() {
-  const { userId } = await auth();
+  // 🛡️ SID-9.1: Identity from FUSE session cookie
+  const session = await readSessionCookie();
 
-  if (!userId) {
+  if (!session || !session._id) {
     return new Response('Unauthorized', { status: 401 });
   }
 
   try {
     // 🔮 FUTURE: Add Convex queries when Projects domain has data
-    // const { getToken } = await auth();
-    // const token = await getToken({ template: 'convex' });
-    // const [charts, locations, tracking] = await Promise.all([
-    //   fetchQuery(api.domains.projects.api.getCharts, {}, { token }),
-    //   fetchQuery(api.domains.projects.api.getLocations, {}, { token }),
-    //   fetchQuery(api.domains.projects.api.getTracking, {}, { token }),
-    // ]);
+    // Use ConvexHttpClient with session._id for sovereign queries
 
     console.log('🚀 WARP API: Projects data ready (plumbing)');
 

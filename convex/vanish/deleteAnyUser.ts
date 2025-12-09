@@ -5,6 +5,9 @@
 │  Admiral-initiated tenant-scale user deletion.                            │
 │  Allows Admiral rank admin_users to delete any user account.                    │
 │                                                                           │
+│  ⚠️ QUARANTINED FROM SID: VANISH requires ClerkID for cross-system       │
+│  deletion integrity. Clerk account must be deleted alongside Convex.      │
+│                                                                           │
 │  RANK REQUIREMENTS:                                                       │
 │  - Only Admiral rank can execute                                          │
 │  - Used from rank-gated "Users" admin page                                │
@@ -35,6 +38,9 @@ import { executeUserDeletionCascade } from "./cascade";
  *
  * AUTHORIZATION: Admiral rank required
  * AUDIT: Complete trail of who deleted whom and why
+ *
+ * ⚠️ QUARANTINED FROM SID: Uses ClerkID for target identification
+ * because VANISH destroys identity across both Clerk AND Convex systems.
  *
  * @param targetClerkId - Clerk ID of user to delete
  * @param reason - Required reason for deletion (compliance)
@@ -98,7 +104,8 @@ export const deleteAnyUser = mutation({
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // 3. FIND TARGET USER
+    // 3. FIND TARGET USER BY CLERKID
+    // ⚠️ QUARANTINED: VANISH requires ClerkID for cross-system deletion
     // ═══════════════════════════════════════════════════════════════
 
     const targetUser = await ctx.db
@@ -145,7 +152,7 @@ export const deleteAnyUser = mutation({
       ctx.db,
       ctx.storage,
       targetUser._id,
-      callerClerkId, // deletedBy = Admiral
+      caller._id, // SOVEREIGN: deletedBy = Admiral's Convex _id
       {
         newOwnerId: args.reassignToUserId,
         deleteStorageFiles: true,

@@ -1,14 +1,31 @@
+/**
+ * 🛡️ S.I.D. COMPLIANT Email Actions
+ *
+ * SPECIAL CASE per SID-12.1:
+ * These actions call Clerk API for email management.
+ * Identity is sourced from session.clerkId (FUSE cookie), NOT auth().
+ *
+ * SID Rules Enforced:
+ * - SID-3.1: auth() does NOT appear here
+ * - SID-12.1: Email actions use session.clerkId from FUSE cookie
+ * - SID-9.1: Identity originates from readSessionCookie()
+ *
+ * REF: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md
+ */
+
 'use server';
 
-import { auth, clerkClient } from '@clerk/nextjs/server';
+import { clerkClient } from '@clerk/nextjs/server';
+import { readSessionCookie } from '@/fuse/hydration/session/cookie';
 
 /**
  * Add a new email to user's account and send verification code
- * Uses Backend API - bypasses client-side reverification
+ * 🛡️ SID-12.1: Uses session.clerkId for Clerk API calls
  */
 export async function addEmailAndSendCode(newEmail: string) {
-  const { userId } = await auth();
-  if (!userId) {
+  // 🛡️ SID-9.1: Identity from FUSE cookie
+  const session = await readSessionCookie();
+  if (!session?.clerkId) {
     return { error: 'Not authenticated' };
   }
 
@@ -16,8 +33,9 @@ export async function addEmailAndSendCode(newEmail: string) {
     const client = await clerkClient();
 
     // Create email address via Backend API (no reverification needed)
+    // 🛡️ SID-12.1: Using session.clerkId for Clerk API
     const emailAddress = await client.emailAddresses.createEmailAddress({
-      userId,
+      userId: session.clerkId,
       emailAddress: newEmail,
       verified: false,
     });
@@ -41,10 +59,12 @@ export async function addEmailAndSendCode(newEmail: string) {
 
 /**
  * Set an email address as primary and delete the old primary
+ * 🛡️ SID-12.1: Uses session.clerkId for Clerk API calls
  */
 export async function setPrimaryEmail(emailAddressId: string, oldEmailId?: string) {
-  const { userId } = await auth();
-  if (!userId) {
+  // 🛡️ SID-9.1: Identity from FUSE cookie
+  const session = await readSessionCookie();
+  if (!session?.clerkId) {
     return { error: 'Not authenticated' };
   }
 
@@ -52,7 +72,8 @@ export async function setPrimaryEmail(emailAddressId: string, oldEmailId?: strin
     const client = await clerkClient();
 
     // Set new email as primary
-    await client.users.updateUser(userId, {
+    // 🛡️ SID-12.1: Using session.clerkId for Clerk API
+    await client.users.updateUser(session.clerkId, {
       primaryEmailAddressID: emailAddressId,
     });
 
@@ -76,12 +97,14 @@ export async function setPrimaryEmail(emailAddressId: string, oldEmailId?: strin
 /**
  * Swap secondary email to become primary (both must be verified)
  * Old primary becomes the new secondary
+ * 🛡️ SID-12.1: Uses session.clerkId for Clerk API calls
  *
  * @param secondaryEmail - The email address string to make primary
  */
 export async function swapEmailsToPrimary(secondaryEmail: string) {
-  const { userId } = await auth();
-  if (!userId) {
+  // 🛡️ SID-9.1: Identity from FUSE cookie
+  const session = await readSessionCookie();
+  if (!session?.clerkId) {
     return { error: 'Not authenticated' };
   }
 
@@ -89,7 +112,8 @@ export async function swapEmailsToPrimary(secondaryEmail: string) {
     const client = await clerkClient();
 
     // Get user to find the email address ID (case-insensitive)
-    const clerkUser = await client.users.getUser(userId);
+    // 🛡️ SID-12.1: Using session.clerkId for Clerk API
+    const clerkUser = await client.users.getUser(session.clerkId);
     const emailObj = clerkUser.emailAddresses.find(
       e => e.emailAddress.toLowerCase() === secondaryEmail.toLowerCase()
     );
@@ -104,7 +128,8 @@ export async function swapEmailsToPrimary(secondaryEmail: string) {
 
     // Set the secondary email as primary
     // Clerk keeps the old primary as a secondary email automatically
-    await client.users.updateUser(userId, {
+    // 🛡️ SID-12.1: Using session.clerkId for Clerk API
+    await client.users.updateUser(session.clerkId, {
       primaryEmailAddressID: emailObj.id,
     });
 
@@ -117,10 +142,12 @@ export async function swapEmailsToPrimary(secondaryEmail: string) {
 
 /**
  * Delete secondary email by email address string
+ * 🛡️ SID-12.1: Uses session.clerkId for Clerk API calls
  */
 export async function deleteSecondaryEmail(secondaryEmail: string) {
-  const { userId } = await auth();
-  if (!userId) {
+  // 🛡️ SID-9.1: Identity from FUSE cookie
+  const session = await readSessionCookie();
+  if (!session?.clerkId) {
     return { error: 'Not authenticated' };
   }
 
@@ -128,7 +155,8 @@ export async function deleteSecondaryEmail(secondaryEmail: string) {
     const client = await clerkClient();
 
     // Get user to find the email address ID (case-insensitive)
-    const clerkUser = await client.users.getUser(userId);
+    // 🛡️ SID-12.1: Using session.clerkId for Clerk API
+    const clerkUser = await client.users.getUser(session.clerkId);
     const emailObj = clerkUser.emailAddresses.find(
       e => e.emailAddress.toLowerCase() === secondaryEmail.toLowerCase()
     );
@@ -152,10 +180,12 @@ export async function deleteSecondaryEmail(secondaryEmail: string) {
 
 /**
  * Delete an email address (for cleanup when changing secondary)
+ * 🛡️ SID-12.1: Uses session.clerkId for Clerk API calls
  */
 export async function deleteEmail(emailAddressId: string) {
-  const { userId } = await auth();
-  if (!userId) {
+  // 🛡️ SID-9.1: Identity from FUSE cookie
+  const session = await readSessionCookie();
+  if (!session?.clerkId) {
     return { error: 'Not authenticated' };
   }
 

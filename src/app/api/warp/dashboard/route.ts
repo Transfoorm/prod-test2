@@ -2,25 +2,24 @@
 │  🚀 TRUE WARP - Dashboard Data Preload API                           │
 │  /src/app/api/warp/dashboard/route.ts                                 │
 │                                                                        │
+│  🛡️ S.I.D. COMPLIANT - Phase 9                                        │
+│  - SID-9.1: Identity from readSessionCookie(), NOT auth()              │
+│                                                                        │
 │  Server-side endpoint for Dashboard data preloading                   │
 │  Called during login (/api/session) to bake into cookie              │
 │                                                                        │
 │  Currently returns: UI preferences (layout, widgets by rank)          │
 │  Future: Will include widget data from other domains                  │
-│                                                                        │
-│  PLUMBING: This route is wired and ready. When Dashboard needs        │
-│  real data (finance summaries, client counts, etc.), add the          │
-│  Convex queries here and they'll flow through the existing pipe.      │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import { auth } from '@clerk/nextjs/server';
+import { readSessionCookie } from '@/fuse/hydration/session/cookie';
 import { DEFAULT_WIDGETS_BY_RANK } from '@/store/domains/dashboard';
 
 export async function GET() {
-  // 🔐 Authenticate
-  const { userId } = await auth();
+  // 🛡️ SID-9.1: Identity from FUSE session cookie
+  const session = await readSessionCookie();
 
-  if (!userId) {
+  if (!session || !session._id) {
     return new Response('Unauthorized', { status: 401 });
   }
 

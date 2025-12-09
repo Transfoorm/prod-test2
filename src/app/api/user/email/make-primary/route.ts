@@ -2,43 +2,50 @@
 │  🔒 SERVER-SIDE EMAIL MANAGEMENT                                       │
 │  /api/user/email/make-primary                                          │
 │                                                                        │
+│  🛡️ S.I.D. COMPLIANT - Phase 9                                        │
+│  - SID-9.1: Identity from readSessionCookie(), NOT auth()              │
+│  - SID-5.3: Convex queries use userId (sovereign _id)                  │
+│  - SID-12.1: Clerk API uses session.clerkId (permitted)                │
+│                                                                        │
 │  ADMIRAL SUPPORT:                                                      │
-│  - Accepts optional targetUserId to edit other users                  │
-│  - Requires Admiral rank when changing another user's primary email   │
+│  - Accepts optional targetClerkId to edit other users                  │
+│  - Requires Admiral rank when changing another user's primary email    │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { readSessionCookie } from '@/fuse/hydration/session/cookie';
 import { ConvexHttpClient } from 'convex/browser';
 import { api } from '@/convex/_generated/api';
+import type { Id } from '@/convex/_generated/dataModel';
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export async function POST(req: Request) {
   try {
-    // Get authenticated user
-    const { userId } = await auth();
+    // 🛡️ SID-9.1: Identity from FUSE session cookie
+    const session = await readSessionCookie();
 
-    if (!userId) {
+    if (!session || !session._id || !session.clerkId) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    // Get email address ID and optional targetUserId from request body
-    const { emailAddressId, targetUserId } = await req.json();
+    // Get email address ID and optional targetClerkId from request body
+    const { emailAddressId, targetClerkId } = await req.json();
 
     // Determine which user to operate on
-    let targetUserClerkId = userId; // Default to session user
+    let targetUserClerkId = session.clerkId; // Default to session user
 
     // If targeting another user, verify Admiral permissions
-    if (targetUserId && targetUserId !== userId) {
-      console.log('[API MAKE PRIMARY] Admiral operation detected - targetUserId:', targetUserId);
+    if (targetClerkId && targetClerkId !== session.clerkId) {
+      console.log('[API MAKE PRIMARY] Admiral operation detected - targetClerkId:', targetClerkId);
 
-      // Query Convex to get requesting user's rank
-      const requestingUser = await convex.query(api.domains.admin.users.api.getUserByClerkId, {
-        clerkId: userId,
+      // 🛡️ SID-5.3: Query Convex using sovereign userId
+      const requestingUser = await convex.query(api.domains.admin.users.api.getCurrentUser, {
+        userId: session._id as Id<"admin_users">,
       });
 
       if (!requestingUser) {
@@ -58,7 +65,7 @@ export async function POST(req: Request) {
       }
 
       console.log('[API MAKE PRIMARY] Admiral permission verified');
-      targetUserClerkId = targetUserId;
+      targetUserClerkId = targetClerkId;
     }
 
     if (!emailAddressId || typeof emailAddressId !== 'string') {
@@ -71,8 +78,7 @@ export async function POST(req: Request) {
     console.log('[API MAKE PRIMARY] Changing primary email for user:', targetUserClerkId);
     console.log('[API MAKE PRIMARY] New primary email ID:', emailAddressId);
 
-    // Use Clerk backend API to update primary email
-    // This bypasses client-side step-up authentication
+    // 🛡️ SID-12.1: Clerk API uses clerkId (permitted for Clerk operations)
     const client = await clerkClient();
     const updatedUser = await client.users.updateUser(targetUserClerkId, {
       primaryEmailAddressID: emailAddressId

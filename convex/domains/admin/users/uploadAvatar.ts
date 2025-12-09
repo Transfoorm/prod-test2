@@ -1,3 +1,11 @@
+/**──────────────────────────────────────────────────────────────────────┐
+│  🖼️ UPLOAD AVATAR - User Avatar Storage                                │
+│  /convex/domains/admin/users/uploadAvatar.ts                           │
+│                                                                        │
+│  🛡️ SID-5.3 COMPLIANT: Accepts userId: v.id("admin_users")            │
+│  Sovereign identity lookup via ctx.db.get()                            │
+└────────────────────────────────────────────────────────────────────────┘ */
+
 import { mutation } from "@/convex/_generated/server";
 import { v } from "convex/values";
 import { Id } from "@/convex/_generated/dataModel";
@@ -5,16 +13,14 @@ import { Id } from "@/convex/_generated/dataModel";
 export const uploadAvatar = mutation({
   args: {
     fileId: v.id("_storage"),
-    clerkId: v.string(),
+    // 🛡️ SID-5.3: Accept sovereign userId, not clerkId
+    userId: v.id("admin_users"),
   },
   handler: async (ctx, args) => {
-    const { fileId, clerkId } = args;
+    const { fileId, userId } = args;
 
-    // Find the user by clerkId
-    const user = await ctx.db
-      .query("admin_users")
-      .filter((q) => q.eq(q.field("clerkId"), clerkId))
-      .first();
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(userId);
 
     if (!user) {
       throw new Error("User not found");
@@ -28,7 +34,7 @@ export const uploadAvatar = mutation({
       avatarUrl: fileId,
       updatedAt: Date.now(),
     });
-    console.log(`✅ Avatar uploaded: Storage ID ${fileId} saved to user ${clerkId}`);
+    console.log(`✅ Avatar uploaded: Storage ID ${fileId} saved to user ${userId}`);
 
     // Delete the old avatar from storage if it exists and it's a storage ID
     if (oldStorageId && typeof oldStorageId === 'string') {

@@ -1,10 +1,27 @@
+/**
+ * 🛡️ S.I.D. COMPLIANT Password Actions
+ *
+ * SPECIAL CASE per SID-12.1:
+ * These actions call Clerk API for password management.
+ * Identity is sourced from session.clerkId (FUSE cookie), NOT auth().
+ *
+ * SID Rules Enforced:
+ * - SID-3.1: auth() does NOT appear here
+ * - SID-12.1: Password actions use session.clerkId from FUSE cookie
+ * - SID-9.1: Identity originates from readSessionCookie()
+ *
+ * REF: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md
+ */
+
 'use server';
 
-import { auth, clerkClient } from '@clerk/nextjs/server';
+import { clerkClient } from '@clerk/nextjs/server';
+import { readSessionCookie } from '@/fuse/hydration/session/cookie';
 
 /**
  * Change user's password
  * Uses Clerk Backend API - no reverification needed
+ * 🛡️ SID-12.1: Uses session.clerkId for Clerk API calls
  *
  * Password Requirements:
  * - Minimum 6 characters
@@ -13,8 +30,9 @@ import { auth, clerkClient } from '@clerk/nextjs/server';
  * - At least 1 symbol
  */
 export async function changePassword(newPassword: string) {
-  const { userId } = await auth();
-  if (!userId) {
+  // 🛡️ SID-9.1: Identity from FUSE cookie
+  const session = await readSessionCookie();
+  if (!session?.clerkId) {
     return { error: 'Not authenticated' };
   }
 
@@ -42,7 +60,8 @@ export async function changePassword(newPassword: string) {
   try {
     const client = await clerkClient();
 
-    await client.users.updateUser(userId, {
+    // 🛡️ SID-12.1: Using session.clerkId for Clerk API
+    await client.users.updateUser(session.clerkId, {
       password: newPassword,
     });
 

@@ -268,7 +268,8 @@ export type FuseState = {
   setThemeMode: (mode: ThemeMode) => Promise<void>;
   setThemeName: (name: ThemeName) => Promise<void>;
   toggleThemeMode: () => Promise<void>;
-  syncThemeFromDB: (clerkId: string) => Promise<void>;
+  // 🛡️ SID-5.3: Use sovereign userId (Convex _id)
+  syncThemeFromDB: (userId: string) => Promise<void>;
 
   // Navigation methods - instant route updates
   setCurrentRoute: (route: string) => void;

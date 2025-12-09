@@ -174,7 +174,8 @@ export default function CompanyButton() {
       setShowCropperModal(false);
       setIsUploading(true);
 
-      const url = await generateUploadUrl({ clerkId: user!.clerkId });
+      // 🛡️ SID-5.3: Use sovereign userId (Convex _id)
+      const url = await generateUploadUrl({ userId: user!.id as Id<"admin_users"> });
       // eslint-disable-next-line no-restricted-globals -- Convex-generated upload URL for file storage
       const uploadRes = await fetch(url, {
         method: "POST",
@@ -184,7 +185,8 @@ export default function CompanyButton() {
       if (!uploadRes.ok) throw new Error("Upload failed");
 
       const { storageId } = await uploadRes.json();
-      await uploadBrandLogo({ fileId: storageId, clerkId: user!.clerkId });
+      // 🛡️ SID-5.3: Use sovereign userId (Convex _id)
+      await uploadBrandLogo({ fileId: storageId, userId: user!.id as Id<"admin_users"> });
       const newLogoUrl = await waitForImageUrl(storageId);
 
       setCommittedUrl(newLogoUrl);
@@ -196,8 +198,9 @@ export default function CompanyButton() {
       }
 
       // Refresh FUSE store
+      // 🛡️ SID-5.3: Use sovereign userId (Convex _id)
       const freshUser = await convex.query(api.domains.admin.users.api.getCurrentUser, {
-        clerkId: user!.clerkId,
+        userId: user!.id as Id<"admin_users">,
       });
       if (freshUser) {
         const { setUser } = useFuse.getState();

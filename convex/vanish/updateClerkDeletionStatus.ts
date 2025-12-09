@@ -30,6 +30,9 @@ export const updateClerkDeletionStatus = mutation({
 
   handler: async (ctx, args) => {
     // Find the most recent deletion log for this user
+    // NOTE: by_clerk_id lookup is ACCEPTABLE here - this is called from Action
+    // after Clerk API deletion, using clerkId for webhook correlation.
+    // See: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md (SID-6.3)
     const deletionLog = await ctx.db
       .query("admin_users_DeleteLog")
       .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.targetClerkId))

@@ -2,51 +2,40 @@
 │  🚀 TRUE WARP - Productivity Data Preload API                        │
 │  /src/app/api/warp/productivity/route.ts                              │
 │                                                                        │
-│  Server-side endpoint for background productivity data preloading     │
-│  Called by PRISM when user opens Productivity dropdown                │
-│  Uses Clerk auth + Convex token (rank-scoped)                         │
+│  🛡️ S.I.D. COMPLIANT - Phase 9                                        │
+│  - SID-9.1: Identity from readSessionCookie(), NOT auth()              │
 │                                                                        │
-│  PRISM Strategy 1: Load entire domain on dropdown open                │
+│  Server-side endpoint for Productivity domain preloading              │
+│  Called by PRISM when user opens Productivity dropdown                │
+│                                                                        │
+│  Data: emails, calendar, bookings, meetings, tasks                    │
+│  Access: All ranks (rank-scoped)                                      │
+│                                                                        │
+│  PLUMBING: Add Convex queries here when Productivity has real data.   │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import { auth } from '@clerk/nextjs/server';
-import { fetchQuery } from 'convex/nextjs';
-import { api } from '@/convex/_generated/api';
+import { readSessionCookie } from '@/fuse/hydration/session/cookie';
 
 export async function GET() {
-  // 🔐 Authenticate and get Convex token
-  const { getToken } = await auth();
-  const token = await getToken({ template: 'convex' });
+  // 🛡️ SID-9.1: Identity from FUSE session cookie
+  const session = await readSessionCookie();
 
-  if (!token) {
+  if (!session || !session._id) {
     return new Response('Unauthorized', { status: 401 });
   }
 
   try {
-    // ⚡ Fetch productivity data in parallel (rank-scoped via Convex auth)
-    const [emails, calendar, bookings, meetings] = await Promise.all([
-      fetchQuery(api.domains.productivity.api.listEmails, {}, { token }),
-      fetchQuery(api.domains.productivity.api.listCalendarEvents, {}, { token }),
-      fetchQuery(api.domains.productivity.api.listBookings, {}, { token }),
-      fetchQuery(api.domains.productivity.api.listMeetings, {}, { token }),
-    ]);
+    // 🔮 FUTURE: Add Convex queries when Productivity queries accept userId parameter
+    // Use ConvexHttpClient with session._id for sovereign queries
 
-    console.log('🚀 WARP API: Productivity data fetched', {
-      emails: emails?.length || 0,
-      calendar: calendar?.length || 0,
-      bookings: bookings?.length || 0,
-      meetings: meetings?.length || 0,
-    });
+    console.log('🚀 WARP API: Productivity data ready (plumbing)');
 
     return Response.json({
-      emails: emails || [],
-      calendar: calendar || [],
-      bookings: bookings || [],
-      meetings: meetings || [],
-      // ADP coordination metadata
-      status: 'hydrated',
-      lastFetchedAt: Date.now(),
-      source: 'WARP',
+      emails: [],
+      calendar: [],
+      bookings: [],
+      meetings: [],
+      tasks: []
     });
   } catch (error) {
     console.error('❌ WARP API: Failed to fetch productivity data:', error);

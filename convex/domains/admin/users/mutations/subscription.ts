@@ -7,12 +7,40 @@
 │                                                                        │
 │  God Mode: Admiral has complete control over all subscription          │
 │  settings, trial periods, and lifetime grants.                         │
+│                                                                        │
+│  🛡️ SID COMPLIANCE NOTE:                                               │
+│  These mutations use ctx.auth for caller authentication (Convex auth)  │
+│  because they're called directly from Convex WebSocket connections.    │
+│  The caller's userId is looked up from clerkId, then used to verify    │
+│  Admiral rank. Target users use sovereign userId directly.             │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { v } from "convex/values";
 import { mutation } from "@/convex/_generated/server";
 import { requireAdmiralRank } from "@/convex/system/utils/rankAuth";
 import { calculateTrialEndDate } from "@/fuse/constants/ranks";
+
+import type { MutationCtx } from "@/convex/_generated/server";
+import type { Id } from "@/convex/_generated/dataModel";
+
+/**
+ * Helper to get caller's sovereign userId from Convex auth identity
+ * 🛡️ SID: Translates clerkId → userId for caller authentication in mutations
+ */
+async function getCallerUserId(ctx: MutationCtx): Promise<Id<"admin_users">> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) throw new Error("Not authenticated");
+
+  // Look up caller's sovereign userId from clerkId
+  const caller = await ctx.db
+    .query("admin_users")
+    .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+    .first();
+
+  if (!caller) throw new Error("Caller not found in database");
+
+  return caller._id;
+}
 
 // ═══════════════════════════════════════════════════════════════════════
 // SET USER TRIAL (Admiral grants/extends trial for specific user)
@@ -24,12 +52,9 @@ export const setUserTrial = mutation({
     durationDays: v.number(), // Number of days for trial
   },
   handler: async (ctx, args) => {
-    // Get authenticated user
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
-    // Require Admiral rank
-    await requireAdmiralRank(ctx, identity.subject);
+    // 🛡️ SID: Get caller's sovereign userId and verify Admiral rank
+    const callerUserId = await getCallerUserId(ctx);
+    await requireAdmiralRank(ctx, callerUserId);
 
     const user = await ctx.db.get(args.userId);
     if (!user) {
@@ -65,12 +90,9 @@ export const extendUserTrial = mutation({
     additionalDays: v.number(), // Days to add to existing trial
   },
   handler: async (ctx, args) => {
-    // Get authenticated user
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
-    // Require Admiral rank
-    await requireAdmiralRank(ctx, identity.subject);
+    // 🛡️ SID: Get caller's sovereign userId and verify Admiral rank
+    const callerUserId = await getCallerUserId(ctx);
+    await requireAdmiralRank(ctx, callerUserId);
 
     const user = await ctx.db.get(args.userId);
     if (!user) {
@@ -117,12 +139,9 @@ export const setUserSubscription = mutation({
     ),
   },
   handler: async (ctx, args) => {
-    // Get authenticated user
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
-    // Require Admiral rank
-    await requireAdmiralRank(ctx, identity.subject);
+    // 🛡️ SID: Get caller's sovereign userId and verify Admiral rank
+    const callerUserId = await getCallerUserId(ctx);
+    await requireAdmiralRank(ctx, callerUserId);
 
     const user = await ctx.db.get(args.userId);
     if (!user) {
@@ -164,12 +183,9 @@ export const grantLifetimeAccess = mutation({
     userId: v.id("admin_users"),
   },
   handler: async (ctx, args) => {
-    // Get authenticated user
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
-    // Require Admiral rank
-    await requireAdmiralRank(ctx, identity.subject);
+    // 🛡️ SID: Get caller's sovereign userId and verify Admiral rank
+    const callerUserId = await getCallerUserId(ctx);
+    await requireAdmiralRank(ctx, callerUserId);
 
     const user = await ctx.db.get(args.userId);
     if (!user) {
@@ -210,12 +226,9 @@ export const setUserRank = mutation({
     ),
   },
   handler: async (ctx, args) => {
-    // Get authenticated user
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
-    // Require Admiral rank
-    await requireAdmiralRank(ctx, identity.subject);
+    // 🛡️ SID: Get caller's sovereign userId and verify Admiral rank
+    const callerUserId = await getCallerUserId(ctx);
+    await requireAdmiralRank(ctx, callerUserId);
 
     const user = await ctx.db.get(args.userId);
     if (!user) {
@@ -253,12 +266,9 @@ export const bulkSetSubscription = mutation({
     ),
   },
   handler: async (ctx, args) => {
-    // Get authenticated user
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
-    // Require Admiral rank
-    await requireAdmiralRank(ctx, identity.subject);
+    // 🛡️ SID: Get caller's sovereign userId and verify Admiral rank
+    const callerUserId = await getCallerUserId(ctx);
+    await requireAdmiralRank(ctx, callerUserId);
 
     const now = Date.now();
     const results = [];

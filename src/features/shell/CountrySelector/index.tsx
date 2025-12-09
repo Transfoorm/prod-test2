@@ -113,9 +113,10 @@ export default function CountrySelector({ align = 'right', onClose, onSelect, tr
     if (user) {
       updateUser({ businessCountry: country.code });
 
+      // 🛡️ SID-5.3: Use sovereign userId (Convex _id)
       // Sync to Convex database (fire and forget - badge already shown)
       updateBusinessCountry({
-        clerkId: user.clerkId,
+        userId: user.id as import('@/convex/_generated/dataModel').Id<"admin_users">,
         businessCountry: country.code,
       }).catch((error) => {
         console.error("Failed to update business country:", error);

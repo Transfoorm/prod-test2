@@ -204,7 +204,8 @@ export default function UserButton() {
       setShowProfileModal(false);
       setIsUploading(true);
 
-      const url = await generateUploadUrl({ clerkId: user!.clerkId });
+      // 🛡️ SID-5.3: Use sovereign userId (Convex _id)
+      const url = await generateUploadUrl({ userId: user!.id as import('@/convex/_generated/dataModel').Id<"admin_users"> });
       // eslint-disable-next-line no-restricted-globals -- Convex-generated upload URL for file storage
       const uploadRes = await fetch(url, {
         method: "POST",
@@ -214,7 +215,8 @@ export default function UserButton() {
       if (!uploadRes.ok) throw new Error("Upload failed");
 
       const { storageId } = await uploadRes.json();
-      await uploadAvatar({ fileId: storageId, clerkId: user!.clerkId });
+      // 🛡️ SID-5.3: Use sovereign userId (Convex _id)
+      await uploadAvatar({ fileId: storageId, userId: user!.id as Id<"admin_users"> });
       const newAvatarUrl = await waitForImageUrl(storageId);
 
       setCommittedUrl(newAvatarUrl);
@@ -226,8 +228,9 @@ export default function UserButton() {
       }
 
       // Refresh FUSE store
+      // 🛡️ SID-5.3: Use sovereign userId (Convex _id)
       const freshUser = await convex.query(api.domains.admin.users.api.getCurrentUser, {
-        clerkId: user!.clerkId,
+        userId: user!.id as Id<"admin_users">,
       });
       if (freshUser) {
         const { setUser } = useFuse.getState();

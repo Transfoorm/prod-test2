@@ -1,30 +1,31 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔱 GOLDEN BRIDGE GUARDRAIL - Server Action Identity Wrapper          │
+│  🛡️ S.I.D. COMPLIANT - Server Action Identity Wrapper                │
 │  /src/fuse/guards/withSovereignIdentity.ts                            │
 │                                                                        │
 │  Wraps Server Actions to enforce sovereign identity flow.             │
-│  Automatically extracts callerClerkId from FUSE session cookie.       │
+│  Automatically extracts userId (Convex _id) from FUSE session cookie. │
 │                                                                        │
-│  THE LAW:                                                              │
+│  THE LAW (SID-5.3):                                                   │
 │    Server Actions NEVER call Clerk getToken().                        │
-│    Identity comes from FUSE session cookie ONLY.                      │
-│    This wrapper enforces that pattern automatically.                  │
+│    Identity comes from FUSE session cookie._id ONLY.                  │
+│    This wrapper enforces sovereign identity automatically.            │
 │                                                                        │
 │  Usage:                                                                │
 │    'use server';                                                      │
 │    import { withSovereignIdentity } from '@/fuse/guards/withSovereignIdentity';  │
 │                                                                        │
 │    export const myAction = withSovereignIdentity(                     │
-│      async (callerClerkId, arg1, arg2) => {                           │
-│        // callerClerkId is guaranteed valid                           │
-│        await convex.mutation(api.foo, { callerClerkId, arg1, arg2 }); │
+│      async (userId, arg1, arg2) => {                                  │
+│        // userId is sovereign Convex _id, guaranteed valid            │
+│        await convex.mutation(api.foo, { userId, arg1, arg2 });        │
 │      }                                                                │
 │    );                                                                 │
 │                                                                        │
-│  Ref: Clerk Knox, Golden Bridge Pattern                               │
+│  Ref: S.I.D. Doctrine, Golden Bridge Pattern                          │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { readSessionCookie } from '@/fuse/hydration/session/cookie';
+import type { Id } from '@/convex/_generated/dataModel';
 
 /**
  * Error thrown when session is invalid or missing
@@ -44,28 +45,30 @@ export type SovereignResult<T> =
   | { success: false; error: string };
 
 /**
- * Wraps a Server Action to inject callerClerkId from FUSE session cookie.
+ * Wraps a Server Action to inject sovereign userId from FUSE session cookie.
  *
- * The wrapped function receives callerClerkId as its first argument,
+ * The wrapped function receives userId (Convex _id) as its first argument,
  * followed by any additional arguments passed when calling the action.
+ *
+ * 🛡️ SID-5.3: Returns sovereign Convex _id, NOT clerkId
  *
  * @example
  * // Define action
- * export const deleteUser = withSovereignIdentity(
- *   async (callerClerkId, userId: string) => {
- *     return await convex.mutation(api.users.delete, { callerClerkId, userId });
+ * export const updateProfile = withSovereignIdentity(
+ *   async (userId, data: ProfileData) => {
+ *     return await convex.mutation(api.users.update, { userId, ...data });
  *   }
  * );
  *
- * // Call action (callerClerkId is auto-injected)
- * await deleteUser(userId);
+ * // Call action (userId is auto-injected)
+ * await updateProfile(data);
  */
 export function withSovereignIdentity<TArgs extends unknown[], TResult>(
-  handler: (callerClerkId: string, ...args: TArgs) => Promise<TResult>
+  handler: (userId: Id<"admin_users">, ...args: TArgs) => Promise<TResult>
 ): (...args: TArgs) => Promise<SovereignResult<TResult>> {
   return async (...args: TArgs): Promise<SovereignResult<TResult>> => {
     try {
-      // Read identity from FUSE session cookie (the ONLY source of truth)
+      // 🛡️ SID-9.1: Read identity from FUSE session cookie
       const session = await readSessionCookie();
 
       if (!session) {
@@ -75,15 +78,16 @@ export function withSovereignIdentity<TArgs extends unknown[], TResult>(
         };
       }
 
-      if (!session.clerkId) {
+      // 🛡️ SID-5.3: Use sovereign _id, not clerkId
+      if (!session._id) {
         return {
           success: false,
-          error: 'Invalid session: missing identity. Please log in again.',
+          error: 'Invalid session: missing sovereign identity. Please log in again.',
         };
       }
 
       // Execute handler with sovereign identity
-      const result = await handler(session.clerkId, ...args);
+      const result = await handler(session._id as Id<"admin_users">, ...args);
 
       return {
         success: true,
@@ -100,40 +104,49 @@ export function withSovereignIdentity<TArgs extends unknown[], TResult>(
 }
 
 /**
- * Simple helper to get callerClerkId from session cookie.
+ * Simple helper to get sovereign userId from session cookie.
  * Use this when you need more control over the action structure.
+ *
+ * 🛡️ SID-5.3: Returns sovereign Convex _id, NOT clerkId
  *
  * @example
  * export async function myAction(arg1: string) {
- *   const callerClerkId = await getSovereignIdentity();
- *   if (!callerClerkId) throw new Error('Unauthorized');
+ *   const userId = await getSovereignIdentity();
+ *   if (!userId) throw new Error('Unauthorized');
  *
- *   return await convex.mutation(api.foo, { callerClerkId, arg1 });
+ *   return await convex.mutation(api.foo, { userId, arg1 });
  * }
  */
-export async function getSovereignIdentity(): Promise<string | null> {
+export async function getSovereignIdentity(): Promise<Id<"admin_users"> | null> {
   const session = await readSessionCookie();
-  return session?.clerkId ?? null;
+  return session?._id ? (session._id as Id<"admin_users">) : null;
 }
 
 /**
  * Gets sovereign identity or throws if not authenticated.
  * Use this when you want the action to fail immediately on missing auth.
  *
+ * 🛡️ SID-5.3: Returns sovereign Convex _id, NOT clerkId
+ *
  * @example
  * export async function myAction(arg1: string) {
- *   const callerClerkId = await requireSovereignIdentity();
- *   // callerClerkId is guaranteed to be a valid string here
+ *   const userId = await requireSovereignIdentity();
+ *   // userId is sovereign Convex _id, guaranteed valid
  *
- *   return await convex.mutation(api.foo, { callerClerkId, arg1 });
+ *   return await convex.mutation(api.foo, { userId, arg1 });
  * }
  */
-export async function requireSovereignIdentityFromCookie(): Promise<string> {
+export async function requireSovereignIdentity(): Promise<Id<"admin_users">> {
   const session = await readSessionCookie();
 
-  if (!session?.clerkId) {
+  if (!session?._id) {
     throw new SovereignIdentityError('Not authenticated. Please log in.');
   }
 
-  return session.clerkId;
+  return session._id as Id<"admin_users">;
 }
+
+/**
+ * @deprecated Use requireSovereignIdentity() instead
+ */
+export const requireSovereignIdentityFromCookie = requireSovereignIdentity;

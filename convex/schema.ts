@@ -8,6 +8,16 @@ export default defineSchema({
 
   admin_users: defineTable({
     // Identity (required)
+    /**
+     * @deprecated REFERENCE ONLY — Do NOT use for business logic lookups.
+     * clerkId exists solely for:
+     * - Webhook correlation (user.created, user.deleted events from Clerk)
+     * - Vanish Protocol (account deletion flows)
+     * - Identity handoff ceremony (auth boundary only)
+     *
+     * All runtime identity MUST use the Convex document _id.
+     * See: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md
+     */
     clerkId: v.string(),
     email: v.string(),
     firstName: v.string(),
@@ -89,14 +99,29 @@ export default defineSchema({
       v.literal("completed"),
       v.literal("failed")
     )),
-  }).index("by_clerk_id", ["clerkId"])
+  })
+    /**
+     * @deprecated WEBHOOK-ONLY INDEX — Do NOT use for runtime identity lookups.
+     * Required until SID Phase 10 (Webhook Refactor).
+     * All business logic MUST use ctx.db.get(userId) with Convex _id.
+     * See: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md (SID-6.2, SID-6.3)
+     */
+    .index("by_clerk_id", ["clerkId"])
     .index("by_rank", ["rank"])
     .index("by_subscription_status", ["subscriptionStatus"]),
 
   // Vanish Protocol: Immutable audit trail for user deletions
   admin_users_DeleteLog: defineTable({
     // Original user identity (all required - user always has these at deletion)
-    userId: v.string(),
+    /**
+     * Convex document _id of the deleted user (SOVEREIGN IDENTITY).
+     * This is the primary identity reference for audit trails.
+     */
+    userId: v.id("admin_users"),
+    /**
+     * @deprecated REFERENCE ONLY — Stored for Clerk webhook correlation during deletion.
+     * Do NOT use for lookups. See: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md
+     */
     clerkId: v.string(),
     email: v.string(),
     firstName: v.string(),
@@ -110,7 +135,10 @@ export default defineSchema({
     socialName: v.optional(v.string()),
 
     // Deletion metadata (required)
-    deletedBy: v.string(),
+    /**
+     * Convex document _id of the user who performed the deletion (SOVEREIGN IDENTITY).
+     */
+    deletedBy: v.id("admin_users"),
     deletedByRole: v.union(
       v.literal("self"),
       v.literal("admiral")
@@ -143,7 +171,14 @@ export default defineSchema({
     // Compliance (optional)
     ipAddress: v.optional(v.string()),
     userAgent: v.optional(v.string()),
-  }).index("by_clerk_id", ["clerkId"])
+  })
+    /**
+     * @deprecated WEBHOOK-ONLY INDEX — Required for Vanish Protocol Clerk correlation.
+     * Do NOT use for runtime identity lookups.
+     * See: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md (SID-6.2)
+     */
+    .index("by_clerk_id", ["clerkId"])
+    .index("by_user_id", ["userId"]) // SOVEREIGN: Primary lookup for audit trails
     .index("by_deleted_at", ["deletedAt"])
     .index("by_status", ["status"]),
 
@@ -199,6 +234,11 @@ export default defineSchema({
     phoneNumber: v.optional(v.string()),
 
     // SRS rank-scoping (required)
+    /**
+     * @todo SID-ORG: Convert to v.id("admin_orgs") when orgs domain is implemented.
+     * Currently stores external org identifier (e.g., from Clerk Organizations).
+     * See: _clerk-virus/S.I.D.—SOVEREIGN-IDENTITY-DOCTRINE.md
+     */
     orgId: v.string(),
     assignedTo: v.optional(v.id("admin_users")),
 
@@ -236,6 +276,9 @@ export default defineSchema({
     description: v.string(),
 
     // SRS rank-scoping (required)
+    /**
+     * @todo SID-ORG: Convert to v.id("admin_orgs") when orgs domain is implemented.
+     */
     orgId: v.string(),
 
     // Status (required with default)
@@ -265,6 +308,9 @@ export default defineSchema({
     description: v.optional(v.string()),
 
     // SRS rank-scoping (required)
+    /**
+     * @todo SID-ORG: Convert to v.id("admin_orgs") when orgs domain is implemented.
+     */
     orgId: v.string(),
     assignedTo: v.optional(v.id("admin_users")),
 
@@ -303,6 +349,9 @@ export default defineSchema({
     ),
 
     // SRS rank-scoping (required)
+    /**
+     * @todo SID-ORG: Convert to v.id("admin_orgs") when orgs domain is implemented.
+     */
     orgId: v.string(),
 
     // Status (required)
@@ -331,6 +380,7 @@ export default defineSchema({
     body: v.string(),
     from: v.string(),
     to: v.array(v.string()),
+    /** @todo SID-ORG: Convert to v.id("admin_orgs") when orgs domain is implemented. */
     orgId: v.string(),
     status: v.union(
       v.literal("draft"),
@@ -348,6 +398,7 @@ export default defineSchema({
     description: v.optional(v.string()),
     startTime: v.number(),
     endTime: v.number(),
+    /** @todo SID-ORG: Convert to v.id("admin_orgs") when orgs domain is implemented. */
     orgId: v.string(),
     attendees: v.array(v.string()),
     createdAt: v.number(),
@@ -360,6 +411,7 @@ export default defineSchema({
     clientName: v.string(),
     serviceType: v.string(),
     scheduledTime: v.number(),
+    /** @todo SID-ORG: Convert to v.id("admin_orgs") when orgs domain is implemented. */
     orgId: v.string(),
     status: v.union(
       v.literal("pending"),
@@ -377,6 +429,7 @@ export default defineSchema({
     participants: v.array(v.string()),
     scheduledTime: v.number(),
     duration: v.number(),
+    /** @todo SID-ORG: Convert to v.id("admin_orgs") when orgs domain is implemented. */
     orgId: v.string(),
     notes: v.optional(v.string()),
     createdAt: v.number(),

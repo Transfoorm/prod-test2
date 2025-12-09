@@ -1,21 +1,30 @@
+/**
+ * 🛡️ S.I.D. COMPLIANT - User Profile API Route
+ *
+ * SID-9.1: Identity from FUSE session cookie, NOT Clerk auth()
+ * SID-5.3: Convex mutations receive userId (sovereign _id), NOT clerkId
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { readSessionCookie } from '@/fuse/hydration/session/cookie';
 import { ConvexHttpClient } from 'convex/browser';
 import { api } from '@/convex/_generated/api';
+import type { Id } from '@/convex/_generated/dataModel';
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export async function GET() {
   try {
-    const { userId } = await auth();
+    // 🛡️ SID-9.1: Read sovereign identity from FUSE session cookie
+    const session = await readSessionCookie();
 
-    if (!userId) {
+    if (!session || !session._id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Fetch user data from Convex
-    const user = await convex.query(api.domains.admin.users.api.getUserByClerkId, {
-      clerkId: userId,
+    // 🛡️ SID-5.3: Fetch user data using sovereign userId
+    const user = await convex.query(api.domains.admin.users.api.getCurrentUser, {
+      userId: session._id as Id<"admin_users">,
     });
 
     if (!user) {
@@ -34,9 +43,10 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    // 🛡️ SID-9.1: Read sovereign identity from FUSE session cookie
+    const session = await readSessionCookie();
 
-    if (!userId) {
+    if (!session || !session._id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -59,9 +69,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Call Convex mutation to update user profile
+    // 🛡️ SID-5.3: Call Convex mutation with sovereign userId
     await convex.mutation(api.domains.admin.users.api.completeSetup, {
-      clerkId: userId,
+      userId: session._id as Id<"admin_users">,
       firstName,
       lastName,
       entityName,
@@ -82,9 +92,10 @@ export async function POST(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    // 🛡️ SID-9.1: Read sovereign identity from FUSE session cookie
+    const session = await readSessionCookie();
 
-    if (!userId) {
+    if (!session || !session._id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -92,8 +103,9 @@ export async function PATCH(request: NextRequest) {
 
     // Handle profile updates (firstName, lastName)
     if (body.firstName !== undefined || body.lastName !== undefined) {
+      // 🛡️ SID-5.3: Use sovereign userId
       await convex.mutation(api.domains.admin.users.api.updateProfile, {
-        clerkId: userId,
+        userId: session._id as Id<"admin_users">,
         firstName: body.firstName,
         lastName: body.lastName,
       });
@@ -103,8 +115,9 @@ export async function PATCH(request: NextRequest) {
 
     // Handle entity updates (entityName, socialName, businessCountry)
     if (body.entityName !== undefined || body.socialName !== undefined || body.businessCountry !== undefined) {
+      // 🛡️ SID-5.3: Use sovereign userId
       await convex.mutation(api.domains.admin.users.api.updateEntity, {
-        clerkId: userId,
+        userId: session._id as Id<"admin_users">,
         entityName: body.entityName,
         socialName: body.socialName,
         businessCountry: body.businessCountry,
@@ -115,8 +128,9 @@ export async function PATCH(request: NextRequest) {
 
     // Fallback: Handle businessCountry only (for backward compatibility)
     if (body.businessCountry) {
+      // 🛡️ SID-5.3: Use sovereign userId
       await convex.mutation(api.domains.admin.users.api.updateBusinessCountry, {
-        clerkId: userId,
+        userId: session._id as Id<"admin_users">,
         businessCountry: body.businessCountry,
       });
 

@@ -2,43 +2,47 @@
 │  🔒 SERVER-SIDE EMAIL MANAGEMENT                                       │
 │  /api/user/email/remove                                                │
 │                                                                        │
-│  Bypasses Clerk's client-side step-up authentication                  │
-│  by using backend API with admin privileges                           │
+│  🛡️ S.I.D. COMPLIANT - Phase 9                                        │
+│  - SID-9.1: Identity from readSessionCookie(), NOT auth()              │
+│  - SID-5.3: Convex queries use userId (sovereign _id)                  │
+│  - SID-12.1: Clerk API uses session.clerkId (permitted)                │
 │                                                                        │
 │  ADMIRAL SUPPORT:                                                      │
-│  - Accepts optional targetUserId to verify permission                 │
-│  - Requires Admiral rank when removing another user's email           │
+│  - Accepts optional targetClerkId to verify permission                 │
+│  - Requires Admiral rank when removing another user's email            │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { readSessionCookie } from '@/fuse/hydration/session/cookie';
 import { ConvexHttpClient } from 'convex/browser';
 import { api } from '@/convex/_generated/api';
+import type { Id } from '@/convex/_generated/dataModel';
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export async function POST(req: Request) {
   try {
-    // Get authenticated user
-    const { userId } = await auth();
+    // 🛡️ SID-9.1: Identity from FUSE session cookie
+    const session = await readSessionCookie();
 
-    if (!userId) {
+    if (!session || !session._id || !session.clerkId) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    // Get email address ID and optional targetUserId from request body
-    const { emailAddressId, targetUserId } = await req.json();
+    // Get email address ID and optional targetClerkId from request body
+    const { emailAddressId, targetClerkId } = await req.json();
 
     // If targeting another user, verify Admiral permissions
-    if (targetUserId && targetUserId !== userId) {
-      console.log('[API EMAIL REMOVE] Admiral operation detected - targetUserId:', targetUserId);
+    if (targetClerkId && targetClerkId !== session.clerkId) {
+      console.log('[API EMAIL REMOVE] Admiral operation detected - targetClerkId:', targetClerkId);
 
-      // Query Convex to get requesting user's rank
-      const requestingUser = await convex.query(api.domains.admin.users.api.getUserByClerkId, {
-        clerkId: userId,
+      // 🛡️ SID-5.3: Query Convex using sovereign userId
+      const requestingUser = await convex.query(api.domains.admin.users.api.getCurrentUser, {
+        userId: session._id as Id<"admin_users">,
       });
 
       if (!requestingUser) {
@@ -67,11 +71,10 @@ export async function POST(req: Request) {
       );
     }
 
-    console.log('[API EMAIL REMOVE] Removing email for user:', userId);
+    console.log('[API EMAIL REMOVE] Removing email for user:', session.clerkId);
     console.log('[API EMAIL REMOVE] Email ID:', emailAddressId);
 
-    // Use Clerk backend API to delete email address
-    // This bypasses client-side step-up authentication
+    // 🛡️ SID-12.1: Clerk API (permitted for Clerk operations)
     const client = await clerkClient();
     await client.emailAddresses.deleteEmailAddress(emailAddressId);
 

@@ -1,25 +1,30 @@
-// FUSE 4.0 SESSION REFRESH API
-// Updates session cookie with fresh Convex data (e.g., after avatar upload)
+/**
+ * 🛡️ S.I.D. COMPLIANT - FUSE 5.0 SESSION REFRESH API
+ * Updates session cookie with fresh Convex data (e.g., after avatar upload)
+ *
+ * SID-5.3: Uses session._id (sovereign) for Convex lookups
+ */
 
 import { NextResponse } from 'next/server';
 import { readSessionCookie, mintSession, setSessionCookie } from '@/fuse/hydration/session/cookie';
 import { ConvexHttpClient } from 'convex/browser';
 import { api } from '@/convex/_generated/api';
+import type { Id } from '@/convex/_generated/dataModel';
 
 // POST /api/session/refresh — Refresh session cookie with fresh Convex data
 export async function POST() {
   try {
-    // Read current session to get clerkId
+    // 🛡️ SID-9.1: Read sovereign _id from session
     const session = await readSessionCookie();
 
-    if (!session || !session.clerkId) {
+    if (!session || !session._id) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    // Fetch fresh user data from Convex
+    // 🛡️ SID-5.3: Fetch fresh user data using sovereign _id
     const convexClient = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
     const freshUser = await convexClient.query(api.domains.admin.users.api.getCurrentUser, {
-      clerkId: session.clerkId
+      userId: session._id as Id<"admin_users">
     });
 
     if (!freshUser) {

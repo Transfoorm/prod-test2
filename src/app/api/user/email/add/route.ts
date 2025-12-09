@@ -2,46 +2,50 @@
 │  🔒 SERVER-SIDE EMAIL MANAGEMENT                                       │
 │  /api/user/email/add                                                   │
 │                                                                        │
-│  Bypasses Clerk's client-side step-up authentication                  │
-│  by using backend API with admin privileges                           │
+│  🛡️ S.I.D. COMPLIANT - Phase 9                                        │
+│  - SID-9.1: Identity from readSessionCookie(), NOT auth()              │
+│  - SID-5.3: Convex queries use userId (sovereign _id)                  │
+│  - SID-12.1: Clerk API uses session.clerkId (permitted)                │
 │                                                                        │
 │  ADMIRAL SUPPORT:                                                      │
-│  - Accepts optional targetUserId to edit other users                  │
-│  - Requires Admiral rank when targetUserId is provided                │
+│  - Accepts optional targetClerkId to edit other users                  │
+│  - Requires Admiral rank when targetClerkId is provided                │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { readSessionCookie } from '@/fuse/hydration/session/cookie';
 import { ConvexHttpClient } from 'convex/browser';
 import { api } from '@/convex/_generated/api';
+import type { Id } from '@/convex/_generated/dataModel';
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export async function POST(req: Request) {
   try {
-    // Get authenticated user
-    const { userId } = await auth();
+    // 🛡️ SID-9.1: Identity from FUSE session cookie
+    const session = await readSessionCookie();
 
-    if (!userId) {
+    if (!session || !session._id || !session.clerkId) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    // Get email and optional targetUserId from request body
-    const { email, targetUserId } = await req.json();
+    // Get email and optional targetClerkId from request body
+    const { email, targetClerkId } = await req.json();
 
     // Determine which user to operate on
-    let targetUserClerkId = userId; // Default to session user
+    let targetUserClerkId = session.clerkId; // Default to session user
 
     // If targeting another user, verify Admiral permissions
-    if (targetUserId && targetUserId !== userId) {
-      console.log('[API EMAIL ADD] Admiral operation detected - targetUserId:', targetUserId);
+    if (targetClerkId && targetClerkId !== session.clerkId) {
+      console.log('[API EMAIL ADD] Admiral operation detected - targetClerkId:', targetClerkId);
 
-      // Query Convex to get requesting user's rank
-      const requestingUser = await convex.query(api.domains.admin.users.api.getUserByClerkId, {
-        clerkId: userId,
+      // 🛡️ SID-5.3: Query Convex using sovereign userId
+      const requestingUser = await convex.query(api.domains.admin.users.api.getCurrentUser, {
+        userId: session._id as Id<"admin_users">,
       });
 
       if (!requestingUser) {
@@ -61,7 +65,7 @@ export async function POST(req: Request) {
       }
 
       console.log('[API EMAIL ADD] Admiral permission verified');
-      targetUserClerkId = targetUserId;
+      targetUserClerkId = targetClerkId;
     }
 
     if (!email || typeof email !== 'string') {
@@ -83,9 +87,7 @@ export async function POST(req: Request) {
     console.log('[API EMAIL ADD] Adding secondary email for user:', targetUserClerkId);
     console.log('[API EMAIL ADD] Email:', email);
 
-    // Use Clerk backend API to create email address
-    // This bypasses client-side step-up authentication
-    // ADMIRAL GODMODE: Instant verification - user can login with new email + existing password
+    // 🛡️ SID-12.1: Clerk API uses clerkId (permitted for Clerk operations)
     const client = await clerkClient();
     const emailAddress = await client.emailAddresses.createEmailAddress({
       userId: targetUserClerkId,

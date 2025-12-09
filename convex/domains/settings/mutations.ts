@@ -144,6 +144,7 @@ export const updateMirorSettings = mutation({
 
 /**
  * Update Professional Genome
+ * 🛡️ SID Phase 2: Sovereign Identity Mutation
  *
  * SRS Layer 3: Self-Scoped Mutations
  * - Genome now lives in settings_account_Genome table
@@ -151,8 +152,8 @@ export const updateMirorSettings = mutation({
  */
 export const updateGenome = mutation({
   args: {
-    // Auth - passed from Server Action
-    clerkId: v.string(),
+    // 🛡️ SID-5.3: Accept sovereign userId, not clerkId
+    userId: v.id("admin_users"),
     // Professional Identity
     jobTitle: v.optional(v.string()),
     department: v.optional(v.string()),
@@ -173,19 +174,16 @@ export const updateGenome = mutation({
     successMetric: v.optional(v.string()),
   },
   handler: async (ctx: MutationCtx, args) => {
-    const { clerkId, ...genomeFields } = args;
+    const { userId, ...genomeFields } = args;
 
-    const user = await ctx.db
-      .query("admin_users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkId))
-      .first();
-
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(userId);
     if (!user) throw new Error("User not found");
 
     // Check if genome record exists
     const existingGenome = await ctx.db
       .query("settings_account_Genome")
-      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .withIndex("by_user", (q) => q.eq("userId", userId))
       .first();
 
     const now = Date.now();
@@ -204,7 +202,7 @@ export const updateGenome = mutation({
       const completionPercent = calculateGenomeCompletion(genomeFields);
 
       await ctx.db.insert("settings_account_Genome", {
-        userId: user._id,
+        userId: userId,
         ...genomeFields,
         completionPercent,
         createdAt: now,

@@ -129,7 +129,8 @@ interface FuseStore {
   setThemeMode: (mode: ThemeMode) => Promise<void>;
   setThemeName: (name: ThemeName) => Promise<void>;
   toggleThemeMode: () => void;
-  syncThemeFromDB: (clerkId: string) => Promise<void>;
+  // 🛡️ SID-5.3: Use sovereign userId (Convex _id)
+  syncThemeFromDB: (userId: string) => Promise<void>;
 
   setCurrentRoute: (route: string) => void;
   setBreadcrumbs: (breadcrumbs: string[]) => void;
@@ -828,10 +829,11 @@ export const useFuse = create<FuseStore>()((set, get) => {
       }
 
       const { user } = get();
-      if (user?.clerkId) {
+      // 🛡️ SID-5.3: Use sovereign userId (Convex _id)
+      if (user?.id) {
         try {
           await convex.mutation(api.domains.admin.users.api.updateThemePreferences, {
-            clerkId: user.clerkId,
+            userId: user.id as import('@/convex/_generated/dataModel').Id<"admin_users">,
             themeDark: mode === 'dark'
           });
         } catch (error) {
@@ -852,10 +854,11 @@ export const useFuse = create<FuseStore>()((set, get) => {
       }
 
       const { user, themeMode } = get();
-      if (user?.clerkId) {
+      // 🛡️ SID-5.3: Use sovereign userId (Convex _id)
+      if (user?.id) {
         try {
           await convex.mutation(api.domains.admin.users.api.updateThemePreferences, {
-            clerkId: user.clerkId,
+            userId: user.id as import('@/convex/_generated/dataModel').Id<"admin_users">,
             themeName: name,
             themeDark: themeMode === 'dark'
           });
@@ -867,12 +870,13 @@ export const useFuse = create<FuseStore>()((set, get) => {
       fuseTimer.end('setThemeName', start);
     },
 
-    syncThemeFromDB: async (clerkId: string) => {
+    // 🛡️ SID-5.3: Use sovereign userId (Convex _id)
+    syncThemeFromDB: async (userId: string) => {
       const start = fuseTimer.start('syncThemeFromDB');
 
       try {
         const preferences = await convex.query(api.domains.admin.users.api.getUserThemePreferences, {
-          clerkId
+          userId: userId as import('@/convex/_generated/dataModel').Id<"admin_users">
         });
 
         if (preferences) {

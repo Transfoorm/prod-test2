@@ -1,13 +1,18 @@
-// Update User Profile - Convex Mutation
-// Following Model-Driven Architecture
+/**──────────────────────────────────────────────────────────────────────┐
+│  ✏️ UPDATE PROFILE - User Profile Mutation                             │
+│  /convex/domains/admin/users/updateProfile.ts                          │
+│                                                                        │
+│  🛡️ SID-5.3 COMPLIANT: Accepts userId: v.id("admin_users")            │
+│  Sovereign identity lookup via ctx.db.get()                            │
+└────────────────────────────────────────────────────────────────────────┘ */
 
 import { mutation } from "@/convex/_generated/server";
 import { v } from "convex/values";
-import { UsersModel } from "./model";
 
 export const updateProfile = mutation({
   args: {
-    clerkId: v.string(),
+    // 🛡️ SID-5.3: Accept sovereign userId, not clerkId
+    userId: v.id("admin_users"),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
     entityName: v.optional(v.string()),
@@ -15,7 +20,8 @@ export const updateProfile = mutation({
     businessCountry: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const user = await UsersModel.getUserByClerkId(ctx.db, args.clerkId);
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.userId);
 
     if (!user) {
       throw new Error("User not found");
