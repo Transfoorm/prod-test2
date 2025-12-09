@@ -1,51 +1,29 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  📊 SUBSCRIPTION STATS QUERY - Admiral Dashboard                       │
-│  /convex/domains/admin/admin_users/queries/subscriptionStats.ts             │
+│  /convex/domains/admin/users/queries/subscriptionStats.ts              │
+│                                                                        │
+│  🛡️ S.I.D. COMPLIANT - Phase 10                                       │
+│  - All queries accept callerUserId: v.id("admin_users")                │
+│  - No ctx.auth.getUserIdentity() usage                                 │
 │                                                                        │
 │  Provides subscription and rank statistics for the Admiral Rank        │
 │  Management tab. Shows counts, breakdowns, and metrics.                │
-│                                                                        │
-│  🛡️ SID COMPLIANCE NOTE:                                               │
-│  These queries use ctx.auth for caller authentication (Convex auth)    │
-│  because they're called directly from Convex WebSocket connections.    │
-│  The caller's userId is looked up from clerkId to verify Admiral rank. │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { query } from "@/convex/_generated/server";
 import { requireAdmiralRank } from "@/convex/system/utils/rankAuth";
 import { getTrialDaysRemaining } from "@/fuse/constants/ranks";
-
-import type { QueryCtx } from "@/convex/_generated/server";
-import type { Id } from "@/convex/_generated/dataModel";
-
-/**
- * Helper to get caller's sovereign userId from Convex auth identity
- * 🛡️ SID: Translates clerkId → userId for caller authentication in queries
- */
-async function getCallerUserId(ctx: QueryCtx): Promise<Id<"admin_users">> {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Not authenticated");
-
-  // Look up caller's sovereign userId from clerkId
-  const caller = await ctx.db
-    .query("admin_users")
-    .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-    .first();
-
-  if (!caller) throw new Error("Caller not found in database");
-
-  return caller._id;
-}
+import { v } from "convex/values";
 
 // ═══════════════════════════════════════════════════════════════════════
 // GET SUBSCRIPTION STATS (Admiral-only)
 // ═══════════════════════════════════════════════════════════════════════
 
 export const getSubscriptionStats = query({
-  handler: async (ctx) => {
-    // 🛡️ SID: Get caller's sovereign userId and verify Admiral rank
-    const callerUserId = await getCallerUserId(ctx);
-    await requireAdmiralRank(ctx, callerUserId);
+  args: { callerUserId: v.id("admin_users") },
+  handler: async (ctx, args) => {
+    // 🛡️ SID-5.3: Verify Admiral rank using sovereign callerUserId
+    await requireAdmiralRank(ctx, args.callerUserId);
 
     // Get all admin_users
     const allUsers = await ctx.db.query("admin_users").collect();
@@ -123,10 +101,10 @@ export const getSubscriptionStats = query({
 // ═══════════════════════════════════════════════════════════════════════
 
 export const getExpiringTrials = query({
-  handler: async (ctx) => {
-    // 🛡️ SID: Get caller's sovereign userId and verify Admiral rank
-    const callerUserId = await getCallerUserId(ctx);
-    await requireAdmiralRank(ctx, callerUserId);
+  args: { callerUserId: v.id("admin_users") },
+  handler: async (ctx, args) => {
+    // 🛡️ SID-5.3: Verify Admiral rank using sovereign callerUserId
+    await requireAdmiralRank(ctx, args.callerUserId);
 
     // Get all admin_users on trial
     const trialUsers = await ctx.db
@@ -161,10 +139,10 @@ export const getExpiringTrials = query({
 // ═══════════════════════════════════════════════════════════════════════
 
 export const getRankDistribution = query({
-  handler: async (ctx) => {
-    // 🛡️ SID: Get caller's sovereign userId and verify Admiral rank
-    const callerUserId = await getCallerUserId(ctx);
-    await requireAdmiralRank(ctx, callerUserId);
+  args: { callerUserId: v.id("admin_users") },
+  handler: async (ctx, args) => {
+    // 🛡️ SID-5.3: Verify Admiral rank using sovereign callerUserId
+    await requireAdmiralRank(ctx, args.callerUserId);
 
     // Get all admin_users
     const allUsers = await ctx.db.query("admin_users").collect();

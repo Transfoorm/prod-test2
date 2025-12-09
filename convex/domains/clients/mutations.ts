@@ -2,6 +2,10 @@
 │  🔌 CLIENT DOMAIN MUTATIONS - SRS Layer 4                             │
 │  /convex/domains/clients/mutations.ts                                  │
 │                                                                        │
+│  🛡️ S.I.D. COMPLIANT - Phase 10                                       │
+│  - All mutations accept callerUserId: v.id("admin_users")              │
+│  - No ctx.auth.getUserIdentity() usage                                 │
+│                                                                        │
 │  Client CRUD operations with rank-based authorization:                 │
 │  • Create: Captain/Commodore/Admiral only                              │
 │  • Update: Captain/Commodore/Admiral only (org-scoped)                 │
@@ -13,22 +17,16 @@
 
 import { mutation } from "@/convex/_generated/server";
 import type { MutationCtx } from "@/convex/_generated/server";
+import type { Id } from "@/convex/_generated/dataModel";
 import { v } from "convex/values";
 
 /**
- * Get current user with rank for authorization
+ * 🛡️ SID Phase 10: Sovereign user lookup by userId
  */
-async function getCurrentUserWithRank(ctx: MutationCtx) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Not authenticated");
-
-  const user = await ctx.db
-    .query("admin_users")
-    .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-    .first();
-
+async function getCurrentUserWithRank(ctx: MutationCtx, callerUserId: Id<"admin_users">) {
+  // 🛡️ SID-5.3: Direct lookup by sovereign _id
+  const user = await ctx.db.get(callerUserId);
   if (!user) throw new Error("User not found");
-
   return user;
 }
 
@@ -43,21 +41,18 @@ function requireCaptainOrHigher(rank: string | undefined) {
 
 /**
  * Create new client
- *
- * Authorization: Captain/Commodore/Admiral only
- * - Captain/Commodore: Creates client in their organization
- * - Admiral: Can create client in any organization
  */
 export const createClient = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     firstName: v.string(),
     lastName: v.string(),
     email: v.string(),
     company: v.optional(v.string()),
     jobTitle: v.optional(v.string()),
     phoneNumber: v.optional(v.string()),
-    orgId: v.optional(v.string()), // Admiral can specify orgId, others use their own
-    assignedTo: v.optional(v.id("admin_users")), // Optional: assign to specific user
+    orgId: v.optional(v.string()),
+    assignedTo: v.optional(v.id("admin_users")),
     status: v.optional(
       v.union(
         v.literal("active"),
@@ -69,19 +64,15 @@ export const createClient = mutation({
     notes: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const rank = user.rank || "crew";
 
-    // Require Captain or higher
     requireCaptainOrHigher(rank);
 
-    // Determine orgId
     let orgId: string;
     if (rank === "admiral" && args.orgId) {
-      // Admiral can create in any org
       orgId = args.orgId;
     } else {
-      // Captain/Commodore create in their own org
       orgId = user.orgSlug || "";
     }
 
@@ -109,13 +100,10 @@ export const createClient = mutation({
 
 /**
  * Update existing client
- *
- * Authorization: Captain/Commodore/Admiral only
- * - Captain/Commodore: Can only update clients in their organization
- * - Admiral: Can update any client
  */
 export const updateClient = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     clientId: v.id("clients_contacts_Users"),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
@@ -135,28 +123,23 @@ export const updateClient = mutation({
     notes: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const rank = user.rank || "crew";
 
-    // Require Captain or higher
     requireCaptainOrHigher(rank);
 
-    // Fetch client
     const client = await ctx.db.get(args.clientId);
     if (!client) {
       throw new Error("Client not found");
     }
 
-    // Check authorization
     if (rank !== "admiral") {
-      // Captain/Commodore: Must match organization
       const orgId = user.orgSlug || "";
       if (client.orgId !== orgId) {
         throw new Error("Unauthorized: Client not in your organization");
       }
     }
 
-    // Build updates
     const updates: Record<string, unknown> = {
       updatedAt: Date.now(),
     };
@@ -179,31 +162,24 @@ export const updateClient = mutation({
 
 /**
  * Delete client
- *
- * Authorization: Captain/Commodore/Admiral only
- * - Captain/Commodore: Can only delete clients in their organization
- * - Admiral: Can delete any client
  */
 export const deleteClient = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     clientId: v.id("clients_contacts_Users"),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const rank = user.rank || "crew";
 
-    // Require Captain or higher
     requireCaptainOrHigher(rank);
 
-    // Fetch client
     const client = await ctx.db.get(args.clientId);
     if (!client) {
       throw new Error("Client not found");
     }
 
-    // Check authorization
     if (rank !== "admiral") {
-      // Captain/Commodore: Must match organization
       const orgId = user.orgSlug || "";
       if (client.orgId !== orgId) {
         throw new Error("Unauthorized: Client not in your organization");

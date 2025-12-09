@@ -11,24 +11,20 @@ import { isTrialExpired, isInGracePeriod } from "@/fuse/constants/ranks";
 // ══════════════════════════════════════════════════════════════════════
 
 /**
- * Check if the current user is an Admiral (server-side authorization)
- * Uses Convex auth context to get the authenticated user
- * Throws error if user is not authenticated or not an Admiral
+ * 🛡️ SID Phase 10: Sovereign Admiral Guard
+ * Validates caller has Admiral rank using sovereign userId
+ *
+ * @param ctx - Convex context
+ * @param callerUserId - Sovereign user ID from FUSE session
+ * @returns The validated Admiral user record
+ * @throws Error if user not found or not Admiral
  */
-async function requireAdmiral(ctx: QueryCtx | MutationCtx) {
-  // Get authenticated user from Convex auth context
-  const identity = await ctx.auth.getUserIdentity();
-
-  if (!identity) {
-    console.error('❌ requireAdmiral: No identity');
-    throw new Error("Unauthorized: Authentication required");
-  }
-
-  // Get user from database by Clerk ID
-  const currentUser = await UsersModel.getUserByClerkId(ctx.db, identity.subject);
+async function requireAdmiral(ctx: QueryCtx | MutationCtx, callerUserId: Id<"admin_users">) {
+  // 🛡️ SID-5.3: Direct lookup by sovereign _id
+  const currentUser = await ctx.db.get(callerUserId);
 
   if (!currentUser) {
-    console.error('❌ requireAdmiral: User not found for clerkId:', identity.subject);
+    console.error('❌ requireAdmiral: User not found for userId:', callerUserId);
     throw new Error("User not found");
   }
 
@@ -91,11 +87,13 @@ export const updateLastLogin = mutation({
   },
 });
 
+// 🛡️ SID Phase 10: Sovereign query - accepts callerUserId
 export const getAllUsers = query({
-  handler: async (ctx) => {
+  args: { callerUserId: v.id("admin_users") },
+  handler: async (ctx, args) => {
     // 🔒 SECURITY: Admiral-only access (return empty if unauthorized)
     try {
-      await requireAdmiral(ctx);
+      await requireAdmiral(ctx, args.callerUserId);
     } catch {
       return []; // Return empty array instead of throwing
     }
@@ -123,13 +121,14 @@ export const getAllUsers = query({
   },
 });
 
+// 🛡️ SID Phase 10: Sovereign query - accepts callerUserId
 // Get paginated admin_users (Admiral-only, for large-scale user management)
 export const getAllUsersPaginated = query({
-  args: {},
-  handler: async (ctx) => {
+  args: { callerUserId: v.id("admin_users") },
+  handler: async (ctx, args) => {
     // 🔒 SECURITY: Admiral-only access (return empty if unauthorized)
     try {
-      await requireAdmiral(ctx);
+      await requireAdmiral(ctx, args.callerUserId);
     } catch {
       return []; // Return empty array instead of throwing
     }
@@ -154,13 +153,14 @@ export const getAllUsersPaginated = query({
   },
 });
 
+// 🛡️ SID Phase 10: Sovereign query - accepts callerUserId
 // Get user by Convex ID for editing (Admiral-only, TTT-compliant)
 export const getUserForEdit = query({
-  args: { userId: v.id("admin_users") },
+  args: { callerUserId: v.id("admin_users"), userId: v.id("admin_users") },
   handler: async (ctx, args) => {
     // 🔒 SECURITY: Admiral-only access (return null if unauthorized)
     try {
-      await requireAdmiral(ctx);
+      await requireAdmiral(ctx, args.callerUserId);
     } catch {
       return null; // Return null instead of throwing
     }
@@ -262,18 +262,16 @@ export const getCurrentUser = query({
   },
 });
 
+// 🛡️ SID Phase 10: Sovereign query - accepts callerUserId
 // Get RAW user document for Database tab with ALL schema fields (Admiral-only, TTT-compliant)
 export const getRawUserDocument = query({
-  args: { userId: v.id("admin_users") },
+  args: { callerUserId: v.id("admin_users"), userId: v.id("admin_users") },
   handler: async (ctx, args) => {
-    // Get authenticated user
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return null;
-
-    // Only admirals can view raw documents
-    const currentUser = await UsersModel.getUserByClerkId(ctx.db, identity.subject);
-    if (!currentUser || currentUser.rank !== 'admiral') {
-      throw new Error("Unauthorized: Admiral access required");
+    // 🛡️ SID-5.3: Sovereign Admiral check
+    try {
+      await requireAdmiral(ctx, args.callerUserId);
+    } catch {
+      return null;
     }
 
     // Direct document fetch - TTT-passing performance
@@ -781,12 +779,14 @@ export { updateClerkDeletionStatus } from "@/convex/vanish/updateClerkDeletionSt
 // Export VANISH Journal management
 export { deleteDeletionLog } from "@/convex/vanish/deleteDeletionLog";
 
+// 🛡️ SID Phase 10: Sovereign query - accepts callerUserId
 // Get all deletion logs (Admiral-only, for audit trail)
 export const getAllDeletionLogs = query({
-  handler: async (ctx) => {
+  args: { callerUserId: v.id("admin_users") },
+  handler: async (ctx, args) => {
     // 🔒 SECURITY: Admiral-only access (return empty if unauthorized)
     try {
-      await requireAdmiral(ctx);
+      await requireAdmiral(ctx, args.callerUserId);
     } catch {
       return []; // Return empty array instead of throwing
     }

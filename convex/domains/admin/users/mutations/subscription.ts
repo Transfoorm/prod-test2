@@ -1,18 +1,16 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🎖️ SUBSCRIPTION MUTATIONS - Admiral Controls                          │
-│  /convex/domains/admin/admin_users/mutations/subscription.ts                │
+│  /convex/domains/admin/users/mutations/subscription.ts                 │
+│                                                                        │
+│  🛡️ S.I.D. COMPLIANT - Phase 10                                       │
+│  - All mutations accept callerUserId: v.id("admin_users")              │
+│  - No ctx.auth.getUserIdentity() usage                                 │
 │                                                                        │
 │  Admiral-only mutations for managing user trials, subscriptions,       │
 │  and rank assignments. Part of the Rank-Aware Management System.       │
 │                                                                        │
 │  God Mode: Admiral has complete control over all subscription          │
 │  settings, trial periods, and lifetime grants.                         │
-│                                                                        │
-│  🛡️ SID COMPLIANCE NOTE:                                               │
-│  These mutations use ctx.auth for caller authentication (Convex auth)  │
-│  because they're called directly from Convex WebSocket connections.    │
-│  The caller's userId is looked up from clerkId, then used to verify    │
-│  Admiral rank. Target users use sovereign userId directly.             │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { v } from "convex/values";
@@ -20,41 +18,19 @@ import { mutation } from "@/convex/_generated/server";
 import { requireAdmiralRank } from "@/convex/system/utils/rankAuth";
 import { calculateTrialEndDate } from "@/fuse/constants/ranks";
 
-import type { MutationCtx } from "@/convex/_generated/server";
-import type { Id } from "@/convex/_generated/dataModel";
-
-/**
- * Helper to get caller's sovereign userId from Convex auth identity
- * 🛡️ SID: Translates clerkId → userId for caller authentication in mutations
- */
-async function getCallerUserId(ctx: MutationCtx): Promise<Id<"admin_users">> {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Not authenticated");
-
-  // Look up caller's sovereign userId from clerkId
-  const caller = await ctx.db
-    .query("admin_users")
-    .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-    .first();
-
-  if (!caller) throw new Error("Caller not found in database");
-
-  return caller._id;
-}
-
 // ═══════════════════════════════════════════════════════════════════════
 // SET USER TRIAL (Admiral grants/extends trial for specific user)
 // ═══════════════════════════════════════════════════════════════════════
 
 export const setUserTrial = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     userId: v.id("admin_users"),
-    durationDays: v.number(), // Number of days for trial
+    durationDays: v.number(),
   },
   handler: async (ctx, args) => {
-    // 🛡️ SID: Get caller's sovereign userId and verify Admiral rank
-    const callerUserId = await getCallerUserId(ctx);
-    await requireAdmiralRank(ctx, callerUserId);
+    // 🛡️ SID-5.3: Verify Admiral rank using sovereign callerUserId
+    await requireAdmiralRank(ctx, args.callerUserId);
 
     const user = await ctx.db.get(args.userId);
     if (!user) {
@@ -86,13 +62,13 @@ export const setUserTrial = mutation({
 
 export const extendUserTrial = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     userId: v.id("admin_users"),
-    additionalDays: v.number(), // Days to add to existing trial
+    additionalDays: v.number(),
   },
   handler: async (ctx, args) => {
-    // 🛡️ SID: Get caller's sovereign userId and verify Admiral rank
-    const callerUserId = await getCallerUserId(ctx);
-    await requireAdmiralRank(ctx, callerUserId);
+    // 🛡️ SID-5.3: Verify Admiral rank using sovereign callerUserId
+    await requireAdmiralRank(ctx, args.callerUserId);
 
     const user = await ctx.db.get(args.userId);
     if (!user) {
@@ -129,6 +105,7 @@ export const extendUserTrial = mutation({
 
 export const setUserSubscription = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     userId: v.id("admin_users"),
     status: v.union(
       v.literal("trial"),
@@ -139,9 +116,8 @@ export const setUserSubscription = mutation({
     ),
   },
   handler: async (ctx, args) => {
-    // 🛡️ SID: Get caller's sovereign userId and verify Admiral rank
-    const callerUserId = await getCallerUserId(ctx);
-    await requireAdmiralRank(ctx, callerUserId);
+    // 🛡️ SID-5.3: Verify Admiral rank using sovereign callerUserId
+    await requireAdmiralRank(ctx, args.callerUserId);
 
     const user = await ctx.db.get(args.userId);
     if (!user) {
@@ -180,12 +156,12 @@ export const setUserSubscription = mutation({
 
 export const grantLifetimeAccess = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     userId: v.id("admin_users"),
   },
   handler: async (ctx, args) => {
-    // 🛡️ SID: Get caller's sovereign userId and verify Admiral rank
-    const callerUserId = await getCallerUserId(ctx);
-    await requireAdmiralRank(ctx, callerUserId);
+    // 🛡️ SID-5.3: Verify Admiral rank using sovereign callerUserId
+    await requireAdmiralRank(ctx, args.callerUserId);
 
     const user = await ctx.db.get(args.userId);
     if (!user) {
@@ -217,6 +193,7 @@ export const grantLifetimeAccess = mutation({
 
 export const setUserRank = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     userId: v.id("admin_users"),
     rank: v.union(
       v.literal("crew"),
@@ -226,9 +203,8 @@ export const setUserRank = mutation({
     ),
   },
   handler: async (ctx, args) => {
-    // 🛡️ SID: Get caller's sovereign userId and verify Admiral rank
-    const callerUserId = await getCallerUserId(ctx);
-    await requireAdmiralRank(ctx, callerUserId);
+    // 🛡️ SID-5.3: Verify Admiral rank using sovereign callerUserId
+    await requireAdmiralRank(ctx, args.callerUserId);
 
     const user = await ctx.db.get(args.userId);
     if (!user) {
@@ -256,6 +232,7 @@ export const setUserRank = mutation({
 
 export const bulkSetSubscription = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     userIds: v.array(v.id("admin_users")),
     status: v.union(
       v.literal("trial"),
@@ -266,9 +243,8 @@ export const bulkSetSubscription = mutation({
     ),
   },
   handler: async (ctx, args) => {
-    // 🛡️ SID: Get caller's sovereign userId and verify Admiral rank
-    const callerUserId = await getCallerUserId(ctx);
-    await requireAdmiralRank(ctx, callerUserId);
+    // 🛡️ SID-5.3: Verify Admiral rank using sovereign callerUserId
+    await requireAdmiralRank(ctx, args.callerUserId);
 
     const now = Date.now();
     const results = [];

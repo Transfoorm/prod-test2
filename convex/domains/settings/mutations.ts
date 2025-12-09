@@ -2,8 +2,12 @@
 │  ⚙️ SETTINGS DOMAIN MUTATIONS - SRS Layer 3                           │
 │  /convex/domains/settings/mutations.ts                                 │
 │                                                                        │
+│  🛡️ S.I.D. COMPLIANT - Phase 10                                       │
+│  - All mutations accept callerUserId: v.id("admin_users")              │
+│  - No ctx.auth.getUserIdentity() usage                                 │
+│                                                                        │
 │  All-rank self-scoped mutations for user settings                      │
-│  Users can only update their own settings (enforced by auth check)     │
+│  Users can only update their own settings (enforced by callerUserId)   │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { mutation } from "@/convex/_generated/server";
@@ -32,13 +36,11 @@ function calculateGenomeCompletion(genome: Record<string, unknown>): number {
 
 /**
  * Update user profile settings (non-genome fields)
- *
- * SRS Layer 3: Self-Scoped Mutations
- * - All ranks can update their own profile
- * - Cannot update other users' profiles
+ * 🛡️ SID Phase 10: Accepts sovereign callerUserId
  */
 export const updateUserSettings = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     // Identity fields (verified externally)
     email: v.optional(v.string()),
     secondaryEmail: v.optional(v.string()),
@@ -51,20 +53,15 @@ export const updateUserSettings = mutation({
     businessCountry: v.optional(v.string()),
   },
   handler: async (ctx: MutationCtx, args) => {
-    // Get authenticated user from auth context (SRB-4 compliant)
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
+    const { callerUserId, ...updateFields } = args;
 
-    const user = await ctx.db
-      .query("admin_users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-      .first();
-
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(callerUserId);
     if (!user) throw new Error("User not found");
 
     // Update user with provided fields
     await ctx.db.patch(user._id, {
-      ...args,
+      ...updateFields,
       updatedAt: Date.now(),
     });
 
@@ -74,23 +71,16 @@ export const updateUserSettings = mutation({
 
 /**
  * Update theme preferences
- *
- * SRS Layer 3: Self-Scoped Mutations
- * - All ranks can update their own theme preferences
+ * 🛡️ SID Phase 10: Accepts sovereign callerUserId
  */
 export const updateThemeSettings = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     themeDark: v.optional(v.boolean()),
   },
   handler: async (ctx: MutationCtx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
-    const user = await ctx.db
-      .query("admin_users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-      .first();
-
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.callerUserId);
     if (!user) throw new Error("User not found");
 
     await ctx.db.patch(user._id, {
@@ -104,12 +94,11 @@ export const updateThemeSettings = mutation({
 
 /**
  * Update Miror AI preferences
- *
- * SRS Layer 3: Self-Scoped Mutations
- * - All ranks can update their own Miror AI preferences
+ * 🛡️ SID Phase 10: Accepts sovereign callerUserId
  */
 export const updateMirorSettings = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     mirorAvatarProfile: v.optional(v.union(
       v.literal("male"),
       v.literal("female"),
@@ -123,18 +112,14 @@ export const updateMirorSettings = mutation({
     )),
   },
   handler: async (ctx: MutationCtx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
+    const { callerUserId, ...updateFields } = args;
 
-    const user = await ctx.db
-      .query("admin_users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-      .first();
-
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(callerUserId);
     if (!user) throw new Error("User not found");
 
     await ctx.db.patch(user._id, {
-      ...args,
+      ...updateFields,
       updatedAt: Date.now(),
     });
 
@@ -144,11 +129,7 @@ export const updateMirorSettings = mutation({
 
 /**
  * Update Professional Genome
- * 🛡️ SID Phase 2: Sovereign Identity Mutation
- *
- * SRS Layer 3: Self-Scoped Mutations
- * - Genome now lives in settings_account_Genome table
- * - Creates record if it doesn't exist
+ * 🛡️ SID Phase 10: Accepts sovereign userId (already compliant)
  */
 export const updateGenome = mutation({
   args: {
@@ -216,20 +197,15 @@ export const updateGenome = mutation({
 
 /**
  * Reset Professional Genome
- *
- * SRS Layer 3: Self-Scoped Mutations
- * - Clears all genome fields, sets completion to 0%
+ * 🛡️ SID Phase 10: Accepts sovereign callerUserId
  */
 export const resetGenome = mutation({
-  handler: async (ctx: MutationCtx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
-    const user = await ctx.db
-      .query("admin_users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-      .first();
-
+  args: {
+    callerUserId: v.id("admin_users"),
+  },
+  handler: async (ctx: MutationCtx, args) => {
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.callerUserId);
     if (!user) throw new Error("User not found");
 
     // Check if genome record exists

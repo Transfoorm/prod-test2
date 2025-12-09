@@ -2,6 +2,10 @@
 │  ⚙️ SETTINGS DOMAIN QUERIES - SRS Layer 4                             │
 │  /convex/domains/settings/queries.ts                                   │
 │                                                                        │
+│  🛡️ S.I.D. COMPLIANT - Phase 10                                       │
+│  - All queries accept callerUserId: v.id("admin_users")                │
+│  - No ctx.auth.getUserIdentity() usage                                 │
+│                                                                        │
 │  All-rank self-scoped access to user settings and preferences          │
 │  • Crew: Own settings only                                             │
 │  • Captain: Own settings only                                          │
@@ -13,24 +17,17 @@
 
 import { query } from "@/convex/_generated/server";
 import type { QueryCtx } from "@/convex/_generated/server";
+import { v } from "convex/values";
 
 /**
  * Get current user's profile and settings
- *
- * SRS Layer 4: Self-Scoped Data Access
- * - All ranks can access their own settings
- * - Returns null if user not found (should never happen if authenticated)
+ * 🛡️ SID Phase 10: Accepts sovereign callerUserId
  */
 export const getUserSettings = query({
-  handler: async (ctx: QueryCtx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
-    const user = await ctx.db
-      .query("admin_users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-      .first();
-
+  args: { callerUserId: v.id("admin_users") },
+  handler: async (ctx: QueryCtx, args) => {
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.callerUserId);
     if (!user) return null;
 
     // Return user profile data for settings pages
@@ -73,21 +70,13 @@ export const getUserSettings = query({
 
 /**
  * Get current user's Professional Genome
- *
- * SRS Layer 4: Self-Scoped Data Access
- * - Genome now lives in settings_account_Genome table
- * - Returns null if not yet created
+ * 🛡️ SID Phase 10: Accepts sovereign callerUserId
  */
 export const getUserGenome = query({
-  handler: async (ctx: QueryCtx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
-    const user = await ctx.db
-      .query("admin_users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-      .first();
-
+  args: { callerUserId: v.id("admin_users") },
+  handler: async (ctx: QueryCtx, args) => {
+    // 🛡️ SID-5.3: Direct lookup by sovereign _id
+    const user = await ctx.db.get(args.callerUserId);
     if (!user) return null;
 
     // Get genome from separate table

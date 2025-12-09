@@ -2,6 +2,10 @@
 │  🔌 PRODUCTIVITY DOMAIN QUERIES - SRS Layer 4                         │
 │  /convex/domains/productivity/queries.ts                               │
 │                                                                        │
+│  🛡️ S.I.D. COMPLIANT - Phase 10                                       │
+│  - All queries accept callerUserId: v.id("admin_users")                │
+│  - No ctx.auth.getUserIdentity() usage                                 │
+│                                                                        │
 │  Rank-based data scoping for productivity tools:                       │
 │  • Crew: Organization-scoped (read/write their org's data)             │
 │  • Captain/Commodore: Organization-scoped (full access)                │
@@ -11,22 +15,17 @@
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { query } from "@/convex/_generated/server";
+import { v } from "convex/values";
 import type { QueryCtx } from "@/convex/_generated/server";
+import type { Id } from "@/convex/_generated/dataModel";
 
 /**
- * Get current user with rank for authorization
+ * 🛡️ SID Phase 10: Sovereign user lookup by userId
  */
-async function getCurrentUserWithRank(ctx: QueryCtx) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Not authenticated");
-
-  const user = await ctx.db
-    .query("admin_users")
-    .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-    .first();
-
+async function getCurrentUserWithRank(ctx: QueryCtx, callerUserId: Id<"admin_users">) {
+  // 🛡️ SID-5.3: Direct lookup by sovereign _id
+  const user = await ctx.db.get(callerUserId);
   if (!user) throw new Error("User not found");
-
   return user;
 }
 
@@ -34,8 +33,9 @@ async function getCurrentUserWithRank(ctx: QueryCtx) {
  * List email messages with rank-based scoping
  */
 export const listEmails = query({
-  handler: async (ctx) => {
-    const user = await getCurrentUserWithRank(ctx);
+  args: { callerUserId: v.id("admin_users") },
+  handler: async (ctx, args) => {
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const rank = user.rank || "crew";
 
     if (rank === "admiral") {
@@ -54,8 +54,9 @@ export const listEmails = query({
  * List calendar events with rank-based scoping
  */
 export const listCalendarEvents = query({
-  handler: async (ctx) => {
-    const user = await getCurrentUserWithRank(ctx);
+  args: { callerUserId: v.id("admin_users") },
+  handler: async (ctx, args) => {
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const rank = user.rank || "crew";
 
     if (rank === "admiral") {
@@ -74,8 +75,9 @@ export const listCalendarEvents = query({
  * List bookings with rank-based scoping
  */
 export const listBookings = query({
-  handler: async (ctx) => {
-    const user = await getCurrentUserWithRank(ctx);
+  args: { callerUserId: v.id("admin_users") },
+  handler: async (ctx, args) => {
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const rank = user.rank || "crew";
 
     if (rank === "admiral") {
@@ -94,8 +96,9 @@ export const listBookings = query({
  * List meetings with rank-based scoping
  */
 export const listMeetings = query({
-  handler: async (ctx) => {
-    const user = await getCurrentUserWithRank(ctx);
+  args: { callerUserId: v.id("admin_users") },
+  handler: async (ctx, args) => {
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const rank = user.rank || "crew";
 
     if (rank === "admiral") {

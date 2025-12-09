@@ -1,6 +1,10 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🔌 FINANCE DOMAIN MUTATIONS - SRS Layer 4                            │
-│  /convex/domains/finance_banking_Statements/mutations.ts                                  │
+│  /convex/domains/finance/mutations.ts                                  │
+│                                                                        │
+│  🛡️ S.I.D. COMPLIANT - Phase 10                                       │
+│  - All mutations accept callerUserId: v.id("admin_users")              │
+│  - No ctx.auth.getUserIdentity() usage                                 │
 │                                                                        │
 │  Financial transaction CRUD with rank-based authorization:             │
 │  • Create: Captain/Commodore/Admiral only                              │
@@ -13,22 +17,16 @@
 
 import { mutation } from "@/convex/_generated/server";
 import type { MutationCtx } from "@/convex/_generated/server";
+import type { Id } from "@/convex/_generated/dataModel";
 import { v } from "convex/values";
 
 /**
- * Get current user with rank for authorization
+ * 🛡️ SID Phase 10: Sovereign user lookup by userId
  */
-async function getCurrentUserWithRank(ctx: MutationCtx) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Not authenticated");
-
-  const user = await ctx.db
-    .query("admin_users")
-    .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-    .first();
-
+async function getCurrentUserWithRank(ctx: MutationCtx, callerUserId: Id<"admin_users">) {
+  // 🛡️ SID-5.3: Direct lookup by sovereign _id
+  const user = await ctx.db.get(callerUserId);
   if (!user) throw new Error("User not found");
-
   return user;
 }
 
@@ -43,13 +41,10 @@ function requireCaptainOrHigher(rank: string | undefined) {
 
 /**
  * Create new financial transaction
- *
- * Authorization: Captain/Commodore/Admiral only
- * - Captain/Commodore: Creates transaction in their organization
- * - Admiral: Can create transaction in any organization
  */
 export const createTransaction = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     type: v.union(
       v.literal("invoice"),
       v.literal("payment"),
@@ -58,7 +53,7 @@ export const createTransaction = mutation({
     amount: v.number(),
     currency: v.string(),
     description: v.string(),
-    orgId: v.optional(v.string()), // Admiral can specify orgId
+    orgId: v.optional(v.string()),
     status: v.optional(
       v.union(
         v.literal("pending"),
@@ -69,19 +64,15 @@ export const createTransaction = mutation({
     date: v.number(),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const rank = user.rank || "crew";
 
-    // Require Captain or higher
     requireCaptainOrHigher(rank);
 
-    // Determine orgId
     let orgId: string;
     if (rank === "admiral" && args.orgId) {
-      // Admiral can create in any org
       orgId = args.orgId;
     } else {
-      // Captain/Commodore create in their own org
       orgId = user.orgSlug || "";
     }
 
@@ -106,13 +97,10 @@ export const createTransaction = mutation({
 
 /**
  * Update existing financial transaction
- *
- * Authorization: Captain/Commodore/Admiral only
- * - Captain/Commodore: Can only update transactions in their organization
- * - Admiral: Can update any transaction
  */
 export const updateTransaction = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     transactionId: v.id("finance_banking_Statements"),
     amount: v.optional(v.number()),
     currency: v.optional(v.string()),
@@ -127,28 +115,23 @@ export const updateTransaction = mutation({
     date: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const rank = user.rank || "crew";
 
-    // Require Captain or higher
     requireCaptainOrHigher(rank);
 
-    // Fetch transaction
     const transaction = await ctx.db.get(args.transactionId);
     if (!transaction) {
       throw new Error("Transaction not found");
     }
 
-    // Check authorization
     if (rank !== "admiral") {
-      // Captain/Commodore: Must match organization
       const orgId = user.orgSlug || "";
       if (transaction.orgId !== orgId) {
         throw new Error("Unauthorized: Transaction not in your organization");
       }
     }
 
-    // Build updates
     const updates: Record<string, unknown> = {
       updatedAt: Date.now(),
     };
@@ -167,31 +150,24 @@ export const updateTransaction = mutation({
 
 /**
  * Delete financial transaction
- *
- * Authorization: Captain/Commodore/Admiral only
- * - Captain/Commodore: Can only delete transactions in their organization
- * - Admiral: Can delete any transaction
  */
 export const deleteTransaction = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     transactionId: v.id("finance_banking_Statements"),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const rank = user.rank || "crew";
 
-    // Require Captain or higher
     requireCaptainOrHigher(rank);
 
-    // Fetch transaction
     const transaction = await ctx.db.get(args.transactionId);
     if (!transaction) {
       throw new Error("Transaction not found");
     }
 
-    // Check authorization
     if (rank !== "admiral") {
-      // Captain/Commodore: Must match organization
       const orgId = user.orgSlug || "";
       if (transaction.orgId !== orgId) {
         throw new Error("Unauthorized: Transaction not in your organization");

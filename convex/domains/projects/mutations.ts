@@ -1,6 +1,10 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🔌 PROJECT DOMAIN MUTATIONS - SRS Layer 4                            │
-│  /convex/domains/projects_tracking_Schedule/mutations.ts                                 │
+│  /convex/domains/projects/mutations.ts                                 │
+│                                                                        │
+│  🛡️ S.I.D. COMPLIANT - Phase 10                                       │
+│  - All mutations accept callerUserId: v.id("admin_users")              │
+│  - No ctx.auth.getUserIdentity() usage                                 │
 │                                                                        │
 │  Project CRUD with rank-based authorization:                           │
 │  • Create: Captain/Commodore/Admiral only                              │
@@ -13,22 +17,16 @@
 
 import { mutation } from "@/convex/_generated/server";
 import type { MutationCtx } from "@/convex/_generated/server";
+import type { Id } from "@/convex/_generated/dataModel";
 import { v } from "convex/values";
 
 /**
- * Get current user with rank for authorization
+ * 🛡️ SID Phase 10: Sovereign user lookup by userId
  */
-async function getCurrentUserWithRank(ctx: MutationCtx) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Not authenticated");
-
-  const user = await ctx.db
-    .query("admin_users")
-    .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-    .first();
-
+async function getCurrentUserWithRank(ctx: MutationCtx, callerUserId: Id<"admin_users">) {
+  // 🛡️ SID-5.3: Direct lookup by sovereign _id
+  const user = await ctx.db.get(callerUserId);
   if (!user) throw new Error("User not found");
-
   return user;
 }
 
@@ -43,17 +41,14 @@ function requireCaptainOrHigher(rank: string | undefined) {
 
 /**
  * Create new project
- *
- * Authorization: Captain/Commodore/Admiral only
- * - Captain/Commodore: Creates project in their organization
- * - Admiral: Can create project in any organization
  */
 export const createProject = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     name: v.string(),
     description: v.optional(v.string()),
-    orgId: v.optional(v.string()), // Admiral can specify orgId
-    assignedTo: v.optional(v.id("admin_users")), // Optional: assign to specific user
+    orgId: v.optional(v.string()),
+    assignedTo: v.optional(v.id("admin_users")),
     status: v.union(
       v.literal("active"),
       v.literal("completed"),
@@ -63,19 +58,15 @@ export const createProject = mutation({
     endDate: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const rank = user.rank || "crew";
 
-    // Require Captain or higher
     requireCaptainOrHigher(rank);
 
-    // Determine orgId
     let orgId: string;
     if (rank === "admiral" && args.orgId) {
-      // Admiral can create in any org
       orgId = args.orgId;
     } else {
-      // Captain/Commodore create in their own org
       orgId = user.orgSlug || "";
     }
 
@@ -100,13 +91,10 @@ export const createProject = mutation({
 
 /**
  * Update existing project
- *
- * Authorization: Captain/Commodore/Admiral only
- * - Captain/Commodore: Can only update projects_tracking_Schedule in their organization
- * - Admiral: Can update any project
  */
 export const updateProject = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     projectId: v.id("projects_tracking_Schedule"),
     name: v.optional(v.string()),
     description: v.optional(v.string()),
@@ -122,28 +110,23 @@ export const updateProject = mutation({
     endDate: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const rank = user.rank || "crew";
 
-    // Require Captain or higher
     requireCaptainOrHigher(rank);
 
-    // Fetch project
     const project = await ctx.db.get(args.projectId);
     if (!project) {
       throw new Error("Project not found");
     }
 
-    // Check authorization
     if (rank !== "admiral") {
-      // Captain/Commodore: Must match organization
       const orgId = user.orgSlug || "";
       if (project.orgId !== orgId) {
         throw new Error("Unauthorized: Project not in your organization");
       }
     }
 
-    // Build updates
     const updates: Record<string, unknown> = {
       updatedAt: Date.now(),
     };
@@ -163,31 +146,24 @@ export const updateProject = mutation({
 
 /**
  * Delete project
- *
- * Authorization: Captain/Commodore/Admiral only
- * - Captain/Commodore: Can only delete projects_tracking_Schedule in their organization
- * - Admiral: Can delete any project
  */
 export const deleteProject = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     projectId: v.id("projects_tracking_Schedule"),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const rank = user.rank || "crew";
 
-    // Require Captain or higher
     requireCaptainOrHigher(rank);
 
-    // Fetch project
     const project = await ctx.db.get(args.projectId);
     if (!project) {
       throw new Error("Project not found");
     }
 
-    // Check authorization
     if (rank !== "admiral") {
-      // Captain/Commodore: Must match organization
       const orgId = user.orgSlug || "";
       if (project.orgId !== orgId) {
         throw new Error("Unauthorized: Project not in your organization");

@@ -2,6 +2,10 @@
 │  🔌 PRODUCTIVITY DOMAIN MUTATIONS - SRS Layer 4                       │
 │  /convex/domains/productivity/mutations.ts                             │
 │                                                                        │
+│  🛡️ S.I.D. COMPLIANT - Phase 10                                       │
+│  - All mutations accept callerUserId: v.id("admin_users")              │
+│  - No ctx.auth.getUserIdentity() usage                                 │
+│                                                                        │
 │  Productivity domain CRUD with rank-based authorization:               │
 │  • Create: Captain/Commodore/Admiral only                              │
 │  • Update: Captain/Commodore/Admiral only (org-scoped)                 │
@@ -13,22 +17,16 @@
 
 import { mutation } from "@/convex/_generated/server";
 import type { MutationCtx } from "@/convex/_generated/server";
+import type { Id } from "@/convex/_generated/dataModel";
 import { v } from "convex/values";
 
 /**
- * Get current user with rank for authorization
+ * 🛡️ SID Phase 10: Sovereign user lookup by userId
  */
-async function getCurrentUserWithRank(ctx: MutationCtx) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Not authenticated");
-
-  const user = await ctx.db
-    .query("admin_users")
-    .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-    .first();
-
+async function getCurrentUserWithRank(ctx: MutationCtx, callerUserId: Id<"admin_users">) {
+  // 🛡️ SID-5.3: Direct lookup by sovereign _id
+  const user = await ctx.db.get(callerUserId);
   if (!user) throw new Error("User not found");
-
   return user;
 }
 
@@ -38,6 +36,7 @@ async function getCurrentUserWithRank(ctx: MutationCtx) {
 
 export const createEmail = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     subject: v.string(),
     body: v.string(),
     from: v.string(),
@@ -45,12 +44,16 @@ export const createEmail = mutation({
     status: v.union(v.literal("draft"), v.literal("sent"), v.literal("archived")),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const orgId = user.orgSlug || "";
     const now = Date.now();
 
     const emailId = await ctx.db.insert("productivity_email_Messages", {
-      ...args,
+      subject: args.subject,
+      body: args.body,
+      from: args.from,
+      to: args.to,
+      status: args.status,
       orgId,
       createdAt: now,
       updatedAt: now,
@@ -63,13 +66,14 @@ export const createEmail = mutation({
 
 export const updateEmail = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     emailId: v.id("productivity_email_Messages"),
     subject: v.optional(v.string()),
     body: v.optional(v.string()),
     status: v.optional(v.union(v.literal("draft"), v.literal("sent"), v.literal("archived"))),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const email = await ctx.db.get(args.emailId);
     if (!email) throw new Error("Email not found");
 
@@ -92,9 +96,12 @@ export const updateEmail = mutation({
 });
 
 export const deleteEmail = mutation({
-  args: { emailId: v.id("productivity_email_Messages") },
+  args: {
+    callerUserId: v.id("admin_users"),
+    emailId: v.id("productivity_email_Messages")
+  },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const email = await ctx.db.get(args.emailId);
     if (!email) throw new Error("Email not found");
 
@@ -117,6 +124,7 @@ export const deleteEmail = mutation({
 
 export const createCalendarEvent = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     title: v.string(),
     description: v.optional(v.string()),
     startTime: v.number(),
@@ -124,12 +132,16 @@ export const createCalendarEvent = mutation({
     attendees: v.array(v.string()),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const orgId = user.orgSlug || "";
     const now = Date.now();
 
     const eventId = await ctx.db.insert("productivity_calendar_Events", {
-      ...args,
+      title: args.title,
+      description: args.description,
+      startTime: args.startTime,
+      endTime: args.endTime,
+      attendees: args.attendees,
       orgId,
       createdAt: now,
       updatedAt: now,
@@ -142,6 +154,7 @@ export const createCalendarEvent = mutation({
 
 export const updateCalendarEvent = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     eventId: v.id("productivity_calendar_Events"),
     title: v.optional(v.string()),
     description: v.optional(v.string()),
@@ -150,7 +163,7 @@ export const updateCalendarEvent = mutation({
     attendees: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const event = await ctx.db.get(args.eventId);
     if (!event) throw new Error("Event not found");
 
@@ -175,9 +188,12 @@ export const updateCalendarEvent = mutation({
 });
 
 export const deleteCalendarEvent = mutation({
-  args: { eventId: v.id("productivity_calendar_Events") },
+  args: {
+    callerUserId: v.id("admin_users"),
+    eventId: v.id("productivity_calendar_Events")
+  },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const event = await ctx.db.get(args.eventId);
     if (!event) throw new Error("Event not found");
 
@@ -200,18 +216,22 @@ export const deleteCalendarEvent = mutation({
 
 export const createBooking = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     clientName: v.string(),
     serviceType: v.string(),
     scheduledTime: v.number(),
     status: v.union(v.literal("pending"), v.literal("confirmed"), v.literal("cancelled")),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const orgId = user.orgSlug || "";
     const now = Date.now();
 
     const bookingId = await ctx.db.insert("productivity_bookings_Form", {
-      ...args,
+      clientName: args.clientName,
+      serviceType: args.serviceType,
+      scheduledTime: args.scheduledTime,
+      status: args.status,
       orgId,
       createdAt: now,
       updatedAt: now,
@@ -224,6 +244,7 @@ export const createBooking = mutation({
 
 export const updateBooking = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     bookingId: v.id("productivity_bookings_Form"),
     clientName: v.optional(v.string()),
     serviceType: v.optional(v.string()),
@@ -231,7 +252,7 @@ export const updateBooking = mutation({
     status: v.optional(v.union(v.literal("pending"), v.literal("confirmed"), v.literal("cancelled"))),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const booking = await ctx.db.get(args.bookingId);
     if (!booking) throw new Error("Booking not found");
 
@@ -255,9 +276,12 @@ export const updateBooking = mutation({
 });
 
 export const deleteBooking = mutation({
-  args: { bookingId: v.id("productivity_bookings_Form") },
+  args: {
+    callerUserId: v.id("admin_users"),
+    bookingId: v.id("productivity_bookings_Form")
+  },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const booking = await ctx.db.get(args.bookingId);
     if (!booking) throw new Error("Booking not found");
 
@@ -280,6 +304,7 @@ export const deleteBooking = mutation({
 
 export const createMeeting = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     title: v.string(),
     participants: v.array(v.string()),
     scheduledTime: v.number(),
@@ -287,12 +312,16 @@ export const createMeeting = mutation({
     notes: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const orgId = user.orgSlug || "";
     const now = Date.now();
 
     const meetingId = await ctx.db.insert("productivity_pipeline_Prospects", {
-      ...args,
+      title: args.title,
+      participants: args.participants,
+      scheduledTime: args.scheduledTime,
+      duration: args.duration,
+      notes: args.notes,
       orgId,
       createdAt: now,
       updatedAt: now,
@@ -305,6 +334,7 @@ export const createMeeting = mutation({
 
 export const updateMeeting = mutation({
   args: {
+    callerUserId: v.id("admin_users"),
     meetingId: v.id("productivity_pipeline_Prospects"),
     title: v.optional(v.string()),
     participants: v.optional(v.array(v.string())),
@@ -313,7 +343,7 @@ export const updateMeeting = mutation({
     notes: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const meeting = await ctx.db.get(args.meetingId);
     if (!meeting) throw new Error("Meeting not found");
 
@@ -338,9 +368,12 @@ export const updateMeeting = mutation({
 });
 
 export const deleteMeeting = mutation({
-  args: { meetingId: v.id("productivity_pipeline_Prospects") },
+  args: {
+    callerUserId: v.id("admin_users"),
+    meetingId: v.id("productivity_pipeline_Prospects")
+  },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const meeting = await ctx.db.get(args.meetingId);
     if (!meeting) throw new Error("Meeting not found");
 

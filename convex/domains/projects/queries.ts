@@ -1,103 +1,86 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🔌 PROJECT DOMAIN QUERIES - SRS Layer 4                              │
-│  /convex/domains/projects_tracking_Schedule/queries.ts                                   │
+│  /convex/domains/projects/queries.ts                                   │
+│                                                                        │
+│  🛡️ S.I.D. COMPLIANT - Phase 10                                       │
+│  - All queries accept callerUserId: v.id("admin_users")                │
+│  - No ctx.auth.getUserIdentity() usage                                 │
 │                                                                        │
 │  Rank-based data scoping for project management:                       │
-│  • Crew: Assigned projects_tracking_Schedule only                                        │
-│  • Captain: Organization-scoped projects_tracking_Schedule                               │
-│  • Commodore: Organization-scoped projects_tracking_Schedule                             │
-│  • Admiral: All projects_tracking_Schedule (cross-org, platform-wide)                    │
+│  • Crew: Assigned projects only                                        │
+│  • Captain: Organization-scoped projects                               │
+│  • Commodore: Organization-scoped projects                             │
+│  • Admiral: All projects (cross-org, platform-wide)                    │
 │                                                                        │
 │  SRS Commandment #4: Data scoping via Convex query filters            │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { query } from "@/convex/_generated/server";
 import type { QueryCtx } from "@/convex/_generated/server";
+import type { Id } from "@/convex/_generated/dataModel";
 import { v } from "convex/values";
 
 /**
- * Get current user with rank for authorization
+ * 🛡️ SID Phase 10: Sovereign user lookup by userId
  */
-async function getCurrentUserWithRank(ctx: QueryCtx) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Not authenticated");
-
-  const user = await ctx.db
-    .query("admin_users")
-    .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-    .first();
-
+async function getCurrentUserWithRank(ctx: QueryCtx, callerUserId: Id<"admin_users">) {
+  // 🛡️ SID-5.3: Direct lookup by sovereign _id
+  const user = await ctx.db.get(callerUserId);
   if (!user) throw new Error("User not found");
-
   return user;
 }
 
 /**
- * List projects_tracking_Schedule with rank-based scoping
- *
- * SRS Layer 4: Data Scoping
- * - Crew: Only assigned projects_tracking_Schedule
- * - Captain/Commodore: Organization-scoped
- * - Admiral: All projects_tracking_Schedule (cross-org)
+ * List projects with rank-based scoping
  */
 export const listProjects = query({
-  handler: async (ctx) => {
-    const user = await getCurrentUserWithRank(ctx);
+  args: { callerUserId: v.id("admin_users") },
+  handler: async (ctx, args) => {
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const rank = user.rank || "crew";
 
-    let projects_tracking_Schedule;
+    let projects;
 
     if (rank === "admiral") {
-      // Admiral: See ALL projects_tracking_Schedule (cross-org, platform-wide)
-      projects_tracking_Schedule = await ctx.db.query("projects_tracking_Schedule").collect();
+      projects = await ctx.db.query("projects_tracking_Schedule").collect();
     } else if (rank === "captain" || rank === "commodore") {
-      // Captain/Commodore: Organization-scoped
       const orgId = user.orgSlug || "";
-      projects_tracking_Schedule = await ctx.db
+      projects = await ctx.db
         .query("projects_tracking_Schedule")
         .withIndex("by_org", (q) => q.eq("orgId", orgId))
         .collect();
     } else {
-      // Crew: Assigned projects_tracking_Schedule only
-      projects_tracking_Schedule = await ctx.db
+      projects = await ctx.db
         .query("projects_tracking_Schedule")
         .withIndex("by_assigned", (q) => q.eq("assignedTo", user._id))
         .collect();
     }
 
-    return projects_tracking_Schedule;
+    return projects;
   },
 });
 
 /**
  * Get single project by ID with rank-based authorization
- *
- * SRS Layer 4: Data Scoping
- * - Validates user has access to this specific project
  */
 export const getProject = query({
-  args: { projectId: v.id("projects_tracking_Schedule") },
+  args: { callerUserId: v.id("admin_users"), projectId: v.id("projects_tracking_Schedule") },
   handler: async (ctx, args) => {
-    const user = await getCurrentUserWithRank(ctx);
+    const user = await getCurrentUserWithRank(ctx, args.callerUserId);
     const rank = user.rank || "crew";
 
-    // Fetch project
     const project = await ctx.db.get(args.projectId);
     if (!project) return null;
 
-    // Check authorization based on rank
     if (rank === "admiral") {
-      // Admiral: Access all projects_tracking_Schedule
       return project;
     } else if (rank === "captain" || rank === "commodore") {
-      // Captain/Commodore: Must match organization
       const orgId = user.orgSlug || "";
       if (project.orgId !== orgId) {
         throw new Error("Unauthorized: Project not in your organization");
       }
       return project;
     } else {
-      // Crew: Must be assigned to this project
       if (project.assignedTo?.toString() !== user._id.toString()) {
         throw new Error("Unauthorized: Project not assigned to you");
       }
