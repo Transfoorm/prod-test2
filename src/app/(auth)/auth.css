@@ -452,8 +452,8 @@
 
 .auth-code-input:focus {
   outline: none;
-  border-color: var(--brand-gradient-start);
-  box-shadow: 0 0 0 2px var(--brand-gradient-start);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px var(--brand-light);
 }
 
 .auth-code-input:disabled {
