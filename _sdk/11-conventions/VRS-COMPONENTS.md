@@ -182,7 +182,7 @@ export function ButtonPrimary({
 
 .root:disabled {
   opacity: 0.5;
-  cursor: not-allowed;
+  /* NOTE: We do NOT use cursor: not-allowed - it's blocked globally in globals.css */
 }
 ```
 

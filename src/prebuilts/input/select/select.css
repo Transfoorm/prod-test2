@@ -38,6 +38,5 @@
 /* Disabled state */
 .vr-input-select:disabled {
   opacity: 0.5;
-  cursor: not-allowed;
   background-color: var(--bg-fieldbox-secondary);
 }

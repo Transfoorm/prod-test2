@@ -157,10 +157,6 @@
 }
 
 /* Disabled state */
-.vr-input-toggle:disabled {
-  cursor: not-allowed;
-}
-
 .vr-input-toggle:disabled .vr-input-toggle-track {
   opacity: 0.5;
   background-color: var(--gray-200);
@@ -168,7 +164,6 @@
 
 .vr-input-toggle-wrapper--disabled {
   opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .vr-input-toggle-wrapper--disabled .vr-input-toggle-label {

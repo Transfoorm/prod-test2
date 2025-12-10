@@ -159,7 +159,6 @@
 .vr-tabs-panels .vr-tabs-panels-trigger.disabled {
   pointer-events: none;
   opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .vr-tabs-panels .vr-tabs-panels-icon {

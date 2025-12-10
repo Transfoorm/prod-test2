@@ -40,7 +40,6 @@
 /* Disabled state */
 .vr-input-textarea:disabled {
   opacity: 0.5;
-  cursor: not-allowed;
   background-color: var(--bg-fieldbox-secondary);
 }
 

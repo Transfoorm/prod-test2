@@ -80,6 +80,18 @@ export default function VerifyModal({
       if ((mode === 'change' || mode === 'secondary') && email && clerkUser) {
         prepareEmailChange();
       }
+
+      // For 'verify' mode (existing primary email), send verification code on open
+      if (mode === 'verify' && clerkUser?.primaryEmailAddress) {
+        setIsPreparing(true);
+        clerkUser.primaryEmailAddress.prepareVerification({ strategy: 'email_code' })
+          .then(() => setIsPreparing(false))
+          .catch((err) => {
+            console.error('Failed to send verification code:', err);
+            setError('Failed to send verification code. Click Resend to try again.');
+            setIsPreparing(false);
+          });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, mode, email]);
@@ -329,7 +341,7 @@ export default function VerifyModal({
         </p>
 
         <p className="ft-verify-footer ft-verify-footer--lg">
-          Powered by FUSE * Instant Everything!
+          Powered by FUSE * Instant Everything
         </p>
       </div>
     </div>
@@ -378,56 +390,54 @@ export default function VerifyModal({
                   ref={index === 0 ? firstInputRef : null}
                   type="text"
                   inputMode="numeric"
-                  maxLength={6}
+                  maxLength={1}
                   value={code[index] || ''}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '');
+                  onFocus={(e) => e.target.select()}
+                  onClick={(e) => (e.target as HTMLInputElement).select()}
+                  onKeyDown={(e) => {
+                    const key = e.key;
 
-                    if (value.length === 0) {
+                    // Handle digit input - update value and advance
+                    if (/^[0-9]$/.test(key)) {
+                      e.preventDefault();
                       const newCode = code.split('');
-                      newCode[index] = '';
-                      setCode(newCode.join(''));
-                    } else if (value.length === 1) {
-                      const newCode = code.split('');
-                      newCode[index] = value;
+                      newCode[index] = key;
                       setCode(newCode.join(''));
 
+                      // Advance to next cell
                       if (index < 5) {
-                        const nextInput = e.target.parentElement?.children[index + 1] as HTMLInputElement;
+                        const nextInput = e.currentTarget.parentElement?.children[index + 1] as HTMLInputElement;
                         nextInput?.focus();
                       }
-                    } else {
+                    }
+
+                    // Handle backspace
+                    if (key === 'Backspace') {
+                      e.preventDefault();
                       const newCode = code.split('');
-                      const digits = value.split('');
-
-                      for (let i = 0; i < digits.length && index + i < 6; i++) {
-                        newCode[index + i] = digits[i];
+                      if (code[index]) {
+                        // Clear current cell
+                        newCode[index] = '';
+                        setCode(newCode.join(''));
+                      } else if (index > 0) {
+                        // Move to previous cell and clear it
+                        newCode[index - 1] = '';
+                        setCode(newCode.join(''));
+                        const prevInput = e.currentTarget.parentElement?.children[index - 1] as HTMLInputElement;
+                        prevInput?.focus();
                       }
-
-                      setCode(newCode.join(''));
-
-                      const nextIndex = Math.min(index + digits.length, 5);
-                      const nextInput = e.target.parentElement?.children[nextIndex] as HTMLInputElement;
-                      nextInput?.focus();
                     }
                   }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Backspace' && !code[index] && index > 0) {
-                      const prevInput = e.currentTarget.parentElement?.children[index - 1] as HTMLInputElement;
-                      prevInput?.focus();
-                    }
+                  onChange={() => {
+                    // Handled by onKeyDown - this is just for React controlled input
                   }}
                   onPaste={(e) => {
                     e.preventDefault();
                     const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
-                    const newCode = pastedData.padEnd(6, '').split('').slice(0, 6).join('');
-                    setCode(newCode);
+                    setCode(pastedData);
                     const targetIndex = Math.min(pastedData.length, 5);
                     const targetInput = e.currentTarget.parentElement?.children[targetIndex] as HTMLInputElement;
                     targetInput?.focus();
-                  }}
-                  onFocus={(e) => {
-                    e.target.select();
                   }}
                   className="ft-verify-code-input"
                   disabled={isLoading}
@@ -498,7 +508,7 @@ export default function VerifyModal({
         )}
 
         <p className="ft-verify-footer">
-          Powered by FUSE * Instant Everything!
+          Powered by FUSE * Instant Everything
         </p>
       </div>
     </div>

@@ -195,7 +195,6 @@
 
 .ft-verify-code-input:disabled {
   opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .ft-verify-code-sent-to {
@@ -246,7 +245,6 @@
 }
 
 .ft-verify-submit-button:disabled {
-  cursor: not-allowed;
   opacity: 0.5;
   transform: none;
   box-shadow: var(--verify-button-shadow);

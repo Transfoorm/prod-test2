@@ -32,6 +32,7 @@ export default function ForgotPasswordPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [codeAttempted, setCodeAttempted] = useState(false); // Track if we've tried this code
+  const [isResending, setIsResending] = useState(false);
   const firstCodeInputRef = useRef<HTMLInputElement>(null);
 
   const handleVerifyCodeSubmit = useCallback(async () => {
@@ -65,11 +66,11 @@ export default function ForgotPasswordPage() {
       const errCode = err && typeof err === 'object' && 'errors' in err && Array.isArray(err.errors) && err.errors[0]?.code;
       const message = err && typeof err === 'object' && 'errors' in err && Array.isArray(err.errors) && err.errors[0]?.message;
 
-      // Handle rate limiting
+      // Handle specific error cases with friendly messages
       if (errCode === "too_many_requests" || String(message).toLowerCase().includes("too many")) {
         setError("Too many attempts. Please wait a moment and try again.");
-      } else if (message) {
-        setError(String(message));
+      } else if (errCode === "form_code_incorrect" || String(message).toLowerCase().includes("incorrect")) {
+        setError("Incorrect code. Please check and try again.");
       } else {
         setError("Invalid code. Please try again.");
       }
@@ -127,6 +128,36 @@ export default function ForgotPasswordPage() {
         setError("We couldn't send a reset code. Please try again.");
       }
       setIsSubmitting(false);
+    }
+  };
+
+  const handleResendCode = async () => {
+    if (!isLoaded || !signIn || isResending) return;
+
+    setIsResending(true);
+    setError("");
+    setCode("");
+    setCodeAttempted(false);
+
+    try {
+      await signIn.create({
+        strategy: "reset_password_email_code",
+        identifier: email,
+      });
+
+      // Show success state briefly
+      setTimeout(() => {
+        setIsResending(false);
+        firstCodeInputRef.current?.focus();
+      }, 2000);
+    } catch (err) {
+      const message = err && typeof err === 'object' && 'errors' in err && Array.isArray(err.errors) && err.errors[0]?.message;
+      if (message) {
+        setError(String(message));
+      } else {
+        setError("Failed to resend code. Please try again.");
+      }
+      setIsResending(false);
     }
   };
 
@@ -280,7 +311,7 @@ export default function ForgotPasswordPage() {
         <form onSubmit={(e) => { e.preventDefault(); handleVerifyCodeSubmit(); }} className="auth-form">
           <div className="auth-field">
             <label htmlFor="code" className="auth-code-label">
-              Verification Code
+              Enter Verification Code
             </label>
             <div className="auth-code-inputs">
               {[0, 1, 2, 3, 4, 5].map((index) => (
@@ -291,26 +322,44 @@ export default function ForgotPasswordPage() {
                   inputMode="numeric"
                   maxLength={1}
                   value={code[index] || ''}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '');
-                    if (value.length <= 1) {
+                  onFocus={(e) => e.target.select()}
+                  onClick={(e) => (e.target as HTMLInputElement).select()}
+                  onKeyDown={(e) => {
+                    const key = e.key;
+
+                    // Handle digit input - update value and advance
+                    if (/^[0-9]$/.test(key)) {
+                      e.preventDefault();
                       const newCode = code.split('');
-                      newCode[index] = value;
+                      newCode[index] = key;
                       setCode(newCode.join(''));
 
-                      if (value && index < 5) {
-                        const target = e.target as HTMLInputElement;
-                        const nextInput = target.parentElement?.children[index + 1] as HTMLInputElement;
+                      // Advance to next cell
+                      if (index < 5) {
+                        const nextInput = e.currentTarget.parentElement?.children[index + 1] as HTMLInputElement;
                         nextInput?.focus();
                       }
                     }
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Backspace' && !code[index] && index > 0) {
-                      const target = e.currentTarget as HTMLInputElement;
-                      const prevInput = target.parentElement?.children[index - 1] as HTMLInputElement;
-                      prevInput?.focus();
+
+                    // Handle backspace
+                    if (key === 'Backspace') {
+                      e.preventDefault();
+                      const newCode = code.split('');
+                      if (code[index]) {
+                        // Clear current cell
+                        newCode[index] = '';
+                        setCode(newCode.join(''));
+                      } else if (index > 0) {
+                        // Move to previous cell and clear it
+                        newCode[index - 1] = '';
+                        setCode(newCode.join(''));
+                        const prevInput = e.currentTarget.parentElement?.children[index - 1] as HTMLInputElement;
+                        prevInput?.focus();
+                      }
                     }
+                  }}
+                  onChange={() => {
+                    // Handled by onKeyDown - this is just for React controlled input
                   }}
                   onPaste={(e) => {
                     e.preventDefault();
@@ -327,7 +376,7 @@ export default function ForgotPasswordPage() {
               ))}
             </div>
             <p className="auth-code-help">
-              Check your inbox for the 6-digit code
+              6-digit code was sent to <strong>{email}</strong>
             </p>
           </div>
 
@@ -346,6 +395,23 @@ export default function ForgotPasswordPage() {
           >
             {isSubmitting ? "Verifying..." : "Verify Code"}
           </Button.fire>
+
+          <div className="auth-resend">
+            {!isResending ? (
+              <>
+                <span className="auth-resend-text">Didn&apos;t receive the code? </span>
+                <button
+                  type="button"
+                  onClick={handleResendCode}
+                  className="auth-resend-button"
+                >
+                  Resend Code
+                </button>
+              </>
+            ) : (
+              <span className="auth-resend-success">Code sent! Check your inbox</span>
+            )}
+          </div>
 
           <button
             type="button"

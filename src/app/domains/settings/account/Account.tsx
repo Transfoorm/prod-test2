@@ -71,7 +71,7 @@ export default function Account() {
             { id: 'profile', label: 'Profile', icon: <Icon variant="user" />, content: <Profile /> },
             { id: 'email', label: 'Email', icon: <Icon variant="send" />, content: <Email /> },
             { id: 'security', label: 'Security', icon: <Icon variant="lock" />, content: <Security /> },
-            { id: 'genome', label: <>Genome <span className="vr-tabs-panels-label-sm">{genomePercent}%</span></>, icon: <Icon variant="dna" />, content: <Genome />, highlight: true },
+            { id: 'genome', label: <>Genome <span className="vr-tabs-panels-label-sm">{genomePercent}%</span></>, icon: <Icon variant="dna" />, content: <Genome />, highlight: genomePercent < 100 },
           ]}
         />
       </div>

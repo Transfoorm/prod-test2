@@ -30,10 +30,6 @@
   min-height: var(--size-2xl); /* 🟡 48px - prevents height jump when icon/spinner appears */
 }
 
-.vr-button:disabled {
-  cursor: not-allowed;
-}
-
 /* Button icon spacing */
 .vr-button .vr-button-icon {
   display: flex;
@@ -82,7 +78,6 @@
 .vr-button-primary:disabled {
   background-color: var(--bg-tertiary);
   color: var(--text-disabled);
-  cursor: not-allowed;
   opacity: 0.6;
 }
 
@@ -126,7 +121,6 @@
 .vr-button-secondary:disabled {
   border-color: var(--border-light);
   color: var(--text-disabled);
-  cursor: not-allowed;
   opacity: 0.6;
 }
 
@@ -170,7 +164,6 @@
 
 .vr-button-ghost:disabled {
   color: var(--text-disabled);
-  cursor: not-allowed;
   opacity: 0.6;
 }
 
@@ -216,7 +209,6 @@
 .vr-button-danger:disabled {
   background-color: var(--bg-tertiary);
   color: var(--text-disabled);
-  cursor: not-allowed;
   opacity: 1;
 }
 
@@ -265,7 +257,6 @@
 .vr-button-blue:disabled {
   background-color: var(--bg-tertiary);
   color: var(--text-disabled);
-  cursor: not-allowed;
   opacity: 0.6;
 }
 
@@ -314,7 +305,6 @@
 .vr-button-green:disabled {
   background-color: var(--bg-tertiary);
   color: var(--text-disabled);
-  cursor: not-allowed;
   opacity: 0.6;
 }
 
@@ -359,7 +349,6 @@
 
 .vr-button-link:disabled {
   color: var(--text-disabled);
-  cursor: not-allowed;
   opacity: 0.6;
 }
 
@@ -488,7 +477,6 @@
   background: transparent;
   border-color: var(--border-light);
   color: var(--text-disabled);
-  cursor: not-allowed;
   opacity: 0.6;
 }
 

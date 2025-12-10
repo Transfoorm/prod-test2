@@ -157,16 +157,10 @@
   opacity: 0.5;
 }
 
-.vr-input-range--disabled .vr-input-range-input {
-  cursor: not-allowed;
-}
-
 .vr-input-range--disabled .vr-input-range-input::-webkit-slider-thumb {
-  cursor: not-allowed;
   border-color: var(--gray-400);
 }
 
 .vr-input-range--disabled .vr-input-range-input::-moz-range-thumb {
-  cursor: not-allowed;
   border-color: var(--gray-400);
 }

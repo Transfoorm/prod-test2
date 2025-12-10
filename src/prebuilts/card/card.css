@@ -137,7 +137,6 @@
 .vr-card-action .vr-card-action-button:disabled,
 .vr-card-action .vr-card-action-button[aria-disabled="true"] {
   opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .vr-card-action .vr-card-action-icon {

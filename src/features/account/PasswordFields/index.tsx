@@ -279,6 +279,13 @@ export function PasswordFields() {
               onChange={handleBox1Change}
               onFocus={handleBox1Focus}
               onBlur={handleBox1Blur}
+              onKeyDown={(e) => {
+                if (e.key === 'Tab' && !e.shiftKey && passwordMeetsRequirements) {
+                  e.preventDefault();
+                  setStage('confirming');
+                  // Focus will be set by the useEffect that watches for 'confirming' stage
+                }
+              }}
               autoFocus
               autoComplete="new-password"
               placeholder="Enter new password"

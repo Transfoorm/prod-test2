@@ -458,7 +458,6 @@
 
 .auth-code-input:disabled {
   opacity: 0.6;
-  cursor: not-allowed;
 }
 
 .auth-code-help {
@@ -485,6 +484,35 @@
 
 .auth-secondary-button:hover {
   color: var(--auth-text-primary);
+}
+
+/* Resend code section */
+.auth-resend {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+}
+
+.auth-resend-text {
+  color: var(--auth-text-secondary);
+}
+
+.auth-resend-button {
+  background: none;
+  border: none;
+  color: var(--brand-primary);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.auth-resend-button:hover {
+  color: var(--brand-hover);
+}
+
+.auth-resend-success {
+  color: var(--brand-primary);
+  font-weight: var(--font-weight-medium);
 }
 
 /* Auth spinner for loading states */

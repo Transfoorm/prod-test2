@@ -711,7 +711,7 @@ transform: translateY(16px);         ❌ Should use token
 
 .vr-button-primary--disabled {
   opacity: 0.5;
-  cursor: not-allowed;
+  /* NOTE: We do NOT use cursor: not-allowed - it's blocked globally in globals.css */
 }
 
 .vr-button-primary--loading {

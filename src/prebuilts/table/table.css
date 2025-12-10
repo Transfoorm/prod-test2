@@ -111,7 +111,6 @@
 
 .vr-pagination-button:disabled {
   opacity: 0.4;
-  cursor: not-allowed;
 }
 
 .vr-pagination-button:hover:not(:disabled) {

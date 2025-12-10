@@ -25,7 +25,6 @@
 }
 
 .vr-checkbox-settings.vr-checkbox--disabled {
-  cursor: not-allowed;
   opacity: 0.5;
 }
 
