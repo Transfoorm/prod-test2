@@ -80,21 +80,35 @@ export interface FuseCookiePayload {
 }
 
 /**
- * Convert base64url to standard base64
- * JWT uses base64url encoding which differs from standard base64:
- * - '-' instead of '+'
- * - '_' instead of '/'
- * - No padding '=' characters
+ * Decode base64url string to UTF-8 text
+ * JWT uses base64url encoding and may contain multi-byte UTF-8 characters (emojis, etc.)
+ *
+ * Steps:
+ * 1. Convert base64url to standard base64
+ * 2. Decode base64 to binary string
+ * 3. Convert binary string to proper UTF-8
  */
-function base64UrlToBase64(base64url: string): string {
-  // Replace URL-safe characters with standard base64 characters
+function decodeBase64Url(base64url: string): string {
+  // Step 1: Convert base64url to standard base64
   let base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
   // Add padding if needed
   const padding = base64.length % 4;
   if (padding) {
     base64 += '='.repeat(4 - padding);
   }
-  return base64;
+
+  // Step 2: Decode base64 to binary string
+  const binaryString = atob(base64);
+
+  // Step 3: Convert binary string to UTF-8 using TextDecoder
+  // Each character in binaryString is a byte, so we convert to Uint8Array
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+
+  // TextDecoder properly handles multi-byte UTF-8 sequences (emojis, etc.)
+  return new TextDecoder('utf-8').decode(bytes);
 }
 
 /**
@@ -116,9 +130,9 @@ export function decodeFuseCookie(cookieValue: string): FuseCookiePayload | null 
       return null;
     }
 
-    // Decode base64url payload (second part) - JWT uses base64url, not standard base64
-    const base64 = base64UrlToBase64(parts[1]);
-    const payload = JSON.parse(atob(base64));
+    // Decode base64url payload with proper UTF-8 handling for emojis
+    const jsonString = decodeBase64Url(parts[1]);
+    const payload = JSON.parse(jsonString);
     return payload;
   } catch (error) {
     console.error('FUSE: Failed to decode cookie:', error);
