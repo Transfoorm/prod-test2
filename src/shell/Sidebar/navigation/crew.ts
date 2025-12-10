@@ -25,7 +25,11 @@ export const crewNav: NavSection[] = [
     label: 'Settings',
     icon: 'settings',
     children: [
-      { path: '/settings/account', label: 'Account' }
+      { path: '/settings/preferences', label: 'Preferences' },
+      { path: '/settings/account', label: 'Account' },
+      { path: '/settings/security', label: 'Security' },
+      { path: '/settings/billing', label: 'Billing' },
+      { path: '/settings/plan', label: 'Plan' }
     ]
   }
 ];

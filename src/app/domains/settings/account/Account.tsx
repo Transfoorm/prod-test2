@@ -22,7 +22,7 @@ import Security from './_tabs/Security';
 import Genome from './_tabs/Genome';
 
 export default function Account() {
-  useSetPageHeader('Manage Account', 'These are your account details and settings');
+  useSetPageHeader('Manage Your Account', 'These are your account details and settings');
   usePageTiming('/settings/account');
 
   const user = useFuse((s) => s.user);

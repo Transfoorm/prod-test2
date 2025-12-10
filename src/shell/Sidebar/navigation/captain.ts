@@ -58,11 +58,11 @@ export const captainNav: NavSection[] = [
     label: 'Settings',
     icon: 'settings',
     children: [
+      { path: ROUTES.settings.preferences, label: 'Preferences' },
       { path: ROUTES.settings.account, label: 'Account' },
       { path: ROUTES.settings.security, label: 'Security' },
       { path: ROUTES.settings.billing, label: 'Billing' },
-      { path: ROUTES.settings.plan, label: 'Plan' },
-      { path: ROUTES.settings.preferences, label: 'Preferences' }
+      { path: ROUTES.settings.plan, label: 'Plan' }
     ]
   }
 ];

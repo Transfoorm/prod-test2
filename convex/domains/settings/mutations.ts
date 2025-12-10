@@ -100,9 +100,15 @@ export const updateMirorSettings = mutation({
   args: {
     callerUserId: v.id("admin_users"),
     mirorAvatarProfile: v.optional(v.union(
-      v.literal("male"),
-      v.literal("female"),
-      v.literal("inclusive")
+      v.literal("f_1"),
+      v.literal("f_2"),
+      v.literal("f_3"),
+      v.literal("m_1"),
+      v.literal("m_2"),
+      v.literal("m_3"),
+      v.literal("i_1"),
+      v.literal("i_2"),
+      v.literal("i_3")
     )),
     mirorEnchantmentEnabled: v.optional(v.boolean()),
     mirorEnchantmentTiming: v.optional(v.union(

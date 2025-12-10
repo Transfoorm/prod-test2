@@ -31,7 +31,7 @@ export const ADMIRAL_MANIFEST: RankManifest = {
     { path: ROUTES.dashboard, label: 'Dashboard', icon: 'home' },
     { path: ROUTES.admin.users, label: 'Users', icon: 'users' },
     { path: ROUTES.admin.plans, label: 'Plans', icon: 'layers' },
-    { path: ROUTES.admin.features, label: 'Features', icon: 'flag' },
+    { path: ROUTES.admin.showcase, label: 'Showcase', icon: 'flag' },
     { path: ROUTES.system.ai, label: 'AI System', icon: 'cpu' },
     { path: ROUTES.system.ranks, label: 'Ranks', icon: 'shield' },
     { path: ROUTES.settings.account, label: 'Account', icon: 'user' },

@@ -127,7 +127,7 @@ export type FuseUser = {
   themeName?: ThemeName;
   themeDark?: boolean;
   // Miror AI preferences
-  mirorAvatarProfile?: 'male' | 'female' | 'inclusive';
+  mirorAvatarProfile?: 'f_1' | 'f_2' | 'f_3' | 'm_1' | 'm_2' | 'm_3' | 'i_1' | 'i_2' | 'i_3';
   mirorEnchantmentEnabled?: boolean;
   mirorEnchantmentTiming?: 'subtle' | 'magical' | 'playful';
   // Professional Genome fields
@@ -261,6 +261,12 @@ export type FuseState = {
   updateUser: (updates: Partial<NonNullable<FuseUser>>) => void;
   /** Update user profile with optimistic UI + Server Action sync (TTT-LiveField pattern) */
   updateUserLocal: (updates: Partial<NonNullable<FuseUser>>) => Promise<void>;
+  /** Update Miror AI settings with optimistic UI + Server Action sync */
+  updateMirorLocal: (updates: {
+    mirorAvatarProfile?: 'f_1' | 'f_2' | 'f_3' | 'm_1' | 'm_2' | 'm_3' | 'i_1' | 'i_2' | 'i_3';
+    mirorEnchantmentEnabled?: boolean;
+    mirorEnchantmentTiming?: 'subtle' | 'magical' | 'playful';
+  }) => Promise<void>;
 
   // Theme methods - instant theme switching with DB sync
   hydrateThemeMode: (mode: ThemeMode) => void; // For hydration (no DB sync)

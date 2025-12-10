@@ -29,11 +29,12 @@ export const DOM_ATTRIBUTES = {
 /**
  * Miror AI default values for new users
  *
- * Avatar options: 'male', 'female', 'inclusive'
+ * Avatar options: f_1, f_2, f_3, m_1, m_2, m_3, i_1, i_2, i_3
+ * (f=female, m=male, i=inclusive) × (1=caucasian, 2=dark, 3=oriental)
  * Enchantment timing options: 'subtle', 'magical', 'playful'
  */
 export const MIROR_DEFAULTS = {
-  DEFAULT_AVATAR: 'inclusive' as const,        // Options: 'male' | 'female' | 'inclusive'
+  DEFAULT_AVATAR: 'f_1' as const,              // Female caucasian
   DEFAULT_ENCHANTMENT: 'playful' as const,     // Options: 'subtle' | 'magical' | 'playful'
   DEFAULT_ENCHANTMENT_ENABLED: true,
 };

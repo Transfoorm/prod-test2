@@ -30,13 +30,13 @@ export function ProfileFields() {
           label="First Name"
           value={user?.firstName ?? ''}
           onSave={(v) => updateUserLocal({ firstName: v })}
-          placeholder="First name"
+          placeholder="Not set"
         />
         <Field.live
           label="Last Name"
           value={user?.lastName ?? ''}
           onSave={(v) => updateUserLocal({ lastName: v })}
-          placeholder="Last name"
+          placeholder="Not set"
         />
       </div>
 
@@ -46,13 +46,13 @@ export function ProfileFields() {
           label="Entity/Organisation"
           value={user?.entityName ?? ''}
           onSave={(v) => updateUserLocal({ entityName: v || undefined })}
-          placeholder="Your company name"
+          placeholder="Not set"
         />
         <Field.live
           label="Username"
           value={user?.socialName ?? ''}
           onSave={(v) => updateUserLocal({ socialName: v || undefined })}
-          placeholder="Your 'handle'"
+          placeholder="Not set'"
           transform="username"
           helper="* Letters, numbers, and one dot only"
         />

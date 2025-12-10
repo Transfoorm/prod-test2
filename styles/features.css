@@ -18,6 +18,9 @@
 /* Genome Fields */
 @import url('../src/features/account/GenomeFields/genome-fields.css');
 
+/* Mirror AI Fields */
+@import url('../src/features/preferences/MirrorAIFields/mirror-ai-fields.css');
+
 /* Verify Modal - Lives in auth boundary (S.I.D. Phase 12) */
 @import url('../src/app/(auth)/components/VerifyModal/verify-modal.css');
 
@@ -26,6 +29,9 @@
 
 /* Shadow King (Sovereign Setup Enforcement) */
 @import url('../src/features/UserSetup/ShadowKing/shadow-king.css');
+
+/* VR Showcase (Admin) */
+@import url('../src/app/domains/admin/showcase/showcase.css');
 
 /* ☢️ Vanish Protocol - QUARANTINED (WCCC ft-* Compliant)
    Lives at PROJECT ROOT /vanish/ to signal architectural boundary

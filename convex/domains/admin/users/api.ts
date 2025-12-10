@@ -535,9 +535,15 @@ export const updateMirorAvatarProfile = mutation({
   args: {
     userId: v.id("admin_users"),
     mirorAvatarProfile: v.union(
-      v.literal("male"),
-      v.literal("female"),
-      v.literal("inclusive")
+      v.literal("f_1"),
+      v.literal("f_2"),
+      v.literal("f_3"),
+      v.literal("m_1"),
+      v.literal("m_2"),
+      v.literal("m_3"),
+      v.literal("i_1"),
+      v.literal("i_2"),
+      v.literal("i_3")
     )
   },
   handler: async (ctx, args) => {

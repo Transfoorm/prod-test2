@@ -40,6 +40,9 @@ const EXCEPTION_FILES = new Set([
   // UserButton (Dynamic import Cropper requires empty style/classes props)
   'src/features/UserButton/index.tsx',
   'src/features/shell/UserButton/index.tsx',  // react-easy-crop requires style prop
+
+  // MirrorAI star toggle (SVG particle circles need inline opacity:0 - CSS alone failed)
+  'src/features/preferences/MirrorAIFields/index.tsx',
 ]);
 
 interface Violation {

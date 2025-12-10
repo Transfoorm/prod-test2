@@ -262,7 +262,7 @@ export function EmailFields() {
               value={secondaryEmail}
               onCommit={(v) => handleEmailCommit('secondaryEmail', v)}
               type="email"
-              placeholder="Add a backup email"
+              placeholder="Not set"
             />
 
             {/* Actions - only show when secondary email exists */}

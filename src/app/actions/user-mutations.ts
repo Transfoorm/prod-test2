@@ -80,7 +80,7 @@ export async function updateBusinessCountryAction(businessCountry: string) {
       entityName: freshUser.entityName as string,
       socialName: freshUser.socialName as string,
       themeMode: freshUser.themeDark ? 'dark' : 'light',
-      mirorAvatarProfile: freshUser.mirorAvatarProfile as 'male' | 'female' | 'inclusive' | undefined,
+      mirorAvatarProfile: freshUser.mirorAvatarProfile as 'f_1' | 'f_2' | 'f_3' | 'm_1' | 'm_2' | 'm_3' | 'i_1' | 'i_2' | 'i_3' | undefined,
       mirorEnchantmentEnabled: freshUser.mirorEnchantmentEnabled,
       mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
     });
@@ -143,7 +143,7 @@ export async function completeSetupAction(data: {
       entityName: freshUser.entityName as string,
       socialName: freshUser.socialName as string,
       themeMode: freshUser.themeDark ? 'dark' : 'light',
-      mirorAvatarProfile: freshUser.mirorAvatarProfile as 'male' | 'female' | 'inclusive' | undefined,
+      mirorAvatarProfile: freshUser.mirorAvatarProfile as 'f_1' | 'f_2' | 'f_3' | 'm_1' | 'm_2' | 'm_3' | 'i_1' | 'i_2' | 'i_3' | undefined,
       mirorEnchantmentEnabled: freshUser.mirorEnchantmentEnabled,
       mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
     });
@@ -235,7 +235,7 @@ export async function updateProfileAction(data: {
       socialName: freshUser.socialName as string,
       phoneNumber: freshUser.phoneNumber as string,
       themeMode: freshUser.themeDark ? 'dark' : 'light',
-      mirorAvatarProfile: freshUser.mirorAvatarProfile as 'male' | 'female' | 'inclusive' | undefined,
+      mirorAvatarProfile: freshUser.mirorAvatarProfile as 'f_1' | 'f_2' | 'f_3' | 'm_1' | 'm_2' | 'm_3' | 'i_1' | 'i_2' | 'i_3' | undefined,
       mirorEnchantmentEnabled: freshUser.mirorEnchantmentEnabled,
       mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
     });
@@ -378,7 +378,7 @@ export async function refreshSessionAfterUpload() {
       entityName: freshUser.entityName as string,
       socialName: freshUser.socialName as string,
       themeMode: freshUser.themeDark ? 'dark' : 'light',
-      mirorAvatarProfile: freshUser.mirorAvatarProfile as 'male' | 'female' | 'inclusive' | undefined,
+      mirorAvatarProfile: freshUser.mirorAvatarProfile as 'f_1' | 'f_2' | 'f_3' | 'm_1' | 'm_2' | 'm_3' | 'i_1' | 'i_2' | 'i_3' | undefined,
       mirorEnchantmentEnabled: freshUser.mirorEnchantmentEnabled,
       mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
     });
@@ -390,6 +390,67 @@ export async function refreshSessionAfterUpload() {
     return { success: true };
   } catch (error) {
     console.error('refreshSessionAfterUpload error:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+}
+
+/**
+ * Update Miror AI settings and auto-update session cookie
+ * 🛡️ SID-5.3: Uses session._id (sovereign) for all Convex calls
+ * TTT-LiveField pattern: Called from FUSE store action on change
+ */
+export async function updateMirorAction(data: {
+  mirorAvatarProfile?: 'f_1' | 'f_2' | 'f_3' | 'm_1' | 'm_2' | 'm_3' | 'i_1' | 'i_2' | 'i_3';
+  mirorEnchantmentEnabled?: boolean;
+  mirorEnchantmentTiming?: 'subtle' | 'magical' | 'playful';
+}) {
+  try {
+    // 🛡️ SID-9.1: Identity originates from readSessionCookie()
+    const session = await readSessionCookie();
+    if (!session?._id) throw new Error('Unauthorized');
+
+    // 🛡️ SID-5.3: Pass sovereign userId to Convex mutation
+    await convex.mutation(api.domains.settings.mutations.updateMirorSettings, {
+      callerUserId: session._id as Id<"admin_users">,
+      ...data,
+    });
+
+    // 🛡️ SID-5.3: Fetch fresh user data using sovereign _id
+    const freshUser = await convex.query(api.domains.admin.users.api.getCurrentUser, {
+      userId: session._id as Id<"admin_users">,
+    });
+
+    if (!freshUser) throw new Error('User not found');
+
+    // Mint new session with updated data
+    const token = await mintSession({
+      _id: String(freshUser._id),
+      clerkId: session.clerkId,
+      email: freshUser.email || session.email || '',
+      secondaryEmail: freshUser.secondaryEmail || undefined,
+      firstName: freshUser.firstName || session.firstName,
+      lastName: freshUser.lastName || session.lastName,
+      avatarUrl: freshUser.avatarUrl || undefined,
+      brandLogoUrl: freshUser.brandLogoUrl || undefined,
+      rank: freshUser.rank as string,
+      setupStatus: freshUser.setupStatus as string,
+      businessCountry: freshUser.businessCountry as string,
+      entityName: freshUser.entityName as string,
+      socialName: freshUser.socialName as string,
+      phoneNumber: freshUser.phoneNumber as string,
+      themeMode: freshUser.themeDark ? 'dark' : 'light',
+      mirorAvatarProfile: freshUser.mirorAvatarProfile as 'f_1' | 'f_2' | 'f_3' | 'm_1' | 'm_2' | 'm_3' | 'i_1' | 'i_2' | 'i_3' | undefined,
+      mirorEnchantmentEnabled: freshUser.mirorEnchantmentEnabled,
+      mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
+    });
+
+    // Update cookie
+    const cookieStore = await cookies();
+    cookieStore.set(SESSION_COOKIE, token, COOKIE_OPTIONS);
+
+    return { success: true };
+  } catch (error) {
+    console.error('updateMirorAction error:', error);
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 }

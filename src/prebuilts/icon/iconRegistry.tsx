@@ -94,6 +94,10 @@ import {
   Gem,
   PackageOpen,
   Send,
+  // Gender icons
+  Venus,
+  Mars,
+  UsersRound,
 } from 'lucide-react';
 
 // Icon registry - maps string variants to Lucide components
@@ -192,6 +196,11 @@ const iconRegistry = {
   'gem': Gem,
   'package': PackageOpen,
   'send': Send,
+
+  // Gender / Avatar profile
+  'venus': Venus,
+  'mars': Mars,
+  'users-round': UsersRound,
 } as const;
 
 export type IconVariant = keyof typeof iconRegistry;

@@ -54,7 +54,7 @@ export async function POST() {
       socialName: freshUser.socialName as string,
       phoneNumber: freshUser.phoneNumber as string,
       themeMode: freshUser.themeDark ? 'dark' : 'light',
-      mirorAvatarProfile: freshUser.mirorAvatarProfile as 'male' | 'female' | 'inclusive' | undefined,
+      mirorAvatarProfile: freshUser.mirorAvatarProfile as 'f_1' | 'f_2' | 'f_3' | 'm_1' | 'm_2' | 'm_3' | 'i_1' | 'i_2' | 'i_3' | undefined,
       mirorEnchantmentEnabled: freshUser.mirorEnchantmentEnabled,
       mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
       // 🧬 Include genome in cookie for persistence

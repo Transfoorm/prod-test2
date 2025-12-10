@@ -19,7 +19,7 @@ export const admiralNav: NavSection[] = [
     children: [
       { path: '/admin/users', label: 'Users' },
       { path: '/admin/plans', label: 'Plans' },
-      { path: '/admin/features', label: 'Features' }
+      { path: '/admin/showcase', label: 'Showcase' }
     ]
   },
   {
@@ -34,8 +34,11 @@ export const admiralNav: NavSection[] = [
     label: 'Settings',
     icon: 'settings',
     children: [
+      { path: '/settings/preferences', label: 'Preferences' },
       { path: '/settings/account', label: 'Account' },
-      { path: '/settings/preferences', label: 'Preferences' }
+      { path: '/settings/security', label: 'Security' },
+      { path: '/settings/billing', label: 'Billing' },
+      { path: '/settings/plan', label: 'Plan' }
     ]
   }
 ];

@@ -38,7 +38,7 @@ type SessionPayload = {
   themeName?: string;
   themeMode?: string;
   // Miror AI preferences
-  mirorAvatarProfile?: 'male' | 'female' | 'inclusive';
+  mirorAvatarProfile?: 'f_1' | 'f_2' | 'f_3' | 'm_1' | 'm_2' | 'm_3' | 'i_1' | 'i_2' | 'i_3';
   mirorEnchantmentEnabled?: boolean;
   mirorEnchantmentTiming?: 'subtle' | 'magical' | 'playful';
   // Dashboard preferences (WARP'd during login)
@@ -166,7 +166,7 @@ export async function readSessionCookie(): Promise<SessionPayload | null> {
       phoneNumber: payload.phoneNumber as string | undefined,
       themeName: payload.themeName as string | undefined,
       themeMode: payload.themeMode as string | undefined,
-      mirorAvatarProfile: payload.mirorAvatarProfile as 'male' | 'female' | 'inclusive' | undefined,
+      mirorAvatarProfile: payload.mirorAvatarProfile as 'f_1' | 'f_2' | 'f_3' | 'm_1' | 'm_2' | 'm_3' | 'i_1' | 'i_2' | 'i_3' | undefined,
       mirorEnchantmentEnabled: payload.mirorEnchantmentEnabled as boolean | undefined,
       mirorEnchantmentTiming: payload.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
       // Dashboard preferences

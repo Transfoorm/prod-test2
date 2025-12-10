@@ -117,6 +117,12 @@ interface FuseStore {
   updateUser: (updates: Partial<NonNullable<FuseUser>>) => void;
   /** Update user profile with optimistic UI + Server Action sync (TTT-LiveField pattern) */
   updateUserLocal: (updates: Partial<NonNullable<FuseUser>>) => Promise<void>;
+  /** Update Miror AI settings with optimistic UI + Server Action sync */
+  updateMirorLocal: (updates: {
+    mirorAvatarProfile?: 'f_1' | 'f_2' | 'f_3' | 'm_1' | 'm_2' | 'm_3' | 'i_1' | 'i_2' | 'i_3';
+    mirorEnchantmentEnabled?: boolean;
+    mirorEnchantmentTiming?: 'subtle' | 'magical' | 'playful';
+  }) => Promise<void>;
 
   // Genome actions
   /** Hydrate genome from query */
@@ -729,6 +735,32 @@ export const useFuse = create<FuseStore>()((set, get) => {
       }
 
       fuseTimer.end('updateUserLocal', start);
+    },
+
+    /**
+     * Update Miror AI settings with optimistic UI + Server Action sync
+     */
+    updateMirorLocal: async (updates: {
+      mirorAvatarProfile?: 'f_1' | 'f_2' | 'f_3' | 'm_1' | 'm_2' | 'm_3' | 'i_1' | 'i_2' | 'i_3';
+      mirorEnchantmentEnabled?: boolean;
+      mirorEnchantmentTiming?: 'subtle' | 'magical' | 'playful';
+    }) => {
+      const start = fuseTimer.start('updateMirorLocal');
+
+      // 1. Optimistic update (instant UI feedback)
+      set((state) => {
+        const updatedUser = state.user ? { ...state.user, ...updates } : null;
+        return { user: updatedUser, lastActionTiming: performance.now() };
+      });
+
+      // 2. Persist via Server Action (handles auth + cookie refresh)
+      const { updateMirorAction } = await import('@/app/actions/user-mutations');
+      const result = await updateMirorAction(updates);
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to save Miror settings');
+      }
+
+      fuseTimer.end('updateMirorLocal', start);
     },
 
     // ────────────────────────────────────────────────────────────────────────

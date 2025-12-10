@@ -5,6 +5,8 @@
 │  Radio button group with consistent styling.                          │
 └────────────────────────────────────────────────────────────────────────┘ */
 
+import { useId } from 'react';
+
 export interface RadioOption {
   value: string;
   label: string;
@@ -18,6 +20,8 @@ export interface InputRadioProps {
   onChange: (value: string) => void;
   /** Options array */
   options: RadioOption[];
+  /** Unique name for the radio group (auto-generated if not provided) */
+  name?: string;
   /** Layout direction */
   direction?: 'vertical' | 'horizontal';
   /** Size variant */
@@ -36,11 +40,15 @@ export default function InputRadio({
   value,
   onChange,
   options,
+  name,
   direction = 'vertical',
   size = 'md',
   disabled = false,
   className = ''
 }: InputRadioProps) {
+  const autoId = useId();
+  const groupName = name || `radio-group-${autoId}`;
+
   const groupClasses = [
     'vr-input-radio-group',
     `vr-input-radio-group--${direction}`,
@@ -62,7 +70,7 @@ export default function InputRadio({
         >
           <input
             type="radio"
-            name="radio-group"
+            name={groupName}
             value={option.value}
             checked={value === option.value}
             onChange={() => onChange(option.value)}

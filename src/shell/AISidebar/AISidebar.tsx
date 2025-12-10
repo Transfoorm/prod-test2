@@ -37,7 +37,7 @@ export default function AISidebar() {
   const isOpen = sidebarState === 'open' || sidebarState === 'expand';
 
   // Dynamic avatar path based on user preference
-  const avatarPath = `/images/sitewide/miror_${mirorAvatarProfile || MIROR_DEFAULTS.DEFAULT_AVATAR}.png`;
+  const avatarPath = `/images/ai/miror_${mirorAvatarProfile || MIROR_DEFAULTS.DEFAULT_AVATAR}.png`;
 
   // Enchantment enabled by default
   const enchantmentEnabled = mirorEnchantmentEnabled ?? MIROR_DEFAULTS.DEFAULT_ENCHANTMENT_ENABLED;

@@ -135,9 +135,14 @@
   transition: all var(--tabs-panels-transition-duration) cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   background-color: transparent;
-  border: none;
+  border: 1px solid transparent;
   color: var(--text-secondary);
   position: relative;
+}
+
+/* Bordered variant - 50% opacity faint border on active only */
+.vr-tabs-panels--bordered .vr-tabs-panels-trigger.active {
+  border-color: rgb(from var(--border-light) r g b / 50%);
 }
 
 .vr-tabs-panels .vr-tabs-panels-trigger:focus-visible {

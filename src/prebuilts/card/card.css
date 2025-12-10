@@ -20,10 +20,11 @@
 
 .vr-card-standard {
   background-color: var(--card-content-bg);
+  overflow: hidden; /* Clip children to rounded corners */
 }
 
 .vr-card-standard .vr-card-standard-header {
-  padding: var(--space-md) var(--space-lg);
+  padding: var(--space-sm) var(--space-lg);
   background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-tertiary));
   border-bottom: var(--card-border-width) solid var(--border-normal);
 }

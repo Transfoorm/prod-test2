@@ -51,7 +51,7 @@ export interface FuseCookiePayload {
   entityName?: string;
   socialName?: string;
   phoneNumber?: string;
-  mirorAvatarProfile?: 'male' | 'female' | 'inclusive';
+  mirorAvatarProfile?: 'f_1' | 'f_2' | 'f_3' | 'm_1' | 'm_2' | 'm_3' | 'i_1' | 'i_2' | 'i_3';
   mirorEnchantmentEnabled?: boolean;
   mirorEnchantmentTiming?: 'subtle' | 'magical' | 'playful';
   themeMode?: 'light' | 'dark';

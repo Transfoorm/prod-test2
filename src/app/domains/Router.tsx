@@ -29,7 +29,7 @@ import Dashboard from './Dashboard';
 // Admin
 import Users from './admin/users/Users';
 import Plans from './admin/plans/Plans';
-import Feature from './admin/features/Features';
+import Showcase from './admin/showcase/Showcase';
 
 // Clients
 import Contacts from './clients/Contacts';
@@ -59,7 +59,7 @@ import Tracking from './projects/Tracking';
 
 // Settings
 import Account from './settings/account/Account';
-import Preferences from './settings/Preferences';
+import Preferences from './settings/preferences/Preferences';
 import Security from './settings/Security';
 import Billing from './settings/Billing';
 import Plan from './settings/Plan';
@@ -136,8 +136,8 @@ export default function Router() {
         return <Users />;
       case 'admin/plans':
         return <Plans />;
-      case 'admin/features':
-        return <Feature />;
+      case 'admin/showcase':
+        return <Showcase />;
 
       // ═══════════════════════════════════════════════════════════════
       // CLIENTS

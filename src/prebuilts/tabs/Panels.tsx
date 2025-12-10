@@ -41,6 +41,8 @@ export interface PanelTabsProps {
   activeTab?: string;
   onTabChange?: (tabId: string) => void;
   className?: string;
+  /** Show faint border around tab triggers (default: true) */
+  bordered?: boolean;
 }
 
 /**
@@ -72,7 +74,8 @@ export default function PanelTabs({
   tabs,
   activeTab: controlledActiveTab,
   onTabChange: controlledOnTabChange,
-  className = ''
+  className = '',
+  bordered = true
 }: PanelTabsProps) {
   // Auto-managed mode: VR manages state when content is provided
   const hasContent = tabs.some(tab => tab.content);
@@ -113,7 +116,7 @@ export default function PanelTabs({
 
   return (
     <div className="vr-tabs-panels-container">
-      <div className={`vr-tabs vr-tabs-panels ${className}`}>
+      <div className={`vr-tabs vr-tabs-panels ${bordered ? 'vr-tabs-panels--bordered' : ''} ${className}`}>
         <div className="vr-tabs-panels-list">
           {tabs.map((tab) => (
             <button

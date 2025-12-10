@@ -22,6 +22,7 @@ import TextareaInput from '@/prebuilts/input/textarea';
 import SelectInput from '@/prebuilts/input/select';
 import { Checkbox } from '@/prebuilts/input/checkbox';
 import RadioInput from '@/prebuilts/input/radio';
+import RadioFancyInput from '@/prebuilts/input/radio-fancy';
 import ToggleInput from '@/prebuilts/input/toggle';
 import RangeInput from '@/prebuilts/input/range';
 
@@ -32,6 +33,7 @@ export const Input = {
   select: SelectInput,
   checkbox: Checkbox,
   radio: RadioInput,
+  radioFancy: RadioFancyInput,
   toggle: ToggleInput,
   range: RangeInput,
 };
