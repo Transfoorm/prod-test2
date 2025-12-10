@@ -211,10 +211,9 @@
   gap: var(--space-xl);
 }
 
- /* Content panel - no additional styling needed, gap handled by container 
 .vr-tabs-panels-content {
- 
-} */
+  /* Content panel - no additional styling needed, gap handled by container */
+}
 
 .vr-hidden {
   display: none !important;

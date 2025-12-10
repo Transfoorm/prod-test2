@@ -42,11 +42,17 @@ export default function Account() {
     const isTabClick = target.closest('[role="tab"]') || target.closest('.vr-tabs-tab');
     if (isTabClick) return;
 
+    // Allow Email and Security tabs - entice interaction
+    const isEmailTab = target.closest('.ft-email-field-with-action') || target.closest('.vr-field-row');
+    const isSecurityTab = target.closest('.ft-password-ceremony');
+    if (isEmailTab || isSecurityTab) return;
+
     // Block field interactions and show Shadow King
     const isFieldInteraction = target.closest('.vr-field') ||
                                target.closest('input') ||
                                target.closest('textarea') ||
                                target.closest('select') ||
+                               target.closest('.vr-dropdown-simple') ||
                                target.closest('.ft-country-selector');
 
     if (isFieldInteraction) {

@@ -609,7 +609,7 @@ export default function SetupModal() {
             {/* Welcome message */}
             <div className="ft-setup-welcome">
               <p className="ft-setup-welcome-text">
-                *Complete your setup and enhance user experience with personalised features and smarter AI assistance. Go to the <i>Account</i> page and change your details at any time.
+                *Complete your setup with unlock personalised features and smarter AI assistance. Go to the <i>Account</i> page any time to change your details.
               </p>
             </div>
 
