@@ -31,6 +31,7 @@ export default function ForgotPasswordPage() {
   const [stage, setStage] = useState<"email" | "code" | "password" | "success">("email");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [codeAttempted, setCodeAttempted] = useState(false); // Track if we've tried this code
   const firstCodeInputRef = useRef<HTMLInputElement>(null);
 
   const handleVerifyCodeSubmit = useCallback(async () => {
@@ -40,6 +41,7 @@ export default function ForgotPasswordPage() {
 
     setError("");
     setIsSubmitting(true);
+    setCodeAttempted(true);
 
     try {
       const result = await signIn.attemptFirstFactor({
@@ -52,17 +54,31 @@ export default function ForgotPasswordPage() {
         setIsSubmitting(false);
       } else {
         setError("Invalid code. Please try again.");
+        setCode(""); // Clear code on failure
+        setCodeAttempted(false);
         setIsSubmitting(false);
+        // Refocus first input
+        setTimeout(() => firstCodeInputRef.current?.focus(), 100);
       }
     } catch (err) {
       console.error("Code verification error:", err);
+      const errCode = err && typeof err === 'object' && 'errors' in err && Array.isArray(err.errors) && err.errors[0]?.code;
       const message = err && typeof err === 'object' && 'errors' in err && Array.isArray(err.errors) && err.errors[0]?.message;
-      if (message) {
+
+      // Handle rate limiting
+      if (errCode === "too_many_requests" || String(message).toLowerCase().includes("too many")) {
+        setError("Too many attempts. Please wait a moment and try again.");
+      } else if (message) {
         setError(String(message));
       } else {
         setError("Invalid code. Please try again.");
       }
+
+      // Clear code and refocus on any error
+      setCode("");
+      setCodeAttempted(false);
       setIsSubmitting(false);
+      setTimeout(() => firstCodeInputRef.current?.focus(), 100);
     }
   }, [isLoaded, signIn, code]);
 
@@ -75,10 +91,11 @@ export default function ForgotPasswordPage() {
   }, [stage]);
 
   useEffect(() => {
-    if (code.length === 6 && !isSubmitting && stage === "code") {
+    // Only auto-submit when we have 6 digits AND haven't already tried this code
+    if (code.length === 6 && !isSubmitting && stage === "code" && !codeAttempted) {
       handleVerifyCodeSubmit();
     }
-  }, [code, handleVerifyCodeSubmit, isSubmitting, stage]);
+  }, [code, handleVerifyCodeSubmit, isSubmitting, stage, codeAttempted]);
 
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
