@@ -18,7 +18,7 @@
 │  - Blink on navigation between auth pages                              │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import '@/app/(auth)/auth.css';
+import '@/features/auth/auth.css';
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -26,29 +26,29 @@ interface AuthLayoutProps {
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="auth-page">
-      <div className="auth-container">
+    <div className="ft-auth-page">
+      <div className="ft-auth-container">
         {/* Logo - SSR, never blinks */}
-        <div className="auth-logo-wrapper">
+        <div className="ft-auth-logo-wrapper">
           <img
             src="/images/brand/transfoorm.png"
             alt="Transfoorm"
-            className="auth-logo"
+            className="ft-auth-logo"
           />
         </div>
 
         {/* Card Shell - SSR, never collapses */}
-        <div className="auth-card-wrapper">
-          <div className="auth-card-glow"></div>
-          <div className="auth-card auth-card-stable">
+        <div className="ft-auth-card-wrapper">
+          <div className="ft-auth-card-glow"></div>
+          <div className="ft-auth-card ft-auth-card-stable">
             {/* Form content hydrates here - client component */}
             {children}
           </div>
         </div>
 
         {/* FUSE Note - SSR, never blinks */}
-        <div className="auth-note">
-          <p className="auth-note-text">
+        <div className="ft-auth-note">
+          <p className="ft-auth-note-text">
             Powered by FUSE • Instant Everything!
           </p>
         </div>

@@ -79,15 +79,15 @@ export default function SignUpPage() {
   return (
     <>
       {/* Header */}
-      <div className="auth-header">
-        <h1 className="auth-title">Create Your Account</h1>
-        <p className="auth-subtitle">Start your transformation journey today</p>
+      <div className="ft-auth-header">
+        <h1 className="ft-auth-title">Create Your Account</h1>
+        <p className="ft-auth-subtitle">Start your transformation journey today</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="auth-form">
+      <form onSubmit={handleSubmit} className="ft-auth-form">
         {/* Email Field */}
-        <div className="auth-field">
-          <label htmlFor="email" className="auth-label">
+        <div className="ft-auth-field">
+          <label htmlFor="email" className="ft-auth-label">
             Email Address
           </label>
           <input
@@ -98,17 +98,17 @@ export default function SignUpPage() {
             required
             autoComplete="email"
             placeholder="you@example.com"
-            className="auth-input"
+            className="ft-auth-input"
             disabled={isSubmitting}
           />
         </div>
 
         {/* Password Field */}
-        <div className="auth-field">
-          <label htmlFor="password" className="auth-label">
+        <div className="ft-auth-field">
+          <label htmlFor="password" className="ft-auth-label">
             Password
           </label>
-          <div className="auth-input-wrapper">
+          <div className="ft-auth-input-wrapper">
             <input
               id="password"
               type={showPassword ? "text" : "password"}
@@ -117,26 +117,26 @@ export default function SignUpPage() {
               required
               autoComplete="new-password"
               placeholder="Minimum 6 characters"
-              className="auth-input auth-input-with-icon"
+              className="ft-auth-input ft-auth-input-with-icon"
               disabled={isSubmitting}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="auth-input-icon-button"
+              className="ft-auth-input-icon-button"
             >
               <Icon variant={showPassword ? "eye-off" : "eye"} size="sm" />
             </button>
           </div>
-          <p className="auth-help-text">
+          <p className="ft-auth-help-text">
             Password must include 1 uppercase, 1 number, and 1 symbol.
           </p>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="auth-error">
-            <p className="auth-error-text">{error}</p>
+          <div className="ft-auth-error">
+            <p className="ft-auth-error-text">{error}</p>
           </div>
         )}
 
@@ -144,7 +144,7 @@ export default function SignUpPage() {
         <Button.fire
           type="submit"
           disabled={isSubmitting}
-          icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
+          icon={isSubmitting ? <span className="ft-auth-spinner" /> : undefined}
           iconPosition="left"
           fullWidth
         >
@@ -152,16 +152,16 @@ export default function SignUpPage() {
         </Button.fire>
 
         {/* Terms */}
-        <p className="auth-terms">
+        <p className="ft-auth-terms">
           By signing up, you agree to our Terms of Service and Privacy Policy
         </p>
       </form>
 
       {/* Sign In Link */}
-      <div className="auth-footer-inline">
-        <p className="auth-footer-text">
+      <div className="ft-auth-footer-inline">
+        <p className="ft-auth-footer-text">
           Already have an account?{" "}
-          <a href="/sign-in" className="auth-footer-link">
+          <a href="/sign-in" className="ft-auth-footer-link">
             Sign in
           </a>
         </p>

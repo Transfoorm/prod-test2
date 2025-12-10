@@ -115,15 +115,15 @@ export default function SignInPage() {
   return (
     <>
       {/* Header */}
-      <div className="auth-header">
-        <h1 className="auth-title">Sign In</h1>
-        <p className="auth-subtitle">Welcome back and enter your credentials</p>
+      <div className="ft-auth-header">
+        <h1 className="ft-auth-title">Sign In</h1>
+        <p className="ft-auth-subtitle">Welcome back and enter your credentials</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="auth-form">
+      <form onSubmit={handleSubmit} className="ft-auth-form">
         {/* Email Field */}
-        <div className="auth-field">
-          <label htmlFor="email" className="auth-label">
+        <div className="ft-auth-field">
+          <label htmlFor="email" className="ft-auth-label">
             Email Address
           </label>
           <input
@@ -134,17 +134,17 @@ export default function SignInPage() {
             required
             autoComplete="email"
             placeholder="you@example.com"
-            className="auth-input"
+            className="ft-auth-input"
             disabled={isSubmitting}
           />
         </div>
 
         {/* Password Field */}
-        <div className="auth-field">
-          <label htmlFor="password" className="auth-label">
+        <div className="ft-auth-field">
+          <label htmlFor="password" className="ft-auth-label">
             Password
           </label>
-          <div className="auth-input-wrapper">
+          <div className="ft-auth-input-wrapper">
             <input
               id="password"
               type={showPassword ? "text" : "password"}
@@ -153,13 +153,13 @@ export default function SignInPage() {
               required
               autoComplete="current-password"
               placeholder="Enter your password"
-              className="auth-input auth-input-with-icon"
+              className="ft-auth-input ft-auth-input-with-icon"
               disabled={isSubmitting}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="auth-input-icon-button"
+              className="ft-auth-input-icon-button"
             >
               <Icon variant={showPassword ? "eye-off" : "eye"} size="sm" />
             </button>
@@ -168,15 +168,15 @@ export default function SignInPage() {
 
         {/* Error Message */}
         {error && (
-          <div className="auth-error">
-            <p className="auth-error-text">{error}</p>
+          <div className="ft-auth-error">
+            <p className="ft-auth-error-text">{error}</p>
           </div>
         )}
 
         {/* Slow Connection Warning */}
         {slowConnectionWarning && (
-          <div className="auth-warning">
-            <p className="auth-warning-text">
+          <div className="ft-auth-warning">
+            <p className="ft-auth-warning-text">
               This is taking longer than usual. Refreshing page in a few seconds...
             </p>
           </div>
@@ -186,7 +186,7 @@ export default function SignInPage() {
         <Button.fire
           type="submit"
           disabled={isSubmitting}
-          icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
+          icon={isSubmitting ? <span className="ft-auth-spinner" /> : undefined}
           iconPosition="left"
           fullWidth
         >
@@ -194,18 +194,18 @@ export default function SignInPage() {
         </Button.fire>
 
         {/* Forgot Password Link */}
-        <div className="auth-link-wrapper-inline">
-          <a href="/forgot" className="auth-link">
+        <div className="ft-auth-link-wrapper-inline">
+          <a href="/forgot" className="ft-auth-link">
             Forgot your password?
           </a>
         </div>
       </form>
 
       {/* Sign Up Link */}
-      <div className="auth-footer-inline">
-        <p className="auth-footer-text">
+      <div className="ft-auth-footer-inline">
+        <p className="ft-auth-footer-text">
           Don&apos;t have an account?{" "}
-          <a href="/sign-up" className="auth-footer-link">
+          <a href="/sign-up" className="ft-auth-footer-link">
             Sign up for free
           </a>
         </p>

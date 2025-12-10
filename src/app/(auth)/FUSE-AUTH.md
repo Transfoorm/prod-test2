@@ -1,26 +1,202 @@
-# 🔐 FUSE-AUTH
-## Authentication Architecture + FUSE Consumer Doctrine
+# 🔐 FUSE-AUTH + S.I.D.
+## Authentication Architecture & Sovereign Identity Doctrine
 
-**Version**: 2.0.0
-**Last Updated**: 2025-11-01
+**Version**: 3.0.0
+**Last Updated**: 2025-12-11
 **Author**: Ken Roberts
-**Purpose**: Complete authentication architecture including Clerk integration, FUSE patterns, and domain CSS doctrine
+**Purpose**: Complete authentication architecture including S.I.D. rules, Clerk integration, FUSE patterns, and CSS doctrine
 
 ---
 
-## 🎯 WHAT IS THE PROVIDER ECOSYSTEM?
+# SECTION 1: S.I.D. RULES (The Law)
 
-The Provider Ecosystem is a **Next.js App Router pattern** that wraps server and client components with authentication, state management, and data preloading to achieve **FUSE-fast, zero-loading-state** experiences.
+> **Sovereign Identity Doctrine**
+> Clerk authenticates. Convex identifies. FUSE embodies. Nothing else rules.
 
 ---
 
-## 🏗 ARCHITECTURE OVERVIEW
+## 1.1 PRINCIPLES OF SOVEREIGN IDENTITY
+
+These rules are absolute and non-negotiable.
+
+| # | Principle |
+|---|-----------|
+| 0.1 | **Identity originates in Convex** - Clerk provides *authentication*, but Convex issues the *canonical* identity (`_id`) |
+| 0.2 | **Identity is handed off exactly once** - Only during login/signup inside `(auth)` |
+| 0.3 | **After handoff, Clerk identity is reference-only** - Used exclusively for Clerk API operations (email/password) |
+| 0.4 | **All business logic MUST use Convex `_id`** - Never `clerkId` |
+| 0.5 | **FUSE cookie is the real-time identity carrier** - All UI, stores, and features hydrate from the sovereign cookie |
+
+---
+
+## 1.2 IDENTITY BIRTHPOINT (SID Phase 0)
+
+Executed **ONCE** immediately after Clerk authenticates the user.
+
+**File:** `src/app/(auth)/actions/identity-handoff.ts`
+
+**The ritual:**
+1. `auth()` is called **here only**
+2. Clerk identity → Convex `ensureUser()`
+3. Convex returns canonical `_id`
+4. FUSE mints sovereign session cookie
+5. Clerk ID is stored as *reference only*
+6. Caller receives **Convex `_id` only**
+
+No other part of the application may call `auth()` or derive identity from Clerk.
+
+---
+
+## 1.3 FUSE SESSION COOKIE SPECIFICATION
+
+After handoff, the cookie is the authoritative identity payload.
+
+| Field | Meaning |
+|-------|---------|
+| `_id` | Sovereign Convex user ID (primary identity) |
+| `clerkId` | Reference-only identity for Clerk API calls |
+| Profile | User UI context: name, email, avatar, theme, etc. |
+| Rank | captain / admiral / commodore |
+| Setup state | pending / complete |
+| Product state | dashboard widgets, preferences |
+
+**Rules:**
+- `_id` MUST always exist
+- It MUST NOT be empty or undefined
+- No business logic may read Clerk identity from anywhere else
+
+---
+
+## 1.4 SERVER ACTION CONTRACT (SID Phase 1)
+
+**Server Actions must NEVER call `auth()` or `clerkClient()`**
+(except inside `(auth)` folder during initial handoff)
+
+### All Server Actions MUST:
+1. Call `readSessionCookie()`
+2. Extract `_id`
+3. Pass `_id` to Convex (`userId`)
+4. Never pass or accept `clerkId`
+
+### Illegal patterns (must never appear):
+```typescript
+await auth()
+await clerkClient()
+convex.mutation(api..., { clerkId })
+```
+
+### Legal:
+```typescript
+const session = await readSessionCookie();
+convex.mutation(api..., { userId: session._id });
+```
+
+---
+
+## 1.5 CONVEX MUTATION CONTRACT (SID Phase 2)
+
+ALL Convex mutations and queries must follow:
+
+### Required:
+```typescript
+userId: v.id("admin_users")
+```
+
+### Forbidden:
+```typescript
+clerkId: v.string()
+.withIndex("by_clerk_id")
+ctx.auth.getUserIdentity()   // (HttpClient = unauthenticated)
+```
+
+### Lookup rule:
+Identity lookup MUST be:
+```typescript
+ctx.db.get(userId);
+```
+No indexing by Clerk identity is ever legal.
+
+---
+
+## 1.6 SCHEMA SOVEREIGNTY (SID Phase 3)
+
+Schema defines the identity model of the entire system.
+
+**Rules:**
+- `clerkId` field MAY exist only on `admin_users` for reference
+- No domain may rely on it
+- No index may be built on it
+- Relationships MUST use Convex `_id`
+
+**Illegal:**
+```typescript
+.index("by_clerk_id", ["clerkId"])
+```
+
+---
+
+## 1.7 PIPELINE HYDRATION CONTRACT (SID Phase 4)
+
+The UI must hydrate from the sovereign cookie.
+
+**Rules:**
+- UI may NOT call Clerk identity hooks for profile data
+- UI may call Clerk for authentication UI only
+- Stores hydrate from cookie only
+
+### Illegal:
+```typescript
+const clerkUser = useUser();
+const convexUser = useQuery(api..., { clerkId: clerkUser.id })
+```
+
+### Legal:
+```typescript
+const session = useFuseSession();
+session._id  // true identity
+```
+
+---
+
+## 1.8 S.I.D. TESTING CHECKLIST
+
+Every developer must confirm:
+
+- [ ] No `auth()` outside `(auth)`
+- [ ] No Convex lookup by Clerk
+- [ ] No mutation accepting `clerkId`
+- [ ] No Server Action using Clerk identity
+- [ ] Cookie always contains valid `_id`
+- [ ] After login, Convex `_id` flows seamlessly → cookie → store → UI
+
+---
+
+## 1.9 DANTE SCAN (Mandatory)
+
+After any auth refactor:
+
+```
+/VRP-dante-scan
+```
+
+**0 violations = merge allowed.**
+Any violations = refactor blocked.
+
+---
+
+# SECTION 2: IMPLEMENTATION (How To)
+
+---
+
+## 2.1 ARCHITECTURE OVERVIEW
 
 ```
 app/
 ├── (auth)/                    # Public routes - NO authentication
-│   ├── sign-in/[[...sign-in]]  # Clerk sign-in catch-all
-│   └── sign-up/[[...sign-up]]  # Clerk sign-up catch-all
+│   ├── sign-in/               # Sign in page
+│   ├── sign-up/               # Sign up page
+│   ├── forgot/                # Password reset
+│   └── actions/               # Identity handoff (S.I.D. Phase 0)
 │
 ├── domains/                   # Protected routes - Sovereign Router
 │   ├── Router.tsx             # Sovereign Router switch
@@ -32,25 +208,21 @@ app/
 │   ├── settings/              # Settings domain views
 │   └── system/                # System domain views
 │
-├── FuseApp.tsx                # 🔐 Sovereign Runtime (mounts once, never unmounts)
+├── FuseApp.tsx                # Sovereign Runtime (mounts once, never unmounts)
 │   └── FUSE Store             # All domain data from cookie + WARP
 │
 └── api/
-    ├── webhooks/
-    │   └── clerk/
-    │       └── route.ts       # Clerk webhook endpoint
-    └── session/
-        └── refresh/
-            └── route.ts       # Session refresh endpoint
+    ├── session/               # Session cookie minting
+    └── webhooks/clerk/        # Clerk webhook endpoint
 ```
 
 ---
 
-## 🔐 AUTHENTICATION PROVIDER STACK
+## 2.2 PROVIDER STACK
 
 ### Layer 1: ClerkProvider (Authentication)
 
-**File**: `app/FuseApp.tsx` (Sovereign Router)
+**File**: `app/FuseApp.tsx`
 
 ```typescript
 import { ClerkProvider } from '@clerk/nextjs';
@@ -58,7 +230,6 @@ import { ClerkProvider } from '@clerk/nextjs';
 export default function ProtectedLayout({ children }) {
   return (
     <ClerkProvider>
-      {/* Layer 2: FUSE Provider */}
       <FuseProvider>
         {children}
       </FuseProvider>
@@ -72,8 +243,6 @@ export default function ProtectedLayout({ children }) {
 - Handles authentication state globally
 - Protects all routes (Clerk relegated to auth only via Golden Bridge)
 
----
-
 ### Layer 2: FuseProvider (State Management)
 
 **File**: `components/providers/FuseProvider.tsx`
@@ -81,31 +250,14 @@ export default function ProtectedLayout({ children }) {
 ```typescript
 'use client';
 
-import { useUser } from '@clerk/nextjs';
-import { useEffect } from 'react';
 import { useFuse } from '@/store/fuse';
-import { useQuery } from 'convex/react';
-import { api } from '@/convex/_generated/api';
 
 export function FuseProvider({ children }) {
-  const { user: clerkUser } = useUser();
-  const setUser = useFuse(s => s.setUser);
+  // Hydrate from sovereign cookie - NOT from Clerk
+  const session = useFuseSession();
 
-  // Query Convex for user data
-  const convexUser = useQuery(
-    api.domains.users.api.getCurrentUser,
-    clerkUser ? { clerkId: clerkUser.id } : 'skip'
-  );
-
-  // Hydrate FUSE store when data loads
-  useEffect(() => {
-    if (convexUser) {
-      setUser(convexUser);
-    }
-  }, [convexUser, setUser]);
-
-  // Don't render until user is loaded
-  if (!convexUser) {
+  // Store is ready when cookie is hydrated
+  if (!session._id) {
     return <LoadingScreen />;
   }
 
@@ -113,107 +265,11 @@ export function FuseProvider({ children }) {
 }
 ```
 
-**What it does:**
-- Fetches user data from Convex
-- Hydrates FUSE store with user data
-- Ensures data is ready before rendering children
-- **Eliminates all loading states in child components**
-
 ---
 
-## 📊 DATA FLOW
+## 2.3 WEBHOOK INTEGRATION
 
-```
-User navigates to protected route
-         ↓
-ClerkProvider checks authentication
-         ↓
-FuseProvider fetches user from Convex
-         ↓
-FUSE store is hydrated with user data
-         ↓
-Page component renders (data already available)
-         ↓
-✅ NO LOADING STATES!
-```
-
----
-
-## 🎨 COMPONENT PATTERNS
-
-### Server Component (Default)
-
-```typescript
-// app/domains/Dashboard.tsx (Sovereign Router - client component)
-export default async function DashboardPage() {
-  // Can access server-side data directly
-  const data = await fetchServerData();
-
-  return <div>{data}</div>;
-}
-```
-
-**When to use:**
-- No client-side interactivity needed
-- SEO-critical content
-- Static data display
-
----
-
-### Client Component (With Clerk)
-
-```typescript
-'use client';
-
-import { useUser } from '@clerk/nextjs';
-import { useFuse } from '@/store/fuse';
-
-export default function AccountPage() {
-  const { user: clerkUser } = useUser(); // Clerk user object
-  const displayUser = useFuse(s => s.user); // Convex user data
-
-  return (
-    <div>
-      <h1>{displayUser.firstName} {displayUser.lastName}</h1>
-      <p>{clerkUser.primaryEmailAddress?.emailAddress}</p>
-    </div>
-  );
-}
-```
-
-**When to use:**
-- Need Clerk hooks (`useUser`, `useAuth`, etc.)
-- Client-side interactivity
-- Forms, modals, interactive UI
-
----
-
-## 🔄 CLERK WEBHOOK INTEGRATION
-
-### Purpose
-Keep Convex database in sync with Clerk user updates (email changes, profile updates, etc.)
-
-### Architecture
-
-```
-Clerk (source of truth)
-         ↓
-user.updated event
-         ↓
-POST /api/webhooks/clerk
-         ↓
-Verify signature
-         ↓
-Extract user data
-         ↓
-Call Convex mutation
-         ↓
-Update Convex database
-         ↓
-✅ Database synced!
-```
-
-### Implementation
+Keep Convex database in sync with Clerk user updates.
 
 **File**: `app/api/webhooks/clerk/route.ts`
 
@@ -239,11 +295,9 @@ export async function POST(req: Request) {
 
   const payload = await req.json();
   const body = JSON.stringify(payload);
-
   const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET || '');
 
   let evt: WebhookEvent;
-
   try {
     evt = wh.verify(body, {
       "svix-id": svix_id,
@@ -251,7 +305,6 @@ export async function POST(req: Request) {
       "svix-signature": svix_signature,
     }) as WebhookEvent;
   } catch (err) {
-    console.error('Error verifying webhook:', err);
     return new Response('Error', { status: 400 });
   }
 
@@ -259,86 +312,25 @@ export async function POST(req: Request) {
   if (evt.type === 'user.updated') {
     const { id, email_addresses, first_name, last_name, image_url } = evt.data;
 
-    // Extract primary email
-    const primaryEmail = email_addresses?.find(
-      (email) => email.id === evt.data.primary_email_address_id
-    );
-
-    // Extract secondary email (verified only)
-    const secondaryEmail = email_addresses?.find((email) =>
-      email.id !== evt.data.primary_email_address_id &&
-      email.verification?.status === 'verified'
-    );
-
-    console.log(`[CLERK WEBHOOK] Syncing user ${id}`);
-
-    try {
-      // Sync to Convex
-      await convex.mutation(api.domains.users.api.syncUserFromClerk, {
-        clerkId: id,
-        email: primaryEmail?.email_address,
-        secondaryEmail: secondaryEmail?.email_address || undefined,
-        firstName: first_name || undefined,
-        lastName: last_name || undefined,
-        avatarUrl: image_url || undefined,
-      });
-
-      console.log(`[CLERK WEBHOOK] Successfully synced user ${id}`);
-    } catch (error) {
-      console.error(`[CLERK WEBHOOK] Error syncing:`, error);
-      return new Response('Error syncing to Convex', { status: 500 });
-    }
+    // Sync to Convex (uses clerkId for lookup ONLY - this is the exception)
+    await convex.mutation(api.domains.users.api.syncUserFromClerk, {
+      clerkId: id,
+      email: email_addresses?.find(e => e.id === evt.data.primary_email_address_id)?.email_address,
+      firstName: first_name || undefined,
+      lastName: last_name || undefined,
+      avatarUrl: image_url || undefined,
+    });
   }
 
   return new Response('', { status: 200 });
 }
 ```
 
-### Convex Mutation
-
-**File**: `convex/domains/users/api.ts`
-
-```typescript
-export const syncUserFromClerk = mutation({
-  args: {
-    clerkId: v.string(),
-    email: v.optional(v.string()),
-    secondaryEmail: v.optional(v.string()),
-    firstName: v.optional(v.string()),
-    lastName: v.optional(v.string()),
-    avatarUrl: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    const user = await UsersModel.getUserByClerkId(ctx.db, args.clerkId);
-
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    const updates: any = {
-      updatedAt: Date.now(),
-    };
-
-    if (args.email !== undefined) updates.email = args.email;
-    if (args.secondaryEmail !== undefined) updates.secondaryEmail = args.secondaryEmail;
-    if (args.firstName !== undefined) updates.firstName = args.firstName;
-    if (args.lastName !== undefined) updates.lastName = args.lastName;
-    if (args.avatarUrl !== undefined) updates.avatarUrl = args.avatarUrl;
-
-    await ctx.db.patch(user._id, updates);
-
-    console.log(`[SYNC] Updated user ${args.clerkId}`);
-
-    return { success: true };
-  },
-});
-```
-
 ---
 
-## 🔧 SETUP CHECKLIST
+## 2.4 SETUP CHECKLIST
 
-### 1. Environment Variables
+### Environment Variables
 
 ```bash
 # .env.local
@@ -348,7 +340,7 @@ CLERK_WEBHOOK_SECRET=whsec_...
 NEXT_PUBLIC_CONVEX_URL=https://...
 ```
 
-### 2. Clerk Dashboard Configuration
+### Clerk Dashboard Configuration
 
 1. Go to https://dashboard.clerk.com
 2. Navigate to **Webhooks**
@@ -357,226 +349,191 @@ NEXT_PUBLIC_CONVEX_URL=https://...
 5. Subscribe to: `user.updated`
 6. Copy **Signing Secret** → Add to `.env.local` as `CLERK_WEBHOOK_SECRET`
 
-### 3. Convex Schema
+---
+
+## 2.5 COMPONENT PATTERNS
+
+### Server Component (Default)
 
 ```typescript
-// convex/schema.ts
-users: defineTable({
-  clerkId: v.string(),
-  email: v.string(), // Primary email
-  secondaryEmail: v.optional(v.string()), // Secondary email
-  firstName: v.string(),
-  lastName: v.string(),
-  avatarUrl: v.optional(v.union(v.string(), v.id("_storage"))),
-  // ... other fields
-}).index("by_clerk_id", ["clerkId"]);
-```
-
----
-
-## 🎯 FUSE PRINCIPLES APPLIED
-
-1. **No Loading States**: FuseProvider ensures data is loaded before rendering
-2. **Single Source of Truth**: Clerk = auth, Convex = data
-3. **Automatic Sync**: Webhooks keep Convex in sync with Clerk
-4. **Optimistic Updates**: UI updates immediately, database follows
-5. **Zero Spinners**: Users never wait for data
-
----
-
-## 🎨 THE FUSE CONSUMER DOCTRINE
-
-### Domain CSS as FUSE-STYLE Consumers
-
-The `auth.css` file demonstrates the **FUSE Consumer Doctrine** - a critical architectural pattern where domain-specific CSS files consume platform-level tokens from the FUSE-STYLE Brain.
-
-### The Three-Layer Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│  LAYER 1: FUSE-STYLE BRAIN (Platform Infrastructure)       │
-│  /fuse/style/                                               │
-│  ├── tokens.css      → --radius-xl, --font-size-base       │
-│  └── themes/                                                │
-│      └── transtheme.css  → --text-primary, --text-secondary│
-│                         (Theme switching happens here)       │
-└─────────────────────────────────────────────────────────────┘
-                            ↓ Consumed via var(--)
-┌─────────────────────────────────────────────────────────────┐
-│  LAYER 2: DOMAIN CSS (Semantic Layer)                      │
-│  /src/app/(auth)/auth.css                                   │
-│  ├── Consumes: 19 CSS Custom Properties from FUSE          │
-│  ├── Creates: 40 semantic .auth-* classes                  │
-│  └── Purpose: Domain-specific composition layer            │
-└─────────────────────────────────────────────────────────────┘
-                            ↓ Composed in JSX
-┌─────────────────────────────────────────────────────────────┐
-│  LAYER 3: COMPONENTS (Presentation)                        │
-│  sign-in.tsx, sign-up.tsx, reset.tsx                       │
-│  └── className="auth-input-wrapper auth-input-with-icon"   │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Why This Matters
-
-**auth.css is NOT standalone** - it's a **FUSE-STYLE consumer** that:
-
-1. **Consumes Platform Tokens**: Uses `var(--radius-xl)`, `var(--text-primary)`, etc.
-2. **Creates Domain Semantics**: Defines `.auth-input`, `.auth-card`, etc.
-3. **Enables Theme Switching**: Inherits theme changes automatically
-4. **Maintains Single Source of Truth**: Colors/spacing defined once in FUSE
-5. **Co-locates with Domain**: Lives in (auth) folder with its pages
-
-### Example: FUSE Token Consumption
-
-```css
-/* auth.css - FUSE Consumer */
-.auth-input {
-  border-radius: var(--radius-xl);      /* ← From /fuse/style/tokens.css */
-  color: var(--text-primary);           /* ← From /fuse/style/themes/transtheme.css */
-  font-size: var(--font-size-base);     /* ← From /fuse/style/tokens.css */
-  transition: all 0.2s ease;
+// No 'use client' = server component
+export default async function Page() {
+  return <div>Static content - SSR</div>;
 }
+```
 
-.auth-input:focus {
-  box-shadow: 0 0 0 2px rgba(219, 62, 5, 0.2);
-}
+### Client Component (With FUSE)
 
-.auth-progress-fill {
-  background: linear-gradient(
-    to right,
-    var(--brand-gradient-start),        /* ← From /fuse/style/themes/transtheme.css */
-    var(--brand-gradient-end)           /* ← From /fuse/style/themes/transtheme.css */
+```typescript
+'use client';
+
+import { useFuse } from '@/store/fuse';
+
+export default function AccountPage() {
+  const user = useFuse(s => s.user); // From sovereign cookie
+
+  return (
+    <div>
+      <h1>{user.firstName} {user.lastName}</h1>
+    </div>
   );
 }
 ```
 
-### The Universal Law: NO INLINE STYLES
+---
 
-**ISV (Inline Style Virus) is architectural poison.** Every styling decision must flow through one of these layers:
+## 2.6 COMMON PITFALLS
+
+### DON'T: Fetch data in components
+```typescript
+// ❌ Creates loading state
+useEffect(() => {
+  fetch('/api/data').then(setData);
+}, []);
+
+if (!data) return <Spinner />; // ❌ User waits!
+```
+
+### DO: Use FUSE store
+```typescript
+// ✅ Data already loaded from cookie
+const data = useFuse(s => s.data);
+return <div>{data}</div>; // ✅ Instant render!
+```
+
+---
+
+# SECTION 3: CSS DOCTRINE
+
+---
+
+## 3.1 THE THREE-LAYER ARCHITECTURE
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  LAYER 1: FUSE-STYLE BRAIN (Platform Infrastructure)       │
+│  /styles/tokens.css, /styles/themes/transtheme.css         │
+│  └── --radius-xl, --font-size-base, --text-primary         │
+└─────────────────────────────────────────────────────────────┘
+                          ↓ Consumed via var(--)
+┌─────────────────────────────────────────────────────────────┐
+│  LAYER 2: FEATURE CSS (Semantic Layer)                     │
+│  /src/features/auth/auth.css                               │
+│  ├── Consumes: CSS Custom Properties from FUSE tokens      │
+│  ├── Creates: .ft-auth-* semantic classes                  │
+│  └── Imported via: /styles/features.css                    │
+└─────────────────────────────────────────────────────────────┘
+                          ↓ Composed in JSX
+┌─────────────────────────────────────────────────────────────┐
+│  LAYER 3: COMPONENTS (Presentation)                        │
+│  sign-in/page.tsx, sign-up/page.tsx, forgot/page.tsx       │
+│  └── className="ft-auth-input ft-auth-input-with-icon"     │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 3.2 AUTH CSS LOCATION
+
+**File:** `/src/features/auth/auth.css`
+**Prefix:** `.ft-auth-*`
+**Imported via:** `/styles/features.css`
+
+Auth CSS follows the VR Doctrine - CSS lives in the features layer, not co-located with pages.
+
+| What | Location |
+|------|----------|
+| Auth pages | `/src/app/(auth)/sign-in/`, `sign-up/`, `forgot/` |
+| Auth CSS | `/src/features/auth/auth.css` |
+| Auth actions | `/src/app/(auth)/actions/` |
+
+---
+
+## 3.3 CSS CLASS PREFIXES
+
+| Prefix | Layer | Location |
+|--------|-------|----------|
+| `.vr-*` | VR/Prebuilts | `/src/prebuilts/` |
+| `.ft-*` | Features | `/src/features/` |
+| `.ly-*` | Shell/Layout | `/src/shell/` |
+
+Auth uses `.ft-auth-*` because it's feature-level CSS.
+
+---
+
+## 3.4 FUSE TOKEN CONSUMPTION
+
+```css
+/* /src/features/auth/auth.css */
+.ft-auth-input {
+  border-radius: var(--radius-xl);      /* ← From tokens.css */
+  color: var(--ft-auth-text-primary);   /* ← Local semantic var */
+  font-size: var(--font-size-base);     /* ← From tokens.css */
+}
+
+.ft-auth-progress-fill {
+  background: linear-gradient(
+    to right,
+    var(--brand-gradient-start),        /* ← From transtheme.css */
+    var(--brand-gradient-end)           /* ← From transtheme.css */
+  );
+}
+```
+
+---
+
+## 3.5 THE UNIVERSAL LAW: NO INLINE STYLES
+
+**ISV (Inline Style Virus) is architectural poison.**
 
 ```tsx
 // ❌ ISV INFECTION - Bypasses FUSE-STYLE Brain
 <div style={{ padding: '4rem 0', textAlign: 'center' }}>
 
-// ✅ FUSE CONSUMER - Uses domain class that consumes FUSE tokens
-<div className="auth-centered-content">
+// ✅ FUSE CONSUMER - Uses feature class
+<div className="ft-auth-centered-content">
 ```
 
-**Why?**
-- Inline styles bypass the FUSE-STYLE Brain
-- Theme switching breaks (no access to theme variables)
+**Why inline styles are forbidden:**
+- Bypass the FUSE-STYLE Brain
+- Theme switching breaks
 - Single source of truth violated
-- Performance degrades (style recalculation on every render)
-- Maintainability destroyed (impossible to track styling decisions)
+- Performance degrades
+- Maintainability destroyed
 
-### Domain Pattern in Transfoorm
+---
 
-Every domain follows this pattern:
-
-- **(auth) domain** → `auth.css` → 40 `.auth-*` classes
-- **domains/** → Various CSS files → `.domains-*` classes (Sovereign Router)
-- **Component domains** → VR component CSS → Component-specific classes
-
-**All consume FUSE-STYLE Brain tokens. None are standalone.**
-
-### Benefits of FUSE Consumer Pattern
-
-1. **Theme Switching Works**: Domain CSS inherits theme variables automatically
-2. **Single Source of Truth**: Change platform token → all domains update
-3. **Domain Isolation**: `auth-` prefix prevents class name collisions
-4. **Co-location**: Domain CSS lives with domain pages
-5. **Maintainability**: Find domain styles in domain folder
-6. **Performance**: CSS Custom Properties are browser-native, C++ fast
-
-### Verification
+## 3.6 VERIFICATION COMMANDS
 
 Check FUSE token consumption:
 ```bash
-grep -c "var(--" /src/app/(auth)/auth.css
-# Result: 19 FUSE tokens consumed
+grep -c "var(--" src/features/auth/auth.css
 ```
 
-Check domain class count:
+Check class prefix compliance:
 ```bash
-grep -c "auth-" /src/app/(auth)/auth.css
-# Result: 58 class definitions/references
+grep -c "\.ft-auth-" src/features/auth/auth.css
 ```
 
 ---
 
-## 🚨 COMMON PITFALLS
+# APPENDIX
 
-### ❌ DON'T: Use client components for everything
-```typescript
-'use client'; // ❌ Adds unnecessary client-side JS
+## Success Criteria
 
-export default function Page() {
-  return <div>Static content</div>;
-}
-```
-
-### ✅ DO: Use server components by default
-```typescript
-// ✅ Server component (default)
-export default function Page() {
-  return <div>Static content</div>;
-}
-```
-
----
-
-### ❌ DON'T: Fetch data in components
-```typescript
-'use client';
-
-export default function Page() {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    fetch('/api/data').then(setData); // ❌ Loading state!
-  }, []);
-
-  if (!data) return <Spinner />; // ❌ User waits!
-}
-```
-
-### ✅ DO: Use FUSE store (data already loaded)
-```typescript
-'use client';
-
-export default function Page() {
-  const data = useFuse(s => s.data); // ✅ Already loaded!
-
-  return <div>{data}</div>; // ✅ Instant render!
-}
-```
-
----
-
-## 📚 RELATED DOCUMENTATION
-
-- [Clerk Secondary Email Flow](/docs/dev/ACCOUNT_EMAIL_FLOW.md)
-- [Clerk Webhook Setup](/docs/dev/CLERK_WEBHOOK_SETUP.md)
-- [FUSE Store Architecture](/docs/FUSE-STORE-ARCHITECTURE.md)
-
----
-
-## ✅ SUCCESS CRITERIA
-
-- [ ] ClerkProvider wraps protected routes
-- [ ] FuseProvider hydrates store before rendering
-- [ ] Webhook endpoint responds to `user.updated` events
-- [ ] Convex database stays in sync with Clerk
+- [ ] S.I.D. rules followed (no `auth()` outside `(auth)`)
+- [ ] Cookie contains valid `_id`
+- [ ] Webhooks sync Clerk → Convex
 - [ ] No loading states in components
-- [ ] Users can change email and it syncs automatically
+- [ ] CSS uses `.ft-auth-*` prefix
+- [ ] CSS lives in `/src/features/auth/`
+- [ ] Dante scan passes
 
 ---
 
-**Status**: ✅ Production-Ready
-**Last Tested**: 2025-01-15
+**Status**: Production-Ready
 **Maintainer**: Ken Roberts
 
 ---
 
-*"The best loading state is no loading state."* - FUSE Philosophy
+*"Clerk authenticates. Convex identifies. FUSE embodies. Nothing else rules."*

@@ -3,10 +3,9 @@
 /*  SHELL COMPONENTS (WCCC ly-* Compliant) */
 @import url('../src/shell/shell.css');
 
-/*  APP LAYOUT FILES (Root, Domain, Auth) */
+/*  APP LAYOUT FILES (Root, Domain) */
 @import url('../src/app/root-layout.css');
 @import url('../src/app/domains/domains-layout.css');
-@import url('../src/app/(auth)/auth.css');
 
 /* ═══════════════════════════════════════════════════════════════════
    LAYOUT CONTROL VARIABLES - App Shell & Page Architecture

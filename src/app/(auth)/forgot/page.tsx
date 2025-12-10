@@ -228,25 +228,25 @@ export default function ForgotPasswordPage() {
   if (stage === "success") {
     return (
       <>
-        <div className="auth-header">
-          <h1 className="auth-title">Password Reset Complete</h1>
-          <p className="auth-subtitle">Your password has been successfully reset</p>
+        <div className="ft-auth-header">
+          <h1 className="ft-auth-title">Password Reset Complete</h1>
+          <p className="ft-auth-subtitle">Your password has been successfully reset</p>
         </div>
 
-        <div className="auth-success">
-          <div className="auth-success-icon">
+        <div className="ft-auth-success">
+          <div className="ft-auth-success-icon">
             <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
 
-          <p className="auth-success-message">
+          <p className="ft-auth-success-message">
             Redirecting you to sign in...
           </p>
 
-          <div className="auth-progress-bar">
-            <div className="auth-progress-track">
-              <div className="auth-progress-fill"></div>
+          <div className="ft-auth-progress-bar">
+            <div className="ft-auth-progress-track">
+              <div className="ft-auth-progress-fill"></div>
             </div>
           </div>
         </div>
@@ -257,11 +257,11 @@ export default function ForgotPasswordPage() {
   return (
     <>
       {/* Header */}
-      <div className="auth-header">
-        <h1 className="auth-title">
+      <div className="ft-auth-header">
+        <h1 className="ft-auth-title">
           {stage === "password" ? "Reset Password" : "Forgot Password?"}
         </h1>
-        <p className="auth-subtitle">
+        <p className="ft-auth-subtitle">
           {stage === "email" && "If you have an account with us, enter your email address and you will receive a reset code"}
           {stage === "code" && "Enter the 6-digit code sent to your email"}
           {stage === "password" && "Enter your new password"}
@@ -270,9 +270,9 @@ export default function ForgotPasswordPage() {
 
       {/* Email Stage */}
       {stage === "email" && (
-        <form onSubmit={handleSendCode} className="auth-form">
-          <div className="auth-field">
-            <label htmlFor="email" className="auth-label">
+        <form onSubmit={handleSendCode} className="ft-auth-form">
+          <div className="ft-auth-field">
+            <label htmlFor="email" className="ft-auth-label">
               Email Address
             </label>
             <input
@@ -283,21 +283,21 @@ export default function ForgotPasswordPage() {
               required
               autoComplete="email"
               placeholder="you@example.com"
-              className="auth-input"
+              className="ft-auth-input"
               disabled={isSubmitting}
             />
           </div>
 
           {error && (
-            <div className="auth-error">
-              <p className="auth-error-text">{error}</p>
+            <div className="ft-auth-error">
+              <p className="ft-auth-error-text">{error}</p>
             </div>
           )}
 
           <Button.fire
             type="submit"
             disabled={isSubmitting}
-            icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
+            icon={isSubmitting ? <span className="ft-auth-spinner" /> : undefined}
             iconPosition="left"
             fullWidth
           >
@@ -308,12 +308,12 @@ export default function ForgotPasswordPage() {
 
       {/* Code Verification Stage */}
       {stage === "code" && (
-        <form onSubmit={(e) => { e.preventDefault(); handleVerifyCodeSubmit(); }} className="auth-form">
-          <div className="auth-field">
-            <label htmlFor="code" className="auth-code-label">
+        <form onSubmit={(e) => { e.preventDefault(); handleVerifyCodeSubmit(); }} className="ft-auth-form">
+          <div className="ft-auth-field">
+            <label htmlFor="code" className="ft-auth-code-label">
               Enter Verification Code
             </label>
-            <div className="auth-code-inputs">
+            <div className="ft-auth-code-inputs">
               {[0, 1, 2, 3, 4, 5].map((index) => (
                 <input
                   key={index}
@@ -370,46 +370,46 @@ export default function ForgotPasswordPage() {
                     const targetInput = e.currentTarget.parentElement?.children[targetIndex] as HTMLInputElement;
                     targetInput?.focus();
                   }}
-                  className="auth-code-input"
+                  className="ft-auth-code-input"
                   disabled={isSubmitting}
                 />
               ))}
             </div>
-            <p className="auth-code-help">
+            <p className="ft-auth-code-help">
               6-digit code was sent to <strong>{email}</strong>
             </p>
           </div>
 
           {error && (
-            <div className="auth-error">
-              <p className="auth-error-text">{error}</p>
+            <div className="ft-auth-error">
+              <p className="ft-auth-error-text">{error}</p>
             </div>
           )}
 
           <Button.fire
             type="submit"
             disabled={isSubmitting || code.length !== 6}
-            icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
+            icon={isSubmitting ? <span className="ft-auth-spinner" /> : undefined}
             iconPosition="left"
             fullWidth
           >
             {isSubmitting ? "Verifying..." : "Verify Code"}
           </Button.fire>
 
-          <div className="auth-resend">
+          <div className="ft-auth-resend">
             {!isResending ? (
               <>
-                <span className="auth-resend-text">Didn&apos;t receive the code? </span>
+                <span className="ft-auth-resend-text">Didn&apos;t receive the code? </span>
                 <button
                   type="button"
                   onClick={handleResendCode}
-                  className="auth-resend-button"
+                  className="ft-auth-resend-button"
                 >
                   Resend Code
                 </button>
               </>
             ) : (
-              <span className="auth-resend-success">Code sent! Check your inbox</span>
+              <span className="ft-auth-resend-success">Code sent! Check your inbox</span>
             )}
           </div>
 
@@ -420,7 +420,7 @@ export default function ForgotPasswordPage() {
               setCode("");
               setError("");
             }}
-            className="auth-secondary-button"
+            className="ft-auth-secondary-button"
           >
             ← Try a different email
           </button>
@@ -429,12 +429,12 @@ export default function ForgotPasswordPage() {
 
       {/* New Password Stage */}
       {stage === "password" && (
-        <form onSubmit={handleResetPassword} className="auth-form">
-          <div className="auth-field">
-            <label htmlFor="newPassword" className="auth-label">
+        <form onSubmit={handleResetPassword} className="ft-auth-form">
+          <div className="ft-auth-field">
+            <label htmlFor="newPassword" className="ft-auth-label">
               New Password
             </label>
-            <div className="auth-input-wrapper">
+            <div className="ft-auth-input-wrapper">
               <input
                 id="newPassword"
                 type={showPassword ? "text" : "password"}
@@ -443,33 +443,33 @@ export default function ForgotPasswordPage() {
                 required
                 autoComplete="new-password"
                 placeholder="Minimum 6 characters"
-                className="auth-input auth-input-with-icon"
+                className="ft-auth-input ft-auth-input-with-icon"
                 disabled={isSubmitting}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="auth-input-icon-button"
+                className="ft-auth-input-icon-button"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 <Icon variant={showPassword ? "eye-off" : "eye"} size="sm" />
               </button>
             </div>
-            <p className="auth-help-text">
+            <p className="ft-auth-help-text">
               Must have: 6+ characters, 1 uppercase, 1 number, 1 symbol
             </p>
           </div>
 
           {error && (
-            <div className="auth-error">
-              <p className="auth-error-text">{error}</p>
+            <div className="ft-auth-error">
+              <p className="ft-auth-error-text">{error}</p>
             </div>
           )}
 
           <Button.fire
             type="submit"
             disabled={isSubmitting}
-            icon={isSubmitting ? <span className="auth-spinner" /> : undefined}
+            icon={isSubmitting ? <span className="ft-auth-spinner" /> : undefined}
             iconPosition="left"
             fullWidth
           >
@@ -479,8 +479,8 @@ export default function ForgotPasswordPage() {
       )}
 
       {/* Back to Sign In */}
-      <div className="auth-footer-inline">
-        <a href="/sign-in" className="auth-link">
+      <div className="ft-auth-footer-inline">
+        <a href="/sign-in" className="ft-auth-link">
           ← Back to sign in
         </a>
       </div>
