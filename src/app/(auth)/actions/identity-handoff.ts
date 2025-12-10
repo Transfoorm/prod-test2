@@ -109,7 +109,16 @@ export async function performIdentityHandoff(): Promise<IdentityHandoffResult> {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // STEP 4: Mint FUSE session with CONVEX _id as PRIMARY — SID-1.7
+    // STEP 4: Fetch genome for cookie persistence — FUSE doctrine
+    // ═══════════════════════════════════════════════════════════════
+    const step4a = Date.now();
+    const freshGenome = await convex.query(api.domains.settings.queries.getUserGenome, {
+      callerUserId: convexUser._id
+    });
+    console.log(`  ├─ getUserGenome() → ${Date.now() - step4a}ms`);
+
+    // ═══════════════════════════════════════════════════════════════
+    // STEP 5: Mint FUSE session with CONVEX _id as PRIMARY — SID-1.7
     // clerkId becomes REFERENCE ONLY (for Clerk API calls)
     // ═══════════════════════════════════════════════════════════════
     const step4 = Date.now();
@@ -141,6 +150,24 @@ export async function performIdentityHandoff(): Promise<IdentityHandoffResult> {
       mirorEnchantmentTiming: convexUser.mirorEnchantmentTiming,
       dashboardLayout: 'classic',
       dashboardWidgets: DEFAULT_WIDGETS_BY_RANK[userRank] || DEFAULT_WIDGETS_BY_RANK['captain'],
+      // 🧬 Include genome in cookie for persistence on refresh
+      genome: freshGenome ? {
+        completionPercent: freshGenome.completionPercent ?? 0,
+        jobTitle: freshGenome.jobTitle,
+        department: freshGenome.department,
+        seniority: freshGenome.seniority,
+        industry: freshGenome.industry,
+        companySize: freshGenome.companySize,
+        companyWebsite: freshGenome.companyWebsite,
+        transformationGoal: freshGenome.transformationGoal,
+        transformationStage: freshGenome.transformationStage,
+        transformationType: freshGenome.transformationType,
+        timelineUrgency: freshGenome.timelineUrgency,
+        howDidYouHearAboutUs: freshGenome.howDidYouHearAboutUs,
+        teamSize: freshGenome.teamSize,
+        annualRevenue: freshGenome.annualRevenue,
+        successMetric: freshGenome.successMetric,
+      } : undefined,
     });
     console.log(`  ├─ mintSession() → ${Date.now() - step4}ms`);
 

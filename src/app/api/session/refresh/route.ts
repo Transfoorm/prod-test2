@@ -31,6 +31,11 @@ export async function POST() {
       return new NextResponse('User not found', { status: 404 });
     }
 
+    // 🧬 Fetch genome data for cookie persistence
+    const freshGenome = await convexClient.query(api.domains.settings.queries.getUserGenome, {
+      callerUserId: session._id as Id<"admin_users">
+    });
+
     // Mint new session cookie with fresh data
     // 🛡️ S.I.D. Phase 15: clerkId comes from existing session, not Convex query
     const token = await mintSession({
@@ -47,10 +52,29 @@ export async function POST() {
       businessCountry: freshUser.businessCountry as string,
       entityName: freshUser.entityName as string,
       socialName: freshUser.socialName as string,
+      phoneNumber: freshUser.phoneNumber as string,
       themeMode: freshUser.themeDark ? 'dark' : 'light',
       mirorAvatarProfile: freshUser.mirorAvatarProfile as 'male' | 'female' | 'inclusive' | undefined,
       mirorEnchantmentEnabled: freshUser.mirorEnchantmentEnabled,
-      mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined
+      mirorEnchantmentTiming: freshUser.mirorEnchantmentTiming as 'subtle' | 'magical' | 'playful' | undefined,
+      // 🧬 Include genome in cookie for persistence
+      genome: freshGenome ? {
+        completionPercent: freshGenome.completionPercent ?? 0,
+        jobTitle: freshGenome.jobTitle,
+        department: freshGenome.department,
+        seniority: freshGenome.seniority,
+        industry: freshGenome.industry,
+        companySize: freshGenome.companySize,
+        companyWebsite: freshGenome.companyWebsite,
+        transformationGoal: freshGenome.transformationGoal,
+        transformationStage: freshGenome.transformationStage,
+        transformationType: freshGenome.transformationType,
+        timelineUrgency: freshGenome.timelineUrgency,
+        howDidYouHearAboutUs: freshGenome.howDidYouHearAboutUs,
+        teamSize: freshGenome.teamSize,
+        annualRevenue: freshGenome.annualRevenue,
+        successMetric: freshGenome.successMetric,
+      } : undefined,
     });
 
     // Set the refreshed cookie
