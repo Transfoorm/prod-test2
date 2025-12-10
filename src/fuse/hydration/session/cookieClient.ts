@@ -80,6 +80,24 @@ export interface FuseCookiePayload {
 }
 
 /**
+ * Convert base64url to standard base64
+ * JWT uses base64url encoding which differs from standard base64:
+ * - '-' instead of '+'
+ * - '_' instead of '/'
+ * - No padding '=' characters
+ */
+function base64UrlToBase64(base64url: string): string {
+  // Replace URL-safe characters with standard base64 characters
+  let base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+  // Add padding if needed
+  const padding = base64.length % 4;
+  if (padding) {
+    base64 += '='.repeat(4 - padding);
+  }
+  return base64;
+}
+
+/**
  * Decode FUSE cookie (JWT format) to extract payload
  *
  * FUSE_5.0 cookie structure: header.payload.signature
@@ -98,8 +116,9 @@ export function decodeFuseCookie(cookieValue: string): FuseCookiePayload | null 
       return null;
     }
 
-    // Decode base64 payload (second part)
-    const payload = JSON.parse(atob(parts[1]));
+    // Decode base64url payload (second part) - JWT uses base64url, not standard base64
+    const base64 = base64UrlToBase64(parts[1]);
+    const payload = JSON.parse(atob(base64));
     return payload;
   } catch (error) {
     console.error('FUSE: Failed to decode cookie:', error);
