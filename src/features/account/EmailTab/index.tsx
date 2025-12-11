@@ -24,7 +24,9 @@ import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import type { Id } from '@/convex/_generated/dataModel';
 import { useFuse } from '@/store/fuse';
-import { Field, VerifyModal } from '@/prebuilts';
+import { Field } from '@/prebuilts';
+import { VerifyEmail } from '@/features/auth/VerifyEmail';
+import { VerifySecondary } from '@/features/auth/VerifySecondary';
 import { swapEmailsToPrimary, deleteSecondaryEmail } from '@/app/actions/email-actions';
 import { refreshSessionAfterUpload } from '@/app/actions/user-mutations';
 
@@ -223,7 +225,6 @@ export function EmailFields() {
   // Derived
   // ─────────────────────────────────────────────────────────────────────
 
-  const mode = pendingField === 'email' ? 'change' : 'secondary';
   const currentEmailForModal = pendingField === 'email' ? primaryEmail : secondaryEmail;
 
   const swapClasses = [
@@ -296,15 +297,24 @@ export function EmailFields() {
         </div>
       </div>
 
-      {/* Verification Modal */}
-      <VerifyModal
-        isOpen={showVerifyModal}
-        email={pendingEmail ?? ''}
-        mode={mode}
-        currentEmail={currentEmailForModal || undefined}
-        onSuccess={handleVerificationSuccess}
-        onClose={handleVerificationClose}
-      />
+      {/* Verification Modal - VerifyEmail for primary, VerifySecondary for secondary */}
+      {pendingField === 'email' ? (
+        <VerifyEmail
+          isOpen={showVerifyModal}
+          email={pendingEmail ?? ''}
+          currentEmail={currentEmailForModal || undefined}
+          onSuccess={handleVerificationSuccess}
+          onClose={handleVerificationClose}
+        />
+      ) : (
+        <VerifySecondary
+          isOpen={showVerifyModal}
+          email={pendingEmail ?? ''}
+          currentEmail={currentEmailForModal || undefined}
+          onSuccess={handleVerificationSuccess}
+          onClose={handleVerificationClose}
+        />
+      )}
     </>
   );
 }
