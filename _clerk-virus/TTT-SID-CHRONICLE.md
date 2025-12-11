@@ -37,8 +37,8 @@ From the official `00-TRANSFOORM-STORY.md`:
 
 | Version | Name | Focus |
 |---------|------|-------|
-| **FUSE 4.0** | **F**ast **U**ser-**S**ession **E**ngine | Eliminating session-based loading states |
-| **FUSE 5.0** | **F**ast **U**ser **S**ystem **E**ngineering | Complete system engineering |
+| **FUSE 6.0** | **F**ast **U**ser-**S**ession **E**ngine | Eliminating session-based loading states |
+| **FUSE 6.0** | **F**ast **U**ser **S**ystem **E**ngineering | Complete system engineering |
 | **FUSE 6.0** | **F**ast **U**ser **S**overeign **E**ngineering | The Sovereign Router — true client-side sovereignty |
 
 The name evolved as the architecture matured. FUSE 6.0 represents the current state: a sovereign runtime where the application owns its identity completely.

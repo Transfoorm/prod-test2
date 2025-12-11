@@ -25,8 +25,8 @@ import { api } from '@/convex/_generated/api';
 import type { Id } from '@/convex/_generated/dataModel';
 import { useFuse } from '@/store/fuse';
 import { Field } from '@/prebuilts';
-import { VerifyEmail } from '@/features/auth/VerifyEmail';
-import { VerifySecondary } from '@/features/auth/VerifySecondary';
+import { VerifyEmail } from '@/features/verify/VerifyEmail';
+import { VerifySecondary } from '@/features/verify/VerifySecondary';
 import { swapEmailsToPrimary, deleteSecondaryEmail } from '@/app/actions/email-actions';
 import { refreshSessionAfterUpload } from '@/app/actions/user-mutations';
 

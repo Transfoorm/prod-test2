@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  ✏️ UPDATE PROFILE - User Profile Mutation                             │
-│  /convex/domains/admin/users/updateProfile.ts                          │
+│  /convex/identity/updateProfile.ts                                     │
 │                                                                        │
 │  🛡️ SID-5.3 COMPLIANT: Accepts userId: v.id("admin_users")            │
 │  Sovereign identity lookup via ctx.db.get()                            │

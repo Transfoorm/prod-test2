@@ -699,48 +699,49 @@
 
    ═══════════════════════════════════════════════════════════════════ */
 
-/* Variables */
-:root {
-  /* Verify Modal - Colors */
+/* Variables - Consume from transtheme.css tokens */
+.vr-modal-verify-overlay,
+.vr-modal-verify {
+  /* Verify Modal - Colors (from transtheme.css --verify-* tokens) */
   --modal-verify-overlay-bg: rgb(0 0 0 / 40%);
-  --modal-verify-container-bg: linear-gradient(135deg, #fff5f0 0%, #fff 50%, #fff0f0 100%);
+  --modal-verify-container-bg: linear-gradient(135deg, var(--verify-gradient-start) 0%, var(--verify-gradient-mid) 50%, var(--verify-gradient-end) 100%);
   --modal-verify-container-shadow: 0 25px 50px -12px rgb(0 0 0 / 25%);
   --modal-verify-border: rgb(255 68 0 / 10%);
-  --modal-verify-heading-color: #d30;
-  --modal-verify-description-color: #6b7280;
-  --modal-verify-email-color: #374151;
-  --modal-verify-hint-color: #9ca3af;
+  --modal-verify-heading-color: var(--verify-heading);
+  --modal-verify-description-color: var(--verify-description);
+  --modal-verify-email-color: var(--verify-email);
+  --modal-verify-hint-color: var(--verify-hint);
 
   /* Code Input */
-  --modal-verify-code-input-bg: rgb(249 250 251 / 50%);
-  --modal-verify-code-input-bg-focus: #fff;
-  --modal-verify-code-input-border: #e5e7eb;
-  --modal-verify-code-input-border-focus: #f40;
-  --modal-verify-code-input-shadow-focus: 0 0 0 3px rgb(255 68 0 / 10%);
+  --modal-verify-code-input-bg: var(--verify-input-bg);
+  --modal-verify-code-input-bg-focus: var(--verify-input-bg-focus);
+  --modal-verify-code-input-border: var(--verify-input-border);
+  --modal-verify-code-input-border-focus: var(--verify-input-border-focus);
+  --modal-verify-code-input-shadow-focus: 0 0 0 3px var(--verify-input-shadow-focus);
 
   /* Error */
-  --modal-verify-error-bg: #fef2f2;
-  --modal-verify-error-border: #fecaca;
-  --modal-verify-error-text: #dc2626;
+  --modal-verify-error-bg: var(--verify-error-bg);
+  --modal-verify-error-border: var(--verify-error-border);
+  --modal-verify-error-text: var(--verify-error-text);
 
   /* Success */
-  --modal-verify-success-icon-bg: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  --modal-verify-success-icon-shadow: 0 10px 15px -3px rgb(16 185 129 / 30%);
-  --modal-verify-success-text: #10b981;
-  --modal-verify-progress-bg: #e5e7eb;
-  --modal-verify-progress-fill-bg: linear-gradient(90deg, #f40 0%, #f63 100%);
+  --modal-verify-success-icon-bg: linear-gradient(135deg, var(--verify-success-gradient-start) 0%, var(--verify-success-gradient-end) 100%);
+  --modal-verify-success-icon-shadow: 0 10px 15px -3px var(--verify-success-shadow);
+  --modal-verify-success-text: var(--verify-success-text);
+  --modal-verify-progress-bg: var(--verify-progress-track);
+  --modal-verify-progress-fill-bg: linear-gradient(90deg, var(--verify-progress-fill-start) 0%, var(--verify-progress-fill-end) 100%);
 
   /* Resend */
-  --modal-verify-resend-text: #6b7280;
-  --modal-verify-resend-link: #e4461b;
-  --modal-verify-resend-link-hover: #d30;
+  --modal-verify-resend-text: var(--verify-resend-text);
+  --modal-verify-resend-link: var(--verify-resend-link);
+  --modal-verify-resend-link-hover: var(--verify-resend-link-hover);
 
   /* Cancel */
-  --modal-verify-cancel-text: #6b7280;
-  --modal-verify-cancel-hover: #374151;
+  --modal-verify-cancel-text: var(--verify-cancel-text);
+  --modal-verify-cancel-hover: var(--verify-cancel-hover);
 
   /* Spinner */
-  --modal-verify-spinner-color: #f40;
+  --modal-verify-spinner-color: var(--verify-spinner);
 
   /* Sizing */
   --modal-verify-max-width: 680px;

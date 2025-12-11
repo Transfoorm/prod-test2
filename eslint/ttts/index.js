@@ -12,6 +12,7 @@
  *   - no-runtime-debt: Blocks useEffect fetch chains and async hooks (TTTS-7)
  *   - no-clerk-in-domains: Enforces Clerk relegation / Golden Bridge (SRB-7)
  *   - no-clerk-identity-in-actions: Blocks Clerk identity APIs in Server Actions (Category K)
+ *   - enforce-vanish-manifest: Enforces VANISH cascade coverage (VANISH-1)
  *
  * When these rules pass:
  *   - No one can bypass Golden Bridge
@@ -20,6 +21,7 @@
  *   - Strategy 1 (full domain preload) becomes impossible to break
  *   - Clerk stays relegated to auth only
  *   - Server Actions use FUSE cookie identity, not Clerk tokens
+ *   - User data cannot be orphaned on deletion
  *
  * Ref: TTTS-ENFORCEMENT-PACK-(v1.0).md, Clerk Knox
  *
@@ -37,6 +39,7 @@ const noLazyDomains = require('./no-lazy-domains.js');
 const noRuntimeDebt = require('./no-runtime-debt.js');
 const noClerkInDomains = require('./no-clerk-in-domains.js');
 const noClerkIdentityInActions = require('./no-clerk-identity-in-actions.js');
+const enforceVanishManifest = require('./enforce-vanish-manifest.js');
 
 module.exports = {
   rules: {
@@ -47,5 +50,6 @@ module.exports = {
     'no-runtime-debt': noRuntimeDebt.rules['no-runtime-debt'],
     'no-clerk-in-domains': noClerkInDomains.rules['no-clerk-in-domains'],
     'no-clerk-identity-in-actions': noClerkIdentityInActions.rules['no-clerk-identity-in-actions'],
+    'enforce-vanish-manifest': enforceVanishManifest.rules['enforce-vanish-manifest'],
   },
 };

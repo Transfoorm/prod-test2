@@ -44,7 +44,7 @@ export default function UserButton() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl.generateUploadUrl);
-  const uploadAvatar = useMutation(api.domains.admin.users.uploadAvatar.uploadAvatar);
+  const uploadAvatar = useMutation(api.identity.uploadAvatar.uploadAvatar);
   const convex = useConvex();
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);

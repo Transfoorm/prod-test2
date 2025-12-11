@@ -1,5 +1,5 @@
 /**
- * 🛡️ S.I.D. COMPLIANT - FUSE 5.0 SESSION REFRESH API
+ * 🛡️ S.I.D. COMPLIANT - FUSE 6.0 SESSION REFRESH API
  * Updates session cookie with fresh Convex data (e.g., after avatar upload)
  *
  * SID-5.3: Uses session._id (sovereign) for Convex lookups

@@ -1,6 +1,6 @@
 /**
  * 🛡️ S.I.D. COMPLIANT Server Actions - Sovereign Identity User Mutations
- *
+ * Purpose: Update user profile in Convex
  * These server actions wrap Convex mutations and automatically update session cookies,
  * eliminating the need for manual session refresh calls.
  *

@@ -1,6 +1,6 @@
 /**═══════════════════════════════════════════════════════════════════════════╗
  ║  🔥 PHOENIX BUTTON - Animation Timing Config                               ║
- ║  /src/features/UserSetup/FlyingButton/config.ts                            ║
+ ║  /src/features/setup/FlyingButton/config.ts                                ║
  ╠════════════════════════════════════════════════════════════════════════════╣
  ║                                                                            ║
  ║  The "Complete my setup" button that flies between Modal and Topbar.       ║

@@ -32,7 +32,7 @@ export function ClientsProvider({ children, initialData }: ClientsProviderProps)
 
   useEffect(() => {
     if (initialData) {
-      // 🔥 FUSE 4.0 + WARP: Hydrate clients domain
+      // 🔥 FUSE 6.0 + WARP: Hydrate clients domain
       console.log('👥 ClientsProvider: Hydrating clients domain');
       hydrateClients(initialData);
     }

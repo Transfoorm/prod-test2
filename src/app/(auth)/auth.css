@@ -56,14 +56,6 @@
   --ft-auth-link-color: #db3e05;
   --ft-auth-link-hover: #cc3600;
 
-  /* Auth Code Input */
-  --ft-auth-code-label-color: #374151;
-  --ft-auth-code-input-bg: rgb(249 250 251 / 50%);
-  --ft-auth-code-input-border: #e5e7eb;
-  --ft-auth-code-input-hover-bg: #fff;
-  --ft-auth-code-help-color: #6b7280;
-
-
   /* Auth Spinner */
   --ft-auth-spinner-border: rgb(255 255 255 / 30%);
   --ft-auth-spinner-top: #fff;
@@ -91,11 +83,6 @@
   max-width: 30rem; /* 448px */
 }
 
-.ft-auth-centered-content {
-  text-align: center;
-  padding: 4rem 0;
-}
-
 /* ═══════════════════════════════════════════════════════════════════════
    AUTH LOGO
    ═══════════════════════════════════════════════════════════════════════ */
@@ -113,13 +100,6 @@
   margin-right: auto;
   display: block;
   object-fit: contain;
-}
-
-/* For sign-up page (slightly less margin) */
-.ft-auth-logo-wrapper-compact {
-  text-align: center;
-  margin-top: 2.5rem;
-  margin-bottom: 2.75rem; /* mb-11 */
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -412,107 +392,6 @@
 .ft-auth-note-text {
   font-size: 0.75rem;
   color: var(--ft-auth-note-color);
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   RESET PASSWORD SPECIFIC: CODE INPUT
-   ═══════════════════════════════════════════════════════════════════════ */
-
-.ft-auth-code-label {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: var(--font-weight-semibold);
-  color: var(--ft-auth-code-label-color);
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.ft-auth-code-inputs {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.ft-auth-code-input {
-  width: 3rem;
-  height: 3.5rem;
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: var(--font-weight-bold);
-  background-color: var(--ft-auth-code-input-bg);
-  border: 2px solid var(--ft-auth-code-input-border);
-  border-radius: var(--radius-xl);
-  transition: all 0.2s ease;
-  outline: none;
-}
-
-.ft-auth-code-input:hover {
-  background-color: var(--ft-auth-code-input-hover-bg);
-}
-
-.ft-auth-code-input:focus {
-  outline: none;
-  border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px var(--brand-light);
-}
-
-.ft-auth-code-input:disabled {
-  opacity: 0.6;
-}
-
-.ft-auth-code-help {
-  margin-top: 0.75rem;
-  font-size: 0.75rem;
-  color: var(--ft-auth-code-help-color);
-  text-align: center;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   AUTH SECONDARY ACTIONS
-   ═══════════════════════════════════════════════════════════════════════ */
-
-.ft-auth-secondary-button {
-  width: 100%;
-  font-size: 0.875rem;
-  color: var(--ft-auth-text-secondary);
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: color 0.2s ease;
-  padding: 0.5rem;
-}
-
-.ft-auth-secondary-button:hover {
-  color: var(--ft-auth-text-primary);
-}
-
-/* Resend code section */
-.ft-auth-resend {
-  text-align: center;
-  margin-top: 1rem;
-  font-size: 0.875rem;
-}
-
-.ft-auth-resend-text {
-  color: var(--ft-auth-text-secondary);
-}
-
-.ft-auth-resend-button {
-  background: none;
-  border: none;
-  color: var(--brand-primary);
-  font-weight: var(--font-weight-semibold);
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.ft-auth-resend-button:hover {
-  color: var(--brand-hover);
-}
-
-.ft-auth-resend-success {
-  color: var(--brand-primary);
-  font-weight: var(--font-weight-medium);
 }
 
 /* Auth spinner for loading states */

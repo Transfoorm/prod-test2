@@ -18,7 +18,7 @@ import { useRouter } from 'next/navigation';
 import { useSignIn } from '@clerk/nextjs';
 import { Icon } from '@/prebuilts/icon/iconRegistry';
 import { Button } from '@/prebuilts/button';
-import { VerifyForgot } from '@/features/auth/VerifyForgot';
+import { VerifyForgot } from '@/features/verify/VerifyForgot';
 
 export default function ForgotPasswordPage() {
   const router = useRouter();

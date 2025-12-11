@@ -32,7 +32,7 @@ export function ProjectsProvider({ children, initialData }: ProjectsProviderProp
 
   useEffect(() => {
     if (initialData) {
-      // 🔥 FUSE 4.0 + WARP: Hydrate projects domain
+      // 🔥 FUSE 6.0 + WARP: Hydrate projects domain
       console.log('📋 ProjectsProvider: Hydrating projects domain');
       hydrateProjects(initialData);
     }

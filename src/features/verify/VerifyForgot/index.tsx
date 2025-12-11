@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🔐 VERIFY FORGOT - Password Reset Code Verification                  │
-│  /src/features/auth/VerifyForgot/index.tsx                             │
+│  /src/features/verify/VerifyForgot/index.tsx                          │
 │                                                                        │
 │  VR DOCTRINE: Feature Layer (Dirty Playground)                         │
 │  - Has Clerk hooks (useSignIn)                                         │
@@ -46,7 +46,7 @@ export function VerifyForgot({
   onCancel,
 }: VerifyForgotProps) {
   // ═══════════════════════════════════════════════════════════════════
-  // 🛡️ CLERK HOOKS - LEGAL IN AUTH FEATURES (features/auth/*)
+  // 🛡️ CLERK HOOKS - LEGAL IN VERIFY FEATURES (features/verify/*)
   // ═══════════════════════════════════════════════════════════════════
   const { isLoaded, signIn } = useSignIn();
 

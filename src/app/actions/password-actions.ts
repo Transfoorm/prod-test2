@@ -1,6 +1,6 @@
 /**
  * 🛡️ S.I.D. COMPLIANT Password Actions
- *
+ * Purpose: Change password via Clerk Backend API
  * SPECIAL CASE per SID-12.1:
  * These actions call Clerk API for password management.
  * Identity is sourced from session.clerkId (FUSE cookie), NOT auth().

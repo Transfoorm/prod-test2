@@ -1,31 +1,28 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔐 VERIFY SECONDARY - Add Secondary Email Verification               │
-│  /src/features/auth/VerifySecondary/index.tsx                          │
+│  🔐 VERIFY SETUP - Email Verification for Onboarding                 │
+│  /src/features/verify/VerifySetup/index.tsx                           │
 │                                                                        │
 │  VR DOCTRINE: Feature Layer (Dirty Playground)                         │
-│  - Has Clerk hooks (useUser)                                           │
-│  - Has state (code, error, isLoading, pendingEmailId)                  │
+│  - Has Clerk hooks (useUser, useSignUp)                                │
+│  - Has state (code, error, isLoading)                                  │
 │  - Has handlers (handleVerify, handleResend)                           │
 │  - Returns Modal.verify VR                                             │
 │                                                                        │
-│  Used by: EmailTab when adding secondary email                         │
-│  Flow: User enters new email → verify → keep as secondary → delete old │
+│  Used by: SetupModal during onboarding to verify primary email         │
+│  Flow: User signs up → email needs verification → this modal           │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useUser } from '@clerk/nextjs';
+import { useUser, useSignUp } from '@clerk/nextjs';
 import { Modal } from '@/prebuilts/modal';
-import { addEmailAndSendCode, deleteEmail } from '@/app/actions/email-actions';
 
-export interface VerifySecondaryProps {
+export interface VerifySetupProps {
   /** Control visibility */
   isOpen: boolean;
-  /** New email to add and verify */
+  /** Email to verify (display only) */
   email: string;
-  /** Current secondary email (to delete after verification) */
-  currentEmail?: string;
   /** Called when verification succeeds */
   onSuccess: () => void;
   /** Called when user closes/cancels */
@@ -33,27 +30,27 @@ export interface VerifySecondaryProps {
 }
 
 /**
- * VerifySecondary - Add secondary email verification
+ * VerifySetup - Email verification for onboarding/setup
  *
- * This feature handles adding a secondary email:
- * 1. Create new email via Server Action (bypasses reverification)
- * 2. Send verification code
- * 3. Verify the code
- * 4. Delete old secondary email (if any)
+ * This feature handles verifying an existing primary email.
+ * Used during signup flow when email needs verification.
  *
- * Used when user wants to add/change their secondary email in Account Settings.
+ * Clerk flow:
+ * 1. On open: prepareVerification({ strategy: 'email_code' })
+ * 2. On submit: attemptVerification({ code })
+ * 3. On success: call onSuccess callback
  */
-export function VerifySecondary({
+export function VerifySetup({
   isOpen,
   email,
-  currentEmail,
   onSuccess,
   onClose,
-}: VerifySecondaryProps) {
+}: VerifySetupProps) {
   // ═══════════════════════════════════════════════════════════════════
-  // 🛡️ CLERK HOOKS - LEGAL IN AUTH FEATURES (features/auth/*)
+  // 🛡️ CLERK HOOKS - LEGAL IN VERIFY FEATURES (features/verify/*)
   // ═══════════════════════════════════════════════════════════════════
-  const { user: clerkUser, isLoaded } = useUser();
+  const { user: clerkUser, isLoaded: userLoaded } = useUser();
+  const { signUp, isLoaded: signUpLoaded } = useSignUp();
 
   // State
   const [code, setCode] = useState('');
@@ -62,13 +59,14 @@ export function VerifySecondary({
   const [isPreparing, setIsPreparing] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [pendingEmailId, setPendingEmailId] = useState<string | null>(null);
+
+  const isLoaded = userLoaded || signUpLoaded;
 
   // ═══════════════════════════════════════════════════════════════════
   // EFFECTS
   // ═══════════════════════════════════════════════════════════════════
 
-  // Reset state and prepare email when modal opens
+  // Reset state and send code when modal opens
   useEffect(() => {
     if (!isOpen) return;
 
@@ -78,102 +76,67 @@ export function VerifySecondary({
     setIsLoading(false);
     setShowSuccess(false);
     setIsResending(false);
-    setPendingEmailId(null);
 
-    // Prepare secondary email
-    const prepareSecondaryEmail = async () => {
-      if (!clerkUser || !email) return;
-
+    // Send verification code
+    const sendCode = async () => {
       setIsPreparing(true);
-      setError('');
-
       try {
-        // Step 1: Create email via Server Action (bypasses reverification)
-        const result = await addEmailAndSendCode(email);
-        if (result.error) {
-          setError(result.error);
-          setIsPreparing(false);
-          return;
+        if (clerkUser?.primaryEmailAddress) {
+          await clerkUser.primaryEmailAddress.prepareVerification({
+            strategy: 'email_code',
+          });
+        } else if (signUp) {
+          await signUp.prepareEmailAddressVerification({
+            strategy: 'email_code',
+          });
         }
-
-        setPendingEmailId(result.emailAddressId!);
-
-        // Step 2: Reload user to get the new email address object
-        await clerkUser.reload();
-
-        // Step 3: Find the email and send verification code
-        const newEmailObj = clerkUser.emailAddresses.find(
-          (e) => e.id === result.emailAddressId
-        );
-        if (newEmailObj) {
-          await newEmailObj.prepareVerification({ strategy: 'email_code' });
-        }
-
-        setIsPreparing(false);
       } catch (err) {
-        console.error('Failed to prepare secondary email:', err);
-        const error = err as {
-          errors?: Array<{ message: string; code?: string }>;
-        };
-        if (error?.errors?.[0]?.message) {
-          const msg = error.errors[0].message;
-          if (
-            msg.toLowerCase().includes('already') ||
-            error.errors[0].code === 'form_identifier_exists'
-          ) {
-            setError('This email is already in use');
-          } else {
-            setError(msg);
-          }
-        } else {
-          setError('Failed to send verification code');
-        }
+        console.error('Failed to send verification code:', err);
+        setError('Failed to send code. Click Resend to try again.');
+      } finally {
         setIsPreparing(false);
       }
     };
 
-    if (isLoaded && email) {
-      prepareSecondaryEmail();
+    if (isLoaded) {
+      sendCode();
     }
-  }, [isOpen, isLoaded, clerkUser, email]);
+  }, [isOpen, isLoaded, clerkUser, signUp]);
 
   // ═══════════════════════════════════════════════════════════════════
   // HANDLERS
   // ═══════════════════════════════════════════════════════════════════
 
   const handleVerify = async () => {
-    if (!isLoaded || !clerkUser || !pendingEmailId || code.length !== 6) return;
+    if (!isLoaded || code.length !== 6) return;
 
     setError('');
     setIsLoading(true);
 
     try {
-      // Reload user to get fresh email state
-      await clerkUser.reload();
+      let isVerified = false;
 
-      const pendingEmailObj = clerkUser.emailAddresses.find(
-        (e) => e.id === pendingEmailId
-      );
-      if (!pendingEmailObj) {
-        throw new Error('Pending email not found');
+      if (clerkUser?.primaryEmailAddress) {
+        // Verify existing user's primary email
+        const result = await clerkUser.primaryEmailAddress.attemptVerification({
+          code,
+        });
+        isVerified =
+          result.verification?.status === 'verified' ||
+          ('status' in result && result.status === 'complete');
+      } else if (signUp) {
+        // Verify during signup flow
+        const result = await signUp.attemptEmailAddressVerification({ code });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const anyResult = result as any;
+        isVerified =
+          anyResult?.verification?.status === 'verified' ||
+          anyResult?.status === 'complete';
+      } else {
+        throw new Error('No verification method available');
       }
 
-      // Verify the code
-      const result = await pendingEmailObj.attemptVerification({ code });
-      const isVerified = result.verification?.status === 'verified';
-
       if (isVerified) {
-        // Find the old secondary email's Clerk ID (for deletion)
-        const oldEmailObj = currentEmail
-          ? clerkUser.emailAddresses.find((e) => e.emailAddress === currentEmail)
-          : null;
-        const oldEmailClerkId = oldEmailObj?.id;
-
-        // Delete old secondary email (if any)
-        if (oldEmailClerkId) {
-          await deleteEmail(oldEmailClerkId);
-        }
-
         setIsLoading(false);
         setShowSuccess(true);
 
@@ -204,18 +167,21 @@ export function VerifySecondary({
   };
 
   const handleResend = async () => {
-    if (!isLoaded || !clerkUser || !pendingEmailId || isResending) return;
+    if (!isLoaded || isResending) return;
 
     setIsResending(true);
     setError('');
     setCode('');
 
     try {
-      const pendingEmail = clerkUser.emailAddresses.find(
-        (e) => e.id === pendingEmailId
-      );
-      if (pendingEmail) {
-        await pendingEmail.prepareVerification({ strategy: 'email_code' });
+      if (clerkUser?.primaryEmailAddress) {
+        await clerkUser.primaryEmailAddress.prepareVerification({
+          strategy: 'email_code',
+        });
+      } else if (signUp) {
+        await signUp.prepareEmailAddressVerification({
+          strategy: 'email_code',
+        });
       }
 
       // Show success feedback briefly
@@ -233,24 +199,6 @@ export function VerifySecondary({
     }
   };
 
-  const handleClose = async () => {
-    // Clean up unverified pending email
-    if (pendingEmailId && clerkUser) {
-      try {
-        await clerkUser.reload();
-        const pendingEmail = clerkUser.emailAddresses.find(
-          (e) => e.id === pendingEmailId
-        );
-        if (pendingEmail && pendingEmail.verification?.status !== 'verified') {
-          await pendingEmail.destroy();
-        }
-      } catch {
-        // Silent cleanup failure is ok
-      }
-    }
-    onClose();
-  };
-
   // ═══════════════════════════════════════════════════════════════════
   // RENDER - Modal.verify VR (dumb shell)
   // ═══════════════════════════════════════════════════════════════════
@@ -266,23 +214,23 @@ export function VerifySecondary({
       isLoading={isLoading}
       isResending={isResending}
       showSuccess={showSuccess}
-      heading="Add Secondary Email"
+      heading="Verify Your Email"
       description="Check your inbox for a 6-digit code and return here"
-      submitText="Verify & Add Email"
+      submitText="Verify Email"
       cancelText="Cancel"
       resendText="Resend Code"
       resendSuccessText="Code sent! Check again"
-      successHeading="Email Confirmed!"
-      successDescription="Your secondary email has been verified successfully"
-      successProgressText="Updating your profile..."
+      successHeading="Email Verified!"
+      successDescription="Your email has been successfully verified"
+      successProgressText="Completing your setup..."
       preparingText="Sending verification code..."
       onCodeChange={setCode}
       onSubmit={handleVerify}
       onResend={handleResend}
-      onCancel={handleClose}
-      onClose={handleClose}
+      onCancel={onClose}
+      onClose={onClose}
     />
   );
 }
 
-export default VerifySecondary;
+export default VerifySetup;

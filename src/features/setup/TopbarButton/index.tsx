@@ -2,7 +2,7 @@
 
 /**──────────────────────────────────────────────────────────────────────────┐
  │  🤖 VARIANT ROBOT - TopbarSetupButton                                     │
- │  /src/features/UserSetup/TopbarButton/index.tsx                           │
+ │  /src/features/setup/TopbarButton/index.tsx                               │
  │                                                                            │
  │  VR-Sovereign: Owns ALL button state, visibility, and click behavior.     │
  │  Topbar just renders <TopbarSetupButton /> - zero ceremony.               │
@@ -24,7 +24,7 @@ import {
   reverseFlow,
   navAwayFlow,
   navReturnFlow
-} from '@/features/UserSetup/FlyingButton/config';
+} from '@/features/setup/FlyingButton/config';
 
 export default function TopbarSetupButton() {
   // ─────────────────────────────────────────────────────────────────────

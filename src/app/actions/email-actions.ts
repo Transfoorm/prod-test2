@@ -1,6 +1,6 @@
 /**
  * 🛡️ S.I.D. COMPLIANT Email Actions
- *
+ * Purpose: Add/remove emails via Clerk Backend API 
  * SPECIAL CASE per SID-12.1:
  * These actions call Clerk API for email management.
  * Identity is sourced from session.clerkId (FUSE cookie), NOT auth().

@@ -2,7 +2,7 @@
 
 /**──────────────────────────────────────────────────────────────────────────┐
  │  👑 SHADOW KING - Sovereign Setup Enforcement                            │
- │  /src/features/UserSetup/ShadowKing/index.tsx                            │
+ │  /src/features/setup/ShadowKing/index.tsx                                │
  │                                                                          │
  │  The Shadow King is a sovereign global modal, permanently mounted at     │
  │  the FuseApp shell level. It only activates when user intentionally      │
@@ -17,7 +17,7 @@
 
 import { useEffect } from 'react';
 import { useFuse } from '@/store/fuse';
-import SetupModal from '@/features/UserSetup/SetupModal';
+import SetupModal from '@/features/setup/SetupModal';
 import { Backdrop } from '@/prebuilts';
 
 export default function ShadowKing() {

@@ -32,7 +32,7 @@ export function ProductivityProvider({ children, initialData }: ProductivityProv
 
   useEffect(() => {
     if (initialData) {
-      // 🔥 FUSE 4.0 + WARP: Hydrate work domain
+      // 🔥 FUSE 6.0 + WARP: Hydrate work domain
       console.log('⚡ ProductivityProvider: Hydrating work domain');
       hydrateProductivity(initialData);
     }

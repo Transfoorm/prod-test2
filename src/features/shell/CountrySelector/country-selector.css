@@ -3,12 +3,6 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Button Dimensions */
-  --country-button-height: 40px;
-  --country-button-gap: 8px;
-  --country-button-radius: 8px;
-  --country-button-large-size: 48px;
-
   /* Dropdown Dimensions */
   --country-dropdown-width: 192px;
   --country-dropdown-padding-bottom: 4px;
@@ -30,94 +24,8 @@
   /* Option Content */
   --country-option-content-gap: 2px;
 
-  /* Typography */
-  --country-flag-font-size-large: 28px;
-
   /* Shadow */
-  --country-dropdown-shadow-y: 10px;
-  --country-dropdown-shadow-blur: 15px;
-  --country-dropdown-shadow-spread: -3px;
-  --country-dropdown-shadow-y2: 4px;
-  --country-dropdown-shadow-blur2: 6px;
-  --country-dropdown-shadow-spread2: -2px;
   --country-dropdown-shadow: 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -2px rgb(0 0 0 / 5%);
-}
-
-/* Container */
-.ft-country-container {
-  position: relative;
-}
-
-/* Button - Base */
-.ft-country-button {
-  padding: 0;
-  border-radius: var(--country-button-radius);
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--country-button-gap);
-  width: auto;
-  height: var(--country-button-height);
-  flex-shrink: 0;
-  appearance: none;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-}
-
-.ft-country-button * {
-  user-select: none !important;
-  pointer-events: none;
-}
-
-/* Button - Size Variants */
-.ft-country-button--large {
-  width: var(--country-button-large-size);
-  height: var(--country-button-large-size);
-}
-
-/* Button - State: Hover */
-.ft-country-button:hover {
-  background-color: var(--bg-active);
-}
-
-/* Button - State: Open */
-.ft-country-button--open {
-  background-color: var(--bg-active) !important;
-}
-
-/* Button - Flag Emoji */
-.ft-country-flag {
-  font-size: var(--font-size-xl);
-  line-height: 1;
-}
-
-.ft-country-button--large .ft-country-flag {
-  font-size: var(--country-flag-font-size-large);
-}
-
-/* Button - Label Text */
-.ft-country-label {
-  font-size: var(--font-size-sm);
-  color: var(--text-primary);
-  font-weight: var(--font-weight-normal);
-  white-space: nowrap;
-  user-select: none !important;
-}
-
-.ft-country-label::before {
-  content: attr(data-text);
-  user-select: none;
-  pointer-events: none;
-}
-
-.ft-country-label::selection {
-  background: transparent !important;
-  color: inherit !important;
 }
 
 /* Dropdown - Portal Container */
@@ -213,12 +121,6 @@
   font-weight: var(--font-weight-medium);
   color: var(--text-primary);
   white-space: nowrap;
-}
-
-/* Option - Country Code */
-.ft-country-option-code {
-  font-size: var(--font-size-xs);
-  color: var(--text-tertiary);
 }
 
 /* Option - Checkmark */

@@ -15,7 +15,7 @@ import { readFileSync, existsSync } from 'fs';
 // FUSE-compliant exception files (allowed to have inline styles)
 const EXCEPTION_FILES = new Set([
   // Phoenix Animation System (Dynamic Law - runtime transforms)
-  'src/features/UserSetup/FlyingButton/index.tsx',  // CSS custom properties for positioning
+  'src/features/setup/FlyingButton/index.tsx',  // CSS custom properties for positioning
 
   // Portal components (Dynamic Law - getBoundingClientRect positioning)
   'src/components/features/CountrySelector/index.tsx',
@@ -41,8 +41,8 @@ const EXCEPTION_FILES = new Set([
   'src/features/UserButton/index.tsx',
   'src/features/shell/UserButton/index.tsx',  // react-easy-crop requires style prop
 
-  // MirrorAI star toggle (SVG particle circles need inline opacity:0 - CSS alone failed)
-  'src/features/preferences/MirrorAIFields/index.tsx',
+  // MirorAI star toggle (SVG particle circles need inline opacity:0 - CSS alone failed)
+  'src/features/preferences/MirorAIFields/index.tsx',
 ]);
 
 interface Violation {

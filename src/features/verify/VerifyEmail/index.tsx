@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🔐 VERIFY EMAIL - Change Primary Email Verification                  │
-│  /src/features/auth/VerifyEmail/index.tsx                              │
+│  /src/features/verify/VerifyEmail/index.tsx                           │
 │                                                                        │
 │  VR DOCTRINE: Feature Layer (Dirty Playground)                         │
 │  - Has Clerk hooks (useUser)                                           │
@@ -52,7 +52,7 @@ export function VerifyEmail({
   onClose,
 }: VerifyEmailProps) {
   // ═══════════════════════════════════════════════════════════════════
-  // 🛡️ CLERK HOOKS - LEGAL IN AUTH FEATURES (features/auth/*)
+  // 🛡️ CLERK HOOKS - LEGAL IN VERIFY FEATURES (features/verify/*)
   // ═══════════════════════════════════════════════════════════════════
   const { user: clerkUser, isLoaded } = useUser();
 

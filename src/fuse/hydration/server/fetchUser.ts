@@ -1,5 +1,5 @@
 /**
- * 🛡️ S.I.D. COMPLIANT - FUSE 5.0 Server-Side User Fetch
+ * 🛡️ S.I.D. COMPLIANT - FUSE 6.0 Server-Side User Fetch
  * Reads session cookie and fetches fresh data from Convex for SSR
  *
  * SID-5.3: Uses session._id (sovereign) for Convex lookups
@@ -47,7 +47,7 @@ export async function fetchUserServer(): Promise<ServerUser | null> {
       return null; // User deleted - will trigger redirect to /sign-in
     }
 
-    // FUSE 5.0 Doctrine: Convex is the single source of truth
+    // FUSE 6.0 Doctrine: Convex is the single source of truth
     // Use fresh data from Convex, not stale cookie
     // 🛡️ S.I.D. Phase 15: clerkId comes from session, not Convex query
     const userData: ServerUser = {
