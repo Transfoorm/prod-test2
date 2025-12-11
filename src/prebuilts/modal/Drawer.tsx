@@ -1,10 +1,10 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🎯 SIDEDRAWER - Clean Architecture                                    │
-│  /src/prebuilts/modal/Drawer.tsx                                      │
+│  /src/prebuilts/modal/Drawer.tsx                                       │
 │                                                                        │
-│  Merged context + portal in single file.                              │
-│  requestAnimationFrame for flicker-free animations.                   │
-│  Single 500ms timing constant throughout.                             │
+│  Merged context + portal in single file.                               │
+│  requestAnimationFrame for flicker-free animations.                    │
+│  Single 500ms timing constant throughout.                              │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';

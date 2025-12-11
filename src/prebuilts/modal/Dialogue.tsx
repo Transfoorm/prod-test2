@@ -5,14 +5,14 @@
 │  Standard dialogue modal with header, content, and action buttons.     │
 │                                                                        │
 │  Usage:                                                                │
-│  import { Modal } from '@/prebuilts/modal';                │
-│  <Modal.dialogue                                                      │
-│    title="Confirm Action"                                            │
-│    isOpen={isOpen}                                                    │
-│    onClose={() => setIsOpen(false)}                                  │
+│  import { Modal } from '@/prebuilts/modal';                            │
+│  <Modal.dialogue                                                       │
+│    title="Confirm Action"                                              │
+│    isOpen={isOpen}                                                     │
+│    onClose={() => setIsOpen(false)}                                    │
 │  >                                                                     │
-│    <p>Are you sure you want to proceed?</p>                           │
-│  </Modal.dialogue>                                                    │
+│    <p>Are you sure you want to proceed?</p>                            │
+│  </Modal.dialogue>                                                     │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 "use client";

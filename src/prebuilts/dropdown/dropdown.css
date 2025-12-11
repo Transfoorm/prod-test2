@@ -137,6 +137,7 @@
 /* Dropdown menu */
 .vr-dropdown-simple-menu {
   --anim-slide-distance: calc(-1 * var(--dropdown-animation-distance));
+
   position: absolute;
   top: calc(100% + var(--dropdown-menu-offset));
   left: 0;

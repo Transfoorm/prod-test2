@@ -125,6 +125,7 @@ const EXCEPTION_PATTERNS = [
   /middleware\.ts$/,                 // Auth middleware
   /\/vanish\/Quarantine\.tsx$/,      // Clerk quarantine zone
   /\/hooks\/useConvexUser\.ts$/,     // User sync hook
+  /\/features\/auth\//,              // Auth features (ForgotPassword, Verify*, etc.)
   /\/features\/UserButton\//,        // Auth UI - sign out flow
   /\/features\/UserSetup\//,         // Auth UI - onboarding/verification
   /\/features\/VerifyModal\//,       // Auth UI - email verification modal

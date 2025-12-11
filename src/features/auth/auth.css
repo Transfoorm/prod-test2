@@ -88,7 +88,7 @@
 
 .ft-auth-container {
   width: 100%;
-  max-width: 28rem; /* 448px */
+  max-width: 30rem; /* 448px */
 }
 
 .ft-auth-centered-content {
@@ -173,7 +173,7 @@
 .ft-auth-subtitle {
   margin-top: 0.5rem;
   color: var(--ft-auth-text-secondary);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════

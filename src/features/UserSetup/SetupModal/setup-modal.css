@@ -109,6 +109,7 @@
     opacity: 0;
     transform: translateY(-100%);
   }
+
   to {
     max-height: 5000px;
     opacity: 1;
