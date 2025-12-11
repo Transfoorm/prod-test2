@@ -1,10 +1,10 @@
 # 🔐 FUSE-AUTH + S.I.D.
 ## Authentication Architecture & Sovereign Identity Doctrine
 
-**Version**: 3.0.0
+**Version**: 3.1.0
 **Last Updated**: 2025-12-11
 **Author**: Ken Roberts
-**Purpose**: Complete authentication architecture including S.I.D. rules, Clerk integration, FUSE patterns, and CSS doctrine
+**Purpose**: Complete authentication architecture including S.I.D. rules, Clerk integration, FUSE patterns, Verify* features, and CSS doctrine
 
 ---
 
@@ -193,9 +193,11 @@ Any violations = refactor blocked.
 ```
 app/
 ├── (auth)/                    # Public routes - NO authentication
+│   ├── auth.css               # Shared auth page styles (.ft-auth-*)
 │   ├── sign-in/               # Sign in page
 │   ├── sign-up/               # Sign up page
-│   ├── forgot/                # Password reset
+│   ├── forgot/                # Password reset (email + password forms inline)
+│   │   └── page.tsx           # Stage 1 + <VerifyForgot/> + Stage 3
 │   └── actions/               # Identity handoff (S.I.D. Phase 0)
 │
 ├── domains/                   # Protected routes - Sovereign Router
@@ -214,6 +216,15 @@ app/
 └── api/
     ├── session/               # Session cookie minting
     └── webhooks/clerk/        # Clerk webhook endpoint
+
+features/auth/                 # Auth Features (Clerk dirty playground)
+├── VerifySetup/               # Verify email during onboarding
+├── VerifyEmail/               # Change primary email verification
+├── VerifySecondary/           # Add secondary email verification
+└── VerifyForgot/              # Password reset code verification
+
+prebuilts/modal/
+└── Verify.tsx                 # Modal.verify VR (dumb shell)
 ```
 
 ---
@@ -403,6 +414,50 @@ return <div>{data}</div>; // ✅ Instant render!
 
 ---
 
+## 2.7 VERIFY FEATURES (VR DOCTRINE)
+
+All email verification flows use the **Modal.verify VR** (dumb shell) with dedicated features handling Clerk logic.
+
+### The Pattern
+
+```
+Modal.verify (VR)          ← Dumb shell, just UI
+    ↑
+Verify* (Feature)          ← Dirty playground with Clerk hooks
+    ↑
+Consumer (Page/Tab)        ← ONE LINE import
+```
+
+### Available Verify Features
+
+| Feature | Purpose | Used By |
+|---------|---------|---------|
+| `VerifySetup` | Verify email during onboarding | SetupModal |
+| `VerifyEmail` | Change primary email | EmailTab |
+| `VerifySecondary` | Add secondary email | EmailTab |
+| `VerifyForgot` | Password reset code | forgot/page.tsx |
+
+### Usage Example
+
+```typescript
+// In forgot/page.tsx - Stage 2 is ONE LINE
+<VerifyForgot
+  isOpen={stage === 'code'}
+  email={email}
+  onSuccess={() => setStage('password')}
+  onCancel={() => setStage('email')}
+/>
+```
+
+### Why This Pattern?
+
+1. **Consistency** - All verification flows look/behave identically
+2. **Separation** - Clerk hooks confined to features, not pages
+3. **Reusability** - Modal.verify VR used by all features
+4. **Testability** - Features can be tested in isolation
+
+---
+
 # SECTION 3: CSS DOCTRINE
 
 ---
@@ -435,17 +490,18 @@ return <div>{data}</div>; // ✅ Instant render!
 
 ## 3.2 AUTH CSS LOCATION
 
-**File:** `/src/features/auth/auth.css`
+**File:** `/src/app/(auth)/auth.css`
 **Prefix:** `.ft-auth-*`
-**Imported via:** `/styles/features.css`
+**Imported via:** `/styles/features.css` AND local `./auth.css` in layout.tsx
 
-Auth CSS follows the VR Doctrine - CSS lives in the features layer, not co-located with pages.
+Auth CSS lives WITH the auth pages since it's specific to the `(auth)` route group.
 
 | What | Location |
 |------|----------|
 | Auth pages | `/src/app/(auth)/sign-in/`, `sign-up/`, `forgot/` |
-| Auth CSS | `/src/features/auth/auth.css` |
+| Auth CSS | `/src/app/(auth)/auth.css` |
 | Auth actions | `/src/app/(auth)/actions/` |
+| Verify features | `/src/features/auth/VerifySetup/`, `VerifyEmail/`, etc. |
 
 ---
 
@@ -464,7 +520,7 @@ Auth uses `.ft-auth-*` because it's feature-level CSS.
 ## 3.4 FUSE TOKEN CONSUMPTION
 
 ```css
-/* /src/features/auth/auth.css */
+/* /src/app/(auth)/auth.css */
 .ft-auth-input {
   border-radius: var(--radius-xl);      /* ← From tokens.css */
   color: var(--ft-auth-text-primary);   /* ← Local semantic var */
@@ -507,12 +563,12 @@ Auth uses `.ft-auth-*` because it's feature-level CSS.
 
 Check FUSE token consumption:
 ```bash
-grep -c "var(--" src/features/auth/auth.css
+grep -c "var(--" src/app/\(auth\)/auth.css
 ```
 
 Check class prefix compliance:
 ```bash
-grep -c "\.ft-auth-" src/features/auth/auth.css
+grep -c "\.ft-auth-" src/app/\(auth\)/auth.css
 ```
 
 ---
@@ -526,7 +582,8 @@ grep -c "\.ft-auth-" src/features/auth/auth.css
 - [ ] Webhooks sync Clerk → Convex
 - [ ] No loading states in components
 - [ ] CSS uses `.ft-auth-*` prefix
-- [ ] CSS lives in `/src/features/auth/`
+- [ ] CSS lives in `/src/app/(auth)/auth.css`
+- [ ] Verify* features use Modal.verify VR
 - [ ] Dante scan passes
 
 ---
