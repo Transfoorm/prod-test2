@@ -1,7 +1,7 @@
 /* Feature Components - Application-Level Reusable Features */
 
 /* Auth Feature (sign-in, sign-up, forgot password) */
-@import url('../src/features/auth/auth.css');
+@import url('../src/app/(auth)/auth.css');
 
 /* Company Button (includes Logo Cropper) */
 @import url('../src/features/shell/CompanyButton/company-button.css');
