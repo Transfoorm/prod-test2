@@ -22,7 +22,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useMutation, useConvex } from "convex/react";
-import { signOutAction } from '@/app/(auth)/actions/signOut';
+import { signOutAction } from '@/app/(auth)/actions/sign-out';
 import dynamic from 'next/dynamic';
 
 // Lazy load Cropper to prevent main thread blocking when opening photo modal
