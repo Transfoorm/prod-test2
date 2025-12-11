@@ -4,7 +4,7 @@
 @import url('../src/shell/shell.css');
 
 /*  APP LAYOUT FILES (Root, Domain) */
-@import url('../src/app/root-layout.css');
+@import url('../src/shell/root-layout.css');
 @import url('../src/app/domains/domains-layout.css');
 
 /* ═══════════════════════════════════════════════════════════════════

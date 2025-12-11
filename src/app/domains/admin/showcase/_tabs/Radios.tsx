@@ -23,29 +23,29 @@ export default function Radios() {
       title="Radios Showcase"
       subtitle="Choose from or sandbox the site's radio features"
     >
-      <div className="ft-showcase-grid-5">
+      <div className="ft-showcasetabs-grid-5">
         <div>
-          <p className="ft-showcase-item-label">Input.radio (vertical, sm)</p>
+          <p className="ft-showcasetabs-item-label">Input.radio (vertical, sm)</p>
           <Input.radio value={value1} onChange={setValue1} options={OPTIONS} direction="vertical" size="sm" />
         </div>
         <div>
-          <p className="ft-showcase-item-label">Input.radio (vertical, md)</p>
+          <p className="ft-showcasetabs-item-label">Input.radio (vertical, md)</p>
           <Input.radio value={value2} onChange={setValue2} options={OPTIONS} direction="vertical" size="md" />
         </div>
         <div>
-          <p className="ft-showcase-item-label">Input.radio (vertical, lg)</p>
+          <p className="ft-showcasetabs-item-label">Input.radio (vertical, lg)</p>
           <Input.radio value={value3} onChange={setValue3} options={OPTIONS} direction="vertical" size="lg" />
         </div>
         <div>
-          <p className="ft-showcase-item-label">Input.radio (horizontal, sm)</p>
+          <p className="ft-showcasetabs-item-label">Input.radio (horizontal, sm)</p>
           <Input.radio value={value4} onChange={setValue4} options={OPTIONS} direction="horizontal" size="sm" />
         </div>
         <div>
-          <p className="ft-showcase-item-label">Input.radio (horizontal, md)</p>
+          <p className="ft-showcasetabs-item-label">Input.radio (horizontal, md)</p>
           <Input.radio value={value5} onChange={setValue5} options={OPTIONS} direction="horizontal" size="md" />
         </div>
         <div>
-          <p className="ft-showcase-item-label">Input.radio (disabled)</p>
+          <p className="ft-showcasetabs-item-label">Input.radio (disabled)</p>
           <Input.radio value={value6} onChange={setValue6} options={OPTIONS} direction="vertical" disabled />
         </div>
       </div>

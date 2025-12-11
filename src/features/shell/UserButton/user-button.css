@@ -94,11 +94,6 @@
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
 /* ───────────────────────────────────────────────────────────────────
    CONTAINER
    ─────────────────────────────────────────────────────────────────── */
@@ -162,41 +157,8 @@
   animation: fade-in var(--userbutton-transition-fast) ease-out;
 }
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fade-out {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
-}
-
-/* Menu scale-out (bottom-left origin for sidebar position) */
-@keyframes menu-scale-out {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  to {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-}
-
 .ft-userbutton-menu--closing {
-  animation: menu-scale-out var(--userbutton-transition-fast) ease-out;
+  animation: scale-out var(--userbutton-transition-fast) ease-out;
   transform-origin: bottom left;
 }
 
@@ -416,24 +378,23 @@
   width: var(--userbutton-menu-width-modal);
 }
 
-@keyframes scale-in {
+/* Modal uses translate centering, needs custom animation */
+@keyframes ft-userbutton-modal-scale-in {
   from {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.95);
   }
-
   to {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
 }
 
-@keyframes scale-out {
+@keyframes ft-userbutton-modal-scale-out {
   from {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
-
   to {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.95);
@@ -441,7 +402,7 @@
 }
 
 .ft-userbutton-modal--closing {
-  animation: scale-out var(--userbutton-transition-fast) ease-out;
+  animation: ft-userbutton-modal-scale-out var(--userbutton-transition-fast) ease-out;
 }
 
 .ft-userbutton-modal-header {
@@ -548,20 +509,5 @@
   border: var(--userbutton-border-sm) solid var(--userbutton-spinner-border);
   border-top-color: var(--userbutton-spinner-top-color);
   border-radius: 50%;
-  animation: ft-userbutton-spin var(--userbutton-transition-slow) linear infinite;
-}
-
-@keyframes ft-userbutton-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+  animation: spin var(--userbutton-transition-slow) linear infinite;
 }

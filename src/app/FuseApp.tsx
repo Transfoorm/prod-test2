@@ -126,12 +126,12 @@ export default function FuseApp() {
         <ClientsProvider>
           <ProductivityProvider>
             <ProjectsProvider>
-              <div data-user-rank={user?.rank || undefined} className="modes-layout-app-container">
+              <div data-user-rank={user?.rank || undefined} className="ly-app-container">
                 <Sidebar />
-                <div className="modes-layout-right-container">
+                <div className="ly-right-container">
                   <Topbar />
-                  <div className="modes-layout-main-container">
-                    <main className={USE_CURVES ? 'modes-layout-main-content-with-arch' : 'modes-layout-main-content-without-arch'}>
+                  <div className="ly-main-container">
+                    <main className={USE_CURVES ? 'ly-main-content-with-arch' : 'ly-main-content-without-arch'}>
                       {USE_CURVES ? (
                         <PageArch>
                           <PageHeader />

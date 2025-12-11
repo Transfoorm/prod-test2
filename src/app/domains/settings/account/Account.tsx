@@ -18,7 +18,7 @@ import { useFuse } from '@/store/fuse';
 import { Tabs, Stack, Icon } from '@/prebuilts';
 import Profile from './_tabs/Profile';
 import Email from './_tabs/Email';
-import Security from './_tabs/Security';
+import Password from './_tabs/Password';
 import Genome from './_tabs/Genome';
 
 export default function Account() {
@@ -42,10 +42,10 @@ export default function Account() {
     const isTabClick = target.closest('[role="tab"]') || target.closest('.vr-tabs-tab');
     if (isTabClick) return;
 
-    // Allow Email and Security tabs - entice interaction
-    const isEmailTab = target.closest('.ft-email-field-with-action') || target.closest('.vr-field-row');
-    const isSecurityTab = target.closest('.ft-password-ceremony');
-    if (isEmailTab || isSecurityTab) return;
+    // Allow Email and Password tabs - entice interaction
+    const isEmailTab = target.closest('.ft-emailtab-field-with-action') || target.closest('.vr-field-row');
+    const isPasswordTab = target.closest('.ft-passwordtab');
+    if (isEmailTab || isPasswordTab) return;
 
     // Block field interactions and show Shadow King
     const isFieldInteraction = target.closest('.vr-field') ||
@@ -76,7 +76,7 @@ export default function Account() {
           tabs={[
             { id: 'profile', label: 'Profile', icon: <Icon variant="user" />, content: <Profile /> },
             { id: 'email', label: 'Email', icon: <Icon variant="send" />, content: <Email /> },
-            { id: 'security', label: 'Security', icon: <Icon variant="lock" />, content: <Security /> },
+            { id: 'password', label: 'Password', icon: <Icon variant="lock" />, content: <Password /> },
             { id: 'genome', label: <>Genome <span className="vr-tabs-panels-label-sm">{genomePercent}%</span></>, icon: <Icon variant="dna" />, content: <Genome />, highlight: genomePercent < 100 },
           ]}
         />

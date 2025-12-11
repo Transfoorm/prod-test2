@@ -187,6 +187,7 @@
 
 /* Alert modal container */
 .vr-modal-alert {
+  --anim-slide-distance: calc(-1 * var(--modal-alert-animation-distance));
   background-color: var(--modal-alert-container-bg);
   border-radius: var(--modal-alert-radius);
   padding: 0;
@@ -354,19 +355,6 @@
   box-shadow: var(--modal-alert-button-hover-shadow);
 }
 
-/* Slide-in animation */
-@keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(calc(-1 * var(--modal-alert-animation-distance)));
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* ═══════════════════════════════════════════════════════════════════
    3. CONFIRMATION MODAL VARIANT - Brand-Matched Decision Dialog
    ═══════════════════════════════════════════════════════════════════
@@ -377,6 +365,7 @@
 
 /* Modal container */
 .vr-modal-confirmation {
+  --anim-scale-start: var(--modal-confirmation-scale-start);
   background: var(--modal-confirmation-bg);
   border-radius: var(--modal-confirmation-radius);
   padding: var(--modal-confirmation-padding);
@@ -385,7 +374,7 @@
   margin: var(--modal-confirmation-margin);
   box-shadow: var(--modal-confirmation-shadow);
   border: 1px solid var(--modal-confirmation-border);
-  animation: fade-in 0.3s ease-out;
+  animation: scale-in 0.3s ease-out;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -451,19 +440,6 @@
   width: 100%;
   text-align: center;
   margin-top: var(--modal-confirmation-close-margin);
-}
-
-/* Fade-in animation */
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: scale(var(--modal-confirmation-scale-start));
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
 }
 
 /* Responsive */

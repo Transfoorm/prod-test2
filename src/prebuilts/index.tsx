@@ -36,8 +36,8 @@ export { Checkbox } from '@/prebuilts/input/checkbox';
 export { Dropdown } from '@/prebuilts/dropdown';
 
 // 🛡️ Auth Boundary Components (S.I.D. Phase 12)
-// VerifyModal lives in (auth) zone because it requires Clerk SDK for verification
-export { default as VerifyModal } from '@/app/(auth)/components/VerifyModal';
+// VerifyModal lives in PasswordTab because it requires Clerk SDK for verification
+export { default as VerifyModal } from '@/features/account/PasswordTab/VerifyModal';
 
 // Shared Utilities (re-exported for convenience)
 export { Icon } from '@/prebuilts/icon/iconRegistry';

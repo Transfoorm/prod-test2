@@ -1,5 +1,6 @@
 /* FUSE Style System - Global Reset & Base Styles */
 
+@import url('./animations.css');
 @import url('./features.css');
 @import url('./layout.css');
 @import url('./prebuilts.css');

@@ -9,7 +9,7 @@ export default function Buttons() {
       title="Buttons Sandbox"
       subtitle="Choose from these button VR's (Variant Robots)"
     >
-      <div className="ft-showcase-grid-5">
+      <div className="ft-showcasetabs-grid-5">
         <Button.primary>Button.primary</Button.primary>
         <Button.secondary>Button.secondary</Button.secondary>
         <Button.ghost>Button.ghost</Button.ghost>

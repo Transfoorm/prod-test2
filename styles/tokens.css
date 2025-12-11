@@ -144,15 +144,4 @@
   --scrollbar-border-radius: 8px;  /* Aligned with --radius-md */
 }
 
-/* ===========================================================
-   ANIMATIONS
-   =========================================================== */
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.5;
-  }
-}
+/* Animations moved to styles/animations.css */

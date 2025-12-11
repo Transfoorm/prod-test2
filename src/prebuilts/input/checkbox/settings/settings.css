@@ -68,20 +68,6 @@
   animation: checkmark-pop 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes checkmark-pop {
-  0% {
-    transform: translate(-50%, -50%) scale(0);
-  }
-
-  50% {
-    transform: translate(-50%, -50%) scale(1.2);
-  }
-
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
 /* ───────────────────────────────────────────────────────────────────
    COLOR VARIANTS
    ─────────────────────────────────────────────────────────────────── */

@@ -136,6 +136,7 @@
 
 /* Dropdown menu */
 .vr-dropdown-simple-menu {
+  --anim-slide-distance: calc(-1 * var(--dropdown-animation-distance));
   position: absolute;
   top: calc(100% + var(--dropdown-menu-offset));
   left: 0;
@@ -147,18 +148,6 @@
   overflow: hidden;
   z-index: 1000;
   animation: slide-down 0.15s ease;
-}
-
-@keyframes slide-down {
-  from {
-    opacity: 0;
-    transform: translateY(calc(-1 * var(--dropdown-animation-distance)));
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* Dropdown options */

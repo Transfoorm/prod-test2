@@ -266,10 +266,10 @@
   border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px var(--brand-light);
   background-color: var(--warning-100);
-  animation: verify-pulse 1s ease-in-out infinite;
+  animation: vr-field-verify-pulse 1s ease-in-out infinite;
 }
 
-@keyframes verify-pulse {
+@keyframes vr-field-verify-pulse {
   0%, 100% { box-shadow: 0 0 0 3px var(--brand-light); }
   50% { box-shadow: 0 0 0 5px var(--brand-light); }
 }
@@ -418,11 +418,7 @@
   border: 2px solid rgb(255 255 255 / 30%);
   border-top-color: #fff;
   border-radius: 50%;
-  animation: verify-spin 0.8s linear infinite;
-}
-
-@keyframes verify-spin {
-  to { transform: rotate(360deg); }
+  animation: spin 0.8s linear infinite;
 }
 
 /* NOTE: Helper, error, has-helper now use shared .vr-field__* classes */

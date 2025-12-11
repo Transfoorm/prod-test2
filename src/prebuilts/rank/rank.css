@@ -52,12 +52,6 @@
   animation: shimmer 2s infinite;
 }
 
-@keyframes shimmer {
-  100% {
-    left: 100%;
-  }
-}
-
 /* Header */
 .vr-rank-card-header {
   display: flex;
@@ -183,11 +177,6 @@
   font-size: var(--font-size-lg);
   color: var(--text-tertiary);
   animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
 }
 
 /* Updating indicator */

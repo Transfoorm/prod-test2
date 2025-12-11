@@ -19,7 +19,7 @@ import { SideDrawerProvider, SideDrawerPortal } from '@/prebuilts/modal';
 import { VanishProvider, VanishPortal } from '@/vanish/Drawer';
 import { PageHeaderProvider } from '@/shell/PageHeader/PageHeaderContext';
 import { headers } from 'next/headers';
-import '@/app/root-layout.css';
+import '@/shell/root-layout.css';
 
 // ═══════════════════════════════════════════════════════════════════════
 // STYLING FOUNDATION - Single source of truth in globals.css
@@ -87,7 +87,7 @@ export default async function RootLayout({
             })();
           `}</Script>
         </head>
-        <body className="root-layout-body">
+        <body className="ly-root-body">
           <ConvexClientProvider>
             <SideDrawerProvider>
               <VanishProvider>

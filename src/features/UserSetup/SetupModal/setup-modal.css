@@ -100,16 +100,15 @@
 
 /* Roll-down animation when bringing modal back */
 .ft-setup-modal--fading-in {
-  animation: modal-fade-in 600ms ease-out;
+  animation: ft-setup-fade-in 600ms ease-out;
 }
 
-@keyframes modal-fade-in {
+@keyframes ft-setup-fade-in {
   from {
     max-height: 0;
     opacity: 0;
     transform: translateY(-100%);
   }
-
   to {
     max-height: 5000px;
     opacity: 1;

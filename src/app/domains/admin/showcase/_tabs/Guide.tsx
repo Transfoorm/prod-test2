@@ -8,15 +8,15 @@ export default function Guide() {
       title="The VR Doctrine"
       subtitle="Everything you need to know about Variant Robots"
     >
-      <div className="ft-showcase-guide">
-        <p className="ft-showcase-guide-intro">
+      <div className="ft-showcasetabs-guide">
+        <p className="ft-showcasetabs-guide-intro">
           <strong>Variant Robots (VRs)</strong> are the DNA of this application.
           They&apos;re dumb, beautiful, reusable UI shells that know nothing about
           your data — and that&apos;s exactly what makes them powerful.
         </p>
 
         <h3>The Stack</h3>
-        <pre className="ft-showcase-guide-code">VR → Feature → Tab</pre>
+        <pre className="ft-showcasetabs-guide-code">VR → Feature → Tab</pre>
         <ul>
           <li><strong>VR</strong> — Pure UI. Receives value, fires callback. No FUSE. No logic.</li>
           <li><strong>Feature</strong> — Wires VRs to FUSE. Handles transforms, edge cases, all the dirt.</li>
@@ -38,7 +38,7 @@ export default function Guide() {
         </ul>
 
         <h3>The Ontology (Bottom Up)</h3>
-        <p className="ft-showcase-guide-ontology">
+        <p className="ft-showcasetabs-guide-ontology">
           byte → character → token → declaration → class → structure →
           behavior → variant surface → <strong>VR</strong> → section → screen → app
         </p>
@@ -49,7 +49,7 @@ export default function Guide() {
         </p>
 
         <h3>Deep Dive Documentation</h3>
-        <ul className="ft-showcase-guide-links">
+        <ul className="ft-showcasetabs-guide-links">
           <li>
             <code>_sdk/VR-DOCTRINE.md</code>
             <span>The complete philosophy, examples, and ontology stack</span>
