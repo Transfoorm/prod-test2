@@ -1,19 +1,19 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔱 FUSE APP - The Sovereign Runtime                                  │
-│  /src/app/FuseApp.tsx                                                 │
+│  🔱 FUSE APP - The Sovereign Runtime                                   │
+│  /src/app/FuseApp.tsx                                                  │
 │                                                                        │
-│  FUSE 6.0: This component NEVER unmounts after initial load.          │
-│  It is the persistent client shell that owns all domain navigation.   │
+│  FUSE 6.0: This component NEVER unmounts after initial load.           │
+│  It is the persistent client shell that owns all domain navigation.    │
 │                                                                        │
-│  Architecture:                                                        │
-│  • Mounts once from /app/page.tsx (server handover at ROOT)           │
-│  • Contains the full app shell (Sidebar, Topbar, AISidebar)           │
-│  • Router switches domain views based on FUSE sovereign.route         │
-│  • WARP Orchestrator preloads all domain data on mount                │
-│  • Zero server round-trips after initial load                         │
+│  Architecture:                                                         │
+│  • Mounts once from /app/page.tsx (server handover at ROOT)            │
+│  • Contains the full app shell (Sidebar, Topbar, AISidebar)            │
+│  • Router switches domain views based on FUSE sovereign.route          │
+│  • WARP Orchestrator preloads all domain data on mount                 │
+│  • Zero server round-trips after initial load                          │
 │                                                                        │
-│  This is where FUSE Doctrine becomes reality.                         │
-│  32-65ms navigation. Every click. Forever.                            │
+│  This is where FUSE Doctrine becomes reality.                          │
+│  01-65ms navigation. Every click. Forever.                             │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
@@ -37,7 +37,7 @@ import dynamic from 'next/dynamic';
 const Router = dynamic(() => import('./domains/Router'), { ssr: false });
 
 // Shadow King - Sovereign Setup Enforcement (shell-level)
-import ShadowKing from '@/features/UserSetup/ShadowKing';
+import ShadowKing from '@/features/setup/ShadowKing';
 
 // WARP Orchestrator
 import { runWarpPreload, attachTTLRevalidation } from '@/fuse/warp/orchestrator';
@@ -49,7 +49,7 @@ import { ProductivityProvider } from '@/providers/ProductivityProvider';
 import { ProjectsProvider } from '@/providers/ProjectsProvider';
 
 // Layout CSS
-import '@/app/domains/domains-layout.css';
+import '@/app/domains/domains.css';
 
 // ═══════════════════════════════════════════════════════════════════════
 // CONFIGURATION

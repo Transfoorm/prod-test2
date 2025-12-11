@@ -1,6 +1,6 @@
 /**
  * 🛡️ FUSE Stack Server Actions - Admin Domain Mutations
- *
+ * Purpose: Admin operations on users
  * Server actions for admin operations that don't affect user session.
  * These wrap Convex mutations to keep domain views Convex-free (SRB-4 compliant).
  *

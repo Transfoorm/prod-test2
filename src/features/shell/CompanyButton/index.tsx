@@ -39,7 +39,7 @@ export default function CompanyButton() {
   // ─────────────────────────────────────────────────────────────────────
   const fileInputRef = useRef<HTMLInputElement>(null);
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl.generateUploadUrl);
-  const uploadBrandLogo = useMutation(api.domains.admin.users.api.uploadBrandLogo);
+  const uploadBrandLogo = useMutation(api.identity.uploadBrandLogo.uploadBrandLogo);
   const convex = useConvex();
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);

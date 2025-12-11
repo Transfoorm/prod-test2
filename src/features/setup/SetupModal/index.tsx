@@ -2,7 +2,7 @@
 
 /**──────────────────────────────────────────────────────────────────────────┐
  │  🚀 SETUP MODAL - New User Onboarding                                    │
- │  /src/features/UserSetup/SetupModal/index.tsx                            │
+ │  /src/features/setup/SetupModal/index.tsx                                │
  │                                                                            │
  │  VR-Sovereign: Owns ALL visibility, animation, AND server actions.        │
  │  Dashboard just renders <SetupModal /> - pure declarative, zero ceremony. │
@@ -25,8 +25,9 @@
 import { useState, useEffect } from 'react';
 import { useFuse } from '@/store/fuse';
 import { Sparkles } from 'lucide-react';
-import { Button, VerifyModal } from '@/prebuilts';
-import { skipFlow, reverseFlow } from '@/features/UserSetup/FlyingButton/config';
+import { Button } from '@/prebuilts';
+import { VerifySetup } from '@/features/verify/VerifySetup';
+import { skipFlow, reverseFlow } from '@/features/setup/FlyingButton/config';
 import { completeSetupAction } from '@/app/actions/user-mutations';
 import { checkPrimaryEmailVerified, preparePrimaryEmailVerification } from '@/app/actions/email-actions';
 
@@ -780,7 +781,7 @@ export default function SetupModal() {
       </div>
 
       {/* Email Verification Modal */}
-      <VerifyModal
+      <VerifySetup
         isOpen={showEmailVerification}
         email={user?.email || ''}
         onSuccess={handleEmailVerified}

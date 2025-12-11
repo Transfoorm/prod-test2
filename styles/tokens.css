@@ -114,25 +114,7 @@
   --rank-admiral: #dc2626;   /* Red - Sovereignty */
 }
 
-/* ===========================================================
-   ACCENT PALETTE - NAV OVERHAUL 2025-11-09
-   Softer amber gradient replacing stark orange
-   =========================================================== */
-:root {
-  --accent-primary: #f8b14a;                /* Soft amber */
-  --accent-primary-dark: #c97b2d;           /* Hover depth */
-  --accent-primary-gradient: linear-gradient(135deg, #f8b14a 0%, #ffb86b 100%);
-  --accent-primary-shadow: 0 2px 4px rgb(248 177 74 / 20%);
-}
 
-/* ===========================================================
-   INTERACTION TIMING - Universal animation controls
-   =========================================================== */
-:root {
-  --interaction-press-duration: 100ms;
-  --interaction-hover-duration: 180ms;
-  --interaction-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
-}
 
 /* ===========================================================
    SCROLLBAR
@@ -145,3 +127,166 @@
 }
 
 /* Animations moved to styles/animations.css */
+
+/* ===========================================================
+   LAYOUT CONTROL VARIABLES - App Shell & Page Architecture
+   =========================================================== */
+:root {
+  /* Content Alignment */
+  --page-margin-left: auto;              /* LEFT aligned: 0 | CENTER aligned: auto */
+  --page-margin-right: auto;             /* Always auto */
+
+  /* Page Arch System */
+  --curved-radius: 20px;                 /* Disable in layout.tsx with USE_CURVES = false */
+  --content-width: 1200px;               /* Max width for titles and content */
+
+  /* App Shell - Topbar */
+  --topbar-height: 50px;                 /* Top navigation bar height */
+  --topbar-logo-padding: 10px;           /* Right padding after logo */
+
+  /* App Shell - Sidebar */
+  --sidebar-width: 200px;                /* Left navigation panel width */
+
+  /* App Shell - AI Sidebar */
+  --ai-sidebar-closed: 45px;             /* AI sidebar width when closed (avatar only) */
+  --ai-sidebar-open: 256px;              /* AI sidebar width when open (default) */
+  --ai-sidebar-expanded: 512px;          /* AI sidebar width when expanded (full chat) */
+  --ai-sidebar-top-margin: 0;            /* Vertical offset for AI sidebar */
+  --ai-sidebar-top-border-extend: 41px;  /* Top border extension width */
+  --ai-sidebar-top-border-angle: 11px;   /* Diagonal angle on border */
+  --ai-sidebar-avatar-size: 40px;        /* Avatar circle size */
+  --ai-sidebar-avatar-margin-left-closed: 4px; /* Avatar left margin when closed */
+
+  /* Page Header - Auto-generated titles */
+  --page-header-margin-top: 40px;        /* Gap above title/subtitle block */
+  --page-header-margin-left: var(--page-content-padding-left);
+  --page-subtitle-gap: 0;                /* Gap between title and subtitle */
+  --page-header-margin-bottom: 30px;     /* Gap below title/subtitle block */
+  --page-title-size: 30px;               /* Page title font size */
+  --page-subtitle-size: 14px;            /* Page subtitle font size */
+
+  /* Page Content Padding */
+  --page-content-padding-left: 25px;     /* Left content padding */
+  --page-content-padding-right: 25px;    /* Right content padding */
+  --page-content-padding-bottom: 60px;   /* Bottom content padding */
+
+  /* Footer */
+  --footer-height: 20px;                 /* Bottom footer bar height */
+}
+
+/* ===========================================================
+   PREBUILT COMPONENT VARIABLES - VR Infrastructure
+   =========================================================== */
+:root {
+  /* Page Variants */
+  --page-split-gap: var(--space-2xl);     /* Gap between split columns */
+  --page-sidebar-width: 250px;            /* Sidebar width */
+  --page-sidebar-gap: var(--space-xl);    /* Gap between sidebar and content */
+  --page-sidebar-sticky-top: var(--space-lg); /* Sticky sidebar top offset */
+  --page-sidebar-sticky-offset: var(--space-2xl); /* Sticky sidebar bottom offset */
+  --page-dashboard-gap: var(--space-2xl);  /* Gap between dashboard widgets */
+  --page-dashboard-min-width: 300px;      /* Minimum widget width */
+  --page-constrained-max-width: 1200px;   /* Max width for constrained pages */
+
+  /* Bridge Page Variant */
+  --page-bridge-title-size: var(--page-title-size);        /* Bridge title font size */
+  --page-bridge-title-weight: 700;                         /* Bridge title font weight */
+  --page-bridge-title-margin-bottom: 28px;                 /* Space below title */
+  --page-bridge-title-padding-bottom: var(--space-xs);     /* Title padding before border */
+  --page-bridge-subtitle-size: var(--page-subtitle-size);  /* Bridge subtitle font size */
+  --page-bridge-subtitle-gap: var(--page-subtitle-gap);    /* Gap between title and subtitle */
+  --page-bridge-grid-gap: var(--space-lg);                 /* Gap between feed sections */
+  --page-bridge-grid-min-width: 320px;                     /* Minimum section width */
+
+  /* Divider Variants */
+  --divider-thickness: 1px;                           /* Divider line thickness */
+  --divider-gradient-height: 2px;                     /* Gradient divider height */
+  --divider-spacing-xs: var(--space-xs);              /* Extra small spacing */
+  --divider-spacing-sm: var(--space-sm);              /* Small spacing */
+  --divider-spacing-md: var(--space-md);              /* Medium spacing */
+  --divider-spacing-lg: var(--space-lg);              /* Large spacing */
+  --divider-spacing-xl: var(--space-xl);              /* Extra large spacing */
+  --divider-spacing-2xl: var(--space-2xl);            /* 2X large spacing */
+
+  /* Card Variants */
+  --card-padding: var(--space-lg);        /* Default card padding */
+  --card-radius: var(--radius-lg);        /* Card border radius */
+  --card-border-width: 1px;               /* Card border thickness */
+  --card-shadow: var(--shadow-sm);        /* Card elevation */
+  --card-gap: var(--space-md);            /* Internal spacing between elements */
+  --card-header-padding: var(--space-md); /* Card header padding */
+  --card-content-padding: var(--space-lg); /* Card content padding */
+  --card-footer-padding: var(--space-md); /* Card footer padding */
+  --card-min-height: 160px;               /* Minimum card height */
+  --card-icon-size: 24px;                 /* Icon size in cards */
+
+  /* Backdrop Variants */
+  --vr-backdrop-color: rgb(0 0 0 / 55%);  /* Backdrop dim color */
+  --vr-backdrop-blur: 6px;                /* Backdrop blur amount */
+  --z-backdrop: 900;                      /* Backdrop z-index */
+
+  /* Modal Variants */
+  --modal-max-width: 480px;               /* Maximum modal width */
+  --modal-radius: var(--radius-xl);       /* Modal border radius */
+  --modal-backdrop-blur: var(--vr-backdrop-blur); /* Uses unified backdrop blur */
+  --modal-shadow: var(--shadow-lg);       /* Modal elevation */
+  --modal-padding: var(--space-xl);       /* Modal content padding */
+  --modal-header-gap: var(--space-md);    /* Gap between header elements */
+  --modal-footer-gap: var(--space-sm);    /* Gap between footer buttons */
+
+  /* Button Variants */
+  --button-padding-y: 0.75rem;            /* Vertical button padding */
+  --button-padding-x: var(--space-lg);    /* Horizontal button padding */
+  --button-radius: var(--radius-md);      /* Button border radius */
+  --button-font-size: var(--font-size-md); /* Button text size */
+  --button-font-weight: var(--font-weight-medium); /* Button text weight */
+  --button-icon-gap: var(--space-sm);     /* Gap between icon and text */
+  --button-shadow: var(--shadow-sm);      /* Button elevation */
+  --button-min-width: 100px;              /* Minimum button width */
+
+  /* Phoenix Button - Onboarding animation system */
+  --phoenix-button-padding-y: 0.9rem;     /* Phoenix vertical padding */
+  --phoenix-button-padding-x: 1.5rem;     /* Phoenix horizontal padding */
+  --phoenix-button-font-size: 1rem;       /* Phoenix font size */
+  --phoenix-button-icon-gap: 0.5rem;      /* Phoenix icon gap */
+
+  /* Form Variants */
+  --form-field-gap: var(--space-md);      /* Gap between form fields */
+  --form-label-gap: var(--space-xs);      /* Gap between label and input */
+  --form-input-padding: var(--space-sm);  /* Input field padding */
+  --form-input-radius: var(--radius-md);  /* Input field border radius */
+  --form-input-border-width: 1px;         /* Input border thickness */
+  --form-input-height: var(--space-2xl);  /* Input field height */
+  --form-label-font-size: var(--font-size-sm); /* Label text size */
+  --form-label-font-weight: var(--font-weight-medium); /* Label text weight */
+  --form-error-font-size: var(--font-size-xs); /* Error text size */
+  --form-inline-label-width: 150px;       /* Label width in inline forms */
+
+  /* Table Variants */
+  --table-cell-padding: var(--space-sm);  /* Table cell padding */
+  --table-header-padding: var(--space-md); /* Table header padding */
+  --table-border-width: 1px;              /* Table border thickness */
+  --table-row-hover-bg: var(--bg-hover);  /* Row hover background */
+  --table-header-font-size: var(--font-size-xs); /* Header text size */
+  --table-header-font-weight: var(--font-weight-semibold); /* Header text weight */
+  --table-cell-font-size: var(--font-size-xs); /* Cell text size */
+  --table-stripe-bg: var(--bg-tertiary);  /* Striped row background */
+
+  /* Icon Sizes */
+  --icon-size-xs: 16px;                   /* Extra small icon size */
+  --icon-size-sm: 20px;                   /* Small icon size */
+  --icon-size-md: 24px;                   /* Medium icon size */
+  --icon-size-lg: 32px;                   /* Large icon size */
+  --icon-size-xl: 40px;                   /* Extra large icon size */
+  --icon-stroke-width: 1.5;               /* Icon stroke thickness */
+
+  /* Stack Variants */
+  --stack-gap: var(--space-xl);           /* Default vertical gap */
+  --stack-gap-xs: var(--space-xs);        /* Extra small stack gap */
+  --stack-gap-sm: var(--space-sm);        /* Small stack gap */
+  --stack-gap-md: var(--space-md);        /* Medium stack gap */
+  --stack-gap-lg: var(--space-lg);        /* Large stack gap */
+  --stack-gap-xl: var(--space-xl);        /* Extra large stack gap */
+  --stack-gap-2xl: var(--space-2xl);      /* 2X large stack gap */
+  --stack-gap-3xl: var(--space-3xl);      /* 3X large stack gap */
+}

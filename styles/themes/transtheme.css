@@ -303,6 +303,77 @@
   --badge-setup-revoked-bg: #ecd6d6;
   --badge-setup-revoked-text: #634b4b;
 
+
+  /* ═══════════════════════════════════════════════════════════════════
+     VERIFY MODAL - 6-Digit Code Verification
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* Container gradient background */
+  --verify-gradient-start: #fff5f0;                              /* Warm white */
+  --verify-gradient-mid: #fff;                                   /* Pure white */
+  --verify-gradient-end: #fff0f0;                                /* Pinkish white */
+
+  /* Text colors */
+  --verify-heading: #d30;                                        /* Brand orange dark */
+  --verify-description: var(--text-secondary);                   /* #6b7280 */
+  --verify-email: #374151;                                       /* Dark gray */
+  --verify-hint: var(--text-tertiary);                           /* #9ca3af */
+
+  /* Code input */
+  --verify-input-bg: rgb(249 250 251 / 50%);                     /* Semi-transparent */
+  --verify-input-bg-focus: #fff;                                 /* Pure white on focus */
+  --verify-input-border: #e5e7eb;                                /* Light gray */
+  --verify-input-border-focus: #f40;                             /* Brand orange */
+  --verify-input-shadow-focus: rgb(255 68 0 / 10%);              /* Orange glow */
+
+  /* Error state */
+  --verify-error-bg: var(--error-50);                            /* #fef2f2 */
+  --verify-error-border: #fecaca;                                /* Light red */
+  --verify-error-text: var(--color-error);                       /* #dc2626 */
+
+  /* Success state */
+  --verify-success-gradient-start: var(--color-success);         /* #10b981 */
+  --verify-success-gradient-end: var(--success-600);             /* #059669 */
+  --verify-success-text: var(--color-success);                   /* #10b981 */
+  --verify-success-shadow: rgb(16 185 129 / 30%);                /* Green glow */
+
+  /* Progress bar */
+  --verify-progress-track: #e5e7eb;                              /* Light gray */
+  --verify-progress-fill-start: #f40;                            /* Brand orange */
+  --verify-progress-fill-end: #f63;                              /* Lighter orange */
+
+  /* Resend link */
+  --verify-resend-text: var(--text-secondary);                   /* #6b7280 */
+  --verify-resend-link: #e4461b;                                 /* Orange-red */
+  --verify-resend-link-hover: #d30;                              /* Darker orange */
+
+  /* Cancel button */
+  --verify-cancel-text: var(--text-secondary);                   /* #6b7280 */
+  --verify-cancel-hover: #374151;                                /* Dark gray */
+
+  /* Spinner */
+  --verify-spinner: #f40;                                        /* Brand orange */
+
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   👨🏻‍✈️ ADMIRAL RANK OVERRIDE - LIGHT MODE
+   ═══════════════════════════════════════════════════════════════════════
+   Admirals get a distinct shell appearance to visually indicate their rank.
+   Single source: change --admiral-shell-bg, all shell parts follow.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+[data-theme="transtheme"][data-theme-mode="light"][data-user-rank="admiral"] {
+  --admiral-shell-bg: #f1eded;
+  --page-arch-border: 2px solid #ff5020;                         /* Orange border for Admiral */
+
+  /* All shell parts inherit from --admiral-shell-bg */
+  --appshell-bg: var(--admiral-shell-bg);
+  --page-arch-foundation: var(--admiral-shell-bg);
+  --topbar-bg: var(--admiral-shell-bg);
+  --sidebar-bg: var(--admiral-shell-bg);
+  --ai-sidebar-bg: var(--admiral-shell-bg);
 }
 
 
@@ -622,4 +693,75 @@
   --badge-setup-revoked-bg: #374151;
   --badge-setup-revoked-text: #D1D5DB;
 
+
+  /* ═══════════════════════════════════════════════════════════════════
+     VERIFY MODAL - 6-Digit Code Verification (Dark Mode)
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* Container gradient background - darker warm tones */
+  --verify-gradient-start: #2d1f1a;                              /* Dark warm brown */
+  --verify-gradient-mid: #1f2937;                                /* Dark slate */
+  --verify-gradient-end: #2d1a1a;                                /* Dark reddish */
+
+  /* Text colors */
+  --verify-heading: #ff7a52;                                     /* Bright orange for dark bg */
+  --verify-description: var(--text-secondary);                   /* #d1d5db */
+  --verify-email: #f3f4f6;                                       /* Near white */
+  --verify-hint: var(--text-tertiary);                           /* #9ca3af */
+
+  /* Code input */
+  --verify-input-bg: rgb(55 65 81 / 50%);                        /* Semi-transparent dark */
+  --verify-input-bg-focus: #374151;                              /* Dark gray on focus */
+  --verify-input-border: #4b5563;                                /* Medium gray */
+  --verify-input-border-focus: #ff7a52;                          /* Bright orange */
+  --verify-input-shadow-focus: rgb(255 122 82 / 20%);            /* Orange glow (stronger) */
+
+  /* Error state */
+  --verify-error-bg: var(--error-50);                            /* #450a0a */
+  --verify-error-border: #7f1d1d;                                /* Dark red */
+  --verify-error-text: #f87171;                                  /* Light red for dark bg */
+
+  /* Success state */
+  --verify-success-gradient-start: #10b981;                      /* Emerald */
+  --verify-success-gradient-end: #059669;                        /* Darker emerald */
+  --verify-success-text: #34d399;                                /* Bright green for dark bg */
+  --verify-success-shadow: rgb(52 211 153 / 30%);                /* Green glow */
+
+  /* Progress bar */
+  --verify-progress-track: #374151;                              /* Dark gray */
+  --verify-progress-fill-start: #ff7a52;                         /* Bright orange */
+  --verify-progress-fill-end: #fb923c;                           /* Amber */
+
+  /* Resend link */
+  --verify-resend-text: var(--text-secondary);                   /* #d1d5db */
+  --verify-resend-link: #fb923c;                                 /* Amber */
+  --verify-resend-link-hover: #ff7a52;                           /* Brighter orange */
+
+  /* Cancel button */
+  --verify-cancel-text: var(--text-secondary);                   /* #d1d5db */
+  --verify-cancel-hover: #f3f4f6;                                /* Near white */
+
+  /* Spinner */
+  --verify-spinner: #ff7a52;                                     /* Bright orange */
+
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   👨🏻‍✈️ ADMIRAL RANK OVERRIDE - DARK MODE
+   ═══════════════════════════════════════════════════════════════════════
+   Admirals get a distinct shell appearance to visually indicate their rank.
+   Single source: change --admiral-shell-bg, all shell parts follow.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+[data-theme="transtheme"][data-theme-mode="dark"][data-user-rank="admiral"] {
+  --admiral-shell-bg: #1a1f2e;                                   /* Slightly warmer dark for Admiral */
+  --page-arch-border: 2px solid #ff5020;                         /* Orange border for Admiral */
+
+  /* All shell parts inherit from --admiral-shell-bg */
+  --appshell-bg: var(--admiral-shell-bg);
+  --page-arch-foundation: var(--admiral-shell-bg);
+  --topbar-bg: var(--admiral-shell-bg);
+  --sidebar-bg: var(--admiral-shell-bg);
+  --ai-sidebar-bg: var(--admiral-shell-bg);
 }

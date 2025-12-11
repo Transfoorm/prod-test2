@@ -1,5 +1,5 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🧬 GOD LAYOUT - FUSE 5.0 FOUNDATION                                   │
+│  🧬 GOD LAYOUT - FUSE FOUNDATION                                       │
 │  /src/app/layout.tsx                                                   │
 │                                                                        │
 │  The Root of Everything.                                               │
@@ -19,7 +19,6 @@ import { SideDrawerProvider, SideDrawerPortal } from '@/prebuilts/modal';
 import { VanishProvider, VanishPortal } from '@/vanish/Drawer';
 import { PageHeaderProvider } from '@/shell/PageHeader/PageHeaderContext';
 import { headers } from 'next/headers';
-import '@/shell/root-layout.css';
 
 // ═══════════════════════════════════════════════════════════════════════
 // STYLING FOUNDATION - Single source of truth in globals.css
@@ -32,7 +31,7 @@ import '@/styles/globals.css';
 export const metadata: Metadata = {
   title: {
     default: 'Transfoorm - Make Your Difference',
-    template: '%s | FUSE 4.0'
+    template: '%s | FUSE 6.0'
   },
   description: 'Instant everything. Zero loading states. The future of web applications.',
   icons: {
@@ -43,7 +42,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    title: 'FUSE 4.0 - Instant Everything',
+    title: 'FUSE 6.0 - Instant Everything',
     description: 'The web application architecture that proves instant is possible.',
   },
 };
@@ -87,7 +86,7 @@ export default async function RootLayout({
             })();
           `}</Script>
         </head>
-        <body className="ly-root-body">
+        <body>
           <ConvexClientProvider>
             <SideDrawerProvider>
               <VanishProvider>
@@ -121,7 +120,7 @@ export default async function RootLayout({
 │  • Overview.css = Single source of truth for all dimensions            │
 │  • Transtheme.css = Complete color system, ready for any theme         │
 │                                                                        │
-│  This is FUSE 4.0. (Now 5.0)                                           │
+│  This is FUSE 6.0. (Now 5.0)                                           │
 │  This is the foundation that never breaks.                             │
 │  This is built with love for the 100,000.                              │
 └────────────────────────────────────────────────────────────────────────┘ */

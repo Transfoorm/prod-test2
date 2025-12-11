@@ -199,7 +199,7 @@ export const getUserForEdit = query({
   },
 });
 
-// ⚡ FUSE 5.0: Lightweight query for session minting (skips expensive storage URL resolution)
+// ⚡ FUSE 6.0: Lightweight query for session minting (skips expensive storage URL resolution)
 // 🛡️ SID Phase 2: Now accepts userId instead of clerkId
 // Used during login critical path where storage URLs aren't needed yet (only raw data for JWT)
 export const getCurrentUserForSession = query({
@@ -830,10 +830,5 @@ export {
   getRankDistribution,
 } from "./queries/subscriptionStats";
 
-// ═══════════════════════════════════════════════════════════════════
-// 🏢 BRAND LOGO MANAGEMENT
-// ═══════════════════════════════════════════════════════════════════
-
-// Export brand logo upload mutation
-export { uploadBrandLogo } from "./uploadBrandLogo";
+// NOTE: uploadBrandLogo moved to /convex/identity/uploadBrandLogo.ts
 

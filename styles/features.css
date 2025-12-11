@@ -1,7 +1,7 @@
 /* Feature Components - Application-Level Reusable Features */
 
 /* Auth Feature (sign-in, sign-up, forgot password) */
-@import url('../src/features/auth/auth.css');
+@import url('../src/app/(auth)/auth.css');
 
 /* Company Button (includes Logo Cropper) */
 @import url('../src/features/shell/CompanyButton/company-button.css');
@@ -16,7 +16,7 @@
 @import url('../src/features/shell/UserButton/user-button.css');
 
 /* Setup Modal */
-@import url('../src/features/UserSetup/SetupModal/setup-modal.css');
+@import url('../src/features/setup/SetupModal/setup-modal.css');
 
 /* Email Tab */
 @import url('../src/features/account/EmailTab/email-tab.css');
@@ -30,17 +30,14 @@
 /* Profile Tab */
 @import url('../src/features/account/ProfileTab/profile-tab.css');
 
-/* Mirror AI Fields */
-@import url('../src/features/preferences/MirrorAIFields/mirror-ai-fields.css');
-
-/* Verify Modal - Password/Email verification (S.I.D. Phase 12) */
-@import url('../src/features/account/PasswordTab/VerifyModal/verify-modal.css');
+/* Miror AI Fields */
+@import url('../src/features/preferences/MirorAIFields/miror-ai-fields.css');
 
 /* Flying Button (Phoenix) */
-@import url('../src/features/UserSetup/FlyingButton/flying-button.css');
+@import url('../src/features/setup/FlyingButton/flying-button.css');
 
 /* Shadow King (Sovereign Setup Enforcement) */
-@import url('../src/features/UserSetup/ShadowKing/shadow-king.css');
+@import url('../src/features/setup/ShadowKing/shadow-king.css');
 
 /* VR Showcase Tabs (Admin) */
 @import url('../src/features/admin/ShowcaseTabs/showcase-tabs.css');

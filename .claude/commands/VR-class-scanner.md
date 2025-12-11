@@ -94,6 +94,7 @@ If a CSS file exists **ANYWHERE ELSE**, the scan **FAILS**.
 | 10 | `/styles/features.css` | FORBIDDEN | FORBIDDEN | FORBIDDEN | @import statements ONLY |
 | 11 | `/styles/layout.css` | FORBIDDEN | FORBIDDEN | FORBIDDEN | @import statements ONLY |
 | 12 | `/styles/themes/*.css` | FORBIDDEN | FORBIDDEN | `--{theme}-*` | Variables ONLY |
+| 13 | `/vanish/**/*.css` | `.ft-vanish-*` | `ft-vanish-{action}` | `--vanish-*` | Classes, keyframes, variables (QUARANTINE ZONE) |
 
 **FORBIDDEN means:** If this content type exists in this file, the scan **FAILS**.
 
@@ -108,7 +109,7 @@ If a CSS file exists **ANYWHERE ELSE**, the scan **FAILS**.
 - `/src/types/**/*.css`
 - `/src/store/**/*.css`
 - `/src/constants/**/*.css`
-- Any path not listed in rows 1-12 above
+- Any path not listed in rows 1-13 above
 
 ---
 
@@ -162,13 +163,13 @@ PHASE 0: Spec Validation   Contradictions: [N] | Ambiguities: [N] | Incomplete: 
 
 **COMMAND (MUST RUN EXACTLY AS WRITTEN):**
 ```bash
-find src styles -name "*.css" -type f 2>/dev/null | sort
+find src styles vanish -name "*.css" -type f 2>/dev/null | sort
 ```
 
 **VALIDATION:**
 For EACH file returned, perform the following checks IN ORDER:
 
-1. Does the file path match EXACTLY ONE row in the CANONICAL LIST (rows 1-12)?
+1. Does the file path match EXACTLY ONE row in the CANONICAL LIST (rows 1-13)?
    - If NO MATCH: `❌ UNDEFINED LOCATION: [path]` → **FAIL**
    - If MULTIPLE MATCHES: `❌ AMBIGUOUS LOCATION: [path]` → **FAIL**
 

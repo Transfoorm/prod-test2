@@ -10,8 +10,8 @@
 │  - Pure declaration                                                   │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import { MirrorAIFields } from '@/features/preferences/MirrorAIFields';
+import { MirorAIFields } from '@/features/preferences/MirorAIFields';
 
 export default function MirrorAI() {
-  return <MirrorAIFields />;
+  return <MirorAIFields />;
 }

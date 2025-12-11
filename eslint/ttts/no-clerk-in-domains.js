@@ -69,7 +69,7 @@ See: Golden Bridge Pattern, SRB-7`,
           /\/vanish\/Quarantine\.tsx$/,      // Clerk quarantine zone
           /\/hooks\/useConvexUser\.ts$/,     // User sync hook
           /\/features\/shell\/UserButton\//,  // Auth UI - sign out flow
-          /\/features\/UserSetup\//,         // Auth UI - onboarding/verification
+          /\/features\/setup\//,             // Auth UI - onboarding/verification
           /\/features\/account\/PasswordTab\/VerifyModal\//, // Email verification modal
           /\.test\.(ts|tsx|js|jsx)$/,        // Test files
           /\.spec\.(ts|tsx|js|jsx)$/,        // Spec files

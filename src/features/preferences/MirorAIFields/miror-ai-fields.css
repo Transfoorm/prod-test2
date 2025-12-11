@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════
-   ✨ MIRROR AI FIELDS FEATURE - Layout Styles
-   /src/features/preferences/MirrorAIFields/mirror-ai-fields.css
+   ✨ MIROR AI FIELDS FEATURE - Layout Styles
+   /src/features/preferences/MirorAIFields/miror-ai-fields.css
 
    Feature-level CSS (ft-*) - Cards use Card.standard VR
    ═══════════════════════════════════════════════════════════════════ */
@@ -202,44 +202,6 @@
 
 
 /* ─────────────────────────────────────────────────────────────────────
-   Sections
-   ───────────────────────────────────────────────────────────────────── */
-
-.ft-mirror-ai-section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-}
-
-.ft-mirror-ai-section-header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.ft-mirror-ai-section-title {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--text-primary);
-}
-
-.ft-mirror-ai-section-description {
-  font-size: var(--font-size-xs);
-  color: var(--text-secondary);
-}
-
-/* ─────────────────────────────────────────────────────────────────────
-   Toggle Row (label + toggle inline)
-   ───────────────────────────────────────────────────────────────────── */
-
-.ft-mirror-ai-toggle-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-lg);
-}
-
-/* ─────────────────────────────────────────────────────────────────────
    Avatar Selection Grid
    ───────────────────────────────────────────────────────────────────── */
 
@@ -290,7 +252,7 @@
    ───────────────────────────────────────────────────────────────────── */
 
 .ft-star-toggle {
-  --star-color: rgb(250 190 21);
+  --miror-ai-star-color: rgb(250 190 21);
 
   position: relative;
   width: 64px;
@@ -334,7 +296,7 @@
 }
 
 .ft-star-toggle .ft-star-svg-filled {
-  fill: var(--star-color);
+  fill: var(--miror-ai-star-color);
   position: absolute;
   width: 100%;
   height: 100%;
@@ -348,8 +310,8 @@
   position: absolute;
   display: none;
   visibility: hidden;
-  stroke: var(--star-color);
-  fill: var(--star-color);
+  stroke: var(--miror-ai-star-color);
+  fill: var(--miror-ai-star-color);
   stroke-width: 2px;
   pointer-events: none;
 }
@@ -436,7 +398,7 @@
   }
 
   100% {
-    fill: var(--star-color);
+    fill: var(--miror-ai-star-color);
   }
 }
 

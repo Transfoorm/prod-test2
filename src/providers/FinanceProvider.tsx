@@ -32,7 +32,7 @@ export function FinanceProvider({ children, initialData }: FinanceProviderProps)
 
   useEffect(() => {
     if (initialData) {
-      // 🔥 FUSE 4.0 + WARP: Hydrate finances domain
+      // 🔥 FUSE 6.0 + WARP: Hydrate finances domain
       console.log('💰 FinanceProvider: Hydrating finances domain');
       hydrateFinance(initialData);
     }

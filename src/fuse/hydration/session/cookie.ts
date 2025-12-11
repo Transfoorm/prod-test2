@@ -1,4 +1,4 @@
-// FUSE 5.0 SESSION COOKIE SYSTEM - The Bridge to Zero Loading States
+// FUSE 6.0 SESSION COOKIE SYSTEM - The Bridge to Zero Loading States
 // Following FUSE Doctrine: 2BA + TTT Ready (100K/10K/1K)
 //
 // This is the CORE of FUSE - the JWT session system that eliminates loading states

@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  ✨ MIRROR AI FIELDS FEATURE                                         │
-│  /src/features/preferences/MirrorAIFields/index.tsx                  │
+│  ✨ MIROR AI FIELDS FEATURE                                          │
+│  /src/features/preferences/MirorAIFields/index.tsx                   │
 │                                                                       │
 │  VR Doctrine: Feature Layer                                           │
 │  - Imports VRs (Card, Input.toggle, Input.radio)                     │
@@ -17,7 +17,7 @@ import { Input } from '@/prebuilts/input';
 import { useFuse } from '@/store/fuse';
 import { ENCHANTMENT_TIMINGS } from '@/fuse/constants/enchantment';
 import { MIROR_DEFAULTS } from '@/fuse/constants/coreThemeConfig';
-import './mirror-ai-fields.css';
+import './miror-ai-fields.css';
 
 // ─────────────────────────────────────────────────────────────────────
 // Avatar Profile Options (9 avatars: gender × skin tone)
@@ -36,7 +36,7 @@ type AvatarOption = typeof AVATAR_OPTIONS[number];
 // Component
 // ─────────────────────────────────────────────────────────────────────
 
-export function MirrorAIFields() {
+export function MirorAIFields() {
   // ─────────────────────────────────────────────────────────────────────
   // FUSE wiring - all state access lives here in the Feature
   // ─────────────────────────────────────────────────────────────────────

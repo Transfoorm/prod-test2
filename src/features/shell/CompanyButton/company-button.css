@@ -368,44 +368,8 @@
   justify-content: center;
 }
 
-.ft-company-button-menu-item--country {
-  gap: var(--space-sm);
-}
-
-/* Don't show hover on Country Selector wrapper - only on the button itself */
-.ft-company-button-menu-item:has(.ft-country-button):hover {
-  background-color: transparent !important;
-}
-
-/* Remove CountrySelector button padding when inside menu */
-.ft-company-button-menu-item .ft-country-button {
-  padding: 0 !important;
-  margin: 0 !important;
-  height: auto !important;
-  width: auto !important;
-  min-height: 0 !important;
-  min-width: 0 !important;
-}
-
-.ft-company-button-menu-item .ft-country-button:hover {
-  background-color: transparent !important;
-}
-
-/* Constrain flag size inside menu */
-.ft-company-button-menu-item .ft-country-flag {
-  font-size: var(--font-size-lg) !important;
-}
-
-/* Country modal positioning */
-.ft-company-button-country-modal {
-  position: fixed;
-  top: 200px;  /* 🟨 MODAL UP/DOWN POSITION */
-  left: calc(var(--sidebar-width) + 0px);  /* 🟨 MODAL LEFT/RIGHT POSITION */
-}
-
-
 /* ═══════════════════════════════════════════════════════════════════════
-   8. LOGO CROPPER MODAL
+   7. LOGO CROPPER MODAL
    ═══════════════════════════════════════════════════════════════════════ */
 
 .ft-company-button-cropper-modal {

@@ -18,7 +18,7 @@
 │  - Blink on navigation between auth pages                              │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import '@/features/auth/auth.css';
+import './auth.css';
 
 interface AuthLayoutProps {
   children: React.ReactNode;

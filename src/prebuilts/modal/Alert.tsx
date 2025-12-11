@@ -16,7 +16,7 @@
 │    - Analogy: JavaScript alert() - just shows info                     │
 │                                                                        │
 │  Usage:                                                                │
-│    import { Modal } from '@/prebuilts';                     │
+│    import { Modal } from '@/prebuilts';                                │
 │                                                                        │
 │    // Basic usage                                                      │
 │    <Modal.alert                                                        │

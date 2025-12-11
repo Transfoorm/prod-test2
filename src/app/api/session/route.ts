@@ -1,5 +1,5 @@
 // 🛡️ S.I.D. COMPLIANT SESSION API
-// FUSE 5.0 + Sovereign Identity Doctrine
+// FUSE 6.0 + Sovereign Identity Doctrine
 //
 // This route now delegates to the Identity Handoff Ceremony
 // which is the ONE place where Clerk identity enters the system.

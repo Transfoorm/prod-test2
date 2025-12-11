@@ -1,5 +1,5 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔄 FUSE 5.0 Client Hydrator - Static Shell Optimized                 │
+│  🔄 FUSE 6.0 Client Hydrator - Static Shell Optimized                 │
 │  /fuse/store/ClientHydrator.tsx                                        │
 │                                                                        │
 │  Hydrates Zustand store from session cookie (client-side only)         │

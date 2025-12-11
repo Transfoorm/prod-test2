@@ -80,42 +80,56 @@ export interface DeletionManifest {
 export const DELETION_MANIFEST: DeletionManifest = {
   cascade: {
     // ═══════════════════════════════════════════════════════════════
-    // 📋 CURRENTLY EMPTY - WILL BE POPULATED AS TABLES ARE ADDED
+    // 🔥 VANISH STRATEGY: DELETE ALL - No orphans at 100K scale
+    // User is warned "Cannot be retrieved" before deletion
     // ═══════════════════════════════════════════════════════════════
 
-    // Example when tables exist:
-    //
-    // projects: {
-    //   fields: {
-    //     ownerId: 'delete',      // User owns it, delete it
-    //     createdBy: 'anonymize'  // Audit trail, anonymize creator
-    //   }
-    // },
-    //
-    // messages: {
-    //   fields: {
-    //     senderId: 'anonymize',    // Preserve thread for recipient
-    //     recipientId: 'preserve'   // Keep intact for recipient
-    //   }
-    // },
-    //
-    // invoices: {
-    //   fields: {
-    //     userId: 'delete'          // Hard delete user's financial data
-    //   }
-    // },
-    //
-    // organizations: {
-    //   fields: {
-    //     captainId: 'delete'       // Captain deletion cascades org
-    //   }
-    // },
-    //
-    // notifications: {
-    //   fields: {
-    //     userId: 'delete'          // Remove all notifications
-    //   }
-    // }
+    // Identity & Settings
+    identity_clerk_registry: {
+      fields: { userId: 'delete' },
+      indexName: 'by_user_id',
+    },
+    settings_account_Genome: {
+      fields: { userId: 'delete' },
+    },
+
+    // Clients Domain
+    clients_contacts_Users: {
+      fields: {
+        assignedTo: 'delete',
+        createdBy: 'delete',
+      },
+    },
+
+    // Finance Domain
+    finance_banking_Statements: {
+      fields: { createdBy: 'delete' },
+    },
+
+    // Projects Domain
+    projects_tracking_Schedule: {
+      fields: {
+        assignedTo: 'delete',
+        createdBy: 'delete',
+      },
+    },
+    projects_tracking_Costs: {
+      fields: { createdBy: 'delete' },
+    },
+
+    // Productivity Domain
+    productivity_email_Messages: {
+      fields: { createdBy: 'delete' },
+    },
+    productivity_calendar_Events: {
+      fields: { createdBy: 'delete' },
+    },
+    productivity_bookings_Form: {
+      fields: { createdBy: 'delete' },
+    },
+    productivity_pipeline_Prospects: {
+      fields: { createdBy: 'delete' },
+    },
   },
 
   preserve: [

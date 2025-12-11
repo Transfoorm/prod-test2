@@ -7,7 +7,7 @@
 
 ## 🎯 What is FUSE?
 
-**FUSE 5.0** = **F**ast **U**ser **S**ystem **E**ngineering
+**FUSE 6.0** = **F**ast **U**ser **S**ystem **E**ngineering
 
 A zero-loading-state architecture that makes web apps feel like native applications through:
 1. **Server-side data embedding** (no client fetch on navigation)

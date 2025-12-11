@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════
    FLYING BUTTON (PHOENIX) - Animation Engine Styles
-   /src/features/UserSetup/FlyingButton/flying-button.css
+   /src/features/setup/FlyingButton/flying-button.css
 
    Styles for the animated button that flies between modal and topbar.
    Uses position: fixed to escape all parent contexts.

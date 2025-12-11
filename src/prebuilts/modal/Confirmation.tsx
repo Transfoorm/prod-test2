@@ -15,7 +15,7 @@
 │    - Analogy: JavaScript confirm() - asks for decision                 │
 │                                                                        │
 │  Usage:                                                                │
-│    import { Modal } from '@/prebuilts';                     │
+│    import { Modal } from '@/prebuilts';                                │
 │    <Modal.confirmation                                                 │
 │      title="Delete Account"                                            │
 │      message="This action cannot be undone. Are you sure?"             │

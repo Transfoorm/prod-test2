@@ -6,11 +6,11 @@
 │  Each variant is a first-class, autonomous component.                  │
 │                                                                        │
 │  Usage:                                                                │
-│  import { Modal } from '@/prebuilts/modal';                │
+│  import { Modal } from '@/prebuilts/modal';                            │
 │                                                                        │
-│  <Modal.dialogue title="..." isOpen={true} onClose={...} />          │
-│  <Modal.alert title="..." message="..." isOpen={true} />             │
-│  <Modal.confirmation title="..." onConfirm={...} />                  │
+│  <Modal.dialogue title="..." isOpen={true} onClose={...} />            │
+│  <Modal.alert title="..." message="..." isOpen={true} />               │
+│  <Modal.confirmation title="..." onConfirm={...} />                    │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 // Import consolidated modal styles
@@ -19,6 +19,7 @@
 import DialogueModal from './Dialogue';
 import AlertModal from './Alert';
 import ConfirmationModal from './Confirmation';
+import VerifyModal from './Verify';
 
 // Drawer (side modal)
 export { SideDrawerProvider, useSideDrawer, SideDrawerPortal } from './Drawer';
@@ -47,19 +48,22 @@ export const Modal = {
   dialogue: DialogueModal,
   alert: AlertModal,
   confirmation: ConfirmationModal,
+  verify: VerifyModal,
 } as const;
 
 // Export individual components for direct import if needed
 export {
   DialogueModal,
   AlertModal,
-  ConfirmationModal
+  ConfirmationModal,
+  VerifyModal
 };
 
 // Type exports for TypeScript users
 export type { DialogueModalProps } from './Dialogue';
 export type { AlertModalProps } from './Alert';
 export type { ConfirmationModalProps } from './Confirmation';
+export type { VerifyModalProps } from './Verify';
 
 // Helper type for variant names
 export type ModalVariant = keyof typeof Modal;

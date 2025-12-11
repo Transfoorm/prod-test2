@@ -56,13 +56,13 @@ Data fetches → Components render → FINALLY: The page appears
 
 ### The Evolution of Fast User System Engineering
 
-**FUSE 4.0** = **F**ast **U**ser-**S**ession **E**ngine
-**FUSE 5.0** = **F**ast **U**ser **S**ystem **E**ngineering
+**FUSE 6.0** = **F**ast **U**ser-**S**ession **E**ngine
+**FUSE 6.0** = **F**ast **U**ser **S**ystem **E**ngineering
 **FUSE 6.0** = **F**ast **U**ser **S**overeign **E**ngineering
 
 The name evolved as the architecture matured:
-- **FUSE 4.0** focused on eliminating session-based loading states
-- **FUSE 5.0** expanded to complete system engineering
+- **FUSE 6.0** focused on eliminating session-based loading states
+- **FUSE 6.0** expanded to complete system engineering
 - **FUSE 6.0** introduced the Sovereign Router — true client-side sovereignty
 
 ---

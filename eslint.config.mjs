@@ -86,6 +86,9 @@ const eslintConfig = [
       // Category K: No Clerk Identity in Server Actions - Blocks getToken/setAuth outside auth boundary
       "ttts/no-clerk-identity-in-actions": "error",
 
+      // VANISH-1: Enforce cascade manifest coverage - No orphaned user data
+      "ttts/enforce-vanish-manifest": "error",
+
       // NOTE: class-prefix and no-component-css DISABLED for now
       // Legacy uses VR architecture, not 5-file system yet
       // "class-prefix/enforce-class-prefix": "error",  // DISABLED
@@ -149,6 +152,17 @@ const eslintConfig = [
     ],
     rules: {
       "no-restricted-syntax": "off"  // isSubmitting is optimistic UI, not loading
+    }
+  },
+  // Exception: Allow Clerk in auth features (this IS the auth boundary)
+  {
+    files: [
+      "src/features/verify/**/*.{ts,tsx}",
+      "src/app/(auth)/**/*.{ts,tsx}",
+    ],
+    rules: {
+      "ttts/no-clerk-in-domains": "off",  // Auth features ARE the Clerk boundary
+      "no-restricted-syntax": "off",       // isSubmitting for form feedback
     }
   },
   // Exception: Allow fetch in API routes (server-side only)
