@@ -33,9 +33,6 @@
 /* Mirror AI Fields */
 @import url('../src/features/preferences/MirrorAIFields/mirror-ai-fields.css');
 
-/* Verify Modal - Password/Email verification (S.I.D. Phase 12) */
-@import url('../src/features/account/PasswordTab/VerifyModal/verify-modal.css');
-
 /* Flying Button (Phoenix) */
 @import url('../src/features/UserSetup/FlyingButton/flying-button.css');
 
