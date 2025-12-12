@@ -18,6 +18,7 @@
 │  - Blink on navigation between auth pages                              │
 └────────────────────────────────────────────────────────────────────────┘ */
 
+import Image from 'next/image';
 import './auth.css';
 
 interface AuthLayoutProps {
@@ -28,12 +29,15 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
     <div className="ft-auth-page">
       <div className="ft-auth-container">
-        {/* Logo - SSR, never blinks */}
+        {/* Logo - SSR with explicit dimensions, zero layout shift */}
         <div className="ft-auth-logo-wrapper">
-          <img
+          <Image
             src="/images/brand/transfoorm.png"
             alt="Transfoorm"
+            width={340}
+            height={64}
             className="ft-auth-logo"
+            priority
           />
         </div>
 

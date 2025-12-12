@@ -29,6 +29,32 @@ const DOMAIN_ROUTES: Record<string, string> = {
   settings: '/api/warp/settings',
 };
 
+// Domain to images mapping - preload critical images when domain is accessed
+const DOMAIN_IMAGES: Record<string, string[]> = {
+  settings: [
+    // MirrorAI avatar grid (9 avatars)
+    '/images/ai/miror_f_1.png',
+    '/images/ai/miror_f_2.png',
+    '/images/ai/miror_f_3.png',
+    '/images/ai/miror_m_1.png',
+    '/images/ai/miror_m_2.png',
+    '/images/ai/miror_m_3.png',
+    '/images/ai/miror_i_1.png',
+    '/images/ai/miror_i_2.png',
+    '/images/ai/miror_i_3.png',
+    // Twinkle effect
+    '/images/sitewide/twinkle.webp',
+  ],
+};
+
+// Preload images into browser cache
+function preloadImages(urls: string[]) {
+  urls.forEach((url) => {
+    const img = new Image();
+    img.src = url;
+  });
+}
+
 // Domain to FUSE hydration function mapping
 type DomainKey = 'productivity' | 'admin' | 'clients' | 'finance' | 'projects' | 'system' | 'settings';
 
@@ -79,9 +105,15 @@ export function usePrism() {
   }), [hydrateProductivity, hydrateAdmin, hydrateClients, hydrateFinance, hydrateProjects, hydrateSystem, hydrateSettings]);
 
   const preloadDomain = useCallback(async (domain: DomainKey) => {
-    // Skip if already hydrated (TTTS-1: status === 'hydrated')
+    // Always preload images for domain (they may not be cached yet)
+    const domainImages = DOMAIN_IMAGES[domain];
+    if (domainImages) {
+      preloadImages(domainImages);
+    }
+
+    // Skip data fetch if already hydrated (TTTS-1: status === 'hydrated')
     if (domainStatusMap[domain] === 'hydrated') {
-      console.log(`🔮 PRISM: ${domain} already hydrated, skipping`);
+      console.log(`🔮 PRISM: ${domain} already hydrated, skipping data fetch`);
       return;
     }
 
