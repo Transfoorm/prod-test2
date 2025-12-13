@@ -4,41 +4,41 @@
 
 :root {
   /* Dropdown Dimensions */
-  --country-dropdown-width: 192px;
-  --country-dropdown-padding-bottom: 4px;
-  --country-dropdown-z-index: 9999;
+  --country-selector-dropdown-width: 192px;
+  --country-selector-dropdown-padding-bottom: 4px;
+  --country-selector-dropdown-z-index: 9999;
 
   /* Header */
-  --country-header-padding-y: 12px;
-  --country-header-padding-x: 16px;
-  --country-header-gap: 8px;
+  --country-selector-header-padding-y: 12px;
+  --country-selector-header-padding-x: 16px;
+  --country-selector-header-gap: 8px;
 
   /* Option */
-  --country-option-gap: 12px;
-  --country-option-padding-y: 8px;
-  --country-option-padding-x: 12px;
-  --country-option-margin-y: 4px;
-  --country-option-margin-x: 4px;
-  --country-option-width-offset: 8px;
+  --country-selector-option-gap: 12px;
+  --country-selector-option-padding-y: 8px;
+  --country-selector-option-padding-x: 12px;
+  --country-selector-option-margin-y: 4px;
+  --country-selector-option-margin-x: 4px;
+  --country-selector-option-width-offset: 8px;
 
   /* Option Content */
-  --country-option-content-gap: 2px;
+  --country-selector-option-content-gap: 2px;
 
   /* Shadow */
-  --country-dropdown-shadow: 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -2px rgb(0 0 0 / 5%);
+  --country-selector-dropdown-shadow: 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -2px rgb(0 0 0 / 5%);
 }
 
 /* Dropdown - Portal Container */
 .ft-country-dropdown {
   position: fixed;
-  width: var(--country-dropdown-width);
+  width: var(--country-selector-dropdown-width);
   background-color: var(--page-arch-color);
   border-radius: var(--radius-lg);
-  box-shadow: var(--country-dropdown-shadow);
+  box-shadow: var(--country-selector-dropdown-shadow);
   border: 1px solid var(--border-light);
   padding-top: 0;
-  padding-bottom: var(--country-dropdown-padding-bottom);
-  z-index: var(--country-dropdown-z-index);
+  padding-bottom: var(--country-selector-dropdown-padding-bottom);
+  z-index: var(--country-selector-dropdown-z-index);
   top: var(--dropdown-top, 50%);
 }
 
@@ -54,7 +54,7 @@
 
 /* Dropdown - Header */
 .ft-country-header {
-  padding: var(--country-header-padding-y) var(--country-header-padding-x);
+  padding: var(--country-selector-header-padding-y) var(--country-selector-header-padding-x);
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
   font-weight: var(--font-weight-semibold);
@@ -65,18 +65,18 @@
   border-top-right-radius: var(--radius-lg);
   display: flex;
   align-items: center;
-  gap: var(--country-header-gap);
+  gap: var(--country-selector-header-gap);
   white-space: nowrap;
 }
 
 /* Option - Button Base */
 .ft-country-option {
-  width: calc(100% - var(--country-option-width-offset));
+  width: calc(100% - var(--country-selector-option-width-offset));
   display: flex;
   align-items: center;
-  gap: var(--country-option-gap);
-  padding: var(--country-option-padding-y) var(--country-option-padding-x);
-  margin: 0 var(--country-option-margin-x) var(--country-option-margin-y) var(--country-option-margin-x);
+  gap: var(--country-selector-option-gap);
+  padding: var(--country-selector-option-padding-y) var(--country-selector-option-padding-x);
+  margin: 0 var(--country-selector-option-margin-x) var(--country-selector-option-margin-y) var(--country-selector-option-margin-x);
   text-align: left;
   background-color: transparent;
   border: none;
@@ -87,7 +87,7 @@
 
 /* First option - Add top margin */
 .ft-country-option:first-of-type {
-  margin-top: var(--country-option-margin-y);
+  margin-top: var(--country-selector-option-margin-y);
 }
 
 /* Option - Hover */
@@ -112,7 +112,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--country-option-content-gap);
+  gap: var(--country-selector-option-content-gap);
 }
 
 /* Option - Country Name */
