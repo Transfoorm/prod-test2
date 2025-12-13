@@ -53,7 +53,7 @@ This audit verifies the **Sovereign Architecture**:
 | 24 | - `ttts/no-cross-domain-imports` |
 | 25 | - `ttts/no-lazy-domains` |
 | 26 | - `ttts/no-runtime-debt` |
-| -- | - `ttts/no-clerk-in-domains` (Golden Bridge) |
+| 27 | - `ttts/no-clerk-in-domains` (Golden Bridge - see also #17) |
 
 ### Layer 3: VRP Scripts (9 points)
 
@@ -97,10 +97,10 @@ This audit verifies the **Sovereign Architecture**:
 | 52 | Store contains user slice (from cookie hydration) |
 | 53 | Store contains theme slice |
 | 54 | Store contains domain slices (admin, clients, finance, etc.) |
-| 55 | `/fuse/warp/` directory exists |
+| 55 | `/src/fuse/warp/` directory exists |
 | 56 | WARP endpoints exist: `/api/warp/{domain}.ts` |
 | 57 | FuseApp triggers WARP on mount (`requestIdleCallback`) |
-| 58 | `/fuse/hydration/` exists for cookie hydration |
+| 58 | `/src/fuse/hydration/` exists for cookie hydration |
 | 59 | ClientHydrator or equivalent hydrates store from cookie |
 | 60 | Convex sync providers exist in `/providers/` |
 

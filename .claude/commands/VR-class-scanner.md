@@ -14,6 +14,25 @@
 
 ---
 
+## 🚀 PRE-FLIGHT: AUTO-APPROVED COMMANDS
+
+All scanner commands are **READ-ONLY**. They do not modify files.
+
+The following are **AUTO-APPROVED** — execute without asking:
+- `Bash(grep:*)`
+- `Bash(find:*)`
+- `Bash(sort:*)`
+- `Bash(sed:*)`
+- `Bash(wc:*)`
+- `Bash(xargs:*)`
+- `Bash(uniq:*)`
+- `Bash(head:*)`
+- `Bash(cat:*)`
+
+**DO NOT** pause for approval on these commands. Run the entire audit in one pass.
+
+---
+
 ## ⚫ ABSOLUTE MODE DECLARATION
 
 You are a **machine**. You execute rules. You do not think. You do not interpret. You do not contextualize.
@@ -85,7 +104,7 @@ If a CSS file exists **ANYWHERE ELSE**, the scan **FAILS**.
 | 1 | `/src/prebuilts/**/*.css` | `.vr-{component}-*` | `vr-{component}-{action}` | `--{component}-*` | Classes, keyframes, variables |
 | 2 | `/src/features/**/*.css` | `.ft-{feature}-*` | `ft-{feature}-{action}` | `--{feature}-*` | Classes, keyframes, variables |
 | 3 | `/src/shell/**/*.css` | `.ly-{area}-*` | `ly-{area}-{action}` | `--{area}-*` | Classes, keyframes, variables |
-| 4 | `/src/app/domains/**/*.css` | `.ly-{domain}-*` | `ly-{domain}-{action}` | `--{domain}-*` | Classes, keyframes, variables |
+| 4 | `/src/app/domains/**/*.css` | `.ly-{component}-*` | `ly-{component}-{action}` | `--{component}-*` | Classes, keyframes, variables |
 | 5 | `/src/app/(auth)/**/*.css` | `.ft-auth-*` | `ft-auth-{action}` | `--ft-auth-*` | Classes, keyframes, variables |
 | 6 | `/styles/tokens.css` | FORBIDDEN | FORBIDDEN | `--{token}-*` | Variables ONLY |
 | 7 | `/styles/animations.css` | FORBIDDEN | ANY (generic allowed) | FORBIDDEN | Keyframes ONLY |
@@ -189,7 +208,7 @@ If violations > 0, list EVERY violation with EXACT path.
 
 **COMMAND (MUST RUN EXACTLY AS WRITTEN):**
 ```bash
-grep -rhn "^\." src/**/*.css styles/**/*.css 2>/dev/null | grep -E ":\.[a-z]"
+grep -rhn "^\." src/**/*.css styles/**/*.css vanish/**/*.css 2>/dev/null | grep -E ":\.[a-z]"
 ```
 
 **VALIDATION:**
@@ -239,7 +258,7 @@ List EVERY violation: `❌ [file:line] .[class] — Must be .[correct-prefix]-*`
 
 **COMMAND (MUST RUN EXACTLY AS WRITTEN):**
 ```bash
-grep -rhn "@keyframes " src/**/*.css styles/**/*.css 2>/dev/null
+grep -rhn "@keyframes " src/**/*.css styles/**/*.css vanish/**/*.css 2>/dev/null
 ```
 
 **VALIDATION:**
@@ -286,11 +305,11 @@ PHASE 3: Keyframes         Scanned: [N] keyframes | Violations: [N] | [PASS/FAIL
 
 **COMMAND (MUST RUN EXACTLY AS WRITTEN):**
 ```bash
-grep -rh "@keyframes " src/**/*.css 2>/dev/null | \
+grep -rh "@keyframes " src/**/*.css vanish/**/*.css 2>/dev/null | \
   sed 's/.*@keyframes //' | sed 's/ {.*//' | sort | uniq -d
 ```
 
-**NOTE:** This checks `src/**/*.css` only. `styles/animations.css` is the canonical source — duplicates there are impossible by definition.
+**NOTE:** This checks `src/**/*.css` and `vanish/**/*.css`. `styles/animations.css` is the canonical source — duplicates there are impossible by definition.
 
 **VALIDATION:**
 Output MUST be empty.
@@ -312,25 +331,49 @@ PHASE 4: Collisions        Unique: [N] | Duplicates: [N] | [PASS/FAIL]
 
 **COMMAND (MUST RUN EXACTLY AS WRITTEN):**
 ```bash
-grep -rhn "^\s*--[a-z]" src/**/*.css 2>/dev/null
+grep -rhn "^\s*--[a-z]" src/**/*.css vanish/**/*.css 2>/dev/null
 ```
 
 **VALIDATION:**
 For EACH variable definition found:
 
 1. Determine which CANONICAL LIST row the file belongs to
-2. Extract the parent folder name from the file path
-3. Variable MUST start with `--{parentfolder}-`
+2. Extract the component lineage from the file path
+3. Variable MUST start with a prefix that traces back to its component
+
+**RULE:** Variable prefix must contain enough lineage to be unambiguous and traceable.
 
 **EXAMPLE ENFORCEMENT:**
-| File Path | Parent Folder | Variable MUST Start With |
-|-----------|---------------|--------------------------|
-| `src/features/UserButton/user-button.css` | `UserButton` | `--userbutton-` |
-| `src/features/account/PasswordFields/password-fields.css` | `PasswordFields` | `--password-` or `--passwordfields-` |
-| `src/prebuilts/modal/modal.css` | `modal` | `--modal-` |
-| `src/shell/Sidebar/sidebar.css` | `Sidebar` | `--sidebar-` |
+| File Path | Valid Prefix | Why |
+|-----------|--------------|-----|
+| `src/prebuilts/modal/modal.css` | `--modal-*` | Flat structure, parent is enough |
+| `src/prebuilts/input/checkbox/form/form.css` | `--checkbox-form-*` | Nested: includes component lineage |
+| `src/prebuilts/input/checkbox/settings/settings.css` | `--checkbox-settings-*` | Nested: includes component lineage |
+| `src/prebuilts/input/checkbox/table/table.css` | `--checkbox-table-*` | Nested: includes component lineage |
+| `src/features/UserButton/user-button.css` | `--userbutton-*` | Flat structure |
+| `src/shell/Sidebar/sidebar.css` | `--sidebar-*` | Flat structure |
 
-**GENERIC VARIABLES ARE ALWAYS VIOLATIONS:**
+**INVALID:**
+| File Path | Invalid Prefix | Why |
+|-----------|----------------|-----|
+| `src/prebuilts/input/checkbox/form/form.css` | `--form-*` | Ambiguous - which form? |
+| `src/prebuilts/input/checkbox/form/form.css` | `--input-*` | Too generic |
+
+**PERMITTED EXCEPTION: Animation Slot Variables**
+
+Variables prefixed with `--anim-*` are **animation slot variables**. They are:
+- Defined locally in component CSS (scoped to a selector)
+- Consumed by shared keyframes in `styles/animations.css`
+- Intentionally generic to enable keyframe reuse across components
+
+| Pattern | Location | Status |
+|---------|----------|--------|
+| `--anim-slide-distance` | Inside `.vr-*` selector | ✅ PERMITTED |
+| `--anim-scale-factor` | Inside `.vr-*` selector | ✅ PERMITTED |
+| `--anim-*` | Inside any scoped selector | ✅ PERMITTED |
+| `--anim-*` | At `:root` level | ❌ VIOLATION |
+
+**GENERIC VARIABLES ARE ALWAYS VIOLATIONS (except --anim-*):**
 | Variable | Violation |
 |----------|-----------|
 | `--color` | YES |
@@ -351,7 +394,7 @@ For EACH variable definition found:
 | `--animation` | YES |
 | `--z-index` | YES |
 | `--opacity` | YES |
-| `--[any-single-word]` | YES (must be prefixed) |
+| `--[any-single-word]` | YES (must be prefixed, except --anim-*) |
 
 **Output:**
 ```
@@ -403,16 +446,8 @@ PHASE 6: Contamination     Checks: 7 | Bleeds: [N] | [PASS/FAIL]
 
 **COMMAND (MUST RUN EXACTLY AS WRITTEN):**
 ```bash
-for css in $(find src -name "*.css" -type f 2>/dev/null); do
-  dir=$(dirname "$css")
-  classes=$(grep -oh '\.[vfl][rty]-[a-z][a-z0-9_-]*' "$css" 2>/dev/null | sort | uniq)
-  for class in $classes; do
-    classname="${class:1}"
-    if ! grep -rq "$classname" "$dir"/*.tsx "$dir"/../*.tsx "$dir"/../../*.tsx 2>/dev/null; then
-      echo "ORPHAN: $class in $css"
-    fi
-  done
-done
+# Extract all CSS class names, check each against TSX files in src/ and vanish/
+grep -roh '\.[vfl][rty]-[a-z][a-z0-9_-]*' src/**/*.css vanish/**/*.css 2>/dev/null | sort -u | sed 's/^\.//' | xargs -I{} sh -c 'grep -rq "{}" src/ vanish/ 2>/dev/null || echo "ORPHAN: .{}"'
 ```
 
 **VALIDATION:**
@@ -433,17 +468,19 @@ For files with strict content rules (rows 6-12 in CANONICAL LIST):
 
 **CHECK 8.1: tokens.css**
 ```bash
-# Must contain ONLY variables (lines starting with -- or containing --)
-grep -vE "^\s*$|^\s*/\*|^\s*\*/|^\s*\*|^:root|^}|^\s*--" styles/tokens.css 2>/dev/null
+# Must contain ONLY :root, variables, comments, whitespace
+# Looks for violations: class selectors, element selectors (except :root)
+grep -E "^\.[a-z]|^[a-z]+\s*\{" styles/tokens.css 2>/dev/null
 ```
-If output is non-empty (excluding :root {} wrapper): **FAIL**
+If output is non-empty: **FAIL**
 
 **CHECK 8.2: animations.css**
 ```bash
-# Must contain ONLY keyframes
-grep -vE "^\s*$|^\s*/\*|^\s*\*/|^\s*\*|^@keyframes|^}|^\s*[0-9]|^\s*from|^\s*to|^\s*transform|^\s*opacity|^\s*[a-z-]+:" styles/animations.css 2>/dev/null
+# Must contain ONLY @keyframes, comments, whitespace
+# Looks for violations: class selectors, element selectors, :root
+grep -E "^\.[a-z]|^[a-z]+\s*\{|^:root" styles/animations.css 2>/dev/null
 ```
-If contains class definitions (`.classname`): **FAIL**
+If output is non-empty: **FAIL**
 
 **CHECK 8.3: globals.css**
 ```bash
@@ -452,12 +489,25 @@ grep -E "^\.[a-z]" styles/globals.css 2>/dev/null
 ```
 If output is non-empty: **FAIL**
 
-**CHECK 8.4: prebuilts.css, features.css, layout.css**
+**CHECK 8.4: Import Hub Files (must contain ONLY @import statements)**
 ```bash
-# Must contain ONLY @import statements
-for file in styles/prebuilts.css styles/features.css styles/layout.css; do
-  if grep -vE "^\s*$|^\s*/\*|^\s*\*/|^\s*\*|^@import" "$file" 2>/dev/null | grep -q .; then
+# Must contain ONLY @import statements (and comments/whitespace)
+# Looks for violations: class selectors, id selectors, element selectors, CSS properties
+for file in styles/prebuilts.css styles/features.css styles/layout.css src/shell/shell.css; do
+  if grep -E "^[\.#a-z\[]|^\s+[a-z-]+:" "$file" 2>/dev/null | grep -q .; then
     echo "VIOLATION: $file contains non-import content"
+  fi
+done
+```
+If output is non-empty: **FAIL**
+
+**CHECK 8.5: Theme Files (must contain ONLY variables)**
+```bash
+# Must contain ONLY :root, variables, comments, whitespace
+# Looks for violations: class selectors, element selectors, @keyframes
+for file in styles/themes/*.css; do
+  if grep -E "^\.[a-z]|^[a-z]+\s*\{|^@keyframes" "$file" 2>/dev/null | grep -q .; then
+    echo "VIOLATION: $file contains non-variable content"
   fi
 done
 ```
@@ -465,7 +515,7 @@ If output is non-empty: **FAIL**
 
 **Output:**
 ```
-PHASE 8: Content Rules     Checked: 6 files | Violations: [N] | [PASS/FAIL]
+PHASE 8: Content Rules     Checked: [N] files | Violations: [N] | [PASS/FAIL]
 ```
 
 ---

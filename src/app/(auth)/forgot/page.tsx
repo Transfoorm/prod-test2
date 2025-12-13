@@ -1,5 +1,5 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔐 FORGOT PASSWORD PAGE                                              │
+│  🔐 FORGOT PASSWORD PAGE                                               │
 │  /src/app/(auth)/forgot/page.tsx                                       │
 │                                                                        │
 │  VR DOCTRINE: Page Layer (in auth boundary)                            │

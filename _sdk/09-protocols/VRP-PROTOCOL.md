@@ -123,17 +123,23 @@ Check branch status
 If CLEAN → Push to origin
 ```
 
-### 3. `/VRP-audit` - 70-Point Compliance Audit
+### 3. `/VRP-audit` - 88-Point Compliance Audit
 
-Complete FUSE Stack compliance audit:
+Complete FUSE 6.0 Stack compliance audit:
 
 ```
-Phase 1: Virgin-Check (Points 1-35)
-Phase 2: FUSE Architecture (Points 36-50)
-Phase 3: Naming Conventions (Points 51-60)
-Phase 4: Build Integrity (Points 61-70)
-Phase 5: Random Sampling
+PART 1: AUTOMATED (70 points)
+  Phase 1: Virgin-Check (Points 1-35)
+  Phase 2: Sovereign Router (Points 36-50)
+  Phase 3: FUSE Store & WARP (Points 51-60)
+  Phase 4: Build Integrity (Points 61-70)
+
+PART 2: MANUAL (18 points)
+  Phase 5: TTTS Manual Rules (Points 71-73)
+  Phase 6: SRB Sovereignty Rules (Points 74-88)
 ```
+
+See `/VRP-audit` slash command for full 88-point breakdown.
 
 ---
 
@@ -258,7 +264,7 @@ VRP enforces FUSE principles:
 |---------|---------|------|
 | `/VRP-commit` | Create compliant commit | Every commit |
 | `/VRP-push` | Push with verification | When sharing |
-| `/VRP-audit` | Full 70-point audit | Weekly/releases |
+| `/VRP-audit` | Full 88-point audit | Weekly/releases |
 
 ### Violation Checklist
 

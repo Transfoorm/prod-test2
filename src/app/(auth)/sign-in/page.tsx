@@ -1,7 +1,7 @@
 "use client";
 
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔐 SIGN IN PAGE - TTT-CERTIFIED CLIENT FORM                          │
+│  🔐 SIGN IN PAGE - TTT-CERTIFIED CLIENT FORM                           │
 │  /src/app/(auth)/sign-in/page.tsx                                      │
 │                                                                        │
 │  CLIENT COMPONENT - Only the form logic.                               │

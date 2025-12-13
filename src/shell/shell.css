@@ -3,6 +3,7 @@
    Consolidated import hub for all shell component styles
    ═══════════════════════════════════════════════════════════════════ */
 
+@import url('./app.css');
 @import url('./Topbar/topbar.css');
 @import url('./Footer/footer.css');
 @import url('./PageArch/pagearch.css');

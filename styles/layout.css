@@ -3,7 +3,4 @@
 /*  SHELL COMPONENTS (WCCC ly-* Compliant) */
 @import url('../src/shell/shell.css');
 
-/*  APP LAYOUT FILES (Domain) */
-@import url('../src/app/domains/domains.css');
-
 /* Variables moved to styles/tokens.css - LAYOUT CONTROL VARIABLES section */

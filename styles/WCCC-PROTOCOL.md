@@ -252,6 +252,7 @@ The "Variant Robot" name reflects the systematic, automated nature of these comp
 
 /src/shell/
 ├── shell.css               # Import hub
+├── app.css                 # App frame (.ly-app-* classes)
 ├── Topbar/
 │   ├── Topbar.tsx
 │   ├── topbar.css          # ly-topbar-* classes
@@ -871,16 +872,14 @@ Shell CSS Flow Architecture:
   globals.css
   ├─ @import './features.css'        (features only)
   ├─ @import './layout.css'
-  │   ├─ @import '../src/shell/shell.css'
-  │   │   ├─ @import './Topbar/topbar.css'    (only .ly-topbar-* classes)
-  │   │   ├─ @import './Footer/footer.css'    (only .ly-footer-* classes)
-  │   │   ├─ @import './PageArch/pagearch.css' (only .ly-pagearch-* classes)
-  │   │   ├─ @import './PageHeader/pageheader.css' (only .ly-pageheader-* classes)
-  │   │   ├─ @import './AISidebar/aisidebar.css' (only .ly-aisidebar-* classes)
-  │   │   └─ @import './Sidebar/sidebar.css'  (only .ly-sidebar-* classes)
-  │   ├─ @import '../src/app/root-layout.css'
-  │   ├─ @import '../src/app/(domain)/domain-layout.css'
-  │   └─ @import '../src/app/(auth)/auth.css'
+  │   └─ @import '../src/shell/shell.css'
+  │       ├─ @import './app.css'              (app frame: .ly-app-* classes)
+  │       ├─ @import './Topbar/topbar.css'    (only .ly-topbar-* classes)
+  │       ├─ @import './Footer/footer.css'    (only .ly-footer-* classes)
+  │       ├─ @import './PageArch/pagearch.css' (only .ly-pagearch-* classes)
+  │       ├─ @import './PageHeader/pageheader.css' (only .ly-pageheader-* classes)
+  │       ├─ @import './AISidebar/aisidebar.css' (only .ly-aisidebar-* classes)
+  │       └─ @import './Sidebar/sidebar.css'  (only .ly-sidebar-* classes)
   ├─ @import './prebuilts.css'       (prebuilts only)
   ├─ @import './tokens.css'          (design tokens only)
   └─ @import './themes/transtheme.css' (theme colors only)

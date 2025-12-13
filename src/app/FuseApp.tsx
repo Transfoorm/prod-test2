@@ -49,7 +49,7 @@ import { ProductivityProvider } from '@/providers/ProductivityProvider';
 import { ProjectsProvider } from '@/providers/ProjectsProvider';
 
 // Layout CSS
-import '@/app/domains/domains.css';
+import '@/shell/app.css';
 
 // ═══════════════════════════════════════════════════════════════════════
 // CONFIGURATION
@@ -128,10 +128,10 @@ export default function FuseApp() {
             <ProjectsProvider>
               <div data-user-rank={user?.rank || undefined} className="ly-app-container">
                 <Sidebar />
-                <div className="ly-right-container">
+                <div className="ly-app-right-container">
                   <Topbar />
-                  <div className="ly-main-container">
-                    <main className={USE_CURVES ? 'ly-main-content-with-arch' : 'ly-main-content-without-arch'}>
+                  <div className="ly-app-main-container">
+                    <main className={USE_CURVES ? 'ly-app-content-with-arch' : 'ly-app-content-without-arch'}>
                       {USE_CURVES ? (
                         <PageArch>
                           <PageHeader />
