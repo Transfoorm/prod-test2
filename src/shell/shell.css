@@ -4,9 +4,9 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 @import url('./app.css');
-@import url('./Topbar/topbar.css');
-@import url('./Footer/footer.css');
-@import url('./PageArch/pagearch.css');
-@import url('./PageHeader/pageheader.css');
-@import url('./AISidebar/aisidebar.css');
-@import url('./Sidebar/sidebar.css');
+@import url('./topbar/topbar.css');
+@import url('./footer/footer.css');
+@import url('./page-arch/page-arch.css');
+@import url('./page-header/page-header.css');
+@import url('./ai-sidebar/ai-sidebar.css');
+@import url('./sidebar/sidebar.css');

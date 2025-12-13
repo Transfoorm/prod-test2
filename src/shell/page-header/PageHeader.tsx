@@ -13,7 +13,7 @@
 
 "use client";
 
-import { usePageHeaderContext } from '@/shell/PageHeader/PageHeaderContext';
+import { usePageHeaderContext } from '@/shell/page-header/PageHeaderContext';
 import { useRef, useEffect } from 'react';
 
 /**

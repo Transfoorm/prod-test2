@@ -15,7 +15,7 @@
 "use client";
 
 import { useEffect } from 'react';
-import { usePageHeaderContext, ActionPosition } from '@/shell/PageHeader/PageHeaderContext';
+import { usePageHeaderContext, ActionPosition } from '@/shell/page-header/PageHeaderContext';
 import { useRouteTitle } from '@/hooks/useRouteTitle';
 
 /**

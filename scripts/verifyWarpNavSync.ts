@@ -22,7 +22,7 @@ const ROOT = process.cwd();
 // ═══════════════════════════════════════════════════════════════════════
 
 const ORCHESTRATOR_PATH = 'src/fuse/warp/orchestrator.ts';
-const NAV_CONFIG_DIR = 'src/shell/Sidebar/navigation';
+const NAV_CONFIG_DIR = 'src/shell/sidebar/navigation';
 const WARP_API_DIR = 'src/app/api/warp';
 
 const RANKS = ['admiral', 'commodore', 'captain', 'crew'] as const;
@@ -83,7 +83,7 @@ function checkOrchestratorImports(): { passed: boolean; errors: string[] } {
   const content = readFile(ORCHESTRATOR_PATH);
 
   for (const rank of RANKS) {
-    const importPattern = new RegExp(`from\\s+['"]@/shell/Sidebar/navigation/${rank}['"]`);
+    const importPattern = new RegExp(`from\\s+['"]@/shell/sidebar/navigation/${rank}['"]`);
     if (!importPattern.test(content)) {
       errors.push(`Missing import from navigation/${rank}.ts`);
     }

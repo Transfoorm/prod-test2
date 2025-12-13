@@ -12,11 +12,11 @@
 'use client';
 
 import { useFuse } from '@/store/fuse';
-import { admiralNav } from '@/shell/Sidebar/navigation/admiral';
-import { commodoreNav } from '@/shell/Sidebar/navigation/commodore';
-import { captainNav } from '@/shell/Sidebar/navigation/captain';
-import { crewNav } from '@/shell/Sidebar/navigation/crew';
-import type { NavSection } from '@/shell/Sidebar/navigation/types';
+import { admiralNav } from '@/shell/sidebar/navigation/admiral';
+import { commodoreNav } from '@/shell/sidebar/navigation/commodore';
+import { captainNav } from '@/shell/sidebar/navigation/captain';
+import { crewNav } from '@/shell/sidebar/navigation/crew';
+import type { NavSection } from '@/shell/sidebar/navigation/types';
 
 // ═══════════════════════════════════════════════════════════════════════
 // TYPES
