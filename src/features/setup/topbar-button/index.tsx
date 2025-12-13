@@ -2,7 +2,7 @@
 
 /**──────────────────────────────────────────────────────────────────────────┐
  │  🤖 VARIANT ROBOT - TopbarSetupButton                                     │
- │  /src/features/setup/TopbarButton/index.tsx                               │
+ │  /src/features/setup/topbar-button/index.tsx                               │
  │                                                                            │
  │  VR-Sovereign: Owns ALL button state, visibility, and click behavior.     │
  │  Topbar just renders <TopbarSetupButton /> - zero ceremony.               │

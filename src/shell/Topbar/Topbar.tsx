@@ -12,7 +12,7 @@
 import Image from 'next/image';
 import { useFuse } from '@/store/fuse';
 import { useRankCheck } from '@/fuse/hydration/hooks/useRankCheck';
-import TopbarSetupButton from '@/features/setup/TopbarButton';
+import TopbarSetupButton from '@/features/setup/topbar-button';
 
 export default function Topbar() {
   const { isAdmiral } = useRankCheck();
