@@ -168,14 +168,14 @@ const eslintConfig = [
       "no-restricted-syntax": "off"  // isSubmitting is optimistic UI, not loading
     }
   },
-  // Exception: Allow Clerk in auth features (this IS the auth boundary)
+  // Exception: Allow Clerk in auth/clerk quarantine zones
   {
     files: [
-      "src/features/verify/**/*.{ts,tsx}",
       "src/app/(auth)/**/*.{ts,tsx}",
+      "src/app/(clerk)/**/*.{ts,tsx}",   // Clerk quarantine zone
     ],
     rules: {
-      "ttts/no-clerk-in-domains": "off",  // Auth features ARE the Clerk boundary
+      "ttts/no-clerk-in-domains": "off",  // These ARE the Clerk boundary
       "no-restricted-syntax": "off",       // isSubmitting for form feedback
     }
   },
@@ -231,10 +231,17 @@ const eslintConfig = [
       "src/hooks/useAdminSync.ts",      // Admin domain: Convex → FUSE
       "src/hooks/useConvexUser.ts",     // User identity: Convex → FUSE
       "src/hooks/useSettingsSync.ts",   // Settings domain: Convex → FUSE
-      "vanish/**/*.tsx",                // Quarantine/deprecated sync code
+      "src/features/vanish/**/*.tsx",   // Vanish deletion protocol
     ],
     rules: {
       "ttts/no-runtime-debt": "off"  // TTTS-2 compliant sync infrastructure
+    }
+  },
+  // Exception: Allow fetch in Vanish (server-side deletion API calls)
+  {
+    files: ["src/features/vanish/**/*.tsx"],
+    rules: {
+      "no-restricted-globals": "off"  // Vanish calls external APIs
     }
   },
   // ═══════════════════════════════════════════════════════════════════

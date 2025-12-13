@@ -20,7 +20,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Icon } from '@/prebuilts/icon/iconRegistry';
-import { changePassword } from '@/app/actions/password-actions';
+import { changePassword } from '@/app/(clerk)/actions/password';
 import './password-tab.css';
 
 type CeremonyStage = 'fresh' | 'typing' | 'valid' | 'confirming' | 'committing' | 'success';

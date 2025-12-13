@@ -15,7 +15,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import dynamic from 'next/dynamic';
-import '@/vanish/vanish.css';
+import './vanish.css';
 
 // ═══════════════════════════════════════════════════════════════════
 //  TYPES

@@ -23,7 +23,7 @@ import { useQuery, useAction } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import type { Id } from '@/convex/_generated/dataModel';
 import { Icon, Badge } from '@/prebuilts';
-import { useVanish } from '@/vanish/Drawer';
+import { useVanish } from '@/features/vanish/Drawer';
 import { useFuse } from '@/store/fuse';
 
 // Type for deletion target

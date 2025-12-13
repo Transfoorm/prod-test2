@@ -53,11 +53,23 @@ See: TTT-99-WAYS-CLERK-CAN-INFECT.md`,
 
         // Exception zones - where foreign auth IS allowed
         const exceptionPatterns = [
-          /\/app\/\(auth\)\//,              // Auth pages
-          /\/app\/\(vanish\)\//,            // Vanish/cleanup pages
-          /\/providers\//,                   // Providers
+          // ═══════════════════════════════════════════════════════════════
+          // QUARANTINE ZONES - All Clerk code lives here
+          // ═══════════════════════════════════════════════════════════════
+          /\/app\/\(auth\)\//,              // Auth pages (sign-in, sign-up, forgot)
+          /\/app\/\(clerk\)\//,             // Clerk quarantine (actions, api, features, webhooks)
+
+          // ═══════════════════════════════════════════════════════════════
+          // INFRASTRUCTURE
+          // ═══════════════════════════════════════════════════════════════
+          /\/providers\//,                   // Providers (ConvexClientProvider)
           /\/fuse\/hydration\//,             // Hydration utilities
           /middleware\.ts$/,                 // Auth middleware
+          /\/app\/layout\.tsx$/,            // ClerkProvider wrapper (root layout only)
+
+          // ═══════════════════════════════════════════════════════════════
+          // TEST FILES
+          // ═══════════════════════════════════════════════════════════════
           /\.test\.(ts|tsx|js|jsx)$/,        // Test files
           /\.spec\.(ts|tsx|js|jsx)$/,        // Spec files
         ];
