@@ -39,9 +39,6 @@
 /* Shadow King (Sovereign Setup Enforcement) */
 @import url('../src/features/setup/ShadowKing/shadow-king.css');
 
-/* ☢️ Vanish Protocol - QUARANTINED (WCCC ft-* Compliant)
-   Lives at PROJECT ROOT /vanish/ to signal architectural boundary
-   This is the ONLY feature that breaks Clerk Exclusion (user deletion requires Clerk API)
-   Root location makes the doctrine violation visible and intentional
-   Uses ft-vanish-* prefix despite quarantine for CSS discoverability */
-@import url('../vanish/vanish.css');
+/* Vanish Protocol - User Deletion Feature (WCCC ft-* Compliant)
+   Clean feature - no Clerk imports. Clerk calls happen via Convex actions. */
+@import url('../src/features/vanish/vanish.css');

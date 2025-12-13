@@ -2,23 +2,23 @@
 │  🔥 CLERK USER DELETION API                                            │
 │  /api/clerk/delete-user                                                │
 │                                                                        │
-│  Server-side API route that calls Clerk's deleteUser() API            │
-│  Part of VANISH Protocol 2.1 - Complete account deletion              │
+│  Server-side API route that calls Clerk's deleteUser() API             │
+│  Part of VANISH Protocol 2.1 - Complete account deletion               │
 │                                                                        │
 │  AUTHORIZATION:                                                        │
-│  - Caller must be authenticated                                       │
-│  - Caller must have Admiral rank in Convex                            │
-│  - Cannot be called from client-side code                             │
+│  - Caller must be authenticated                                        │
+│  - Caller must have Admiral rank in Convex                             │
+│  - Cannot be called from client-side code                              │
 │                                                                        │
 │  VANISH INTEGRATION:                                                   │
-│  - Called by Convex cascade after database cleanup                    │
-│  - Deletes Clerk authentication account                               │
-│  - Prevents orphaned Clerk accounts                                   │
+│  - Called by Convex cascade after database cleanup                     │
+│  - Deletes Clerk authentication account                                │
+│  - Prevents orphaned Clerk accounts                                    │
 │                                                                        │
 │  SAFETY:                                                               │
-│  - Admiral rank verification required                                 │
-│  - Complete audit trail                                               │
-│  - Graceful error handling                                            │
+│  - Admiral rank verification required                                  │
+│  - Complete audit trail                                                │
+│  - Graceful error handling                                             │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { auth, clerkClient } from "@clerk/nextjs/server";

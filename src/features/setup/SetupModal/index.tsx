@@ -26,10 +26,10 @@ import { useState, useEffect } from 'react';
 import { useFuse } from '@/store/fuse';
 import { Sparkles } from 'lucide-react';
 import { Button } from '@/prebuilts';
-import { VerifySetup } from '@/features/verify/VerifySetup';
+import { VerifySetup } from '@/app/(clerk)/features/VerifySetup';
 import { skipFlow, reverseFlow } from '@/features/setup/FlyingButton/config';
 import { completeSetupAction } from '@/app/actions/user-mutations';
-import { checkPrimaryEmailVerified, preparePrimaryEmailVerification } from '@/app/actions/email-actions';
+import { checkPrimaryEmailVerified, preparePrimaryEmailVerification } from '@/app/(clerk)/actions/email';
 
 interface SetupData {
   firstName: string;

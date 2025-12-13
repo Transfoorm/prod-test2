@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  🔐 VERIFY SECONDARY - Add Secondary Email Verification               │
-│  /src/features/verify/VerifySecondary/index.tsx                       │
+│  🔐 VERIFY EMAIL - Change Primary Email Verification                  │
+│  /src/features/verify/VerifyEmail/index.tsx                           │
 │                                                                        │
 │  VR DOCTRINE: Feature Layer (Dirty Playground)                         │
 │  - Has Clerk hooks (useUser)                                           │
@@ -8,8 +8,8 @@
 │  - Has handlers (handleVerify, handleResend)                           │
 │  - Returns Modal.verify VR                                             │
 │                                                                        │
-│  Used by: EmailTab when adding secondary email                         │
-│  Flow: User enters new email → verify → keep as secondary → delete old │
+│  Used by: EmailTab when changing primary email                         │
+│  Flow: User enters new email → verify → set as primary → delete old    │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 'use client';
@@ -17,14 +17,14 @@
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { Modal } from '@/prebuilts/modal';
-import { addEmailAndSendCode, deleteEmail } from '@/app/actions/email-actions';
+import { addEmailAndSendCode, setPrimaryEmail } from '@/app/(clerk)/actions/email';
 
-export interface VerifySecondaryProps {
+export interface VerifyEmailProps {
   /** Control visibility */
   isOpen: boolean;
   /** New email to add and verify */
   email: string;
-  /** Current secondary email (to delete after verification) */
+  /** Current primary email (to delete after verification) */
   currentEmail?: string;
   /** Called when verification succeeds */
   onSuccess: () => void;
@@ -33,23 +33,24 @@ export interface VerifySecondaryProps {
 }
 
 /**
- * VerifySecondary - Add secondary email verification
+ * VerifyEmail - Change primary email verification
  *
- * This feature handles adding a secondary email:
+ * This feature handles changing the primary email:
  * 1. Create new email via Server Action (bypasses reverification)
  * 2. Send verification code
  * 3. Verify the code
- * 4. Delete old secondary email (if any)
+ * 4. Set as primary
+ * 5. Delete old primary email
  *
- * Used when user wants to add/change their secondary email in Account Settings.
+ * Used when user wants to change their primary email in Account Settings.
  */
-export function VerifySecondary({
+export function VerifyEmail({
   isOpen,
   email,
   currentEmail,
   onSuccess,
   onClose,
-}: VerifySecondaryProps) {
+}: VerifyEmailProps) {
   // ═══════════════════════════════════════════════════════════════════
   // 🛡️ CLERK HOOKS - LEGAL IN VERIFY FEATURES (features/verify/*)
   // ═══════════════════════════════════════════════════════════════════
@@ -80,8 +81,8 @@ export function VerifySecondary({
     setIsResending(false);
     setPendingEmailId(null);
 
-    // Prepare secondary email
-    const prepareSecondaryEmail = async () => {
+    // Prepare email change
+    const prepareEmailChange = async () => {
       if (!clerkUser || !email) return;
 
       setIsPreparing(true);
@@ -111,7 +112,7 @@ export function VerifySecondary({
 
         setIsPreparing(false);
       } catch (err) {
-        console.error('Failed to prepare secondary email:', err);
+        console.error('Failed to prepare email change:', err);
         const error = err as {
           errors?: Array<{ message: string; code?: string }>;
         };
@@ -133,7 +134,7 @@ export function VerifySecondary({
     };
 
     if (isLoaded && email) {
-      prepareSecondaryEmail();
+      prepareEmailChange();
     }
   }, [isOpen, isLoaded, clerkUser, email]);
 
@@ -163,16 +164,14 @@ export function VerifySecondary({
       const isVerified = result.verification?.status === 'verified';
 
       if (isVerified) {
-        // Find the old secondary email's Clerk ID (for deletion)
+        // Find the old email's Clerk ID (for deletion)
         const oldEmailObj = currentEmail
           ? clerkUser.emailAddresses.find((e) => e.emailAddress === currentEmail)
           : null;
         const oldEmailClerkId = oldEmailObj?.id;
 
-        // Delete old secondary email (if any)
-        if (oldEmailClerkId) {
-          await deleteEmail(oldEmailClerkId);
-        }
+        // Set as primary and delete old primary email
+        await setPrimaryEmail(pendingEmailId, oldEmailClerkId);
 
         setIsLoading(false);
         setShowSuccess(true);
@@ -266,14 +265,14 @@ export function VerifySecondary({
       isLoading={isLoading}
       isResending={isResending}
       showSuccess={showSuccess}
-      heading="Add Secondary Email"
+      heading="Verify New Email"
       description="Check your inbox for a 6-digit code and return here"
-      submitText="Verify & Add Email"
+      submitText="Verify & Update Email"
       cancelText="Cancel"
       resendText="Resend Code"
       resendSuccessText="Code sent! Check again"
-      successHeading="Email Confirmed!"
-      successDescription="Your secondary email has been verified successfully"
+      successHeading="Email Updated!"
+      successDescription="Your primary email has been changed successfully"
       successProgressText="Updating your profile..."
       preparingText="Sending verification code..."
       onCodeChange={setCode}
@@ -285,4 +284,4 @@ export function VerifySecondary({
   );
 }
 
-export default VerifySecondary;
+export default VerifyEmail;

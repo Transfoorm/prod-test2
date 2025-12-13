@@ -16,7 +16,7 @@ import Script from 'next/script';
 import { ClerkProvider } from '@clerk/nextjs';
 import { ConvexClientProvider } from '@/providers/ConvexClientProvider';
 import { SideDrawerProvider, SideDrawerPortal } from '@/prebuilts/modal';
-import { VanishProvider, VanishPortal } from '@/vanish/Drawer';
+import { VanishProvider, VanishPortal } from '@/features/vanish/Drawer';
 import { PageHeaderProvider } from '@/shell/PageHeader/PageHeaderContext';
 import { headers } from 'next/headers';
 
