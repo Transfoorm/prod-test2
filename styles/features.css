@@ -31,7 +31,7 @@
 @import url('../src/features/account/ProfileTab/profile-tab.css');
 
 /* Miror AI Fields */
-@import url('../src/features/preferences/MirorAiTab/miror-ai.css');
+@import url('../src/features/preferences/MirorAiTab/miror-ai-tab.css');
 
 /* Flying Button (Phoenix) */
 @import url('../src/features/setup/FlyingButton/flying-button.css');

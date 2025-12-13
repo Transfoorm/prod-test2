@@ -100,10 +100,10 @@
 
 /* Roll-down animation when bringing modal back */
 .ft-setup-modal--fading-in {
-  animation: ft-setup-fade-in 600ms ease-out;
+  animation: ft-setup-modal-fade-in 600ms ease-out;
 }
 
-@keyframes ft-setup-fade-in {
+@keyframes ft-setup-modal-fade-in {
   from {
     max-height: 0;
     opacity: 0;
@@ -137,7 +137,7 @@
   opacity: 0.2;
   border-radius: 50%;
   filter: blur(64px);
-  animation: ft-setup-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: ft-setup-modal-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .ft-setup-blur-circle-2 {
@@ -150,11 +150,11 @@
   opacity: 0.2;
   border-radius: 50%;
   filter: blur(64px);
-  animation: ft-setup-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: ft-setup-modal-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   animation-delay: 1s;
 }
 
-@keyframes ft-setup-pulse {
+@keyframes ft-setup-modal-pulse {
   0%, 100% {
     opacity: 0.2;
   }
@@ -270,7 +270,7 @@
   border-radius: 1rem;
   filter: blur(8px);
   opacity: 0.4;
-  animation: ft-setup-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: ft-setup-modal-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .ft-setup-logo-box {
@@ -577,11 +577,11 @@
   font-weight: var(--font-weight-medium);
   margin: 0;
   pointer-events: none;
-  animation: ft-setup-error-fade 4s ease-in-out forwards;
+  animation: ft-setup-modal-error-fade 4s ease-in-out forwards;
   z-index: 10;
 }
 
-@keyframes ft-setup-error-fade {
+@keyframes ft-setup-modal-error-fade {
   0% {
     opacity: 1;
   }
@@ -620,11 +620,11 @@
   height: auto;
   z-index: 10;
   animation:
-    ft-setup-arrow-fade-in 400ms ease-out,
-    ft-setup-arrow-entice 3s ease-in-out 400ms infinite;
+    ft-setup-modal-arrow-fade-in 400ms ease-out,
+    ft-setup-modal-arrow-entice 3s ease-in-out 400ms infinite;
 }
 
-@keyframes ft-setup-arrow-fade-in {
+@keyframes ft-setup-modal-arrow-fade-in {
   from {
     opacity: 0;
     transform: translateY(-50%) translateX(-30px);
@@ -637,7 +637,7 @@
 }
 
 /* Elegant enticing motion - slides right then eases back */
-@keyframes ft-setup-arrow-entice {
+@keyframes ft-setup-modal-arrow-entice {
   0% {
     transform: translateY(-50%) translateX(0);
   }

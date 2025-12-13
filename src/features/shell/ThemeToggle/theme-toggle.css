@@ -90,11 +90,11 @@
 
 /* Stars Visibility - Dark mode (animate in with stagger) */
 .ft-theme-input:checked + .ft-theme-svg .ft-theme-star {
-  animation: ft-theme-star-appear 0.4s ease forwards;
+  animation: ft-theme-toggle-star-appear 0.4s ease forwards;
 }
 
 /* Star appear animation */
-@keyframes ft-theme-star-appear {
+@keyframes ft-theme-toggle-star-appear {
   0% {
     transform: scale(0);
   }

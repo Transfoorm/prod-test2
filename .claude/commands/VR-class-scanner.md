@@ -103,7 +103,7 @@ If a CSS file exists **ANYWHERE ELSE**, the scan **FAILS**.
 |---|------------------|----------------------|-------------------------|----------------|---------------|
 | 1 | `/src/prebuilts/**/*.css` | `.vr-{component}-*` | `vr-{component}-{action}` | `--{component}-*` | Classes, keyframes, variables |
 | 2 | `/src/features/**/*.css` | `.ft-{feature}-*` | `ft-{feature}-{action}` | `--{feature}-*` | Classes, keyframes, variables |
-| 3 | `/src/shell/**/*.css` | `.ly-{area}-*` | `ly-{area}-{action}` | `--{area}-*` | Classes, keyframes, variables |
+| 3 | `/src/shell/**/*.css` | `.ly-{area}-*` | `ly-{area}-{action}` | `--{area}-*` | Classes, keyframes, variables (includes `app.css` for God Layout frame) |
 | 4 | `/src/app/domains/**/*.css` | `.ly-{component}-*` | `ly-{component}-{action}` | `--{component}-*` | Classes, keyframes, variables |
 | 5 | `/src/app/(auth)/**/*.css` | `.ft-auth-*` | `ft-auth-{action}` | `--ft-auth-*` | Classes, keyframes, variables |
 | 6 | `/styles/tokens.css` | FORBIDDEN | FORBIDDEN | `--{token}-*` | Variables ONLY |
@@ -113,7 +113,8 @@ If a CSS file exists **ANYWHERE ELSE**, the scan **FAILS**.
 | 10 | `/styles/features.css` | FORBIDDEN | FORBIDDEN | FORBIDDEN | @import statements ONLY |
 | 11 | `/styles/layout.css` | FORBIDDEN | FORBIDDEN | FORBIDDEN | @import statements ONLY |
 | 12 | `/styles/themes/*.css` | FORBIDDEN | FORBIDDEN | `--{theme}-*` | Variables ONLY |
-| 13 | `/vanish/**/*.css` | `.ft-vanish-*` | `ft-vanish-{action}` | `--vanish-*` | Classes, keyframes, variables (QUARANTINE ZONE) |
+
+**NOTE:** Vanish (quarantine zone) CSS lives at `/src/features/vanish/` and is covered by Row 2.
 
 **FORBIDDEN means:** If this content type exists in this file, the scan **FAILS**.
 
@@ -128,7 +129,7 @@ If a CSS file exists **ANYWHERE ELSE**, the scan **FAILS**.
 - `/src/types/**/*.css`
 - `/src/store/**/*.css`
 - `/src/constants/**/*.css`
-- Any path not listed in rows 1-13 above
+- Any path not listed in rows 1-12 above
 
 ---
 
@@ -182,13 +183,13 @@ PHASE 0: Spec Validation   Contradictions: [N] | Ambiguities: [N] | Incomplete: 
 
 **COMMAND (MUST RUN EXACTLY AS WRITTEN):**
 ```bash
-find src styles vanish -name "*.css" -type f 2>/dev/null | sort
+find src styles -name "*.css" -type f 2>/dev/null | sort
 ```
 
 **VALIDATION:**
 For EACH file returned, perform the following checks IN ORDER:
 
-1. Does the file path match EXACTLY ONE row in the CANONICAL LIST (rows 1-13)?
+1. Does the file path match EXACTLY ONE row in the CANONICAL LIST (rows 1-12)?
    - If NO MATCH: `❌ UNDEFINED LOCATION: [path]` → **FAIL**
    - If MULTIPLE MATCHES: `❌ AMBIGUOUS LOCATION: [path]` → **FAIL**
 
@@ -208,7 +209,7 @@ If violations > 0, list EVERY violation with EXACT path.
 
 **COMMAND (MUST RUN EXACTLY AS WRITTEN):**
 ```bash
-grep -rhn "^\." src/**/*.css styles/**/*.css vanish/**/*.css 2>/dev/null | grep -E ":\.[a-z]"
+grep -rhn "^\." src/**/*.css styles/**/*.css 2>/dev/null | grep -E ":\.[a-z]"
 ```
 
 **VALIDATION:**
@@ -258,7 +259,61 @@ List EVERY violation: `❌ [file:line] .[class] — Must be .[correct-prefix]-*`
 
 **COMMAND (MUST RUN EXACTLY AS WRITTEN):**
 ```bash
-grep -rhn "@keyframes " src/**/*.css styles/**/*.css vanish/**/*.css 2>/dev/null
+# Extract keyframes with file paths, validate prefix matches folder name
+bash -c '
+violations=0
+scanned=0
+while IFS=: read -r file line content; do
+  keyframe=$(echo "$content" | grep -o "@keyframes [a-z][a-z0-9-]*" | sed "s/@keyframes //" | head -1)
+  [ -z "$keyframe" ] && continue
+  scanned=$((scanned + 1))
+
+  # styles/animations.css allows any keyframe name
+  echo "$file" | grep -q "styles/animations.css" && continue
+
+  # Extract expected prefix and folder from path
+  dir=$(dirname "$file")
+  folder=$(basename "$dir" | tr "[:upper:]" "[:lower:]" | tr -d "-")
+
+  # Determine required prefix based on location
+  if echo "$file" | grep -q "src/prebuilts/"; then
+    required_prefix="vr-"
+  elif echo "$file" | grep -q "src/features/"; then
+    required_prefix="ft-"
+  elif echo "$file" | grep -q "src/shell/"; then
+    required_prefix="ly-"
+  elif echo "$file" | grep -q "src/app/(auth)/"; then
+    required_prefix="ft-auth-"
+  else
+    required_prefix=""
+  fi
+
+  # Check prefix exists
+  if [ -n "$required_prefix" ]; then
+    if ! echo "$keyframe" | grep -q "^${required_prefix}"; then
+      echo "❌ PREFIX VIOLATION: $file:$line @keyframes $keyframe (must start with $required_prefix)"
+      violations=$((violations + 1))
+      continue
+    fi
+
+    # Check folder name appears after prefix (except for auth which is fixed)
+    if [ "$required_prefix" != "ft-auth-" ]; then
+      suffix=$(echo "$keyframe" | sed "s/^${required_prefix}//")
+      # Get folder name in both forms: compacted (no hyphens) and kebab-case
+      folder_compact=$(basename "$dir" | tr "[:upper:]" "[:lower:]" | tr -d "-")
+      folder_kebab=$(basename "$dir" | sed "s/\([a-z]\)\([A-Z]\)/\1-\2/g" | tr "[:upper:]" "[:lower:]")
+      # Check if suffix starts with either form
+      if ! echo "$suffix" | grep -qi "^$folder_compact" && ! echo "$suffix" | grep -qi "^$folder_kebab"; then
+        echo "❌ FOLDER MISMATCH: $file:$line @keyframes $keyframe (expected ${required_prefix}${folder_kebab}-*)"
+        violations=$((violations + 1))
+      fi
+    fi
+  fi
+done < <(find src styles -name "*.css" -exec grep -Hn "@keyframes " {} \; 2>/dev/null)
+echo "---"
+echo "SCANNED: $scanned"
+echo "VIOLATIONS: $violations"
+'
 ```
 
 **VALIDATION:**
@@ -268,6 +323,7 @@ For EACH keyframe found:
 2. If file is `/styles/animations.css` (row 7): ANY keyframe name is allowed
 3. If file is rows 6, 8, 9, 10, 11, 12: Keyframes are FORBIDDEN → **FAIL**
 4. For rows 1-5: Keyframe MUST match the REQUIRED KEYFRAME PREFIX for that row
+5. **NEW:** Keyframe name after prefix MUST start with the parent folder name
 
 **GENERIC NAMES FORBIDDEN OUTSIDE animations.css:**
 
@@ -305,11 +361,11 @@ PHASE 3: Keyframes         Scanned: [N] keyframes | Violations: [N] | [PASS/FAIL
 
 **COMMAND (MUST RUN EXACTLY AS WRITTEN):**
 ```bash
-grep -rh "@keyframes " src/**/*.css vanish/**/*.css 2>/dev/null | \
+grep -rh "@keyframes " src/**/*.css 2>/dev/null | \
   sed 's/.*@keyframes //' | sed 's/ {.*//' | sort | uniq -d
 ```
 
-**NOTE:** This checks `src/**/*.css` and `vanish/**/*.css`. `styles/animations.css` is the canonical source — duplicates there are impossible by definition.
+**NOTE:** This checks `src/**/*.css`. `styles/animations.css` is the canonical source — duplicates there are impossible by definition.
 
 **VALIDATION:**
 Output MUST be empty.
@@ -331,7 +387,40 @@ PHASE 4: Collisions        Unique: [N] | Duplicates: [N] | [PASS/FAIL]
 
 **COMMAND (MUST RUN EXACTLY AS WRITTEN):**
 ```bash
-grep -rhn "^\s*--[a-z]" src/**/*.css vanish/**/*.css 2>/dev/null
+# Extract variables with file paths, validate lineage
+bash -c '
+violations=0
+scanned=0
+while IFS=: read -r file line content; do
+  var=$(echo "$content" | grep -o "^[[:space:]]*--[a-z][a-z0-9-]*" | sed "s/^[[:space:]]*//" | head -1)
+  [ -z "$var" ] && continue
+  scanned=$((scanned + 1))
+
+  # Skip --anim-* (animation slots are permitted)
+  echo "$var" | grep -q "^--anim-" && continue
+
+  # Extract expected prefix from path
+  dir=$(dirname "$file")
+  component=$(basename "$dir" | tr "[:upper:]" "[:lower:]" | tr -d "-")
+  parent=$(basename "$(dirname "$dir")" | tr "[:upper:]" "[:lower:]" | tr -d "-")
+
+  # Check if variable starts with component name (or parent-component for nested)
+  varname=$(echo "$var" | sed "s/^--//" | cut -d"-" -f1)
+  if [ "$varname" != "$component" ] && [ "$varname" != "$parent" ]; then
+    # Check combined prefix for nested structures
+    combined="${parent}${component}"
+    combined2="${parent}-${component}"
+    varprefix=$(echo "$var" | sed "s/^--//")
+    if ! echo "$varprefix" | grep -q "^$parent" && ! echo "$varprefix" | grep -q "^$component"; then
+      echo "❌ LINEAGE VIOLATION: $file:$line $var (expected --${component}-* or --${parent}-${component}-*)"
+      violations=$((violations + 1))
+    fi
+  fi
+done < <(find src -name "*.css" -exec grep -Hn "^[[:space:]]*--[a-z]" {} \; 2>/dev/null)
+echo "---"
+echo "SCANNED: $scanned"
+echo "VIOLATIONS: $violations"
+'
 ```
 
 **VALIDATION:**
@@ -446,8 +535,8 @@ PHASE 6: Contamination     Checks: 7 | Bleeds: [N] | [PASS/FAIL]
 
 **COMMAND (MUST RUN EXACTLY AS WRITTEN):**
 ```bash
-# Extract all CSS class names, check each against TSX files in src/ and vanish/
-grep -roh '\.[vfl][rty]-[a-z][a-z0-9_-]*' src/**/*.css vanish/**/*.css 2>/dev/null | sort -u | sed 's/^\.//' | xargs -I{} sh -c 'grep -rq "{}" src/ vanish/ 2>/dev/null || echo "ORPHAN: .{}"'
+# Extract all CSS class names, check each against TSX files in src/
+grep -roh '\.[vfl][rty]-[a-z][a-z0-9_-]*' src/**/*.css 2>/dev/null | sort -u | sed 's/^\.//' | xargs -I{} sh -c 'grep -rq "{}" src/ 2>/dev/null || echo "ORPHAN: .{}"'
 ```
 
 **VALIDATION:**

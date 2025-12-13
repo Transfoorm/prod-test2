@@ -17,7 +17,7 @@ import { Input } from '@/prebuilts/input';
 import { useFuse } from '@/store/fuse';
 import { ENCHANTMENT_TIMINGS } from '@/fuse/constants/enchantment';
 import { MIROR_DEFAULTS } from '@/fuse/constants/coreThemeConfig';
-import './miror-ai.css';
+import './miror-ai-tab.css';
 
 // ─────────────────────────────────────────────────────────────────────
 // Avatar Profile Options (9 avatars: gender × skin tone)
@@ -138,47 +138,47 @@ export function MirorAiTabFeature() {
   }, [mounted, enchantmentEnabled, enchantmentTiming]);
 
   return (
-    <div className="ft-miror-ai">
+    <div className="ft-miror-ai-tab">
       <Card.standard
         title="Miror AI Assistant"
         subtitle="Customise your AI assistant's appearance and enchantment effects"
       >
         {/* Avatar Grid + Preview wrapper */}
-          <div className="ft-miror-ai-avatar-row">
+          <div className="ft-miror-ai-tab-avatar-row">
             {/* Avatar Grid */}
-            <div className="ft-miror-ai-avatar-grid">
+            <div className="ft-miror-ai-tab-avatar-grid">
               {AVATAR_OPTIONS.map((option) => (
                 <button
                   key={option}
                   type="button"
-                  className={`ft-miror-ai-avatar-option ${avatarProfile === option ? 'ft-miror-ai-avatar-option--active' : ''}`}
+                  className={`ft-miror-ai-tab-avatar-option ${avatarProfile === option ? 'ft-miror-ai-tab-avatar-option--active' : ''}`}
                   onClick={() => updateMirorLocal({ mirorAvatarProfile: option as AvatarOption })}
                 >
                   <img
                     src={`/images/ai/miror_${option}.png`}
                     alt={option}
-                    className="ft-miror-ai-avatar-image"
+                    className="ft-miror-ai-tab-avatar-image"
                   />
                 </button>
               ))}
             </div>
 
           {/* Live Preview */}
-          <div className="ft-miror-ai-preview-wrapper">
-            <div className="ft-miror-ai-preview-label"></div>
-            <div className="ft-miror-ai-preview">
-              <div className="ft-miror-ai-preview-avatar-container">
+          <div className="ft-miror-ai-tab-preview-wrapper">
+            <div className="ft-miror-ai-tab-preview-label"></div>
+            <div className="ft-miror-ai-tab-preview">
+              <div className="ft-miror-ai-tab-preview-avatar-container">
                 <img
                   src={`/images/ai/miror_${avatarProfile}.png`}
                   alt="Preview"
-                  className="ft-miror-ai-preview-avatar"
+                  className="ft-miror-ai-tab-preview-avatar"
                 />
                 {mounted && enchantmentEnabled && showStar && (
                   <img
                     key={starKey}
                     src={`/images/sitewide/twinkle.webp?v=${starKey}`}
                     alt=""
-                    className="ft-miror-ai-preview-twinkle"
+                    className="ft-miror-ai-tab-preview-twinkle"
                   />
                 )}
               </div>
@@ -186,7 +186,7 @@ export function MirorAiTabFeature() {
           </div>
 
           {/* Star Toggle - standalone item for space-evenly */}
-          <div className="ft-miror-ai-star-wrapper">
+          <div className="ft-miror-ai-tab-star-wrapper">
             <label title="Star" className={`ft-star-toggle ft-star-toggle--enchantment ${starHop ? 'ft-star-toggle--hop' : ''}`}>
               <input
                 className="ft-star-checkbox"
@@ -244,12 +244,12 @@ export function MirorAiTabFeature() {
                 </svg>
               </div>
             </label>
-            <span className="ft-miror-ai-star-label">On / off</span>
+            <span className="ft-miror-ai-tab-star-label">On / off</span>
           </div>
 
           {/* Radio options - standalone item for space-evenly */}
           <div className={`ft-enchant-radio-container ${enchantmentEnabled ? 'ft-enchant-radio-container--active' : ''}`}>
-            <span className="ft-miror-ai-enchantment-label"></span>
+            <span className="ft-miror-ai-tab-enchantment-label"></span>
             <Input.radioFancy
               value={enchantmentTiming}
               onChange={(val) => updateMirorLocal({ mirorEnchantmentTiming: val as 'subtle' | 'magical' | 'playful' })}

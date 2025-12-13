@@ -6,7 +6,7 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 /* Container */
-.ft-miror-ai {
+.ft-miror-ai-tab {
   display: flex;
   flex-direction: column;
   gap: var(--space-xl);
@@ -17,7 +17,7 @@
    Avatar Row: Grid + Preview side by side
    ───────────────────────────────────────────────────────────────────── */
 
-.ft-miror-ai-avatar-row {
+.ft-miror-ai-tab-avatar-row {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
@@ -34,7 +34,7 @@
   opacity: 1;
 }
 
-.ft-miror-ai-enchantment-label {
+.ft-miror-ai-tab-enchantment-label {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
   color: var(--text-secondary);
@@ -45,7 +45,7 @@
 }
 
 /* Star wrapper - centered with label underneath */
-.ft-miror-ai-star-wrapper {
+.ft-miror-ai-tab-star-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -53,7 +53,7 @@
   margin-top: -8px;
 }
 
-.ft-miror-ai-star-label {
+.ft-miror-ai-tab-star-label {
   font-size: 9px;
   color: var(--text-tertiary);
   margin-top: -6px;
@@ -150,14 +150,14 @@
    Live Preview (right column)
    ───────────────────────────────────────────────────────────────────── */
 
-.ft-miror-ai-preview-wrapper {
+.ft-miror-ai-tab-preview-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-xs);
 }
 
-.ft-miror-ai-preview-label {
+.ft-miror-ai-tab-preview-label {
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
   color: var(--text-tertiary);
@@ -165,7 +165,7 @@
   letter-spacing: 0.05em;
 }
 
-.ft-miror-ai-preview {
+.ft-miror-ai-tab-preview {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -175,13 +175,13 @@
   border: 1px solid var(--border-light);
 }
 
-.ft-miror-ai-preview-avatar-container {
+.ft-miror-ai-tab-preview-avatar-container {
   position: relative;
   width: 120px;
   height: 120px;
 }
 
-.ft-miror-ai-preview-avatar {
+.ft-miror-ai-tab-preview-avatar {
   width: 120px;
   height: 120px;
   border-radius: var(--radius-lg);
@@ -189,7 +189,7 @@
   z-index: 2;
 }
 
-.ft-miror-ai-preview-twinkle {
+.ft-miror-ai-tab-preview-twinkle {
   position: absolute;
   top: 35%;
   left: 48%;
@@ -205,13 +205,13 @@
    Avatar Selection Grid
    ───────────────────────────────────────────────────────────────────── */
 
-.ft-miror-ai-avatar-grid {
+.ft-miror-ai-tab-avatar-grid {
   display: grid;
   grid-template-columns: repeat(3, 80px);
   gap: var(--space-md);
 }
 
-.ft-miror-ai-avatar-option {
+.ft-miror-ai-tab-avatar-option {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -223,7 +223,7 @@
   transition: all var(--duration-fast) var(--easing);
 }
 
-.ft-miror-ai-avatar-image {
+.ft-miror-ai-tab-avatar-image {
   width: 80px;
   height: 80px;
   aspect-ratio: 1;
@@ -232,16 +232,16 @@
 }
 
 /* Active: pressed/inset effect */
-.ft-miror-ai-avatar-option--active .ft-miror-ai-avatar-image {
+.ft-miror-ai-tab-avatar-option--active .ft-miror-ai-tab-avatar-image {
   box-shadow: inset 0 1px 4px rgb(0 0 0 / 25%);
 }
 
-.ft-miror-ai-avatar-option:hover .ft-miror-ai-avatar-image {
+.ft-miror-ai-tab-avatar-option:hover .ft-miror-ai-tab-avatar-image {
   opacity: 0.85;
 }
 
 /* Don't fade active avatar on hover */
-.ft-miror-ai-avatar-option--active:hover .ft-miror-ai-avatar-image {
+.ft-miror-ai-tab-avatar-option--active:hover .ft-miror-ai-tab-avatar-image {
   opacity: 1;
 }
 
@@ -301,7 +301,7 @@
   width: 100%;
   height: 100%;
   transition: all 0.3s ease;
-  animation: ft-star-keyframes-filled 1s;
+  animation: ft-miror-ai-tab-star-filled 1s;
   opacity: 0;
   transform: scale(0);
 }
@@ -327,7 +327,7 @@
 }
 
 .ft-star-toggle .ft-star-checkbox:not(:checked) ~ .ft-star-svg-container .ft-star-svg-filled {
-  animation: ft-star-keyframes-unfilled 0.3s forwards;
+  animation: ft-miror-ai-tab-star-unfilled 0.3s forwards;
 }
 
 .ft-star-toggle .ft-star-checkbox:checked ~ .ft-star-svg-container .ft-star-svg-celebrate {
@@ -348,39 +348,39 @@
 
 /* Only animate particles when checked */
 .ft-star-toggle .ft-star-checkbox:checked ~ .ft-star-svg-container .ft-star-particle:nth-child(1) {
-  animation: ft-star-particle-1 1s cubic-bezier(0.25, 0.1, 0.25, 1);
+  animation: ft-miror-ai-tab-particle-1 1s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 .ft-star-toggle .ft-star-checkbox:checked ~ .ft-star-svg-container .ft-star-particle:nth-child(2) {
-  animation: ft-star-particle-2 1s ease-out;
+  animation: ft-miror-ai-tab-particle-2 1s ease-out;
 }
 
 .ft-star-toggle .ft-star-checkbox:checked ~ .ft-star-svg-container .ft-star-particle:nth-child(3) {
-  animation: ft-star-particle-3 1s ease-out;
+  animation: ft-miror-ai-tab-particle-3 1s ease-out;
 }
 
 .ft-star-toggle .ft-star-checkbox:checked ~ .ft-star-svg-container .ft-star-particle:nth-child(4) {
-  animation: ft-star-particle-4 1s ease-out;
+  animation: ft-miror-ai-tab-particle-4 1s ease-out;
 }
 
 .ft-star-toggle .ft-star-checkbox:checked ~ .ft-star-svg-container .ft-star-particle:nth-child(5) {
-  animation: ft-star-particle-5 1s ease-out;
+  animation: ft-miror-ai-tab-particle-5 1s ease-out;
 }
 
 .ft-star-toggle .ft-star-checkbox:checked ~ .ft-star-svg-container .ft-star-particle:nth-child(6) {
-  animation: ft-star-particle-6 1s ease-out;
+  animation: ft-miror-ai-tab-particle-6 1s ease-out;
 }
 
 .ft-star-toggle .ft-star-checkbox:checked ~ .ft-star-svg-container .ft-star-particle:nth-child(7) {
-  animation: ft-star-particle-7 1s ease-out;
+  animation: ft-miror-ai-tab-particle-7 1s ease-out;
 }
 
 .ft-star-toggle .ft-star-checkbox:checked ~ .ft-star-svg-container .ft-star-particle:nth-child(8) {
-  animation: ft-star-particle-8 1s ease-out;
+  animation: ft-miror-ai-tab-particle-8 1s ease-out;
 }
 /* stylelint-enable selector-max-specificity */
 
-@keyframes ft-star-keyframes-filled {
+@keyframes ft-miror-ai-tab-star-filled {
   0% {
     transform: scale(0);
     opacity: 0;
@@ -402,7 +402,7 @@
   }
 }
 
-@keyframes ft-star-keyframes-unfilled {
+@keyframes ft-miror-ai-tab-star-unfilled {
   0% {
     transform: scale(1);
     opacity: 1;
@@ -414,7 +414,7 @@
   }
 }
 
-@keyframes ft-star-particle-1 {
+@keyframes ft-miror-ai-tab-particle-1 {
   0% {
     transform: translate(0, 0) scale(1);
     opacity: 1;
@@ -431,7 +431,7 @@
   }
 }
 
-@keyframes ft-star-particle-2 {
+@keyframes ft-miror-ai-tab-particle-2 {
   0% {
     transform: translate(0, 0) scale(1);
     opacity: 1;
@@ -448,7 +448,7 @@
   }
 }
 
-@keyframes ft-star-particle-3 {
+@keyframes ft-miror-ai-tab-particle-3 {
   0% {
     transform: translate(0, 0) scale(1);
     opacity: 1;
@@ -465,7 +465,7 @@
   }
 }
 
-@keyframes ft-star-particle-4 {
+@keyframes ft-miror-ai-tab-particle-4 {
   0% {
     transform: translate(0, 0) scale(1);
     opacity: 1;
@@ -482,7 +482,7 @@
   }
 }
 
-@keyframes ft-star-particle-5 {
+@keyframes ft-miror-ai-tab-particle-5 {
   0% {
     transform: translate(0, 0) scale(1);
     opacity: 1;
@@ -499,7 +499,7 @@
   }
 }
 
-@keyframes ft-star-particle-6 {
+@keyframes ft-miror-ai-tab-particle-6 {
   0% {
     transform: translate(0, 0) scale(1);
     opacity: 1;
@@ -516,7 +516,7 @@
   }
 }
 
-@keyframes ft-star-particle-7 {
+@keyframes ft-miror-ai-tab-particle-7 {
   0% {
     transform: translate(0, 0) scale(1);
     opacity: 1;
@@ -533,7 +533,7 @@
   }
 }
 
-@keyframes ft-star-particle-8 {
+@keyframes ft-miror-ai-tab-particle-8 {
   0% {
     transform: translate(0, 0) scale(1);
     opacity: 1;
@@ -552,30 +552,30 @@
 
 /* Mobile adjustments */
 @media (max-width: 640px) {
-  .ft-miror-ai-avatar-row {
+  .ft-miror-ai-tab-avatar-row {
     flex-direction: column;
     gap: var(--space-xl);
   }
 
-  .ft-miror-ai-preview {
+  .ft-miror-ai-tab-preview {
     order: -1; /* Move preview to top on mobile */
     width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-  .ft-miror-ai-avatar-grid {
+  .ft-miror-ai-tab-avatar-grid {
     grid-template-columns: repeat(3, 60px);
     gap: var(--space-xs);
   }
 
-  .ft-miror-ai-avatar-image {
+  .ft-miror-ai-tab-avatar-image {
     width: 60px;
     height: 60px;
   }
 
-  .ft-miror-ai-preview-avatar-container,
-  .ft-miror-ai-preview-avatar {
+  .ft-miror-ai-tab-preview-avatar-container,
+  .ft-miror-ai-tab-preview-avatar {
     width: 100px;
     height: 100px;
   }
