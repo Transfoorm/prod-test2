@@ -399,23 +399,43 @@ while IFS=: read -r file line content; do
   # Skip --anim-* (animation slots are permitted)
   echo "$var" | grep -q "^--anim-" && continue
 
-  # Extract expected prefix from path
-  dir=$(dirname "$file")
-  component=$(basename "$dir" | tr "[:upper:]" "[:lower:]" | tr -d "-")
-  parent=$(basename "$(dirname "$dir")" | tr "[:upper:]" "[:lower:]" | tr -d "-")
+  # Skip tokens.css and themes (global design tokens)
+  echo "$file" | grep -q "styles/tokens.css" && continue
+  echo "$file" | grep -q "styles/themes/" && continue
 
-  # Check if variable starts with component name (or parent-component for nested)
-  varname=$(echo "$var" | sed "s/^--//" | cut -d"-" -f1)
-  if [ "$varname" != "$component" ] && [ "$varname" != "$parent" ]; then
-    # Check combined prefix for nested structures
-    combined="${parent}${component}"
-    combined2="${parent}-${component}"
-    varprefix=$(echo "$var" | sed "s/^--//")
-    if ! echo "$varprefix" | grep -q "^$parent" && ! echo "$varprefix" | grep -q "^$component"; then
-      echo "❌ LINEAGE VIOLATION: $file:$line $var (expected --${component}-* or --${parent}-${component}-*)"
+  # SPECIAL CASE: Row 5 - auth variables must be --ft-auth-*
+  if echo "$file" | grep -q "src/app/(auth)/"; then
+    if echo "$var" | grep -q "^--ft-auth-"; then
+      continue  # Valid auth variable
+    else
+      echo "❌ AUTH VIOLATION: $file:$line $var (must be --ft-auth-*)"
       violations=$((violations + 1))
+      continue
     fi
   fi
+
+  # Extract folder name (kebab-case preserved)
+  dir=$(dirname "$file")
+  folder_kebab=$(basename "$dir" | tr "[:upper:]" "[:lower:]")
+  parent_kebab=$(basename "$(dirname "$dir")" | tr "[:upper:]" "[:lower:]")
+
+  # Variable prefix (everything after -- up to meaningful segments)
+  varprefix=$(echo "$var" | sed "s/^--//")
+
+  # Check if variable starts with folder name (kebab-case match)
+  if echo "$varprefix" | grep -qi "^${folder_kebab}-\|^${folder_kebab}$"; then
+    continue  # Valid: matches folder name
+  fi
+
+  # Check if variable starts with parent-folder pattern (for nested)
+  if echo "$varprefix" | grep -qi "^${parent_kebab}-"; then
+    continue  # Valid: matches parent lineage
+  fi
+
+  # Violation: variable does not trace to folder lineage
+  echo "❌ LINEAGE VIOLATION: $file:$line $var (expected --${folder_kebab}-*)"
+  violations=$((violations + 1))
+
 done < <(find src -name "*.css" -exec grep -Hn "^[[:space:]]*--[a-z]" {} \; 2>/dev/null)
 echo "---"
 echo "SCANNED: $scanned"
@@ -435,18 +455,19 @@ For EACH variable definition found:
 **EXAMPLE ENFORCEMENT:**
 | File Path | Valid Prefix | Why |
 |-----------|--------------|-----|
-| `src/prebuilts/modal/modal.css` | `--modal-*` | Flat structure, parent is enough |
-| `src/prebuilts/input/checkbox/form/form.css` | `--checkbox-form-*` | Nested: includes component lineage |
-| `src/prebuilts/input/checkbox/settings/settings.css` | `--checkbox-settings-*` | Nested: includes component lineage |
-| `src/prebuilts/input/checkbox/table/table.css` | `--checkbox-table-*` | Nested: includes component lineage |
-| `src/features/UserButton/user-button.css` | `--userbutton-*` | Flat structure |
-| `src/shell/Sidebar/sidebar.css` | `--sidebar-*` | Flat structure |
+| `src/prebuilts/modal/modal.css` | `--modal-*` | Folder name match |
+| `src/prebuilts/input/checkbox/form/form.css` | `--checkbox-*` or `--form-*` | Parent or folder match |
+| `src/features/shell/user-button/user-button.css` | `--user-button-*` | Kebab-case folder match |
+| `src/features/shell/company-button/company-button.css` | `--company-button-*` | Kebab-case folder match |
+| `src/features/shell/country-selector/country-selector.css` | `--country-selector-*` | Kebab-case folder match |
+| `src/app/(auth)/auth.css` | `--ft-auth-*` | Row 5 special case |
+| `src/shell/Sidebar/sidebar.css` | `--sidebar-*` | Folder name match |
 
 **INVALID:**
 | File Path | Invalid Prefix | Why |
 |-----------|----------------|-----|
-| `src/prebuilts/input/checkbox/form/form.css` | `--form-*` | Ambiguous - which form? |
-| `src/prebuilts/input/checkbox/form/form.css` | `--input-*` | Too generic |
+| `src/features/shell/user-button/user-button.css` | `--userbutton-*` | Must match kebab-case folder |
+| `src/app/(auth)/auth.css` | `--auth-*` | Must be `--ft-auth-*` per Row 5 |
 
 **PERMITTED EXCEPTION: Animation Slot Variables**
 
