@@ -35,8 +35,6 @@ export interface SortableColumn<TData = Record<string, unknown>> {
   // Action tooltips (for smart tooltip behavior)
   editTooltip?: string | ((row: TData) => string);
   deleteTooltip?: string | ((row: TData) => string);
-  // Auto-detection: Current user for self-protection (VR auto-disables self rows)
-  currentUserId?: string;
   // Checkbox handlers (for variant='checkbox')
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   checked?: Set<any>;  // Set of checked row IDs (string or Id<table>)
@@ -49,6 +47,8 @@ export interface SortableColumn<TData = Record<string, unknown>> {
   // Checkbox behavior (for smart disable/tooltip)
   disableCheckbox?: (row: TData) => boolean;  // Function to determine if checkbox should be disabled
   checkboxTooltip?: (row: TData) => string | undefined;  // Function to return tooltip text (undefined = no tooltip)
+  headerTooltip?: string;  // Tooltip for header checkbox (Feature-controlled)
+  tooltipSize?: 'sm' | 'md' | 'lg';  // Size variant for tooltips
   // Batch delete (VR auto-renders batch actions when provided)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onBatchDelete?: (ids: any[]) => void;  // Handler for batch delete
@@ -191,10 +191,9 @@ export default function SortableTable<TData = Record<string, unknown>>({
                     ariaLabel={hasSelections ? "Clear all selections" : "Select all"}
                   />
                 );
-                // Allow select all when filtered (user is selecting filtered results, not entire DB)
-                // Only show warning tooltip when nothing selected AND not filtered
-                headerContent = (hasSelections || isFiltered) ? checkbox : (
-                  <Tooltip.basic content="*DO NOT select the entire database for deletion">
+                // Feature-controlled header tooltip (if provided)
+                headerContent = (hasSelections || isFiltered || !col.headerTooltip) ? checkbox : (
+                  <Tooltip.basic content={col.headerTooltip} size={col.tooltipSize || 'sm'}>
                     {checkbox}
                   </Tooltip.basic>
                 );
@@ -257,18 +256,9 @@ export default function SortableTable<TData = Record<string, unknown>>({
                   });
                   const rowId = getRowId(row);
 
-                  // 🛡️ VR Self-Protection: Auto-detect self row if currentUserId provided
-                  const isSelfRow = col.currentUserId && String(rowId) === String(col.currentUserId);
-
-                  // VR auto-disables checkbox for self rows
-                  const isDisabled = isSelfRow
-                    ? true
-                    : (col.disableCheckbox ? col.disableCheckbox(row) : false);
-
-                  // VR auto-generates tooltip for self rows
-                  const tooltipText = isSelfRow
-                    ? "You cannot delete yourself"
-                    : (col.checkboxTooltip ? col.checkboxTooltip(row) : undefined);
+                  // VR Convention: Feature provides disable/tooltip logic via props
+                  const isDisabled = col.disableCheckbox ? col.disableCheckbox(row) : false;
+                  const tooltipText = col.checkboxTooltip ? col.checkboxTooltip(row) : undefined;
 
                   const checkbox = (
                     <TableCheckbox
@@ -281,7 +271,7 @@ export default function SortableTable<TData = Record<string, unknown>>({
 
                   // Wrap in tooltip if tooltipText is provided
                   cellContent = tooltipText ? (
-                    <Tooltip.basic content={tooltipText}>
+                    <Tooltip.basic content={tooltipText} size={col.tooltipSize || 'sm'}>
                       {checkbox}
                     </Tooltip.basic>
                   ) : checkbox;
@@ -303,7 +293,6 @@ export default function SortableTable<TData = Record<string, unknown>>({
                         disableDelete={col.disableDelete}
                         editTooltip={col.editTooltip}
                         deleteTooltip={col.deleteTooltip}
-                        currentUserId={col.currentUserId}
                       />
                     </div>
                   );

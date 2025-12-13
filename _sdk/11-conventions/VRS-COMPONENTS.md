@@ -132,29 +132,29 @@ export const Button = {
 ### Variant Implementation
 
 ```tsx
-// components/Button/ButtonPrimary.tsx
+// prebuilts/button/Primary.tsx
 
-import styles from './ButtonPrimary.module.css';
-
-interface ButtonPrimaryProps {
+interface PrimaryButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
   disabled?: boolean;
   type?: 'button' | 'submit';
+  className?: string;  // For layout spacing only
 }
 
-export function ButtonPrimary({
+export default function PrimaryButton({
   children,
   onClick,
   disabled,
   type = 'button',
-}: ButtonPrimaryProps) {
+  className = '',
+}: PrimaryButtonProps) {
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={styles.root}
+      className={`vr-button-primary ${className}`}
     >
       {children}
     </button>
@@ -164,10 +164,12 @@ export function ButtonPrimary({
 
 ### Variant Styles
 
-```css
-/* components/Button/ButtonPrimary.module.css */
+Styles live in the central CSS hub, not per-component files:
 
-.root {
+```css
+/* styles/prebuilts.css → imports prebuilts/button/button.css */
+
+.vr-button-primary {
   background: var(--color-primary);
   color: var(--color-primary-foreground);
   padding: var(--space-2) var(--space-4);
@@ -176,39 +178,42 @@ export function ButtonPrimary({
   transition: all var(--duration-fast) var(--ease-out);
 }
 
-.root:hover:not(:disabled) {
+.vr-button-primary:hover:not(:disabled) {
   background: var(--color-primary-hover);
 }
 
-.root:disabled {
+.vr-button-primary:disabled {
   opacity: 0.5;
-  /* NOTE: We do NOT use cursor: not-allowed - it's blocked globally in globals.css */
 }
 ```
 
+**CSS Architecture:**
+- `styles/prebuilts.css` → All `vr-*` classes
+- `styles/features.css` → All `ft-*` classes
+- Pages/Tabs have no CSS - they just compose Features
+
 ---
 
-## Usage in Domain Views
+## Usage: The VR → Feature → Page Stack
 
+### Feature (uses VRs, wires FUSE)
 ```tsx
-// app/domains/admin/users/page.tsx
+// features/admin/UsersTable/index.tsx
+import { Table, Button, Card } from '@/prebuilts';
+import { useFuse } from '@/store/fuse';
 
-import { Button, Card, Table } from '@/components';
-
-export default function UsersPage() {
-  const { data } = useAdminData();
+export function UsersTable() {
+  const users = useFuse((s) => s.admin.users);
+  const handleCreate = () => { /* ... */ };
 
   return (
-    <div>
+    <div className="ft-users-table">
       <Card.metric>
         <h2>Total Users</h2>
-        <span>{data.users.length}</span>
+        <span>{users.length}</span>
       </Card.metric>
 
-      <Table.data
-        data={data.users}
-        onRowClick={handleRowClick}
-      />
+      <Table.data data={users} />
 
       <Button.primary onClick={handleCreate}>
         Add User
@@ -218,25 +223,48 @@ export default function UsersPage() {
 }
 ```
 
+### Page (one-line import)
+```tsx
+// app/domains/admin/users/page.tsx
+import { UsersTable } from '@/features/admin/UsersTable';
+
+export default function UsersPage() {
+  return <UsersTable />;
+}
+```
+
+Pages never touch VRs directly. Features absorb all the wiring.
+
 ---
 
 ## VRS Rules
 
-### Rule 1: No className Props
+### Rule 1: VR → Feature → Page Protection
 
-VRS components don't accept external styling:
+VRs are **never imported directly into Pages**. Pages import Features only.
 
-```tsx
-// ❌ DON'T
-<Button.primary className="mt-4 px-6">
-
-// ✅ DO
-<div className="mt-4">
-  <Button.primary>
-</div>
+```
+VR (dumb robot)
+    ↓
+Feature (smart wrapper, absorbs customization in ft-*.css)
+    ↓
+Page (one-line import, pure declaration)
 ```
 
-**Why?** External classNames break encapsulation and create styling conflicts.
+This architecture makes style override abuse **structurally impossible**:
+- Pages can't hack VR styles because pages never touch VRs
+- Features own all customization in their `ft-*.css` files
+- VRs stay pure in their `vr-*.css` files
+
+```tsx
+// ❌ This CAN'T happen - pages don't import VRs
+<Button.primary className="bg-red-500" />
+
+// ✅ This is the only option - pages import Features
+<ConfirmAction />
+```
+
+VRs accept `className` for **layout spacing** (e.g., `mt-4`), which is safe because the architecture prevents abuse.
 
 ### Rule 2: Behavior-Only Props
 

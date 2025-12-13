@@ -19,9 +19,7 @@ export interface CrudActionsProps<TRow = Record<string, unknown>> {
   // Smart tooltip behavior - VR handles tooltip rendering
   editTooltip?: string | ((row: TRow) => string);
   deleteTooltip?: string | ((row: TRow) => string);
-  // Auto-detection: Current user for self-protection (VR auto-disables self rows)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  currentUserId?: any;  // Accept both string and Id<table> types
+  tooltipSize?: 'sm' | 'md' | 'lg';
 }
 
 export default function CrudActions<TRow = Record<string, unknown>>({
@@ -32,31 +30,20 @@ export default function CrudActions<TRow = Record<string, unknown>>({
   disableDelete,
   editTooltip,
   deleteTooltip,
-  currentUserId
+  tooltipSize = 'sm'
 }: CrudActionsProps<TRow>) {
-  // VR auto-detects self row if currentUserId provided
-  // Convert both IDs to strings for comparison (handles Convex Id<table> types)
-  const rowId = String((row as Record<string, unknown>).id);
-  const userId = String(currentUserId);
-  const isSelfRow = currentUserId && rowId === userId;
-
+  // VR Convention: DUMB - Feature provides all business logic via props
   const editDisabled = typeof disableEdit === 'function' ? disableEdit(row) : disableEdit;
+  const deleteDisabled = typeof disableDelete === 'function' ? disableDelete(row) : disableDelete;
 
-  // VR auto-disables delete for self rows
-  const deleteDisabled = isSelfRow
-    ? true
-    : (typeof disableDelete === 'function' ? disableDelete(row) : disableDelete);
-
-  // Compute tooltip text (VR auto-generates for self rows)
+  // Feature provides tooltip text via props
   const editTooltipText = typeof editTooltip === 'function'
     ? editTooltip(row)
     : editTooltip || (editDisabled ? "Cannot edit" : "Edit");
 
-  const deleteTooltipText = isSelfRow
-    ? "You cannot delete yourself"
-    : (typeof deleteTooltip === 'function'
-        ? deleteTooltip(row)
-        : deleteTooltip || (deleteDisabled ? "Cannot delete" : "Delete"));
+  const deleteTooltipText = typeof deleteTooltip === 'function'
+    ? deleteTooltip(row)
+    : deleteTooltip || (deleteDisabled ? "Cannot delete" : "Delete");
 
   const editIcon = (
     <span
@@ -78,10 +65,10 @@ export default function CrudActions<TRow = Record<string, unknown>>({
 
   return (
     <>
-      <Tooltip.basic content={editTooltipText}>
+      <Tooltip.basic content={editTooltipText} size={tooltipSize}>
         {editIcon}
       </Tooltip.basic>
-      <Tooltip.basic content={deleteTooltipText}>
+      <Tooltip.basic content={deleteTooltipText} size={tooltipSize}>
         {deleteIcon}
       </Tooltip.basic>
     </>

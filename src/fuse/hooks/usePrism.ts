@@ -32,7 +32,7 @@ const DOMAIN_ROUTES: Record<string, string> = {
 // Domain to images mapping - preload critical images when domain is accessed
 const DOMAIN_IMAGES: Record<string, string[]> = {
   settings: [
-    // MirrorAI avatar grid (9 avatars)
+    // MirorAI avatar grid (9 avatars)
     '/images/ai/miror_f_1.png',
     '/images/ai/miror_f_2.png',
     '/images/ai/miror_f_3.png',

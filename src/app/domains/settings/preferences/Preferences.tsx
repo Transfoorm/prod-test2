@@ -11,7 +11,7 @@
 import { useSetPageHeader } from '@/hooks/useSetPageHeader';
 import { usePageTiming } from '@/fuse/hooks/usePageTiming';
 import { Tabs, Stack, Icon } from '@/prebuilts';
-import MirrorAI from './_tabs/MirrorAI';
+import MirorAI from './_tabs/MirorAI';
 import Theme from './_tabs/Theme';
 import Controls from './_tabs/Controls';
 
@@ -23,7 +23,7 @@ export default function Preferences() {
     <Stack>
       <Tabs.panels
         tabs={[
-          { id: 'mirror-ai', label: 'Mirror AI', icon: <Icon variant="sparkles" />, content: <MirrorAI /> },
+          { id: 'miror-ai', label: 'Miror AI', icon: <Icon variant="sparkles" />, content: <MirorAI /> },
           { id: 'theme', label: 'Theme', icon: <Icon variant="palette" />, content: <Theme /> },
           { id: 'controls', label: 'Controls', icon: <Icon variant="sliders" />, content: <Controls /> },
         ]}

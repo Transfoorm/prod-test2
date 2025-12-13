@@ -23,6 +23,7 @@ const EXCEPTION_FILES = new Set([
   'src/components/ui/Tooltip.tsx',
   'src/prebuilts/modal/drawer/portal.tsx',
   'src/prebuilts/tooltip/basic/index.tsx',
+  'src/prebuilts/tooltip/Basic.tsx',  // VR tooltip with dynamic positioning
 
   // Dynamic gap configuration (CSS custom property for configurable spacing)
   'src/prebuilts/fieldbox/row/index.tsx',
@@ -42,7 +43,7 @@ const EXCEPTION_FILES = new Set([
   'src/features/shell/UserButton/index.tsx',  // react-easy-crop requires style prop
 
   // MirorAI star toggle (SVG particle circles need inline opacity:0 - CSS alone failed)
-  'src/features/preferences/MirorAIFields/index.tsx',
+  'src/features/preferences/MirorAiTab/index.tsx',
 ]);
 
 interface Violation {

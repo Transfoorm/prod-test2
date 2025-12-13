@@ -21,13 +21,15 @@ interface TooltipProps {
   children: React.ReactNode;
   side?: 'top' | 'bottom' | 'left' | 'right';
   delay?: number;
+  size?: 'sm' | 'md' | 'lg';
 }
 
 export default function TooltipBasic({
   content,
   children,
   side = 'top',
-  delay = 200
+  delay = 50,
+  size = 'sm'
 }: TooltipProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
@@ -136,7 +138,7 @@ export default function TooltipBasic({
 
   const tooltipElement = isVisible && isMounted ? (
     <div
-      className="vr-tooltip-basic"
+      className={`vr-tooltip-basic vr-tooltip-basic--${size} vr-tooltip-basic--${side}`}
       style={{
         top: `${position.top}px`,
         left: `${position.left}px`,

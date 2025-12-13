@@ -31,16 +31,13 @@
 @import url('../src/features/account/ProfileTab/profile-tab.css');
 
 /* Miror AI Fields */
-@import url('../src/features/preferences/MirorAIFields/miror-ai-fields.css');
+@import url('../src/features/preferences/MirorAiTab/miror-ai.css');
 
 /* Flying Button (Phoenix) */
 @import url('../src/features/setup/FlyingButton/flying-button.css');
 
 /* Shadow King (Sovereign Setup Enforcement) */
 @import url('../src/features/setup/ShadowKing/shadow-king.css');
-
-/* VR Showcase Tabs (Admin) */
-@import url('../src/features/admin/ShowcaseTabs/showcase-tabs.css');
 
 /* ☢️ Vanish Protocol - QUARANTINED (WCCC ft-* Compliant)
    Lives at PROJECT ROOT /vanish/ to signal architectural boundary
