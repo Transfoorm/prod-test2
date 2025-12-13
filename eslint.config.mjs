@@ -6,6 +6,8 @@ import noComponentCss from "./eslint/no-component-css.js";
 import noUseStateForData from "./eslint/no-usestate-for-data.js";
 import noHardcodedSecrets from "./eslint/no-hardcoded-secrets.js";
 import tttsRules from "./eslint/ttts/index.js";
+import vrpRules from "./eslint/vrp/index.js";
+import srbRules from "./eslint/srb/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -37,6 +39,8 @@ const eslintConfig = [
       "no-usestate-for-data": noUseStateForData,
       "no-hardcoded-secrets": noHardcodedSecrets,
       "ttts": tttsRules,
+      "vrp": vrpRules,
+      "srb": srbRules,
     },
   },
   // Global lint configuration + Superior VRP Layer 2 Rules
@@ -88,6 +92,16 @@ const eslintConfig = [
 
       // VANISH-1: Enforce cascade manifest coverage - No orphaned user data
       "ttts/enforce-vanish-manifest": "error",
+
+      // ═══════════════════════════════════════════════════════════════════
+      // VRP & SRB - FOREIGN AUTH & IDENTITY PROTECTION
+      // ═══════════════════════════════════════════════════════════════════
+
+      // VRP: No Foreign Auth - Block non-FUSE auth systems outside auth boundary
+      "vrp/no-foreign-auth": "error",
+
+      // SRB: No Identity in Views - Block identity resolution in domain views
+      "srb/no-identity-in-views": "error",
 
       // NOTE: class-prefix and no-component-css DISABLED for now
       // Legacy uses VR architecture, not 5-file system yet
