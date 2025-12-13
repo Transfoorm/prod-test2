@@ -8,7 +8,7 @@
 │  - Pure declaration                                                   │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import { RadiosShowcase } from '@/features/admin/ShowcaseBundle';
+import { RadiosShowcase } from '@/features/admin/showcase-bundle';
 
 export default function Radios() {
   return <RadiosShowcase />;
