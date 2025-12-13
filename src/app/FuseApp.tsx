@@ -37,7 +37,7 @@ import dynamic from 'next/dynamic';
 const Router = dynamic(() => import('./domains/Router'), { ssr: false });
 
 // Shadow King - Sovereign Setup Enforcement (shell-level)
-import ShadowKing from '@/features/setup/ShadowKing';
+import ShadowKing from '@/features/setup/shadow-king';
 
 // WARP Orchestrator
 import { runWarpPreload, attachTTLRevalidation } from '@/fuse/warp/orchestrator';

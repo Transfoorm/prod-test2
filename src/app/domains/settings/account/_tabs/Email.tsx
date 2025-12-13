@@ -12,7 +12,7 @@
 │  SOVEREIGNTY: No Clerk imports in domains - Golden Bridge enforced    │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import { EmailFields } from '@/features/account/EmailTab';
+import { EmailFields } from '@/features/account/email-tab';
 
 export default function Email() {
   return <EmailFields />;

@@ -14,7 +14,7 @@
 
 import { useSetPageHeader } from '@/hooks/useSetPageHeader';
 import { usePageTiming } from '@/fuse/hooks/usePageTiming';
-import { AccountPageFeature } from '@/features/account/AccountPage';
+import { AccountPageFeature } from '@/features/account/account-page';
 
 export default function Account() {
   useSetPageHeader('Manage Your Account', 'These are your account details and settings');

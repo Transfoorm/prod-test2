@@ -10,7 +10,7 @@
 │  - Pure declaration                                                   │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import { ProfileFields } from '@/features/account/ProfileTab';
+import { ProfileFields } from '@/features/account/profile-tab';
 
 export default function Profile() {
   return <ProfileFields />;

@@ -2,7 +2,7 @@
 
 /**──────────────────────────────────────────────────────────────────────────┐
  │  🚀 SETUP MODAL - New User Onboarding                                    │
- │  /src/features/setup/SetupModal/index.tsx                                │
+ │  /src/features/setup/setup-modal/index.tsx                                │
  │                                                                            │
  │  VR-Sovereign: Owns ALL visibility, animation, AND server actions.        │
  │  Dashboard just renders <SetupModal /> - pure declarative, zero ceremony. │
@@ -27,7 +27,7 @@ import { useFuse } from '@/store/fuse';
 import { Sparkles } from 'lucide-react';
 import { Button } from '@/prebuilts';
 import { VerifySetup } from '@/app/(clerk)/features/VerifySetup';
-import { skipFlow, reverseFlow } from '@/features/setup/FlyingButton/config';
+import { skipFlow, reverseFlow } from '@/features/setup/flying-button/config';
 import { completeSetupAction } from '@/app/actions/user-mutations';
 import { checkPrimaryEmailVerified, preparePrimaryEmailVerification } from '@/app/(clerk)/actions/email';
 

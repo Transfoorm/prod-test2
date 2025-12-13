@@ -10,8 +10,8 @@
 'use client';
 
 import { useSetPageHeader } from '@/hooks/useSetPageHeader';
-import SetupModal from '@/features/setup/SetupModal';
-import FlyingButton from '@/features/setup/FlyingButton';
+import SetupModal from '@/features/setup/setup-modal';
+import FlyingButton from '@/features/setup/flying-button';
 
 export default function Dashboard() {
   useSetPageHeader(undefined, 'Coming soon');

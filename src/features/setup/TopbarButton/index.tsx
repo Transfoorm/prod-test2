@@ -24,7 +24,7 @@ import {
   reverseFlow,
   navAwayFlow,
   navReturnFlow
-} from '@/features/setup/FlyingButton/config';
+} from '@/features/setup/flying-button/config';
 
 export default function TopbarSetupButton() {
   // ─────────────────────────────────────────────────────────────────────

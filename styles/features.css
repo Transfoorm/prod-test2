@@ -16,28 +16,28 @@
 @import url('../src/features/shell/user-button/user-button.css');
 
 /* Setup Modal */
-@import url('../src/features/setup/SetupModal/setup-modal.css');
+@import url('../src/features/setup/setup-modal/setup-modal.css');
 
 /* Email Tab */
-@import url('../src/features/account/EmailTab/email-tab.css');
+@import url('../src/features/account/email-tab/email-tab.css');
 
 /* Genome Tab */
-@import url('../src/features/account/GenomeTab/genome-tab.css');
+@import url('../src/features/account/genome-tab/genome-tab.css');
 
 /* Password Tab */
-@import url('../src/features/account/PasswordTab/password-tab.css');
+@import url('../src/features/account/password-tab/password-tab.css');
 
 /* Profile Tab */
-@import url('../src/features/account/ProfileTab/profile-tab.css');
+@import url('../src/features/account/profile-tab/profile-tab.css');
 
 /* Miror AI Fields */
 @import url('../src/features/preferences/miror-ai-tab/miror-ai-tab.css');
 
 /* Flying Button (Phoenix) */
-@import url('../src/features/setup/FlyingButton/flying-button.css');
+@import url('../src/features/setup/flying-button/flying-button.css');
 
 /* Shadow King (Sovereign Setup Enforcement) */
-@import url('../src/features/setup/ShadowKing/shadow-king.css');
+@import url('../src/features/setup/shadow-king/shadow-king.css');
 
 /* Vanish Protocol - User Deletion Feature (WCCC ft-* Compliant)
    Clean feature - no Clerk imports. Clerk calls happen via Convex actions. */

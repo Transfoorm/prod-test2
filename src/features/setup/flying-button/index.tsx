@@ -2,7 +2,7 @@
 
 /**──────────────────────────────────────────────────────────────────────────┐
  │  ✈️ FLYING BUTTON (PHOENIX) - Animation Engine                           │
- │  /src/features/setup/FlyingButton/index.tsx                              │
+ │  /src/features/setup/flying-button/index.tsx                              │
  │                                                                            │
  │  The animated button that flies between SetupModal and Topbar.            │
  │  Uses phantom buttons as GPS beacons for precise positioning.             │

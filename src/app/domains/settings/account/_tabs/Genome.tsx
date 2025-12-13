@@ -10,7 +10,7 @@
 │  - Pure declaration                                                   │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import { GenomeFields } from '@/features/account/GenomeTab';
+import { GenomeFields } from '@/features/account/genome-tab';
 
 export default function Genome() {
   return <GenomeFields />;
