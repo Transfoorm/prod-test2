@@ -5,7 +5,7 @@
 │  Warning message display for form fields with caution feedback.       │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import { Icon } from '@/prebuilts/icon/iconRegistry';
+import { Icon } from '@/prebuilts/icon/Icon';
 
 export interface LabelWarningProps {
   /** Warning message to display */

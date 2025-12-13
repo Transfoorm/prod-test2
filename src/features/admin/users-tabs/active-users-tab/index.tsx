@@ -17,7 +17,7 @@ import { useTableSearch } from '@/prebuilts/table';
 import type { SortableColumn } from '@/prebuilts/table/Sortable';
 import type { RankType } from '@/prebuilts/badge/Rank';
 import type { SetupStatusType } from '@/prebuilts/badge/Setup';
-import { useVanish } from '@/features/vanish/Drawer';
+import { useVanish } from '@/features/vanish/VanishContext';
 import { useAdminData } from '@/hooks/useAdminData';
 import { useFuse } from '@/store/fuse';
 

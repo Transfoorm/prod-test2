@@ -7,8 +7,8 @@
 └────────────────────────────────────────────────────────────────────────┘ */
 
 
-import RankCard from './Card';
-import UserRankTable from './Table';
+import RankCard from './RankCard';
+import UserRankTable from './UserRankTable';
 
 /**
  * Rank Registry - Intelligent rank management components
@@ -32,4 +32,4 @@ export {
 };
 
 // Type exports
-export type { RankCardProps } from './Card';
+export type { RankCardProps } from './RankCard';

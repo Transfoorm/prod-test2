@@ -123,9 +123,9 @@ export function useVanish() {
 //  PORTAL COMPONENT
 // ═══════════════════════════════════════════════════════════════════
 
-// Dynamically import Quarantine to isolate Clerk SDK (code splitting)
+// Dynamically import VanishQuarantine to isolate Clerk SDK (code splitting)
 const VanishQuarantine = dynamic(
-  () => import('./Quarantine').then(mod => ({ default: mod.VanishQuarantine })),
+  () => import('./VanishQuarantine').then(mod => ({ default: mod.VanishQuarantine })),
   { ssr: false }
 );
 

@@ -139,6 +139,7 @@ export default function TooltipBasic({
   const tooltipElement = isVisible && isMounted ? (
     <div
       className={`vr-tooltip-basic vr-tooltip-basic--${size} vr-tooltip-basic--${side}`}
+      // eslint-disable-next-line react/forbid-dom-props -- ISVEA: runtime portal positioning
       style={{
         top: `${position.top}px`,
         left: `${position.left}px`,

@@ -13,7 +13,7 @@
 
 import RankBadge from './Rank';
 import SetupBadge from './Setup';
-import StatusBadge from './Status';
+import StatusBadge from './BadgeStatus';
 import CascadeBadge from './Cascade';
 
 export const Badge = {
@@ -29,7 +29,7 @@ export { RankBadge, SetupBadge, StatusBadge, CascadeBadge };
 // Type exports
 export type { RankBadgeProps, RankType } from './Rank';
 export type { SetupBadgeProps, SetupStatusType } from './Setup';
-export type { BadgeStatusProps, StatusVariant } from './Status';
+export type { BadgeStatusProps, StatusVariant } from './BadgeStatus';
 export type { CascadeBadgeProps, CascadeStatusType } from './Cascade';
 
 // Variant type for generic usage

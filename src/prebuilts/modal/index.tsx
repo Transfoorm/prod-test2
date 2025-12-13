@@ -22,7 +22,7 @@ import ConfirmationModal from './Confirmation';
 import VerifyModal from './Verify';
 
 // Drawer (side modal)
-export { SideDrawerProvider, useSideDrawer, SideDrawerPortal } from './Drawer';
+export { SideDrawerProvider, useSideDrawer, SideDrawerPortal } from './SideDrawerContext';
 
 // Sheet (bottom modal) - PLACEHOLDER
 // 🚧 Future implementation - see Sheet.tsx

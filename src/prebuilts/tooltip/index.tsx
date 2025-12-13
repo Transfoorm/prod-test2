@@ -7,7 +7,7 @@
 │  <Tooltip.basic content="Help text">...</Tooltip.basic>              │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import TooltipBasic from './Basic';
+import TooltipBasic from './TooltipBasic';
 
 export const Tooltip = {
   basic: TooltipBasic

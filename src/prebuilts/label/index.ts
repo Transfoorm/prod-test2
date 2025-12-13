@@ -12,11 +12,11 @@
 │  - Label.warning: Warning message                                     │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import LabelBasic from './Basic';
-import ErrorLabel from './Error';
-import HintLabel from './Hint';
-import SuccessLabel from './Success';
-import WarningLabel from './Warning';
+import LabelBasic from './LabelBasic';
+import ErrorLabel from './LabelError';
+import HintLabel from './LabelHint';
+import SuccessLabel from './LabelSuccess';
+import WarningLabel from './LabelWarning';
 
 export const Label = {
   basic: LabelBasic,

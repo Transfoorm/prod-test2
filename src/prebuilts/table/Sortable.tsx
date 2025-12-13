@@ -10,7 +10,7 @@
 
 import { ReactNode, useState, useMemo } from 'react';
 import { Tooltip } from '@/prebuilts';
-import TableCheckbox from './Checkbox';
+import TableCheckbox from './TableCheckbox';
 import { Actions } from '@/prebuilts/actions';
 
 export interface SortableColumn<TData = Record<string, unknown>> {

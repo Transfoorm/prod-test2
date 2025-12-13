@@ -16,7 +16,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSignIn } from '@clerk/nextjs';
-import { Icon } from '@/prebuilts/icon/iconRegistry';
+import { Icon } from '@/prebuilts/icon/Icon';
 import { Button } from '@/prebuilts/button';
 import { VerifyForgot } from '@/app/(clerk)/features/VerifyForgot';
 

@@ -1,11 +1,11 @@
 /**──────────────────────────────────────────────────────────────────────┐
-│  📍 SIDEBAR - Navigation Panel (WCCC ly-* Compliant)                  │
-│  /src/shell/Sidebar/Sidebar.tsx                                       │
+│  📍 SIDEBAR - Navigation Panel (WCCC ly-* Compliant)                   │
+│  /src/shell/Sidebar/Sidebar.tsx                                        │
 │                                                                        │
-│  Building from scratch - iterative, user-directed.                    │
-│  Old sidebar preserved in /src/appshell/ as reference.                │
+│  Building from scratch - iterative, user-directed.                     │
+│  Old sidebar preserved in /src/appshell/ as reference.                 │
 │                                                                        │
-│  🔮 PRISM Integration: Preloads domains on dropdown open              │
+│  🔮 PRISM Integration: Preloads domains on dropdown open               │
 └────────────────────────────────────────────────────────────────────────┘ */
 
 "use client";

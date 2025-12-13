@@ -6,7 +6,7 @@
 │  VR renders icons, page provides behavior via props.                   │
 └─────────────────────────────────────────────────────────────────────────┘ */
 
-import { Icon } from '@/prebuilts/icon/iconRegistry';
+import { Icon } from '@/prebuilts/icon/Icon';
 
 export interface AdminActionsProps<TRow = Record<string, unknown>> {
   row: TRow;

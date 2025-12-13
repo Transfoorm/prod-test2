@@ -36,4 +36,4 @@ export { Checkbox } from '@/prebuilts/input/checkbox';
 export { Dropdown } from '@/prebuilts/dropdown';
 
 // Shared Utilities (re-exported for convenience)
-export { Icon } from '@/prebuilts/icon/iconRegistry';
+export { Icon } from '@/prebuilts/icon/Icon';

@@ -13,8 +13,8 @@
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import SimpleTabs from './Simple';
-import PanelTabs from './Panels';
-import TabsWithContent from './WithContent';
+import PanelTabs from './PanelTabs';
+import TabsWithContent from './TabsWithContent';
 
 /**
  * Tabs Registry - All tabs variants as named exports
@@ -41,8 +41,8 @@ export {
 
 // Type exports for TypeScript users
 export type { SimpleTabsProps, TabItem } from './Simple';
-export type { PanelTabsProps, PanelTabItem } from './Panels';
-export type { TabsWithContentProps, TabWithContent } from './WithContent';
+export type { PanelTabsProps, PanelTabItem } from './PanelTabs';
+export type { TabsWithContentProps, TabWithContent } from './TabsWithContent';
 
 // Helper type for variant names
 export type TabsVariant = keyof typeof Tabs;

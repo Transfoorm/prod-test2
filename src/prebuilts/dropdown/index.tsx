@@ -14,8 +14,8 @@
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import DropdownSimple from './Simple';
-import DropdownWithIcons from './WithIcons';
-import DropdownWithAvatars from './WithAvatars';
+import DropdownWithIcons from './DropdownWithIcons';
+import DropdownWithAvatars from './AvatarDropdown';
 import DropdownMultiSelect from './MultiSelect';
 
 export const Dropdown = {

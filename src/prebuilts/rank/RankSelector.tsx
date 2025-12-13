@@ -21,7 +21,7 @@
 
 import { RANK_METADATA, type Rank } from '@/fuse/constants/ranks';
 import { Dropdown } from '@/prebuilts/dropdown';
-import type { DropdownOption } from '@/prebuilts/dropdown/WithIcons';
+import type { DropdownOption } from '@/prebuilts/dropdown/DropdownWithIcons';
 
 export interface RankSelectorProps {
   value: Rank;

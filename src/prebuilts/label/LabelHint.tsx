@@ -5,7 +5,7 @@
 │  Helpful hint text for form fields with subtle styling.               │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import { Icon } from '@/prebuilts/icon/iconRegistry';
+import { Icon } from '@/prebuilts/icon/Icon';
 
 export interface LabelHintProps {
   /** Hint text to display */

@@ -19,7 +19,7 @@ import SortableTable from './Sortable';
 import PaginatedTable from './Paginated';
 import Toolbar from './Toolbar';
 import BatchActions from './BatchActions';
-import TableCheckbox from './Checkbox';
+import TableCheckbox from './TableCheckbox';
 import { useTableSearch } from './useTableSearch';
 
 /**
@@ -61,7 +61,7 @@ export type { SortableTableProps, SortableColumn } from './Sortable';
 export type { PaginatedTableProps, PaginatedColumn } from './Paginated';
 export type { ToolbarProps } from './Toolbar';
 export type { BatchActionsProps } from './BatchActions';
-export type { TableCheckboxProps } from './Checkbox';
+export type { TableCheckboxProps } from './TableCheckbox';
 
 // Helper type for variant names
 export type TableVariant = keyof typeof Table;

@@ -65,7 +65,7 @@ See: 04-ADP-PATTERN.md, TTTS-ENFORCEMENT-PACK-(v1.0).md`,
           /\/fuse\/hydration\//,       // Hydration utilities
           /\/hooks\/.*Sync\.ts$/,      // Sync hooks (useAdminSync, useSettingsSync, etc.)
           /\/hooks\/useConvexUser\.ts$/,  // User sync hook (Golden Bridge)
-          /\/vanish\/Quarantine\.tsx$/,   // Clerk quarantine zone (documented exception)
+          /\/vanish\/VanishQuarantine\.tsx$/,   // Clerk quarantine zone (documented exception)
           /\.test\.(ts|tsx|js|jsx)$/,  // Test files
           /\.spec\.(ts|tsx|js|jsx)$/,  // Spec files
         ];

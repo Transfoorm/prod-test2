@@ -5,7 +5,7 @@
 │  TypeScript interfaces for sidebar navigation structure              │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import type { IconVariant } from '@/prebuilts/icon/iconRegistry';
+import type { IconVariant } from '@/prebuilts/icon/Icon';
 
 export interface NavChild {
   path: string;

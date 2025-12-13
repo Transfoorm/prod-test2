@@ -24,7 +24,7 @@ import type { SortableColumn } from '@/prebuilts/table/Sortable';
 import BadgeRank from '@/prebuilts/badge/Rank';
 import BadgeSetup from '@/prebuilts/badge/Setup';
 import type { SetupStatusType } from '@/prebuilts/badge/Setup';
-import RankSelector from './Selector';
+import RankSelector from './RankSelector';
 import { useConvexUser } from '@/hooks/useConvexUser';
 
 type UserRank = 'admiral' | 'commodore' | 'captain' | 'crew';

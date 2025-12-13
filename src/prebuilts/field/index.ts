@@ -18,9 +18,9 @@
 │  - .ft-field-with-action = field + action button pairing              │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import FieldLive from './Live';
-import FieldVerify from './Verify';
-import FieldReadonly from './Readonly';
+import FieldLive from './FieldLive';
+import FieldVerify from './FieldVerify';
+import FieldReadonly from './FieldReadonly';
 
 export const Field = {
   live: FieldLive,
@@ -29,6 +29,6 @@ export const Field = {
 };
 
 // Type exports for consumers
-export type { FieldLiveProps } from './Live';
-export type { FieldVerifyProps } from './Verify';
-export type { FieldReadonlyProps } from './Readonly';
+export type { FieldLiveProps } from './FieldLive';
+export type { FieldVerifyProps } from './FieldVerify';
+export type { FieldReadonlyProps } from './FieldReadonly';

@@ -5,7 +5,7 @@
 │  Inline error message for form fields with semantic styling.          │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import { Icon } from '@/prebuilts/icon/iconRegistry';
+import { Icon } from '@/prebuilts/icon/Icon';
 
 export interface LabelErrorProps {
   /** Error message to display */

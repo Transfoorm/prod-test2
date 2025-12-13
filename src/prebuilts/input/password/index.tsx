@@ -6,7 +6,7 @@
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { useState } from 'react';
-import { Icon } from '@/prebuilts/icon/iconRegistry';
+import { Icon } from '@/prebuilts/icon/Icon';
 
 export interface InputPasswordProps {
   /** Current value */

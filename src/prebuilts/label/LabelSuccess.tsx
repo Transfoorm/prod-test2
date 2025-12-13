@@ -6,7 +6,7 @@
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { useState, useEffect } from 'react';
-import { Icon } from '@/prebuilts/icon/iconRegistry';
+import { Icon } from '@/prebuilts/icon/Icon';
 
 export interface LabelSuccessProps {
   /** Success message to display */

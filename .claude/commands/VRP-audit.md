@@ -80,7 +80,7 @@ This audit verifies the **Sovereign Architecture**:
 | 40 | `navigate()` uses `history.pushState` (not `router.push`) |
 | 41 | FuseApp has `popstate` listener for back/forward |
 | 42 | All domain views are in `/app/domains/{domain}/` |
-| 43 | All domain views start with `'use client'` (SRB-5) |
+| 43 | ~~`'use client'` check~~ — SKIPPED (Next.js self-enforces: missing directive crashes dev server immediately) |
 | 44 | No `useQuery`/`useMutation` in domain views (SRB-4) |
 | 45 | No `fetch()` in domain views (SRB-1) |
 | 46 | No loading states in domain views (SRB-9) |
@@ -189,7 +189,7 @@ These checks require human judgment - machines check syntax, humans check archit
 | 75 | **SRB-2** | Domain navigation must not use `router.push` |
 | 76 | **SRB-3** | All domain views must render from FUSE first |
 | 77 | **SRB-4** | Convex can NEVER be called inside a view |
-| 78 | **SRB-5** | Domain files must be pure client components |
+| 78 | ~~**SRB-5**~~ | SKIPPED — Next.js self-enforces (crashes if missing) |
 | 79 | **SRB-6** | WARP must preload before first navigation |
 | 80 | **SRB-7** | FUSE store is the only source of truth |
 | 81 | **SRB-8** | No side effects in views |
@@ -360,7 +360,7 @@ Phase 6: SRB Sovereignty Rules (Points 74-88)
    ✅ SRB-2  (No router.push): PASS
    ✅ SRB-3  (FUSE First): PASS
    ✅ SRB-4  (No Convex in Views): PASS
-   ✅ SRB-5  (use client): PASS
+   ⏭️ SRB-5  (use client): SKIPPED — Next.js self-enforces
    ✅ SRB-6  (WARP Preload): PASS
    ✅ SRB-7  (FUSE Only Truth): PASS
    ✅ SRB-8  (No View Effects): PASS

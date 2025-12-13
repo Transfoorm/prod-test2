@@ -17,7 +17,7 @@
 │  />                                                                   │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import SearchBar from './Bar';
+import SearchBar from './SearchBar';
 
 /**
  * Search Registry - All search variants as named exports
@@ -40,7 +40,7 @@ export {
 };
 
 // Type exports for TypeScript users
-export type { SearchBarProps } from './Bar';
+export type { SearchBarProps } from './SearchBar';
 
 // Helper type for variant names
 export type SearchVariant = keyof typeof Search;

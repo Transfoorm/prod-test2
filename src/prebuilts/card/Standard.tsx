@@ -12,7 +12,7 @@
 └────────────────────────────────────────────────────────────────────────┘ */
 
 import { ReactNode } from 'react';
-import { Icon, IconVariant } from '@/prebuilts/icon/iconRegistry';
+import { Icon, IconVariant } from '@/prebuilts/icon/Icon';
 
 export interface StandardCardProps {
   title?: ReactNode;

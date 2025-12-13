@@ -19,7 +19,7 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { Icon } from '@/prebuilts/icon/iconRegistry';
+import { Icon } from '@/prebuilts/icon/Icon';
 import { changePassword } from '@/app/(clerk)/actions/password';
 import './password-tab.css';
 

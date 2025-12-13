@@ -17,7 +17,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSignUp, useSignIn, useAuth } from "@clerk/nextjs";
-import { Icon } from '@/prebuilts/icon/iconRegistry';
+import { Icon } from '@/prebuilts/icon/Icon';
 import { Button } from '@/prebuilts/button';
 
 export default function SignUpPage() {

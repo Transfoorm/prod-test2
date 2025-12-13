@@ -62,6 +62,7 @@ export default function SearchBar({
   const showCounts = resultsCount !== undefined && totalCount !== undefined;
 
   return (
+    // eslint-disable-next-line react/forbid-dom-props -- ISVEA: dynamic width config
     <div className={`vr-search-bar ${className}`} style={width ? { width } : undefined}>
       {/* Search Icon */}
       <div className="vr-search-bar-search-icon">

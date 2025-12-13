@@ -25,12 +25,12 @@ import { urlPathToRoute } from '@/store/domains/navigation';
 // Shell components
 import { ClientHydrator } from '@/fuse/hydration/ClientHydrator';
 import { UserSyncProvider } from '@/providers/UserSyncProvider';
-import Topbar from '@/shell/topbar';
+import Topbar from '@/shell/topbar/Topbar';
 import Sidebar from '@/shell/sidebar/Sidebar';
-import AISidebar from '@/shell/ai-sidebar';
-import PageArch from '@/shell/page-arch';
+import AISidebar from '@/shell/ai-sidebar/AISidebar';
+import PageArch from '@/shell/page-arch/PageArch';
 import PageHeader from '@/shell/page-header/PageHeader';
-import Footer from '@/shell/footer';
+import Footer from '@/shell/footer/Footer';
 
 // Sovereign Router - dynamically imported to prevent SSR (FOUC prevention)
 import dynamic from 'next/dynamic';

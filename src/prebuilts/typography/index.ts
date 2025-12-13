@@ -6,13 +6,13 @@
 └────────────────────────────────────────────────────────────────────────┘ */
 
 
-export { default as TypographyTitle } from './Title';
-export { default as TypographyHeading } from './Heading';
-export { default as TypographyBody } from './Body';
-export { default as TypographyCaption } from './Caption';
+export { default as TypographyTitle } from './TypographyTitle';
+export { default as TypographyHeading } from './TypographyHeading';
+export { default as TypographyBody } from './TypographyBody';
+export { default as TypographyCaption } from './TypographyCaption';
 
 // Re-export types
-export type { TypographyTitleProps } from './Title';
-export type { TypographyHeadingProps } from './Heading';
-export type { TypographyBodyProps } from './Body';
-export type { TypographyCaptionProps } from './Caption';
+export type { TypographyTitleProps } from './TypographyTitle';
+export type { TypographyHeadingProps } from './TypographyHeading';
+export type { TypographyBodyProps } from './TypographyBody';
+export type { TypographyCaptionProps } from './TypographyCaption';
