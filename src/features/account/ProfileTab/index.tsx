@@ -15,7 +15,7 @@ import './profile-tab.css';
 import { useState, useCallback, useRef } from 'react';
 import { useFuse } from '@/store/fuse';
 import { Field } from '@/prebuilts';
-import CountrySelector from '@/features/shell/CountrySelector';
+import CountrySelector from '@/features/shell/country-selector';
 
 // ─────────────────────────────────────────────────────────────────────
 // COUNTRY DATA

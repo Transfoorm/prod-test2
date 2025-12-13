@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🌓 THEME TOGGLE - Animated Sun/Moon Switcher                         │
-│  /src/components/features/ThemeToggle.tsx                             │
+│  /src/features/shell/theme-toggle/index.tsx                           │
 │                                                                        │
 │  Pure CSS implementation (Josh Comeau pattern).                        │
 │  Syncs to database via FUSE store's toggleThemeMode.                   │

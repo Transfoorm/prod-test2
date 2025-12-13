@@ -10,7 +10,7 @@
 │  - Pure declaration                                                   │
 └────────────────────────────────────────────────────────────────────────┘ */
 
-import { MirorAiTabFeature } from '@/features/preferences/MirorAiTab';
+import { MirorAiTabFeature } from '@/features/preferences/miror-ai-tab';
 
 export default function MirorAI() {
   return <MirorAiTabFeature />;

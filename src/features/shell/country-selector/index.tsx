@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🌍 COUNTRY SELECTOR - Business Location Dropdown                     │
-│  /src/components/features/CountrySelector.tsx                         │
+│  /src/features/shell/country-selector/index.tsx                       │
 │                                                                        │
 │  Flag-based country selector for user's business location.             │
 │  Syncs to database via Convex mutation.                                │

@@ -5,81 +5,81 @@
 
 :root {
   /* Avatar */
-  --userbutton-avatar-size: 40px;
-  --userbutton-avatar-border: 2px;
-  --userbutton-avatar-shadow-sm: 0 1px 2px rgb(0 0 0 / 5%);
-  --userbutton-avatar-shadow-md: 0 4px 6px rgb(0 0 0 / 10%);
+  --user-button-avatar-size: 40px;
+  --user-button-avatar-border: 2px;
+  --user-button-avatar-shadow-sm: 0 1px 2px rgb(0 0 0 / 5%);
+  --user-button-avatar-shadow-md: 0 4px 6px rgb(0 0 0 / 10%);
 
   /* Menu Positioning & Dimensions */
-  --userbutton-menu-bottom: 64px;
-  --userbutton-menu-left: 3px;
-  --userbutton-menu-radius: 10px;
-  --userbutton-menu-width: 240px;
-  --userbutton-menu-width-modal: 320px;
-  --userbutton-menu-shadow: 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -2px rgb(0 0 0 / 5%);
+  --user-button-menu-bottom: 64px;
+  --user-button-menu-left: 3px;
+  --user-button-menu-radius: 10px;
+  --user-button-menu-width: 240px;
+  --user-button-menu-width-modal: 320px;
+  --user-button-menu-shadow: 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -2px rgb(0 0 0 / 5%);
 
   /* Close Button */
-  --userbutton-close-offset: -8px;
-  --userbutton-close-size: 20px;
-  --userbutton-close-font-size: var(--font-size-xs);
+  --user-button-close-offset: -8px;
+  --user-button-close-size: 20px;
+  --user-button-close-font-size: var(--font-size-xs);
 
   /* Icon Sizes */
-  --userbutton-icon-sm: 16px;
-  --userbutton-icon-md: 18px;
-  --userbutton-icon-lg: 20px;
+  --user-button-icon-sm: 16px;
+  --user-button-icon-md: 18px;
+  --user-button-icon-lg: 20px;
 
   /* Typography */
-  --userbutton-text-xs: 10px;
-  --userbutton-text-sm: 11px;
-  --userbutton-text-base: 12px;
-  --userbutton-text-md: 14px;
-  --userbutton-text-lg: 16px;
+  --user-button-text-xs: 10px;
+  --user-button-text-sm: 11px;
+  --user-button-text-base: 12px;
+  --user-button-text-md: 14px;
+  --user-button-text-lg: 16px;
 
   /* Spacing - Padding */
-  --userbutton-padding-xs: 4px;
-  --userbutton-padding-sm: 8px;
-  --userbutton-padding-md: 12px;
-  --userbutton-padding-lg: 16px;
-  --userbutton-padding-header-y: 12px;
-  --userbutton-padding-header-x: 16px;
-  --userbutton-padding-item-y: 8px;
-  --userbutton-padding-item-x: 12px;
-  --userbutton-padding-error-button-y: 4px;
-  --userbutton-padding-error-button-x: 10px;
-  --userbutton-padding-theme-reduced: 4px;
+  --user-button-padding-xs: 4px;
+  --user-button-padding-sm: 8px;
+  --user-button-padding-md: 12px;
+  --user-button-padding-lg: 16px;
+  --user-button-padding-header-y: 12px;
+  --user-button-padding-header-x: 16px;
+  --user-button-padding-item-y: 8px;
+  --user-button-padding-item-x: 12px;
+  --user-button-padding-error-button-y: 4px;
+  --user-button-padding-error-button-x: 10px;
+  --user-button-padding-theme-reduced: 4px;
 
   /* Spacing - Gaps & Margins */
-  --userbutton-gap-sm: 6px;
-  --userbutton-gap-md: 8px;
-  --userbutton-margin-xs: 1px;
-  --userbutton-margin-sm: 2px;
-  --userbutton-margin-md: 8px;
-  --userbutton-margin-lg: 16px;
-  --userbutton-margin-negative-sm: -4px;
-  --userbutton-margin-negative-xs: -1px;
+  --user-button-gap-sm: 6px;
+  --user-button-gap-md: 8px;
+  --user-button-margin-xs: 1px;
+  --user-button-margin-sm: 2px;
+  --user-button-margin-md: 8px;
+  --user-button-margin-lg: 16px;
+  --user-button-margin-negative-sm: -4px;
+  --user-button-margin-negative-xs: -1px;
 
   /* Borders */
-  --userbutton-border-sm: 2px;
-  --userbutton-border-md: 3px;
-  --userbutton-border-radius-sm: 2px;
-  --userbutton-border-radius-md: 4px;
+  --user-button-border-sm: 2px;
+  --user-button-border-md: 3px;
+  --user-button-border-radius-sm: 2px;
+  --user-button-border-radius-md: 4px;
 
   /* Animations & Transitions */
-  --userbutton-transition-fast: 0.15s;
-  --userbutton-transition-medium: 0.2s;
-  --userbutton-transition-slow: 0.8s;
+  --user-button-transition-fast: 0.15s;
+  --user-button-transition-medium: 0.2s;
+  --user-button-transition-slow: 0.8s;
 
   /* Modal & Cropper */
-  --userbutton-cropper-height: 192px;
+  --user-button-cropper-height: 192px;
 
   /* Backdrops */
-  --userbutton-backdrop-opacity-light: 0.1;
-  --userbutton-backdrop-opacity-medium: 0.4;
-  --userbutton-spinner-border-opacity: 0.3;
-  --userbutton-backdrop-light: rgb(0 0 0 / 10%);
-  --userbutton-backdrop-medium: rgb(0 0 0 / 40%);
-  --userbutton-spinner-border: rgb(255 255 255 / 30%);
-  --userbutton-spinner-top-color: #fff;
+  --user-button-backdrop-opacity-light: 0.1;
+  --user-button-backdrop-opacity-medium: 0.4;
+  --user-button-spinner-border-opacity: 0.3;
+  --user-button-backdrop-light: rgb(0 0 0 / 10%);
+  --user-button-backdrop-medium: rgb(0 0 0 / 40%);
+  --user-button-spinner-border: rgb(255 255 255 / 30%);
+  --user-button-spinner-top-color: #fff;
 }
 
 /* ───────────────────────────────────────────────────────────────────
@@ -87,8 +87,8 @@
    ─────────────────────────────────────────────────────────────────── */
 
 .ft-userbutton-loading {
-  width: var(--userbutton-avatar-size);
-  height: var(--userbutton-avatar-size);
+  width: var(--user-button-avatar-size);
+  height: var(--user-button-avatar-size);
   background-color: var(--bg-secondary);
   border-radius: var(--radius-full);
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -116,19 +116,19 @@
    ─────────────────────────────────────────────────────────────────── */
 
 .ft-userbutton-avatar {
-  width: var(--userbutton-avatar-size);
-  height: var(--userbutton-avatar-size);
+  width: var(--user-button-avatar-size);
+  height: var(--user-button-avatar-size);
   border-radius: var(--radius-full);
   object-fit: cover;
-  border: var(--userbutton-avatar-border) solid var(--border-light);
-  box-shadow: var(--userbutton-avatar-shadow-sm);
+  border: var(--user-button-avatar-border) solid var(--border-light);
+  box-shadow: var(--user-button-avatar-shadow-sm);
   transition: all var(--duration-fast) var(--easing);
   transform: scale(1);
 }
 
 .ft-userbutton-avatar--active {
   border-color: var(--brand-primary);
-  box-shadow: 0 0 0 2px var(--brand-light), var(--userbutton-avatar-shadow-md);
+  box-shadow: 0 0 0 2px var(--brand-light), var(--user-button-avatar-shadow-md);
   transform: scale(1.05);
 }
 
@@ -146,44 +146,44 @@
 
 .ft-userbutton-menu {
   position: fixed;
-  bottom: var(--userbutton-menu-bottom);
+  bottom: var(--user-button-menu-bottom);
   left: calc(var(--sidebar-width) - 5px);  /* 🟨 Match CompanyButton positioning */
   background-color: var(--bg-primary);
-  box-shadow: var(--userbutton-menu-shadow);
+  box-shadow: var(--user-button-menu-shadow);
   border: 1px solid var(--border-light);
-  border-radius: var(--userbutton-menu-radius);
-  min-width: var(--userbutton-menu-width);
+  border-radius: var(--user-button-menu-radius);
+  min-width: var(--user-button-menu-width);
   z-index: 50;
-  animation: fade-in var(--userbutton-transition-fast) ease-out;
+  animation: fade-in var(--user-button-transition-fast) ease-out;
 }
 
 .ft-userbutton-menu--closing {
-  animation: scale-out var(--userbutton-transition-fast) ease-out;
+  animation: scale-out var(--user-button-transition-fast) ease-out;
   transform-origin: bottom left;
 }
 
 .ft-userbutton-modal--closing {
-  animation: fade-out var(--userbutton-transition-fast) ease-out;
+  animation: fade-out var(--user-button-transition-fast) ease-out;
 }
 
 /* Close Button (Menu + Modal) */
 .ft-userbutton-close-button {
   position: absolute;
-  top: var(--userbutton-close-offset);
-  right: var(--userbutton-close-offset);
+  top: var(--user-button-close-offset);
+  right: var(--user-button-close-offset);
   background-color: var(--bg-primary);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-full);
-  width: var(--userbutton-close-size);
-  height: var(--userbutton-close-size);
+  width: var(--user-button-close-size);
+  height: var(--user-button-close-size);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-tertiary);
-  font-size: var(--userbutton-close-font-size);
+  font-size: var(--user-button-close-font-size);
   box-shadow: var(--shadow-sm);
   cursor: pointer;
-  transition: background-color var(--userbutton-transition-fast) ease;
+  transition: background-color var(--user-button-transition-fast) ease;
 }
 
 .ft-userbutton-close-button:hover {
@@ -195,7 +195,7 @@
    ─────────────────────────────────────────────────────────────────── */
 
 .ft-userbutton-menu-header {
-  padding: var(--userbutton-padding-header-y) var(--userbutton-padding-header-x);
+  padding: var(--user-button-padding-header-y) var(--user-button-padding-header-x);
   border-bottom: 1px solid var(--border-light);
   background-color: var(--bg-secondary);  /* Title Header background */
   border-top-left-radius: var(--radius-lg);
@@ -205,14 +205,14 @@
 .ft-userbutton-menu-header-content {
   display: flex;
   align-items: center;
-  gap: var(--userbutton-gap-sm);
+  gap: var(--user-button-gap-sm);
 }
 
 .ft-userbutton-menu-header-icon {
-  width: var(--userbutton-icon-lg);
-  height: var(--userbutton-icon-lg);
+  width: var(--user-button-icon-lg);
+  height: var(--user-button-icon-lg);
   flex-shrink: 0;
-  border-radius: var(--userbutton-border-radius-sm);
+  border-radius: var(--user-button-border-radius-sm);
 }
 
 .ft-userbutton-menu-header-text {
@@ -223,7 +223,7 @@
 }
 
 .ft-userbutton-menu-email {
-  font-size: var(--userbutton-text-base);
+  font-size: var(--user-button-text-base);
   color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -239,11 +239,11 @@
 }
 
 .ft-userbutton-menu-email-status {
-  font-size: var(--userbutton-text-xs);
+  font-size: var(--user-button-text-xs);
   color: var(--text-tertiary);
   line-height: 1;
   margin: 0;
-  margin-top: var(--userbutton-margin-xs);
+  margin-top: var(--user-button-margin-xs);
 }
 
 /* ───────────────────────────────────────────────────────────────────
@@ -251,35 +251,35 @@
    ─────────────────────────────────────────────────────────────────── */
 
 .ft-userbutton-error-container {
-  padding: var(--userbutton-padding-header-y) var(--userbutton-padding-header-x);
+  padding: var(--user-button-padding-header-y) var(--user-button-padding-header-x);
   background-color: var(--color-error-light);
-  border-left: var(--userbutton-border-md) solid var(--color-error);
+  border-left: var(--user-button-border-md) solid var(--color-error);
   border-bottom: 1px solid var(--border-light);
 }
 
 .ft-userbutton-error-text {
-  font-size: var(--userbutton-text-base);
+  font-size: var(--user-button-text-base);
   color: var(--color-error-dark);
   line-height: 1.4;
-  margin-bottom: var(--userbutton-margin-md);
+  margin-bottom: var(--user-button-margin-md);
 }
 
 .ft-userbutton-error-buttons {
   display: flex;
-  gap: var(--userbutton-gap-md);
+  gap: var(--user-button-gap-md);
   justify-content: center;
 }
 
 .ft-userbutton-error-button {
-  font-size: var(--userbutton-text-sm);
+  font-size: var(--user-button-text-sm);
   color: var(--color-error-dark);
   background-color: var(--color-error-button-bg);
   border: none;
-  border-radius: var(--userbutton-border-radius-md);
-  padding: var(--userbutton-padding-error-button-y) var(--userbutton-padding-error-button-x);
+  border-radius: var(--user-button-border-radius-md);
+  padding: var(--user-button-padding-error-button-y) var(--user-button-padding-error-button-x);
   cursor: pointer;
   font-weight: var(--font-weight-medium);
-  transition: background-color var(--userbutton-transition-fast) ease;
+  transition: background-color var(--user-button-transition-fast) ease;
 }
 
 .ft-userbutton-error-button:hover {
@@ -291,27 +291,27 @@
    ─────────────────────────────────────────────────────────────────── */
 
 .ft-userbutton-menu-items {
-  padding: var(--userbutton-padding-xs) 0;
+  padding: var(--user-button-padding-xs) 0;
 }
 
 .ft-userbutton-menu-item-wrapper {
-  padding: 0 var(--userbutton-padding-xs);
+  padding: 0 var(--user-button-padding-xs);
 }
 
 .ft-userbutton-menu-item {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: var(--userbutton-gap-md);
+  gap: var(--user-button-gap-md);
   text-align: left;
-  padding: var(--userbutton-padding-item-y) var(--userbutton-padding-item-x);
-  font-size: var(--userbutton-text-md);
+  padding: var(--user-button-padding-item-y) var(--user-button-padding-item-x);
+  font-size: var(--user-button-text-md);
   color: var(--text-primary);
   background-color: transparent;
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background-color var(--userbutton-transition-fast) ease;
+  transition: background-color var(--user-button-transition-fast) ease;
 }
 
 .ft-userbutton-menu-item:hover {
@@ -320,21 +320,21 @@
 
 /* Theme Toggle Button - reduce padding to match other buttons */
 .ft-userbutton-menu-item:has(.ft-theme-label) {
-  padding: var(--userbutton-padding-theme-reduced) var(--userbutton-padding-item-x);
+  padding: var(--user-button-padding-theme-reduced) var(--user-button-padding-item-x);
 }
 
 /* Nudge the text label up slightly */
 .ft-userbutton-theme-text {
-  transform: translateY(var(--userbutton-margin-negative-xs));
+  transform: translateY(var(--user-button-margin-negative-xs));
   display: inline-block;
 }
 
 /* Theme Toggle inside menu - remove hover background and extra height */
 .ft-userbutton-menu-item .ft-theme-label {
-  width: var(--userbutton-icon-lg);
-  height: var(--userbutton-icon-lg);
-  margin-left: var(--userbutton-margin-negative-sm);
-  margin-top: var(--userbutton-margin-sm);
+  width: var(--user-button-icon-lg);
+  height: var(--user-button-icon-lg);
+  margin-left: var(--user-button-margin-negative-sm);
+  margin-top: var(--user-button-margin-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -346,8 +346,8 @@
 }
 
 .ft-userbutton-menu-item .ft-theme-svg {
-  width: var(--userbutton-icon-md);
-  height: var(--userbutton-icon-md);
+  width: var(--user-button-icon-md);
+  height: var(--user-button-icon-md);
 }
 
 .ft-userbutton-menu-item .ft-theme-input {
@@ -357,7 +357,7 @@
 /* Divider */
 .ft-userbutton-menu-divider {
   border-top: 1px solid var(--border-light);
-  padding: var(--userbutton-padding-xs) 0;
+  padding: var(--user-button-padding-xs) 0;
 }
 
 /* ───────────────────────────────────────────────────────────────────
@@ -374,8 +374,8 @@
   box-shadow: var(--shadow-xl);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
-  padding: var(--userbutton-padding-lg);
-  width: var(--userbutton-menu-width-modal);
+  padding: var(--user-button-padding-lg);
+  width: var(--user-button-menu-width-modal);
 }
 
 /* Modal uses translate centering, needs custom animation */
@@ -404,21 +404,21 @@
 }
 
 .ft-userbutton-modal--closing {
-  animation: ft-userbutton-modal-scale-out var(--userbutton-transition-fast) ease-out;
+  animation: ft-userbutton-modal-scale-out var(--user-button-transition-fast) ease-out;
 }
 
 .ft-userbutton-modal-header {
-  font-size: var(--userbutton-text-lg);
+  font-size: var(--user-button-text-lg);
   font-weight: var(--font-weight-semibold);
-  margin-bottom: var(--userbutton-margin-lg);
+  margin-bottom: var(--user-button-margin-lg);
   display: flex;
   align-items: flex-start;
 }
 
 .ft-userbutton-modal-header-icon {
-  margin-left: var(--userbutton-margin-md);
-  width: var(--userbutton-icon-sm);
-  height: var(--userbutton-icon-sm);
+  margin-left: var(--user-button-margin-md);
+  width: var(--user-button-icon-sm);
+  height: var(--user-button-icon-sm);
   color: var(--text-tertiary);
   cursor: pointer;
 }
@@ -430,24 +430,24 @@
 .ft-userbutton-cropper-container {
   position: relative;
   width: 100%;
-  height: var(--userbutton-cropper-height);
-  margin-bottom: var(--userbutton-margin-lg);
+  height: var(--user-button-cropper-height);
+  margin-bottom: var(--user-button-margin-lg);
   background-color: var(--bg-secondary);
   border-radius: var(--radius-lg);
   overflow: hidden;
 }
 
 .ft-userbutton-upload-actions {
-  margin-top: var(--userbutton-margin-lg);
+  margin-top: var(--user-button-margin-lg);
 }
 
 .ft-userbutton-upload-button {
   width: 100%;
   color: var(--text-inverse);
-  font-size: var(--userbutton-text-md);
-  padding: var(--userbutton-padding-sm) 0;
+  font-size: var(--user-button-text-md);
+  padding: var(--user-button-padding-sm) 0;
   border-radius: var(--radius-lg);
-  transition: all var(--userbutton-transition-medium) ease;
+  transition: all var(--user-button-transition-medium) ease;
   cursor: pointer;
   background-color: var(--brand-primary);
   opacity: 1;
@@ -486,11 +486,11 @@
   position: fixed;
   inset: 0;
   z-index: 999;
-  background-color: var(--userbutton-backdrop-medium);
+  background-color: var(--user-button-backdrop-medium);
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: fade-in var(--userbutton-transition-medium) ease-out;
+  animation: fade-in var(--user-button-transition-medium) ease-out;
 }
 
 /* Sign-out button */
@@ -506,10 +506,10 @@
 
 /* Spinner for sign-out button */
 .ft-userbutton-spinner {
-  width: var(--userbutton-icon-sm);
-  height: var(--userbutton-icon-sm);
-  border: var(--userbutton-border-sm) solid var(--userbutton-spinner-border);
-  border-top-color: var(--userbutton-spinner-top-color);
+  width: var(--user-button-icon-sm);
+  height: var(--user-button-icon-sm);
+  border: var(--user-button-border-sm) solid var(--user-button-spinner-border);
+  border-top-color: var(--user-button-spinner-top-color);
   border-radius: 50%;
-  animation: spin var(--userbutton-transition-slow) linear infinite;
+  animation: spin var(--user-button-transition-slow) linear infinite;
 }

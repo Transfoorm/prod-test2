@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🏢 COMPANY BUTTON - Entity Details + Logo Cropper + Dropdown Menu  │
-│  /src/features/CompanyButton/index.tsx                               │
+│  /src/features/shell/company-button/index.tsx                        │
 │                                                                        │
 │  Company/Entity selector with brand logo upload/crop, subscription   │
 │  status, and quick access to entity settings.                        │
@@ -21,7 +21,7 @@ import Cropper from 'react-easy-crop';
 import { api } from '@/convex/_generated/api';
 import { refreshSessionAfterUpload } from '@/app/actions/user-mutations';
 import { Id } from '@/convex/_generated/dataModel';
-import CountrySelector from '@/features/shell/CountrySelector';
+import CountrySelector from '@/features/shell/country-selector';
 import { useFuse } from '@/store/fuse';
 import { Icon, Tooltip, Backdrop } from '@/prebuilts';
 import { formatSubscriptionStatus, type SubscriptionStatus } from '@/fuse/constants/ranks';

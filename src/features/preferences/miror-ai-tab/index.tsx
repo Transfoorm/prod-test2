@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  🪞 MIROR AI TAB FEATURE                                             │
-│  /src/features/preferences/MirorAiTab/index.tsx                      │
+│  /src/features/preferences/miror-ai-tab/index.tsx                    │
 │                                                                       │
 │  VR Doctrine: Feature Layer                                           │
 │  - Imports VRs (Card, Input.toggle, Input.radio)                     │

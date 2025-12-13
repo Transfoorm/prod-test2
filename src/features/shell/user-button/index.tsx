@@ -1,6 +1,6 @@
 /**──────────────────────────────────────────────────────────────────────┐
 │  👤 USER BUTTON - Avatar + Dropdown Menu                              │
-│  /src/features/UserButton/index.tsx                                   │
+│  /src/features/shell/user-button/index.tsx                            │
 │                                                                        │
 │  Complete user profile management with avatar upload/crop.             │
 │  Pure CSS styling with FUSE-STYLE architecture.                        │
@@ -36,7 +36,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useFuse } from "@/store/fuse";
 import { Icon, Tooltip, Backdrop } from "@/prebuilts";
 import { Button } from "@/prebuilts/button";
-import ThemeToggle from '@/features/shell/ThemeToggle';
+import ThemeToggle from '@/features/shell/theme-toggle';
 
 export default function UserButton() {
   const user = useFuse((s) => s.user);
